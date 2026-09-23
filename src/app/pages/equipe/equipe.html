@@ -1,0 +1,135 @@
+<section class="team-hero">
+  <div class="team-hero__glow team-hero__glow--1" aria-hidden="true"></div>
+  <div class="team-hero__glow team-hero__glow--2" aria-hidden="true"></div>
+  <div class="team-hero__grid" aria-hidden="true"></div>
+
+  <div class="team-hero__container">
+    <nav class="team-hero__breadcrumb" aria-label="Fil d'ariane">
+      <a routerLink="/">Accueil</a>
+      <span>/</span>
+      <span>Équipe</span>
+    </nav>
+
+    <span class="team-hero__eyebrow">
+      <span class="team-hero__dot"></span>
+      {{ heroEyebrow() }}
+    </span>
+
+    <h1 class="team-hero__title">
+      {{ heroTitle() }}<br />
+      <em>{{ heroTitleAccent() }}</em>
+    </h1>
+
+    <p class="team-hero__lead">{{ heroLead() }}</p>
+
+    <div class="team-hero__stats">
+      @for (stat of stats(); track stat.label) {
+        <div class="team-hero__stat">
+          <strong>{{ stat.value }}</strong>
+          <span>{{ stat.label }}</span>
+        </div>
+      }
+    </div>
+  </div>
+</section>
+
+<!-- Leadership -->
+<section class="team-featured">
+  <div class="team-featured__container">
+    <div class="team-featured__header">
+      <span class="team-section-eyebrow">Direction & associés</span>
+      <h2>Ceux qui pilotent la vision KMAA</h2>
+    </div>
+
+    <div class="team-featured__grid">
+      @for (member of featuredMembers(); track member.id) {
+        <article class="team-lead-card">
+          <div class="team-lead-card__visual">
+            <img [src]="member.image" [alt]="member.imageAlt" loading="lazy" />
+            <div class="team-lead-card__overlay"></div>
+            <span class="team-lead-card__role">{{ member.role }}</span>
+          </div>
+          <div class="team-lead-card__body">
+            <h3>{{ member.name }}</h3>
+            <p>{{ member.bio }}</p>
+          </div>
+        </article>
+      }
+    </div>
+  </div>
+</section>
+
+<!-- Filtres + grille -->
+<section class="team-grid-section">
+  <div class="team-grid-section__container">
+    <div class="team-grid-section__header">
+      <span class="team-section-eyebrow">Toute l'équipe</span>
+      <h2>Des profils complémentaires, un même standard d'exigence</h2>
+    </div>
+
+    <div class="team-filters" role="tablist" aria-label="Filtrer par métier">
+      @for (f of filters; track f.id) {
+        <button
+          type="button"
+          class="team-filters__btn"
+          [class.team-filters__btn--active]="activeFilter() === f.id"
+          (click)="setFilter(f.id)"
+        >
+          {{ f.label }}
+        </button>
+      }
+    </div>
+
+    <div class="team-grid">
+      @for (member of filteredMembers(); track member.id) {
+        <article class="team-card">
+          <div class="team-card__image">
+            <img [src]="member.image" [alt]="member.imageAlt" loading="lazy" />
+            <div class="team-card__shine" aria-hidden="true"></div>
+          </div>
+          <div class="team-card__content">
+            <span class="team-card__dept">{{ member.role }}</span>
+            <h3>{{ member.name }}</h3>
+            <p>{{ member.bio }}</p>
+          </div>
+        </article>
+      }
+    </div>
+  </div>
+</section>
+
+<!-- Culture -->
+<section class="team-culture">
+  <div class="team-culture__container">
+    <div class="team-culture__text">
+      <span class="team-section-eyebrow team-section-eyebrow--light">Culture KMAA</span>
+      <h2>{{ cultureTitle() }}</h2>
+      <p>{{ cultureText() }}</p>
+    </div>
+    <div class="team-culture__values">
+      @for (value of cultureValues(); track value.title) {
+        <div class="team-culture__value">
+          <span>{{ value.number }}</span>
+          <h3>{{ value.title }}</h3>
+          <p>{{ value.text }}</p>
+        </div>
+      }
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="team-cta">
+  <div class="team-cta__card">
+    <span class="team-hero__eyebrow">
+      <span class="team-hero__dot"></span>
+      Rejoindre KMAA
+    </span>
+    <h2>{{ ctaTitle() }}</h2>
+    <p>{{ ctaText() }}</p>
+    <div class="team-cta__actions">
+      <a routerLink="/contact" class="btn btn-gold">Nous contacter</a>
+      <a routerLink="/emploi" class="btn btn-outline-light">Voir les opportunités</a>
+    </div>
+  </div>
+</section>

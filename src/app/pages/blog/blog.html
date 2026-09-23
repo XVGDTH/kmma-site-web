@@ -1,0 +1,324 @@
+<section class="blog-hero">
+  <div class="blog-hero__grid" aria-hidden="true"></div>
+  <div class="blog-hero__orb blog-hero__orb--one"></div>
+  <div class="blog-hero__orb blog-hero__orb--two"></div>
+
+  <div class="blog-hero__container">
+    <nav class="blog-breadcrumb" aria-label="Fil d'Ariane">
+      <a routerLink="/">Accueil</a><span>/</span><span>Blog & Guides</span>
+    </nav>
+
+    <div class="blog-hero__layout">
+      <div class="blog-hero__content">
+        <div class="blog-hero__eyebrow">
+          <span class="blog-live-dot"></span>
+          KMAA INSIGHTS
+          <span class="blog-hero__eyebrow-line"></span>
+          Blog · Guides · Actualités
+        </div>
+
+        <h1>
+          Comprendre les chiffres.<br />
+          <span>Agir avec confiance.</span>
+        </h1>
+
+        <p>
+          Le centre de connaissances KMAA pour mieux comprendre la finance,
+          la comptabilité, la fiscalité, l'audit et la gestion d'entreprise.
+          Des analyses expertes aux guides pratiques, tout est pensé pour passer
+          de l'information à l'action.
+        </p>
+
+        <div class="blog-hero__actions">
+          <button type="button" class="blog-btn blog-btn--gold" (click)="scrollToArticles()">
+            Explorer les contenus <span>→</span>
+          </button>
+          <button type="button" class="blog-btn blog-btn--ghost" (click)="scrollToGuides()">
+            Voir les guides
+          </button>
+        </div>
+      </div>
+
+      <aside class="hero-knowledge-card" aria-label="Accès rapide">
+        <span class="hero-knowledge-card__label">CENTRE DE CONNAISSANCES</span>
+        <h2>Que voulez-vous maîtriser aujourd'hui ?</h2>
+        <div class="hero-knowledge-card__links">
+          <button type="button" (click)="setCategory('fiscalite')"><span>01</span> Fiscalité & obligations <b>↗</b></button>
+          <button type="button" (click)="setCategory('comptabilite')"><span>02</span> Comptabilité pratique <b>↗</b></button>
+          <button type="button" (click)="setCategory('finance')"><span>03</span> Finance & trésorerie <b>↗</b></button>
+          <button type="button" (click)="setCategory('entreprise')"><span>04</span> Gestion d'entreprise <b>↗</b></button>
+        </div>
+      </aside>
+    </div>
+
+    <div class="blog-search">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+      </svg>
+      <input type="search" placeholder="Rechercher : TVA, trésorerie, bilan, audit, carrière..." [value]="searchTerm()" (input)="onSearchInput($any($event.target).value)" />
+      @if (searchTerm()) {
+        <button type="button" class="blog-search__clear" (click)="onSearchInput('')" aria-label="Effacer la recherche">×</button>
+      }
+      <span class="blog-search__hint">⌘ K</span>
+    </div>
+
+    <div class="blog-hero__stats">
+      <!-- <div><strong>{{ posts.length }}+</strong> -->
+
+        <div><strong>{{ posts().length }}+</strong><span>contenus experts</span></div>
+      <div><strong>{{ guideCount() }}</strong><span>guides pratiques</span></div>
+      <div><strong>{{ categoryCount() }}</strong><span>domaines d'expertise</span></div>
+      <div><strong>100%</strong><span>orienté pratique</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="blog-category-bar" aria-label="Catégories">
+  <div class="blog-category-bar__inner">
+    @for (category of categories; track category.id) {
+      <button type="button" class="blog-category" [class.blog-category--active]="activeCategory() === category.id" (click)="setCategory(category.id)">
+        <span class="blog-category__icon">{{ category.icon }}</span><span>{{ category.label }}</span>
+      </button>
+    }
+  </div>
+</section>
+
+<section class="blog-featured-section">
+  <div class="blog-container">
+    <div class="section-heading">
+      <div><span class="section-heading__eyebrow">À LA UNE</span><h2>L'analyse du moment</h2></div>
+      <span class="section-heading__number">01</span>
+    </div>
+
+    @if (featuredPost(); as post) {
+      <a [routerLink]="post.route" class="featured-article">
+        <div class="featured-article__image">
+          <img [src]="post.image" [alt]="post.imageAlt" />
+          <div class="featured-article__image-overlay"></div>
+          <span class="featured-article__badge">{{ kindLabel(post.kind) }} à la une</span>
+        </div>
+        <div class="featured-article__content">
+          <div class="featured-article__taxonomy">
+            <span class="article-category">{{ categoryLabel(post.category) }}</span>
+            @if (post.audience) { <span class="article-audience">{{ post.audience }}</span> }
+          </div>
+          <h2>{{ post.title }}</h2>
+          <p>{{ post.excerpt }}</p>
+          <div class="featured-article__tags">
+            @for (tag of post.tags.slice(0, 4); track tag) { <span>#{{ tag }}</span> }
+          </div>
+          <div class="article-author">
+            <img [src]="post.authorAvatar" [alt]="post.author" />
+            <div><strong>{{ post.author }}</strong><span>{{ post.authorRole }}</span></div>
+            <span class="article-author__separator">·</span><span>{{ post.date }}</span>
+            <span class="article-author__separator">·</span><span>{{ post.readTime }} de lecture</span>
+          </div>
+          <span class="featured-article__read">Lire le contenu <strong>→</strong></span>
+        </div>
+      </a>
+    }
+  </div>
+</section>
+
+<section class="blog-popular">
+  <div class="blog-container">
+    <div class="section-heading">
+      <div><span class="section-heading__eyebrow">LES PLUS LUS</span><h2>Ce que notre communauté consulte</h2></div>
+      <span class="section-heading__number">02</span>
+    </div>
+    <div class="popular-grid">
+      @for (post of popularPosts(); track post.id; let index = $index) {
+        <a [routerLink]="post.route" class="popular-card">
+          <div class="popular-card__number">0{{ index + 1 }}</div>
+          <div class="popular-card__image"><img [src]="post.image" [alt]="post.imageAlt" loading="lazy" /></div>
+          <div class="popular-card__content">
+            <div class="popular-card__labels"><span class="article-category">{{ kindLabel(post.kind) }}</span></div>
+            <h3>{{ post.title }}</h3>
+            <div class="popular-card__meta">{{ post.date }} <span>·</span> {{ post.readTime }}</div>
+          </div>
+        </a>
+      }
+    </div>
+  </div>
+</section>
+
+<section class="blog-guides" id="guides">
+  <div class="blog-container">
+    <div class="guides-header">
+      <div>
+        <span class="section-heading__eyebrow">GUIDES PRATIQUES</span>
+        <h2>Des parcours conçus pour <span>passer à l'action.</span></h2>
+      </div>
+      <p>Choisissez un domaine et accédez directement aux contenus pédagogiques les plus utiles, du niveau débutant aux sujets plus avancés.</p>
+    </div>
+
+    <div class="guide-collections">
+      @for (collection of guideCollections; track collection.id) {
+        <button type="button" class="guide-collection" (click)="selectGuideCollection(collection)">
+          <span class="guide-collection__index">{{ collection.accent }}</span>
+          <span class="guide-collection__icon">{{ collection.icon }}</span>
+          <strong>{{ collection.title }}</strong>
+          <p>{{ collection.description }}</p>
+          <span class="guide-collection__footer"><b>{{ collection.count }}</b> ressources <i>→</i></span>
+        </button>
+      }
+    </div>
+
+    <div class="guide-showcase">
+      <div class="guide-showcase__intro">
+        <span class="guide-showcase__kicker">SÉLECTION KMAA</span>
+        <h3>Commencez avec nos guides essentiels</h3>
+        <p>Une sélection de contenus structurés pour comprendre rapidement les notions clés et appliquer les bons réflexes.</p>
+        <button type="button" class="blog-btn blog-btn--navy" (click)="setKind('guide'); scrollToArticles()">Voir tous les guides →</button>
+      </div>
+      <div class="guide-showcase__list">
+        @for (post of guidePosts(); track post.id; let index = $index) {
+          <a [routerLink]="post.route" class="guide-row">
+            <span class="guide-row__number">0{{ index + 1 }}</span>
+            <div><span>{{ categoryLabel(post.category) }} · {{ post.readTime }}</span><h4>{{ post.title }}</h4></div>
+            <b>↗</b>
+          </a>
+        }
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="blog-articles" id="articles">
+  <div class="blog-container">
+    <div class="section-heading section-heading--articles">
+      <div><span class="section-heading__eyebrow">BIBLIOTHÈQUE KMAA</span><h2>Articles, guides & analyses</h2></div>
+      <div class="section-heading__result"><span>{{ filteredPosts().length }}</span> résultat(s)</div>
+    </div>
+
+    <div class="content-toolbar">
+      <div class="content-toolbar__kinds">
+        @for (kind of kinds; track kind.id) {
+          <button type="button" [class.active]="activeKind() === kind.id" (click)="setKind(kind.id)">{{ kind.label }}</button>
+        }
+      </div>
+      <div class="content-toolbar__right">
+        @if (favoriteCount()) { <span class="favorite-counter">♥ {{ favoriteCount() }}</span> }
+        <label class="sort-select">
+          <span>Trier</span>
+          <select [value]="sortMode()" (change)="setSortMode($any($event.target).value)">
+            <option value="recent">Plus récents</option>
+            <option value="popular">Plus populaires</option>
+            <option value="reading">Lecture rapide</option>
+          </select>
+        </label>
+      </div>
+    </div>
+
+    @if (searchTerm() || activeCategory() !== 'tous' || activeKind() !== 'tous') {
+      <div class="active-filter-summary">
+        <span>Filtres actifs</span>
+        @if (searchTerm()) { <button type="button" (click)="onSearchInput('')">Recherche : “{{ searchTerm() }}” ×</button> }
+        @if (activeCategory() !== 'tous') { <button type="button" (click)="setCategory('tous')">{{ categoryLabel($any(activeCategory())) }} ×</button> }
+        @if (activeKind() !== 'tous') { <button type="button" (click)="setKind('tous')">{{ kindLabel($any(activeKind())) }} ×</button> }
+        <button type="button" class="reset-link" (click)="resetFilters()">Tout effacer</button>
+      </div>
+    }
+
+    @if (filteredPosts().length) {
+      <div class="articles-grid">
+        @for (post of filteredPosts(); track post.id) {
+          <article class="article-card">
+            <a [routerLink]="post.route" class="article-card__link" aria-label="Lire : {{ post.title }}">
+              <div class="article-card__image">
+                <img [src]="post.image" [alt]="post.imageAlt" loading="lazy" />
+                <div class="article-card__badges">
+                  <span class="article-card__category">{{ categoryLabel(post.category) }}</span>
+                  <span class="article-card__kind">{{ kindLabel(post.kind) }}</span>
+                </div>
+                <button type="button" class="favorite-button" [class.active]="isFavorite(post.id)" (click)="toggleFavorite(post.id, $event)" [attr.aria-label]="isFavorite(post.id) ? 'Retirer des favoris' : 'Ajouter aux favoris'">
+                  {{ isFavorite(post.id) ? '♥' : '♡' }}
+                </button>
+              </div>
+              <div class="article-card__body">
+                <div class="article-card__meta-top"><span>{{ post.date }}</span><span>{{ post.readTime }}</span></div>
+                <h3>{{ post.title }}</h3>
+                <p>{{ post.excerpt }}</p>
+                <div class="article-card__chips">
+                  @if (post.level) { <span>{{ post.level }}</span> }
+                  @if (post.audience) { <span>{{ post.audience }}</span> }
+                </div>
+                <div class="article-card__footer">
+                  <div class="article-card__author">
+                    <img [src]="post.authorAvatar" [alt]="post.author" />
+                    <div><strong>{{ post.author }}</strong><span>{{ post.authorRole }}</span></div>
+                  </div>
+                  <span class="article-card__arrow">→</span>
+                </div>
+              </div>
+            </a>
+          </article>
+        }
+      </div>
+    } @else {
+      <div class="blog-empty">
+        <div class="blog-empty__icon">◌</div><h3>Aucun contenu trouvé</h3>
+        <p>Essayez un autre mot-clé ou réinitialisez les filtres.</p>
+        <button type="button" (click)="resetFilters()">Réinitialiser la recherche</button>
+      </div>
+    }
+  </div>
+</section>
+
+<section class="blog-tools">
+  <div class="blog-container">
+    <div class="tools-header">
+      <div><span class="section-heading__eyebrow">ÉCOSYSTÈME KMAA</span><h2>Plus qu'un blog.<br /><span>Un centre de travail.</span></h2></div>
+      <p>Du contenu à l'action : retrouvez les outils qui complètent naturellement vos lectures et vous aident à appliquer ce que vous apprenez.</p>
+    </div>
+    <div class="tools-grid">
+      @for (tool of tools; track tool.title) {
+        <a [routerLink]="tool.route" class="tool-card">
+          <div class="tool-card__icon">{{ tool.icon }}</div>
+          <div><h3>{{ tool.title }}</h3><p>{{ tool.description }}</p><span>{{ tool.label }} →</span></div>
+        </a>
+      }
+    </div>
+  </div>
+</section>
+
+<section class="blog-newsletter">
+  <div class="blog-newsletter__glow"></div>
+  <div class="blog-container">
+    <div class="newsletter-card">
+      <div class="newsletter-card__content">
+        <span class="section-heading__eyebrow">KMAA BRIEF</span>
+        <h2>Les idées importantes.<br /><span>Directement dans votre boîte mail.</span></h2>
+        <p>Une sélection périodique des meilleurs articles, guides et ressources KMAA sur la finance, la comptabilité, la fiscalité et la gestion.</p>
+        <div class="newsletter-benefits"><span>✓ Sélection éditoriale</span><span>✓ Guides utiles</span><span>✓ Aucun spam</span></div>
+      </div>
+      
+            <div class="newsletter-card__form">
+        @if (!newsletterSubmitted()) {
+          <form (submit)="$event.preventDefault(); subscribeNewsletter()">
+            <label for="blog-newsletter-email">Votre adresse e-mail</label>
+            <div class="newsletter-input-row">
+              <input id="blog-newsletter-email" type="email" placeholder="nom@entreprise.com" required [value]="newsletterEmail()" (input)="onNewsletterInput($any($event.target).value)" />
+              <button type="submit">S'abonner <span>→</span></button>
+            </div>
+
+            @if (newsletterError(); as err) { <p class="nl-error">⚠️ {{ err }}</p> }
+
+            <small>Vous pourrez vous désabonner à tout moment.</small>
+          </form>
+        } @else {
+          <div class="newsletter-success"><span>✓</span><div><strong>Inscription enregistrée !</strong><p>Merci. Vous recevrez les prochaines sélections KMAA.</p></div></div>
+        }
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="blog-final-cta">
+  <div class="blog-container">
+    <div class="final-cta">
+      <div><span>KMAA ACADEMY</span><h2>Ne vous contentez pas de lire.<br /><strong>Transformez vos connaissances en compétences.</strong></h2></div>
+      <a routerLink="/formations" class="blog-btn blog-btn--gold">Explorer les formations →</a>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,1469 @@
+<div class="fiscal-page">
+
+  <!-- =====================================================
+       BACKGROUND FX
+  ====================================================== -->
+
+  <div class="background-grid"></div>
+  <div class="orb orb-one"></div>
+  <div class="orb orb-two"></div>
+
+
+  <!-- =====================================================
+       HERO
+  ====================================================== -->
+
+  <section class="fiscal-hero">
+
+    <div class="fiscal-container">
+
+      <div class="hero-topbar">
+
+        <div class="breadcrumb">
+          <span>KMAA</span>
+          <span class="breadcrumb-separator">/</span>
+          <span>Fiscal Intelligence</span>
+        </div>
+
+        <div class="live-indicator">
+          <span class="live-dot"></span>
+          Système actif
+        </div>
+
+      </div>
+
+
+      <div class="hero-grid">
+
+        <!-- LEFT -->
+
+        <div class="hero-content">
+
+          <div class="eyebrow">
+            <span class="eyebrow-dot"></span>
+            KMAA · FISCAL INTELLIGENCE
+          </div>
+
+          <h1>
+            Ne subissez plus
+            <span>vos échéances.</span>
+            Anticipez-les.
+          </h1>
+
+          <p class="hero-description">
+            Un centre de suivie fiscal intelligent pour comprendre,
+            suivre et piloter vos obligations tout au long
+            de l'année.
+          </p>
+
+
+          <div class="hero-features">
+
+            <div class="hero-feature">
+              <strong>ANTICIPER</strong>
+              <span>Vos prochaines échéances</span>
+            </div>
+
+            <div class="hero-feature">
+              <strong>COMPRENDRE</strong>
+              <span>Chaque obligation expliquée</span>
+            </div>
+
+            <div class="hero-feature">
+              <strong>PILOTER</strong>
+              <span>Votre suivi fiscal centralisé</span>
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <!-- NEXT DEADLINE -->
+
+        <div class="next-deadline-card">
+
+          <div class="next-header">
+
+            <div>
+              <span class="mini-label">
+                PROCHAINE ÉCHÉANCE
+              </span>
+
+              <h2>Fiscal Radar</h2>
+            </div>
+
+            <div class="radar-status">
+              <span></span>
+              Radar actif
+            </div>
+
+          </div>
+
+
+          @if (nextDeadline(); as deadline) {
+
+            <div class="deadline-countdown">
+
+              <div class="countdown-item">
+                <strong>{{ countdown().days }}</strong>
+                <span>jours</span>
+              </div>
+
+              <div class="countdown-divider"></div>
+
+              <div class="countdown-item">
+                <strong>{{ countdown().hours }}</strong>
+                <span>heures</span>
+              </div>
+
+              <div class="countdown-divider"></div>
+
+              <div class="countdown-item">
+                <strong>{{ countdown().minutes }}</strong>
+                <span>min</span>
+              </div>
+
+            </div>
+
+
+            <div class="next-deadline-content">
+
+              <div class="deadline-tags">
+
+                <span
+                  class="category-badge"
+                  [attr.data-category]="deadline.category"
+                >
+                  {{ categoryLabel(deadline.category) }}
+                </span>
+
+                <span
+                  class="priority-badge"
+                  [attr.data-priority]="deadline.priority"
+                >
+                  {{ priorityLabel(deadline.priority) }}
+                </span>
+
+              </div>
+
+
+              <h3>
+                {{ deadline.title }}
+              </h3>
+
+              <p>
+                {{ deadline.description }}
+              </p>
+
+
+              <div class="deadline-date-row">
+
+                <div>
+                  <small>Échéance</small>
+
+                  <strong>
+                    {{ formatDate(deadline.date) }}
+                  </strong>
+                </div>
+
+                <div class="urgency-pill">
+                  {{ urgencyText(deadline) }}
+                </div>
+
+              </div>
+
+
+              <div class="next-actions">
+
+                <button
+                  type="button"
+                  class="primary-button"
+                  (click)="toggleCompleted(deadline)"
+                >
+                  @if (isCompleted(deadline.id)) {
+                    ✓ Traitée
+                  } @else {
+                    Préparer maintenant
+                  }
+                </button>
+
+                <button
+                  type="button"
+                  class="secondary-button"
+                  (click)="exportDeadlineIcs(deadline)"
+                >
+                  + Calendrier
+                </button>
+
+              </div>
+
+            </div>
+
+          } @else {
+
+            <div class="empty-next">
+
+              <div class="empty-icon">
+                ✓
+              </div>
+
+              <h3>Aucune échéance immédiate</h3>
+
+              <p>
+                Votre radar fiscal ne détecte
+                aucune obligation future.
+              </p>
+
+            </div>
+
+          }
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- =====================================================
+       COMMAND CENTER
+  ====================================================== -->
+
+  <main class="fiscal-main">
+
+    <div class="fiscal-container">
+
+      <!-- PROFILE -->
+
+      <section class="profile-command">
+
+        <div class="profile-heading">
+
+          <div>
+
+            <span class="section-kicker">
+              MON ENVIRONNEMENT
+            </span>
+
+            <h2>
+              Profil fiscal
+            </h2>
+
+          </div>
+
+          <p>
+            Fiscal Radar adapte automatiquement
+            les informations affichées à votre profil.
+          </p>
+
+        </div>
+
+
+        <div class="profile-controls">
+
+          <label class="smart-select">
+
+            <span>Profil</span>
+
+            <select
+              [value]="selectedProfile()"
+              (change)="setProfile($any($event.target).value)"
+            >
+
+              @for (
+                profile of profiles;
+                track profile.id
+              ) {
+
+                <option [value]="profile.id">
+                  {{ profile.label }}
+                </option>
+
+              }
+
+            </select>
+
+          </label>
+
+
+          <label class="smart-select">
+
+            <span>Régime fiscal</span>
+
+            <select
+              [value]="selectedRegime()"
+              (change)="setRegime($any($event.target).value)"
+            >
+
+              @for (
+                regime of regimes;
+                track regime.id
+              ) {
+
+                <option [value]="regime.id">
+                  {{ regime.label }}
+                </option>
+
+              }
+
+            </select>
+
+          </label>
+
+
+          <label class="smart-select">
+
+            <span>Exercice</span>
+
+            <select
+              [value]="selectedYear()"
+              (change)="setYear($any($event.target).value)"
+            >
+
+              @for (
+                year of years;
+                track year
+              ) {
+
+                <option [value]="year">
+                  {{ year }}
+                </option>
+
+              }
+
+            </select>
+
+          </label>
+
+        </div>
+
+      </section>
+
+
+      <!-- =================================================
+           KPI
+      ================================================== -->
+
+      <section class="command-center">
+
+        <div class="kpi-card">
+
+          <div class="kpi-icon">
+            01
+          </div>
+
+          <div class="kpi-data">
+
+            <span>
+              Obligations
+            </span>
+
+            <strong>
+              {{ totalObligations() }}
+            </strong>
+
+            <small>
+              Selon votre profil
+            </small>
+
+          </div>
+
+        </div>
+
+
+        <div class="kpi-card">
+
+          <div class="kpi-icon">
+            02
+          </div>
+
+          <div class="kpi-data">
+
+            <span>
+              À venir
+            </span>
+
+            <strong>
+              {{ upcomingCount() }}
+            </strong>
+
+            <small>
+              Échéances détectées
+            </small>
+
+          </div>
+
+        </div>
+
+
+        <div class="kpi-card">
+
+          <div class="kpi-icon">
+            03
+          </div>
+
+          <div class="kpi-data">
+
+            <span>
+              Terminées
+            </span>
+
+            <strong>
+              {{ completedCount() }}
+            </strong>
+
+            <small>
+              Obligations traitées
+            </small>
+
+          </div>
+
+        </div>
+
+
+        <div class="kpi-card alert-kpi">
+
+          <div class="kpi-icon">
+            !
+          </div>
+
+          <div class="kpi-data">
+
+            <span>
+              Prioritaires
+            </span>
+
+            <strong>
+              {{ urgentCount() }}
+            </strong>
+
+            <small>
+              Attention requise
+            </small>
+
+          </div>
+
+        </div>
+
+
+        <!-- SCORE -->
+
+        <div class="score-card">
+
+          <div
+            class="score-ring"
+            [style.--score]="complianceScore() + '%'"
+          >
+
+            <div class="score-inner">
+
+              <strong>
+                {{ complianceScore() }}
+              </strong>
+
+              <span>%</span>
+
+            </div>
+
+          </div>
+
+
+          <div class="score-content">
+
+            <span>
+              SCORE DE SUIVI
+            </span>
+
+            <h3>
+              {{ scoreLabel() }}
+            </h3>
+
+            <p>
+              Indicateur KMAA basé sur
+              votre suivi des obligations.
+            </p>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- =================================================
+           FILTERS
+      ================================================== -->
+
+      <section class="fiscal-toolbar">
+
+        <div class="toolbar-top">
+
+          <div>
+
+            <span class="section-kicker">
+              FISCAL RADAR
+            </span>
+
+            <h2>
+              Mon calendrier fiscal
+            </h2>
+
+          </div>
+
+
+          <div class="view-switch">
+
+            <button
+              type="button"
+              [class.active]="currentView() === 'calendar'"
+              (click)="setView('calendar')"
+              title="Vue calendrier"
+            >
+              Calendrier
+            </button>
+
+            <button
+              type="button"
+              [class.active]="currentView() === 'list'"
+              (click)="setView('list')"
+              title="Vue liste"
+            >
+              Liste
+            </button>
+
+            <button
+              type="button"
+              [class.active]="currentView() === 'timeline'"
+              (click)="setView('timeline')"
+              title="Vue chronologique"
+            >
+              Timeline
+            </button>
+
+          </div>
+
+        </div>
+
+
+        <div class="search-filter-row">
+
+          <label class="search-box">
+
+            <span class="search-icon">
+              ⌕
+            </span>
+
+            <input
+              type="search"
+              placeholder="Rechercher une échéance..."
+              [value]="searchTerm()"
+              (input)="setSearch($any($event.target).value)"
+            />
+
+          </label>
+
+
+          <select
+            class="filter-select"
+            [value]="selectedStatus()"
+            (change)="setStatus($any($event.target).value)"
+          >
+
+            <option value="all">
+              Tous les statuts
+            </option>
+
+            <option value="upcoming">
+              À venir
+            </option>
+
+            <option value="completed">
+              Terminées
+            </option>
+
+            <option value="overdue">
+              En retard
+            </option>
+
+          </select>
+
+
+          <button
+            type="button"
+            class="reset-button"
+            (click)="resetFilters()"
+          >
+            Réinitialiser
+          </button>
+
+        </div>
+
+
+        <div class="category-filter">
+
+          @for (
+            category of categories;
+            track category.id
+          ) {
+
+            <button
+              type="button"
+              [class.active]="selectedCategory() === category.id"
+              (click)="setCategory(category.id)"
+            >
+              {{ category.label }}
+            </button>
+
+          }
+
+        </div>
+
+      </section>
+
+
+      <!-- =================================================
+           CALENDAR VIEW
+      ================================================== -->
+
+      @if (currentView() === 'calendar') {
+
+        <section class="calendar-layout">
+
+          <div class="calendar-card">
+
+            <header class="calendar-header">
+
+              <div class="calendar-navigation">
+
+                <button
+                  type="button"
+                  class="icon-button"
+                  (click)="previousMonth()"
+                  aria-label="Mois précédent"
+                >
+                  ←
+                </button>
+
+                <div>
+
+                  <span class="calendar-caption">
+                    EXERCICE {{ selectedYear() }}
+                  </span>
+
+                  <h3>
+                    {{ monthLabel() }}
+                  </h3>
+
+                </div>
+
+                <button
+                  type="button"
+                  class="icon-button"
+                  (click)="nextMonth()"
+                  aria-label="Mois suivant"
+                >
+                  →
+                </button>
+
+              </div>
+
+
+              <button
+                type="button"
+                class="today-button"
+                (click)="goToToday()"
+              >
+                Aujourd'hui
+              </button>
+
+            </header>
+
+
+            <div class="weekday-row">
+
+              @for (
+                dayName of weekDays;
+                track dayName
+              ) {
+
+                <div>
+                  {{ dayName }}
+                </div>
+
+              }
+
+            </div>
+
+
+            <div class="calendar-grid">
+
+              @for (
+                day of calendarDays();
+                track day.key
+              ) {
+
+                <button
+                  type="button"
+                  class="calendar-day"
+                  [class.outside]="!day.inCurrentMonth"
+                  [class.today]="day.isToday"
+                  [class.selected]="selectedDate() === day.key"
+                  [class.has-event]="hasEvents(day.key)"
+                  (click)="selectDate(day)"
+                  [attr.aria-label]="'Sélectionner le ' + day.key"
+                >
+
+                  <div class="day-number-row">
+
+                    <span class="day-number">
+                      {{ day.day }}
+                    </span>
+
+                    @if (
+                      eventsForDate(day.key).length
+                    ) {
+
+                      <span class="event-counter">
+                        {{ eventsForDate(day.key).length }}
+                      </span>
+
+                    }
+
+                  </div>
+
+
+                  <div class="day-events">
+
+                    @for (
+                      event of eventsForDate(day.key).slice(0, 2);
+                      track event.id
+                    ) {
+
+                      <span
+                        class="calendar-event"
+                        [attr.data-category]="event.category"
+                      >
+                        {{ event.shortTitle }}
+                      </span>
+
+                    }
+
+                    @if (
+                      eventsForDate(day.key).length > 2
+                    ) {
+
+                      <span class="more-events">
+                        +{{ eventsForDate(day.key).length - 2 }}
+                      </span>
+
+                    }
+
+                  </div>
+
+                </button>
+
+              }
+
+            </div>
+
+          </div>
+
+
+          <!-- SELECTED DAY -->
+
+          <aside class="day-panel">
+
+            <div class="day-panel-header">
+
+              <span class="section-kicker">
+                JOUR SÉLECTIONNÉ
+              </span>
+
+              <h3>
+                {{ formatDate(selectedDate()) }}
+              </h3>
+
+              <p>
+                {{
+                  selectedDayDeadlines().length
+                }}
+                obligation(s)
+              </p>
+
+            </div>
+
+
+            <div class="day-panel-content">
+
+              @if (
+                selectedDayDeadlines().length
+              ) {
+
+                @for (
+                  deadline of selectedDayDeadlines();
+                  track deadline.id
+                ) {
+
+                  <article class="mini-deadline">
+
+                    <div class="mini-top">
+
+                      <span
+                        class="category-dot"
+                        [attr.data-category]="deadline.category"
+                      ></span>
+
+                      <span>
+                        {{ categoryLabel(deadline.category) }}
+                      </span>
+
+                      <button
+                        type="button"
+                        class="star-button"
+                        [class.active]="isFavorite(deadline.id)"
+                        (click)="toggleFavorite(deadline)"
+                        aria-label="Ajouter aux favoris"
+                      >
+                        ★
+                      </button>
+
+                    </div>
+
+
+                    <h4>
+                      {{ deadline.title }}
+                    </h4>
+
+                    <p>
+                      {{ deadline.description }}
+                    </p>
+
+
+                    <div class="mini-actions">
+
+                      <button
+                        type="button"
+                        (click)="toggleCompleted(deadline)"
+                        [class.done]="isCompleted(deadline.id)"
+                      >
+                        @if (
+                          isCompleted(deadline.id)
+                        ) {
+                          ✓ Terminée
+                        } @else {
+                          Marquer terminée
+                        }
+                      </button>
+
+                      <button
+                        type="button"
+                        (click)="toggleReminder(deadline)"
+                        [class.active]="hasReminder(deadline.id)"
+                      >
+                        @if (
+                          hasReminder(deadline.id)
+                        ) {
+                          🔔 Rappel actif
+                        } @else {
+                          ♢ Rappel
+                        }
+                      </button>
+
+                    </div>
+
+                  </article>
+
+                }
+
+              } @else {
+
+                <div class="empty-day">
+
+                  <div class="empty-day-symbol">
+                    ◌
+                  </div>
+
+                  <h4>
+                    Aucun signal fiscal
+                  </h4>
+
+                  <p>
+                    Aucune obligation ne correspond
+                    à cette date et à vos filtres.
+                  </p>
+
+                </div>
+
+              }
+
+            </div>
+
+          </aside>
+
+        </section>
+
+      }
+
+
+      <!-- =================================================
+           LIST VIEW
+      ================================================== -->
+
+      @if (currentView() === 'list') {
+
+        <section class="list-view">
+
+          @for (
+            deadline of sortedFilteredDeadlines();
+            track deadline.id
+          ) {
+
+            <article
+              class="deadline-list-card"
+              [class.completed]="isCompleted(deadline.id)"
+            >
+
+              <div
+                class="deadline-date-box"
+                [attr.data-category]="deadline.category"
+              >
+
+                <strong>
+                  {{
+                    formatShortDate(deadline.date)
+                  }}
+                </strong>
+
+                <span>
+                  {{ urgencyText(deadline) }}
+                </span>
+
+              </div>
+
+
+              <div class="deadline-main">
+
+                <div class="deadline-meta">
+
+                  <span>
+                    {{ categoryLabel(deadline.category) }}
+                  </span>
+
+                  <span>
+                    {{ priorityLabel(deadline.priority) }}
+                  </span>
+
+                  <span
+                    [class.status-overdue]="deadlineStatus(deadline) === 'overdue'"
+                    [class.status-complete]="deadlineStatus(deadline) === 'completed'"
+                  >
+                    {{ statusLabel(deadline) }}
+                  </span>
+
+                </div>
+
+
+                <h3>
+                  {{ deadline.title }}
+                </h3>
+
+                <p>
+                  {{ deadline.description }}
+                </p>
+
+              </div>
+
+
+              <div class="deadline-list-actions">
+
+                <button
+                  type="button"
+                  class="square-action"
+                  [class.active]="isFavorite(deadline.id)"
+                  (click)="toggleFavorite(deadline)"
+                  title="Favori"
+                >
+                  ★
+                </button>
+
+                <button
+                  type="button"
+                  class="square-action"
+                  [class.active]="hasReminder(deadline.id)"
+                  (click)="toggleReminder(deadline)"
+                  title="Rappel local"
+                >
+                  🔔
+                </button>
+
+                <button
+                  type="button"
+                  class="square-action"
+                  (click)="exportDeadlineIcs(deadline)"
+                  title="Ajouter au calendrier"
+                >
+                  +
+                </button>
+
+                <button
+                  type="button"
+                  class="complete-action"
+                  [class.completed]="isCompleted(deadline.id)"
+                  (click)="toggleCompleted(deadline)"
+                >
+                  @if (
+                    isCompleted(deadline.id)
+                  ) {
+                    ✓ Traitée
+                  } @else {
+                    Terminer
+                  }
+                </button>
+
+              </div>
+
+            </article>
+
+          }
+
+
+          @if (
+            sortedFilteredDeadlines().length === 0
+          ) {
+
+            <div class="global-empty">
+
+              <span>◌</span>
+
+              <h3>
+                Aucun résultat
+              </h3>
+
+              <p>
+                Modifiez vos critères
+                de recherche ou vos filtres.
+              </p>
+
+            </div>
+
+          }
+
+        </section>
+
+      }
+
+
+      <!-- =================================================
+           TIMELINE VIEW
+      ================================================== -->
+
+      @if (currentView() === 'timeline') {
+
+        <section class="timeline-view">
+
+          @for (
+            deadline of sortedFilteredDeadlines();
+            track deadline.id
+          ) {
+
+            <article class="timeline-item">
+
+              <div
+                class="timeline-marker"
+                [attr.data-category]="deadline.category"
+              >
+                <span></span>
+              </div>
+
+
+              <div class="timeline-date">
+
+                <strong>
+                  {{ formatShortDate(deadline.date) }}
+                </strong>
+
+                <span>
+                  {{ urgencyText(deadline) }}
+                </span>
+
+              </div>
+
+
+              <div class="timeline-card">
+
+                <div class="timeline-meta">
+
+                  <span
+                    class="category-badge"
+                    [attr.data-category]="deadline.category"
+                  >
+                    {{ categoryLabel(deadline.category) }}
+                  </span>
+
+                  <span>
+                    {{ statusLabel(deadline) }}
+                  </span>
+
+                </div>
+
+
+                <h3>
+                  {{ deadline.title }}
+                </h3>
+
+                <p>
+                  {{ deadline.description }}
+                </p>
+
+
+                <div class="timeline-actions">
+
+                  <button
+                    type="button"
+                    (click)="toggleCompleted(deadline)"
+                  >
+                    @if (
+                      isCompleted(deadline.id)
+                    ) {
+                      ✓ Terminée
+                    } @else {
+                      Marquer comme terminée
+                    }
+                  </button>
+
+                  <button
+                    type="button"
+                    (click)="exportDeadlineIcs(deadline)"
+                  >
+                    Ajouter au calendrier
+                  </button>
+
+                </div>
+
+              </div>
+
+            </article>
+
+          }
+
+        </section>
+
+      }
+
+
+      <!-- =================================================
+           SMART AREA
+      ================================================== -->
+
+      <section class="smart-grid">
+
+        <!-- UPCOMING -->
+
+        <div class="smart-card upcoming-card">
+
+          <div class="smart-card-header">
+
+            <div>
+
+              <span class="section-kicker">
+                VUE INTELLIGENTE
+              </span>
+
+              <h2>
+                Les 30 prochains jours
+              </h2>
+
+            </div>
+
+            <span class="smart-count">
+              {{ upcoming30Days().length }}
+            </span>
+
+          </div>
+
+
+          <div class="upcoming-list">
+
+            @for (
+              deadline of upcoming30Days().slice(0, 5);
+              track deadline.id
+            ) {
+
+              <article class="upcoming-item">
+
+                <div
+                  class="upcoming-date"
+                  [attr.data-priority]="deadline.priority"
+                >
+                  <strong>
+                    {{ urgencyText(deadline) }}
+                  </strong>
+
+                  <span>
+                    {{ formatShortDate(deadline.date) }}
+                  </span>
+                </div>
+
+
+                <div class="upcoming-content">
+
+                  <span>
+                    {{ categoryLabel(deadline.category) }}
+                  </span>
+
+                  <h3>
+                    {{ deadline.shortTitle }}
+                  </h3>
+
+                </div>
+
+
+                <button
+                  type="button"
+                  class="small-check"
+                  [class.done]="isCompleted(deadline.id)"
+                  (click)="toggleCompleted(deadline)"
+                  aria-label="Marquer comme terminée"
+                >
+                  ✓
+                </button>
+
+              </article>
+
+            }
+
+          </div>
+
+        </div>
+
+
+        <!-- OBLIGATIONS -->
+
+        <div class="smart-card obligation-card">
+
+          <div class="smart-card-header">
+
+            <div>
+
+              <span class="section-kicker">
+                MES OBLIGATIONS
+              </span>
+
+              <h2>
+                Checklist fiscale
+              </h2>
+
+            </div>
+
+            <span class="smart-count">
+              {{ completedCount() }}/{{ totalObligations() }}
+            </span>
+
+          </div>
+
+
+          <div class="progress-track">
+
+            <div
+              class="progress-value"
+              [style.width.%]="
+                totalObligations()
+                  ? (completedCount() / totalObligations()) * 100
+                  : 0
+              "
+            ></div>
+
+          </div>
+
+
+          <div class="obligation-list">
+
+            @for (
+              deadline of profileDeadlines().slice(0, 6);
+              track deadline.id
+            ) {
+
+              <button
+                type="button"
+                class="obligation-row"
+                [class.done]="isCompleted(deadline.id)"
+                (click)="toggleCompleted(deadline)"
+              >
+
+                <span class="check-circle">
+                  @if (
+                    isCompleted(deadline.id)
+                  ) {
+                    ✓
+                  }
+                </span>
+
+                <span class="obligation-copy">
+
+                  <strong>
+                    {{ deadline.shortTitle }}
+                  </strong>
+
+                  <small>
+                    {{ formatShortDate(deadline.date) }}
+                  </small>
+
+                </span>
+
+              </button>
+
+            }
+
+          </div>
+
+        </div>
+
+
+        <!-- EDUCATION -->
+
+        <div class="smart-card knowledge-card">
+
+          <div class="knowledge-icon">
+            i
+          </div>
+
+          <span class="section-kicker">
+            À RETENIR
+          </span>
+
+          <h2>
+            La fiscalité ne se limite
+            pas au paiement de l'impôt.
+          </h2>
+
+          <p>
+            Le pilotage fiscal comprend également
+            les déclarations, justificatifs,
+            documents, retenues, échéances
+            et procédures administratives.
+          </p>
+
+
+          <div class="knowledge-points">
+
+            <span>
+              Déclarations
+            </span>
+
+            <span>
+              Paiements
+            </span>
+
+            <span>
+              Retenues
+            </span>
+
+            <span>
+              Justificatifs
+            </span>
+
+            <span>
+              Archivage
+            </span>
+
+            <span>
+              Contrôle
+            </span>
+
+          </div>
+
+
+          <a
+            class="knowledge-link"
+            href="https://www.impots.gov.bf/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Consulter la source fiscale officielle
+            <span>↗</span>
+          </a>
+
+        </div>
+
+      </section>
+
+
+      <!-- =================================================
+           EXPORT CENTER
+      ================================================== -->
+
+      <section class="export-center">
+
+        <div class="export-content">
+
+          <span class="section-kicker">
+            SYNCHRONISATION
+          </span>
+
+          <h2>
+            Emportez votre radar fiscal
+            partout avec vous.
+          </h2>
+
+          <p>
+            Exportez les échéances actuellement
+            affichées vers votre calendrier ou
+            vers un fichier exploitable.
+          </p>
+
+        </div>
+
+
+        <div class="export-actions">
+
+          <button
+            type="button"
+            class="primary-button"
+            (click)="exportFilteredIcs()"
+          >
+            Exporter vers calendrier
+          </button>
+
+          <button
+            type="button"
+            class="secondary-button dark"
+            (click)="exportCsv()"
+          >
+            Exporter en CSV
+          </button>
+
+        </div>
+
+      </section>
+
+
+      <!-- =================================================
+           DISCLAIMER
+      ================================================== -->
+
+      <div class="fiscal-disclaimer">
+
+        <span class="disclaimer-icon">
+          !
+        </span>
+
+        <p>
+          <strong>
+            KMAA Fiscal Intelligence.
+          </strong>
+
+          Les échéances présentées sont recueillies à partir des informations disponibles 
+          sur les canaux officiels de la DGI Burkina Faso. Malgré nos mises à jour, 
+          nous vous recommandons de vérifier chaque date auprès de la source administrative officielle.
+        </p>
+
+      </div>
+
+    </div>
+
+  </main>
+
+</div>

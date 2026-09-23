@@ -1,0 +1,230 @@
+<section class="learn">
+
+  @if (loading()) {
+    <div class="learn__loading">⏳ Chargement du cours…</div>
+  } @else if (error(); as err) {
+    <div class="learn__error">⚠️ {{ err }}</div>
+  } @else if (!course()) {
+    <div class="learn__empty">Cours introuvable.</div>
+  } @else {
+
+    <header class="learn__topbar">
+      <a routerLink="/apprendre" class="learn__back">← Mon espace</a>
+      <h1>{{ course()!.title }}</h1>
+    </header>
+
+    <div class="learn__body">
+
+      <!-- ============ SIDEBAR ============ -->
+      <aside class="learn__sidebar">
+
+        @for (module of modules(); track module.id) {
+          <div class="module-block">
+
+            <div class="module-block__head">
+              <span class="module-block__badge">M{{ module.position + 1 }}</span>
+              <h2>{{ module.title }}</h2>
+              <span class="module-block__count">
+                {{ moduleSequenceCount(module) }} séquence(s)
+              </span>
+            </div>
+
+            @if (module.description) {
+              <p class="module-block__desc">{{ module.description }}</p>
+            }
+
+            @for (chapter of module.chapters; track chapter.id) {
+              <div class="chapter-block">
+                <div class="chapter-block__head">
+                  @if (chapter.weekNumber) {
+                    <span class="chapter-block__week">
+                      Semaine {{ chapter.weekNumber }}
+                    </span>
+                  }
+                  <h3>{{ chapter.title }}</h3>
+                </div>
+
+                @for (seq of chapter.sequences; track seq.id) {
+                  <button type="button" class="seq-item"
+                    [class.seq-item--active]="selectedItem()?.sequence?.id === seq.id"
+                    (click)="selectSequence(seq)">
+                    <span class="seq-item__icon">{{ typeIcon(seq.type) }}</span>
+                    <span class="seq-item__label">{{ seq.title }}</span>
+                    @if (seq.duration) {
+                      <span class="seq-item__meta">{{ seq.duration }}</span>
+                    }
+                    @if (seq.isBlocking && seq.passingScore) {
+                      <span class="seq-item__meta seq-item__meta--lock">🔒 {{ seq.passingScore }}%</span>
+                    }
+                  </button>
+                }
+              </div>
+            }
+
+            @if (module.moduleQuiz; as mq) {
+              <button type="button" class="seq-item seq-item--module-quiz"
+                [class.seq-item--active]="selectedItem()?.sequence?.id === mq.id"
+                (click)="selectSequence(mq)">
+                <span class="seq-item__icon">🎓</span>
+                <span class="seq-item__label">{{ mq.title }}</span>
+                <span class="seq-item__meta">🔒 {{ mq.passingScore ?? 85 }}%</span>
+              </button>
+            }
+          </div>
+        }
+
+        @if (orphans().length > 0) {
+          <div class="module-block module-block--orphan">
+            <div class="module-block__head">
+              <span class="module-block__badge">—</span>
+              <h2>Autres chapitres</h2>
+            </div>
+            @for (chapter of orphans(); track chapter.id) {
+              <div class="chapter-block">
+                <div class="chapter-block__head">
+                  <h3>{{ chapter.title }}</h3>
+                </div>
+                @for (seq of chapter.sequences; track seq.id) {
+                  <button type="button" class="seq-item"
+                    [class.seq-item--active]="selectedItem()?.sequence?.id === seq.id"
+                    (click)="selectSequence(seq)">
+                    <span class="seq-item__icon">{{ typeIcon(seq.type) }}</span>
+                    <span class="seq-item__label">{{ seq.title }}</span>
+                  </button>
+                }
+              </div>
+            }
+          </div>
+        }
+
+        @if (finalExam(); as exam) {
+          <div class="module-block module-block--final">
+            <div class="module-block__head">
+              <span class="module-block__badge">🏆</span>
+              <h2>Examen final</h2>
+            </div>
+            <button type="button" class="seq-item seq-item--final"
+              [class.seq-item--active]="selectedItem()?.sequence?.id === exam.id"
+              (click)="selectSequence(exam)">
+              <span class="seq-item__icon">🏆</span>
+              <span class="seq-item__label">{{ exam.title }}</span>
+              <span class="seq-item__meta">Score requis : {{ exam.passingScore ?? 70 }}%</span>
+            </button>
+          </div>
+        }
+      </aside>
+
+      <!-- ============ MAIN ============ -->
+      <main class="learn__main">
+
+        @if (!selectedItem()) {
+          <div class="learn__placeholder">
+            <h2>{{ course()!.title }}</h2>
+            <p>{{ course()!.description ?? 'Sélectionne un élément dans le programme à gauche.' }}</p>
+            <p class="learn__placeholder-meta">
+              👨‍🏫 {{ course()!.instructor }} — {{ course()!.instructorRole }}
+            </p>
+          </div>
+        }
+
+        @if (selectedItem(); as sel) {
+
+          <!-- VIDÉO -->
+          @if (sel.sequence.type === 'video') {
+            @if (assetUrl(sel.sequence.videoUrl); as src) {
+              <div class="video-player">
+                <video [src]="src" controls></video>
+                <h2>{{ sel.sequence.title }}</h2>
+                @if (sel.sequence.instructions) { <p>{{ sel.sequence.instructions }}</p> }
+              </div>
+            } @else {
+              <div class="learn__placeholder">
+                <p>Aucune URL vidéo renseignée pour cette séquence.</p>
+              </div>
+            }
+          }
+
+          <!-- DOCUMENT / TD / TP / CAS PRATIQUE -->
+          @if (['document','td','tp','cas_pratique'].includes(sel.sequence.type)) {
+            <div class="doc-view">
+              <span class="doc-view__kind">{{ typeLabel(sel.sequence.type) }}</span>
+              <h2>{{ sel.sequence.title }}</h2>
+              @if (sel.sequence.instructions) { <p>{{ sel.sequence.instructions }}</p> }
+
+              @if (assetUrl(sel.sequence.documentUrl); as durl) {
+                <a [href]="durl" target="_blank" class="doc-view__link">📎 Télécharger le support</a>
+              }
+
+              @if (sel.sequence.deadline) {
+                <p class="doc-view__deadline">
+                  ⏰ À rendre avant le {{ sel.sequence.deadline | slice:0:10 }}
+                </p>
+              }
+
+              @if (sel.sequence.allowFileUpload) {
+                <label class="doc-view__file">
+                  <input type="file" hidden />
+                  📤 Téléverser mon travail
+                </label>
+              }
+            </div>
+          }
+
+          <!-- QUIZ -->
+          @if (sel.sequence.type === 'quiz') {
+            <div class="quiz-view">
+              <h2>{{ sel.sequence.title }}</h2>
+              <p class="quiz-view__hint">
+                {{ sel.sequence.quizQuestions?.length ?? 0 }} question(s)
+                — Score minimum : {{ sel.sequence.passingScore ?? 0 }}%
+              </p>
+
+              @if (!sel.sequence.quizQuestions?.length) {
+                <p>Aucune question dans ce quiz.</p>
+              } @else if (!quizResult()) {
+                <ol class="quiz-view__list">
+                  @for (q of sel.sequence.quizQuestions; track $index) {
+                    <li class="quiz-view__item">
+                      <p>{{ $index + 1 }}. {{ q.question }}</p>
+                      @for (opt of q.options; track $index; let oi = $index) {
+                        <label class="quiz-view__option">
+                          <input type="radio"
+                            [name]="'q-' + $index"
+                            [checked]="quizAnswers()[$index] === oi"
+                            (change)="answerQuestion($index, oi)" />
+                          {{ opt }}
+                        </label>
+                      }
+                    </li>
+                  }
+                </ol>
+
+                <p class="quiz-view__count">
+                  {{ answeredCount() }} / {{ sel.sequence.quizQuestions!.length }} questions répondues.
+                </p>
+
+                <button type="button" class="btn btn-gold"
+                  (click)="submitQuiz(sel.sequence)">
+                  Valider mes réponses
+                </button>
+              } @else {
+                <div class="quiz-result" [class.quiz-result--fail]="!quizResult()!.passed">
+                  <h3>{{ quizResult()!.score }} / {{ quizResult()!.total }}</h3>
+                  @if (quizResult()!.passed) {
+                    <p>✓ Bravo, quiz validé !</p>
+                  } @else {
+                    <p>Score insuffisant. Revois le contenu puis retente.</p>
+                    <button type="button" class="btn btn-outline-dark"
+                      (click)="selectSequence(sel.sequence)">
+                      Retenter
+                    </button>
+                  }
+                </div>
+              }
+            </div>
+          }
+        }
+      </main>
+    </div>
+  }
+</section>

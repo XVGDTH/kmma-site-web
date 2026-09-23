@@ -1,0 +1,181 @@
+<div class="learn">
+
+  <!-- ============ BIENVENUE ============ -->
+  <header class="learn__header">
+    <div>
+      <span class="learn__eyebrow">MON TABLEAU DE BORD</span>
+      <h1>Bonjour, {{ userName() }} 👋</h1>
+      <p>
+        @if (stats().coursesCount > 0) {
+          Vous avez {{ stats().coursesCount }} cours en cours
+          @if (stats().completedCount > 0) {
+            et {{ stats().completedCount }} terminé(s).
+          }
+        } @else {
+          Votre parcours d'apprentissage commence ici.
+        }
+      </p>
+    </div>
+
+    <a routerLink="/compte/espace" class="learn__space-link">
+      Mon espace complet →
+    </a>
+  </header>
+
+  @if (loading()) {
+
+    <p class="learn__loading">Chargement de votre tableau de bord…</p>
+
+  } @else {
+
+    <!-- ============ ▶ REPRENDRE ============ -->
+    @if (resume(); as r) {
+
+      <section class="resume-card" (click)="openResume()" role="button" tabindex="0">
+
+        <div class="resume-card__image">
+          <img [src]="r.courseImage" [alt]="r.courseTitle" />
+        </div>
+
+        <div class="resume-card__body">
+
+          <span class="resume-card__kicker">▶ REPRENDRE OÙ VOUS ÉTIEZ</span>
+
+          <h2>{{ r.courseTitle }}</h2>
+
+          <p class="resume-card__sequence">
+            <small>{{ r.chapterTitle }}</small>
+            {{ r.sequenceTitle }}
+          </p>
+
+          <div class="resume-card__progress">
+            <div class="resume-card__bar">
+              <div [style.width.%]="r.progressPercent"></div>
+            </div>
+            <span>{{ r.progressPercent }}%</span>
+          </div>
+
+        </div>
+
+        <div class="resume-card__cta">
+          Continuer <span>→</span>
+        </div>
+
+      </section>
+
+    }
+
+    <!-- ============ 🔴 SÉANCE EN DIRECT ============ -->
+    @if (liveNow().length > 0) {
+
+      <section class="learn-live">
+
+        <span class="learn-live__pulse"></span>
+
+        <div class="learn-live__text">
+          <strong>SÉANCE EN DIRECT MAINTENANT</strong>
+          <p>{{ liveNow()[0].courseTitle }}</p>
+        </div>
+
+        <button
+          type="button"
+          class="learn-live__join"
+          (click)="joinLive(liveNow()[0])"
+        >
+          🔴 Rejoindre maintenant
+        </button>
+
+      </section>
+
+    }
+
+    <!-- ============ 📊 VOS COURS ============ -->
+    <section class="learn-section">
+      <h2>📊 Vos cours en cours</h2>
+
+      @if (courses().length > 0) {
+
+        <div class="learn-courses">
+
+          @for (course of courses(); track course.slug) {
+
+            <a
+              class="learn-course"
+              [routerLink]="['/apprentissage', course.slug]"
+            >
+              <div class="learn-course__image">
+                <img [src]="course.image" [alt]="course.title" loading="lazy" />
+              </div>
+
+              <div class="learn-course__body">
+                <span class="learn-course__category">{{ course.category }}</span>
+                <h3>{{ course.title }}</h3>
+
+                <div class="learn-course__bar">
+                  <div [style.width.%]="course.progressPercent"></div>
+                </div>
+
+                <div class="learn-course__meta">
+                  <span>{{ course.progressPercent }}%</span>
+                  <span class="learn-course__plan">
+                    {{ planLabel(course.accessLevel) }}
+                  </span>
+                </div>
+
+                <small>Dernier accès : {{ course.lastAccessedAt }}</small>
+              </div>
+            </a>
+
+          }
+
+        </div>
+
+      } @else {
+
+        <div class="learn-empty">
+          <p>Vous n'êtes inscrit à aucun cours pour le moment.</p>
+          <a routerLink="/academy" class="btn btn-gold">Explorer les formations</a>
+        </div>
+
+      }
+    </section>
+
+    <!-- ============ 🏆 À RENDRE ============ -->
+    @if (deadlines().length > 0) {
+
+      <section class="learn-section">
+        <h2>🏆 À rendre prochainement</h2>
+        <p class="learn-section__hint">
+          Ces devoirs attendent votre soumission (formule Standard requise).
+        </p>
+
+        <div class="learn-deadlines">
+
+          @for (d of deadlines(); track d.sequenceId) {
+
+            <a
+              class="learn-deadline"
+              [routerLink]="['/apprentissage', d.courseSlug]"
+            >
+              <span class="learn-deadline__icon">
+                {{ d.kind === 'tp' ? '🛠' : '📝' }}
+              </span>
+
+              <div class="learn-deadline__body">
+                <strong>{{ d.title }}</strong>
+                <small>{{ d.courseTitle }}</small>
+              </div>
+
+              <span class="learn-deadline__kind">{{ d.kind | uppercase }}</span>
+            </a>
+
+          }
+
+        </div>
+      </section>
+
+    }
+
+  }
+
+</div>

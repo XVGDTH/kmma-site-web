@@ -1,0 +1,58 @@
+<section class="hero">
+  <!--
+    ARRIÈRE-PLAN VIDÉO — actif.
+    Dépose le fichier "demo.mp4" dans : public/videos/demo.mp4
+    (Angular 22 sert tout le contenu de public/ directement à la racine du site,
+    donc public/videos/demo.mp4 est accessible via l'URL "videos/demo.mp4" ci-dessous.)
+    Le <div class="hero__bg-image"> reste affiché en fallback tant que la vidéo charge
+    (et sur les navigateurs qui bloquent l'autoplay).
+  -->
+  <div class="hero__bg">
+    <video class="hero__bg-video" autoplay muted loop playsinline>
+      <source src="videos/demo.mp4" type="video/mp4">
+    </video>
+    <div class="hero__bg-image" aria-hidden="true"></div>
+    <div class="hero__overlay" aria-hidden="true"></div>
+  </div>
+
+  <div class="hero__content">
+    <span class="hero__eyebrow">
+      <span class="hero__dot" aria-hidden="true"></span>
+      Kmma website
+    </span>
+
+    <h1 class="hero__title">
+      votre cabinet <span class="hero__title-accent">d'expertise comptable</span>.
+    </h1>
+
+    <p class="hero__subtitle">
+      KMAA vous accompagne.
+    </p>
+
+    <div class="hero__actions">
+      <a href="#about" class="btn btn-gold">Nous Découvrir</a>
+      <a routerLink="/contact" class="btn btn-outline">Nous contacter</a>
+    </div>
+
+    <div class="hero__stats">
+      <div class="hero__stat">
+        <span class="hero__stat-value">20+</span>
+        <span class="hero__stat-label">Entreprises et societés accompagnées</span>
+      </div>
+      <div class="hero__stat">
+        <span class="hero__stat-value">30+</span>
+        <span class="hero__stat-label">Programmes disponibles</span>
+      </div>
+      <div class="hero__stat">
+        <span class="hero__stat-value">95%</span>
+        <span class="hero__stat-label">Taux de satisfaction</span>
+      </div>
+    </div>
+  </div>
+  
+  
+
+  <a href="#programs" class="hero__scroll" aria-label="Défiler vers le contenu">
+    <span></span>
+  </a>
+</section>

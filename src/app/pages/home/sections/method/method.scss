@@ -1,0 +1,510 @@
+:host {
+  display: block;
+}
+
+// .method {
+//   --method-ink: #102026;
+//   --method-navy: #003c46;
+//   --method-muted: #617175;
+//   --method-background: #f4f8f7;
+//   --method-gold: #f2b705;
+
+//   position: relative;
+//   isolation: isolate;
+//   width: 100%;
+//   overflow: hidden;
+//   color: var(--method-ink);
+//   background: var(--method-background);
+//   padding: clamp(5rem, 9vw, 9rem) 1.5rem clamp(4rem, 7vw, 6.5rem);
+// }
+.method {
+  --method-ink: #151515;         // encre officielle
+  --method-navy: #0f3d3e;        // vert profond officiel
+  --method-muted: #6e7780;       // gris officiel
+  --method-background: #ffffff;  // blanc pur, conservé comme demandé
+  --method-gold: #b87333;        // cuivre officiel
+
+  position: relative;
+  isolation: isolate;
+  width: 100%;
+  overflow: hidden;
+  color: var(--method-ink);
+  background: var(--method-background);
+  padding: clamp(5rem, 9vw, 9rem) 1.5rem clamp(4rem, 7vw, 6.5rem);
+}
+
+.method__container {
+  position: relative;
+  z-index: 2;
+  width: min(100%, 1380px);
+  margin-inline: auto;
+}
+
+.method__header {
+  max-width: 760px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.method__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+ color: var(--method-gold);
+  font-size: 0.76rem;
+  font-weight: 850;
+  letter-spacing: 0.18em;
+}
+
+.method__eyebrow-line {
+  display: inline-block;
+  width: 32px;
+  height: 2px;
+  background: var(--method-gold);
+}
+
+.method__title {
+  margin: 1.4rem 0 0;
+  color: var(--method-navy);
+  font-size: clamp(2.55rem, 5vw, 5rem);
+  font-weight: 650;
+  line-height: 1.02;
+  letter-spacing: -0.06em;
+}
+
+.method__title em {
+  // color: #07949b;
+    color: var(--method-gold);
+  font-style: normal;
+}
+
+.method__description {
+  max-width: 650px;
+  margin: 1.5rem auto 0;
+  color: var(--method-muted);
+  font-size: 1.05rem;
+  line-height: 1.65;
+}
+
+.method__path {
+  position: relative;
+  margin-top: clamp(4rem, 7vw, 6.5rem);
+}
+
+.method__path-line {
+  position: absolute;
+  top: 89px;
+  right: 10%;
+  left: 10%;
+  height: 3px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #d7e5e1;
+}
+
+.method__path-progress {
+  display: block;
+  width: 100%;
+  height: 100%;
+  transform: scaleX(0);
+  transform-origin: left center;
+  background: linear-gradient(
+    90deg,
+    #e0ab00 0%,
+    #318ed0 35%,
+    #a253a6 68%,
+    #03aaa6 100%
+  );
+}
+
+// La ligne de progression ne se dessine QUE quand la section est visible
+// à l'écran (sinon elle jouait une seule fois au chargement de la page,
+// bien avant que l'utilisateur ne scrolle jusqu'ici).
+.method--visible .method__path-progress {
+  animation-name: method-progress;
+  animation-timing-function: cubic-bezier(0.2, 0.75, 0.25, 1);
+  animation-fill-mode: both;
+  // animation-duration est fixée en ligne depuis le composant (pathDurationMs).
+}
+
+@keyframes method-progress {
+  from {
+    transform: scaleX(0);
+  }
+
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.method__steps {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(1rem, 2.2vw, 2.2rem);
+}
+
+.method-step {
+  position: relative;
+  min-width: 0;
+  text-align: center;
+
+  // Idem : reste invisible tant que la section n'a pas été vue au scroll.
+  opacity: 0;
+}
+
+.method--visible .method-step {
+  animation-name: alveole-in;
+  animation-duration: 1100ms;
+  animation-timing-function: cubic-bezier(0.2, 0.75, 0.25, 1);
+  animation-fill-mode: both;
+  // animation-delay est fixé en ligne depuis le composant (stepDelay(index)),
+  // ce qui garantit l'ordre Écouter → Analyser → Construire → Accompagner.
+}
+
+.method-step__honeycomb {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  width: 184px;
+  height: 184px;
+  margin-inline: auto;
+  place-items: center;
+}
+
+.method-step__honeycomb::before,
+.method-step__honeycomb::after {
+  position: absolute;
+  width: 62px;
+  height: 72px;
+  border: 1px solid var(--method-accent);
+  opacity: 0.3;
+  clip-path: polygon(25% 0, 75% 0, 100% 25%, 100% 75%, 75% 100%, 25% 100%, 0 75%, 0 25%);
+  content: '';
+  transition: transform 260ms ease, opacity 260ms ease;
+}
+
+.method-step__honeycomb::before {
+  top: 5px;
+  left: -4px;
+}
+
+.method-step__honeycomb::after {
+  right: -4px;
+  bottom: 5px;
+}
+
+.method-step:hover .method-step__honeycomb::before,
+.method-step:focus-within .method-step__honeycomb::before {
+  opacity: 0.9;
+  transform: translateX(-9px) rotate(-6deg);
+}
+
+.method-step:hover .method-step__honeycomb::after,
+.method-step:focus-within .method-step__honeycomb::after {
+  opacity: 0.9;
+  transform: translateX(9px) rotate(6deg);
+}
+
+.method-step__shape {
+  position: relative;
+  display: block;
+  width: 142px;
+  height: 162px;
+  overflow: hidden;
+  color: #ffffff;
+  background: var(--method-accent);
+  clip-path: polygon(25% 0, 75% 0, 100% 25%, 100% 75%, 75% 100%, 25% 100%, 0 75%, 0 25%);
+  box-shadow: 0 16px 32px rgb(0 60 70 / 18%);
+  text-decoration: none;
+  transition: transform 300ms ease, box-shadow 300ms ease, filter 300ms ease;
+}
+
+.method-step__shape::after {
+  position: absolute;
+  inset: 8px;
+  border: 1px solid rgb(255 255 255 / 35%);
+  clip-path: inherit;
+  content: '';
+  pointer-events: none;
+}
+
+.method-step__image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  opacity: 0.7;
+  transform: scale(1.04);
+  transition: transform 500ms ease, opacity 300ms ease;
+}
+
+.method-step__image-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgb(0 39 48 / 22%), rgb(0 34 41 / 82%));
+}
+
+.method-step__number {
+  position: absolute;
+  z-index: 2;
+  top: 27px;
+  left: 0;
+  width: 100%;
+  color: rgb(255 255 255 / 86%);
+  font-size: 0.7rem;
+  font-weight: 850;
+  letter-spacing: 0.16em;
+  text-align: center;
+}
+
+.method-step__arrow {
+  position: absolute;
+  z-index: 2;
+  right: 24px;
+  bottom: 23px;
+  display: grid;
+  width: 32px;
+  height: 32px;
+  border: 1px solid rgb(255 255 255 / 58%);
+  border-radius: 50%;
+  color: #ffffff;
+  font-size: 1.3rem;
+  font-weight: 300;
+  place-items: center;
+  transition: transform 240ms ease, background 240ms ease;
+}
+
+.method-step:hover .method-step__shape,
+.method-step:focus-within .method-step__shape {
+  filter: brightness(1.08);
+  box-shadow: 0 23px 44px rgb(0 60 70 / 27%);
+  transform: translateY(-9px) scale(1.06) rotate(2deg);
+}
+
+.method-step:hover .method-step__image,
+.method-step:focus-within .method-step__image {
+  opacity: 0.92;
+  transform: scale(1.15);
+}
+
+.method-step:hover .method-step__arrow,
+.method-step:focus-within .method-step__arrow {
+  background: rgb(255 255 255 / 18%);
+  transform: translate(3px, -3px);
+}
+
+.method-step__content {
+  max-width: 265px;
+  margin: 1.7rem auto 0;
+}
+
+.method-step__title {
+  margin: 0;
+  color: var(--method-navy);
+  font-size: 1.5rem;
+  font-weight: 750;
+  letter-spacing: -0.035em;
+}
+
+.method-step__description {
+  min-height: 78px;
+  margin: 0.75rem 0 0;
+  color: var(--method-muted);
+  font-size: 0.91rem;
+  line-height: 1.55;
+}
+
+.method-step__link,
+.method__footer-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  color: var(--method-navy);
+  font-size: 0.8rem;
+  font-weight: 850;
+  text-decoration: none;
+}
+
+.method-step__link {
+  margin-top: 1rem;
+  padding-bottom: 0.3rem;
+  border-bottom: 1px solid var(--method-accent);
+}
+
+.method-step__link svg,
+.method__footer-link svg {
+  width: 1rem;
+  height: 1rem;
+  transition: transform 180ms ease;
+}
+
+.method-step__link:hover svg,
+.method-step__link:focus-visible svg,
+.method__footer-link:hover svg,
+.method__footer-link:focus-visible svg {
+  transform: translateX(4px);
+}
+
+.method-step--gold {
+  --method-accent: #dca800;
+}
+
+.method-step--blue {
+  --method-accent: #287fc9;
+}
+
+.method-step--purple {
+  --method-accent: #a650a4;
+}
+
+.method-step--cyan {
+  --method-accent: #08aaa7;
+}
+
+.method__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+  margin-top: 5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #dbe5e3;
+}
+
+.method__footer p {
+  margin: 0;
+  color: var(--method-muted);
+  font-size: 0.9rem;
+}
+
+.method__footer-link {
+  padding: 0.8rem 1rem;
+  border: 1px solid var(--method-navy);
+}
+
+.method__footer-link:hover,
+.method__footer-link:focus-visible {
+  color: #ffffff;
+  background: var(--method-navy);
+}
+
+.method__decor {
+  position: absolute;
+  z-index: 1;
+  display: flex;
+  gap: 0.65rem;
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.method__decor span {
+  display: block;
+  width: 42px;
+  height: 48px;
+  border: 1px solid #c9dad8;
+  clip-path: polygon(25% 0, 75% 0, 100% 25%, 100% 75%, 75% 100%, 25% 100%, 0 75%, 0 25%);
+}
+
+.method__decor--top {
+  top: 9%;
+  right: -2rem;
+  transform: rotate(30deg);
+}
+
+.method__decor--bottom {
+  bottom: 6%;
+  left: -3rem;
+  transform: rotate(-25deg);
+}
+
+@keyframes alveole-in {
+  0% {
+    opacity: 0;
+    transform: translateY(48px) scale(0.35) rotate(-18deg);
+    filter: blur(5px);
+  }
+
+  55% {
+    opacity: 1;
+    transform: translateY(-8px) scale(1.08) rotate(4deg);
+    filter: blur(0);
+  }
+
+  78% {
+    transform: translateY(3px) scale(0.98) rotate(-1deg);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1) rotate(0);
+    filter: blur(0);
+  }
+}
+
+@media (max-width: 1000px) {
+  .method__steps {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    row-gap: 3.5rem;
+  }
+
+  .method__path-line {
+    display: none;
+  }
+}
+
+@media (max-width: 580px) {
+  .method {
+    padding-inline: 1rem;
+  }
+
+  .method__title {
+    font-size: 2.8rem;
+  }
+
+  .method__description {
+    font-size: 0.98rem;
+  }
+
+  .method__steps {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+
+  .method-step__description {
+    min-height: auto;
+  }
+
+  .method__footer {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 1.2rem;
+  }
+
+  .method__footer-link {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .method-step {
+    opacity: 1;
+    animation: none;
+  }
+
+  .method__path-progress {
+    transform: scaleX(1);
+    animation: none;
+  }
+
+  .method-step__honeycomb::before,
+  .method-step__honeycomb::after,
+  .method-step__shape,
+  .method-step__image,
+  .method-step__arrow,
+  .method-step__link svg,
+  .method__footer-link svg {
+    transition: none;
+  }
+}

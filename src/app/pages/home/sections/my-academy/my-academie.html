@@ -1,0 +1,172 @@
+<section
+  class="academy"
+  id="my-academie"
+  aria-labelledby="academy-title"
+  [class.academy--visible]="visible()"
+>
+  <div class="academy__background" aria-hidden="true">
+    <video
+      class="academy__video"
+      autoplay
+      muted
+      loop
+      playsinline
+      preload="metadata"
+      poster="/images/academie/academie.png"
+    >
+      <source
+        src="videos/academie.mp4"
+        type="video/mp4"
+      />
+      Votre navigateur ne prend pas en charge les vidéos HTML5.
+    </video>
+
+    <div class="academy__overlay"></div>
+    <div class="academy__grain"></div>
+    <div class="academy__grid-lines"></div>
+  </div>
+
+  <div class="academy__container">
+    <div class="academy__content">
+      <!-- Étape 0 : eyebrow -->
+      <span class="curtain-mask curtain-mask--left" [style.transition-delay.ms]="stageDelay(0)">
+        <span class="curtain-mask__panel" aria-hidden="true"></span>
+        <span class="academy__eyebrow">
+          <span class="academy__eyebrow-dot"></span>
+          {{ eyebrow }}
+        </span>
+      </span>
+
+      <!-- Étape 1 : titre -->
+      <span class="curtain-mask curtain-mask--left curtain-mask--block" [style.transition-delay.ms]="stageDelay(1)">
+        <span class="curtain-mask__panel" aria-hidden="true"></span>
+        <h2 id="academy-title" class="academy__title">
+          {{ title }}
+        </h2>
+      </span>
+
+      <!-- Étape 2 : description -->
+      <span class="curtain-mask curtain-mask--left curtain-mask--block" [style.transition-delay.ms]="stageDelay(2)">
+        <span class="curtain-mask__panel" aria-hidden="true"></span>
+        <p class="academy__description">
+          {{ description }}
+        </p>
+      </span>
+
+      <!-- Étape 3 : actions -->
+      <span class="curtain-mask curtain-mask--left curtain-mask--block" [style.transition-delay.ms]="stageDelay(3)">
+        <span class="curtain-mask__panel" aria-hidden="true"></span>
+        <div class="academy__actions">
+         <a class="academy__button academy__button--primary" routerLink="/academy">
+  Explorer les formations
+  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+    <path d="M5 12H19M19 12L13 6M19 12L13 18" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" />
+  </svg>
+</a>
+
+<a class="academy__button academy__button--secondary" routerLink="/academy" fragment="catalogue">
+  Commencer maintenant
+</a>
+        </div>
+      </span>
+
+      <!-- Étape 4 : indicateurs -->
+      <span class="curtain-mask curtain-mask--left curtain-mask--block" [style.transition-delay.ms]="stageDelay(4)">
+        <span class="curtain-mask__panel" aria-hidden="true"></span>
+        <div class="academy__metrics" aria-label="Indicateurs de My Académie">
+          @for (metric of metrics; track metric.label) {
+            <div class="academy__metric">
+              <strong>{{ metric.value }}</strong>
+              <span>{{ metric.label }}</span>
+            </div>
+          }
+        </div>
+      </span>
+    </div>
+
+    <aside class="academy__program-card" aria-label="Présentation du parcours KMAA">
+      <!-- Étape 0 (miroir) : statut -->
+      <span class="curtain-mask curtain-mask--right curtain-mask--block" [style.transition-delay.ms]="stageDelay(0)">
+        <span class="curtain-mask__panel" aria-hidden="true"></span>
+        <div class="academy__program-card-topline">
+          <span class="academy__program-status">
+            <span class="academy__status-dot"></span>
+            Parcours disponibles
+          </span>
+          <span class="academy__program-index">01 — 04</span>
+        </div>
+      </span>
+
+      <!-- Étape 1 (miroir) : icône -->
+      <span class="curtain-mask curtain-mask--right curtain-mask--block" [style.transition-delay.ms]="stageDelay(1)">
+        <span class="curtain-mask__panel" aria-hidden="true"></span>
+        <div class="academy__program-icon" aria-hidden="true">
+          <svg viewBox="0 0 48 48" fill="none">
+            <path d="M8 15.5L24 8L40 15.5L24 23L8 15.5Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" />
+            <path d="M14 19V29.5C14 32.8 18.5 36 24 36C29.5 36 34 32.8 34 29.5V19" stroke="currentColor" stroke-width="1.6" />
+            <path d="M40 16V28" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+            <circle cx="40" cy="31" r="2" stroke="currentColor" stroke-width="1.6" />
+          </svg>
+        </div>
+      </span>
+
+      <!-- Étape 2 (miroir) : titre + description du parcours -->
+      <span class="curtain-mask curtain-mask--right curtain-mask--block" [style.transition-delay.ms]="stageDelay(2)">
+        <span class="curtain-mask__panel" aria-hidden="true"></span>
+        <div>
+          <span class="academy__program-eyebrow">PARCOURS KMAA</span>
+          <h3 class="academy__program-title">
+            Maîtriser les fondamentaux de la gestion
+          </h3>
+          <p class="academy__program-description">
+            Un parcours progressif pour comprendre, appliquer et piloter avec méthode.
+          </p>
+        </div>
+      </span>
+
+      <!-- Étape 3 (miroir) : progression + lien -->
+      <span class="curtain-mask curtain-mask--right curtain-mask--block" [style.transition-delay.ms]="stageDelay(3)">
+        <span class="curtain-mask__panel" aria-hidden="true"></span>
+        <div>
+          <div class="academy__program-progress">
+            <div class="academy__progress-label">
+              <span>Progression recommandée</span>
+              <strong>01 / 06 modules</strong>
+            </div>
+            <div class="academy__progress-bar">
+              <span></span>
+            </div>
+          </div>
+
+          <a class="academy__program-link" routerLink="/academy" fragment="catalogue">
+            Voir le catalogue
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M5 12H19M19 12L13 6M19 12L13 18" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </a>
+        </div>
+      </span>
+    </aside>
+  </div>
+
+  <div class="academy__bottom">
+    <div class="academy__bottom-inner">
+      <span class="curtain-mask curtain-mask--left curtain-mask--block" [style.transition-delay.ms]="stageDelay(5)">
+        <span class="curtain-mask__panel" aria-hidden="true"></span>
+        <p class="academy__bottom-label">Une pédagogie orientée résultats</p>
+      </span>
+
+      <span class="curtain-mask curtain-mask--right curtain-mask--block" [style.transition-delay.ms]="stageDelay(5)">
+        <span class="curtain-mask__panel" aria-hidden="true"></span>
+        <div class="academy__highlights">
+          @for (highlight of highlights; track highlight) {
+            <span class="academy__highlight">
+              <span class="academy__highlight-check" aria-hidden="true">✓</span>
+              {{ highlight }}
+            </span>
+          }
+        </div>
+      </span>
+    </div>
+  </div>
+</section>

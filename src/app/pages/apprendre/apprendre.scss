@@ -1,0 +1,325 @@
+// ============================================================
+// DASHBOARD APPRENANT — /apprendre
+// ============================================================
+
+.learn {
+  min-height: 100vh;
+  padding: 160px 1.5rem 4rem;
+  background: #f4f5f8;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.learn__header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 2rem;
+
+  h1 {
+    color: #0d1b3e;
+    font-family: Georgia, serif;
+    font-size: clamp(1.6rem, 3vw, 2.1rem);
+    margin: 6px 0 4px;
+  }
+
+  p { color: #5b6475; margin: 0; }
+}
+
+.learn__eyebrow {
+  color: #b87333;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+}
+
+.learn__space-link {
+  color: #b87333;
+  font-weight: 700;
+  font-size: 0.85rem;
+  text-decoration: none;
+
+  &:hover { text-decoration: underline; }
+}
+
+.learn__loading { color: #94a3b8; padding: 40px 0; }
+
+// --- ▶ Reprendre ---
+.resume-card {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  padding: 22px;
+  border-radius: 20px;
+  background: linear-gradient(120deg, #0d1b3e 0%, #0f3d3e 100%);
+  box-shadow: 0 18px 40px rgba(5, 12, 34, 0.25);
+  cursor: pointer;
+  transition: transform 0.25s, box-shadow 0.25s;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 24px 50px rgba(5, 12, 34, 0.35);
+  }
+
+  &__image {
+    width: 170px;
+    aspect-ratio: 16/9;
+    border-radius: 14px;
+    overflow: hidden;
+    flex-shrink: 0;
+
+    img { width: 100%; height: 100%; object-fit: cover; }
+  }
+
+  &__body { flex: 1; min-width: 240px; }
+
+  &__kicker {
+    color: #e3b74f;
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+  }
+
+  h2 {
+    color: #fff;
+    font-family: Georgia, serif;
+    font-size: 1.4rem;
+    margin: 8px 0;
+  }
+
+  &__sequence {
+    color: rgba(255, 255, 255, 0.75);
+    font-size: 0.9rem;
+    margin: 0 0 14px;
+
+    small {
+      display: block;
+      color: rgba(255, 255, 255, 0.45);
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+  }
+
+  &__progress {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    span { color: #e3b74f; font-weight: 800; font-size: 0.82rem; }
+  }
+
+  &__bar {
+    flex: 1;
+    max-width: 300px;
+    height: 7px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.15);
+    overflow: hidden;
+
+    div {
+      height: 100%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #c9992e, #f7e3a1);
+    }
+  }
+
+  &__cta {
+    color: #e3b74f;
+    font-weight: 800;
+    font-size: 0.95rem;
+    white-space: nowrap;
+
+    span { display: inline-block; transition: transform 0.25s; }
+  }
+
+  &:hover &__cta span { transform: translateX(6px); }
+}
+
+// --- 🔴 Live ---
+.learn-live {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+  padding: 18px 24px;
+  border-radius: 16px;
+  background: #fff;
+  border-left: 5px solid #ef4444;
+  box-shadow: 0 8px 24px rgba(5, 12, 34, 0.08);
+  margin-bottom: 2.5rem;
+
+  &__pulse {
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    background: #ef4444;
+    animation: learn-pulse 1.4s ease infinite;
+  }
+
+  &__text {
+    flex: 1;
+    min-width: 200px;
+
+    strong {
+      display: block;
+      color: #dc2626;
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+    }
+
+    p { color: #0d1b3e; font-weight: 700; margin: 2px 0 0; }
+  }
+
+  &__join {
+    padding: 12px 24px;
+    border-radius: 999px;
+    border: none;
+    background: #ef4444;
+    color: #fff;
+    font-weight: 800;
+    font-size: 0.88rem;
+    cursor: pointer;
+    transition: transform 0.2s, background 0.2s;
+
+    &:hover { background: #dc2626; transform: translateY(-2px); }
+  }
+}
+
+@keyframes learn-pulse {
+  0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.5); }
+  50% { opacity: 0.6; box-shadow: 0 0 0 8px rgba(239, 68, 68, 0); }
+}
+
+// --- Sections communes ---
+.learn-section {
+  margin-bottom: 2.5rem;
+
+  h2 {
+    color: #0d1b3e;
+    font-family: Georgia, serif;
+    font-size: 1.3rem;
+    margin: 0 0 18px;
+  }
+
+  &__hint {
+    color: #5b6475;
+    font-size: 0.85rem;
+    margin: -12px 0 18px;
+  }
+}
+
+.learn-courses {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 18px;
+}
+
+.learn-course {
+  background: #fff;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 6px 18px rgba(5, 12, 34, 0.06);
+  text-decoration: none;
+  transition: transform 0.2s;
+
+  &:hover { transform: translateY(-3px); }
+
+  &__image {
+    aspect-ratio: 16/9;
+    img { width: 100%; height: 100%; object-fit: cover; }
+  }
+
+  &__body { padding: 16px 18px; }
+
+  &__category {
+    color: #b87333;
+    font-size: 0.65rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  h3 { color: #0d1b3e; font-size: 0.98rem; margin: 6px 0 10px; }
+
+  &__bar {
+    height: 6px;
+    border-radius: 999px;
+    background: #e4e7ec;
+    overflow: hidden;
+    margin-bottom: 6px;
+
+    div { height: 100%; border-radius: 999px; background: linear-gradient(90deg, #c9992e, #e3b74f); }
+  }
+
+  &__meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    color: #5b6475;
+    margin-bottom: 6px;
+
+    .learn-course__plan {
+      padding: 1px 10px;
+      border-radius: 999px;
+      background: rgba(201, 153, 46, 0.12);
+      color: #b87333;
+      font-weight: 700;
+    }
+  }
+
+  small { color: #94a3b8; font-size: 0.7rem; }
+}
+
+.learn-empty {
+  background: #fff;
+  border-radius: 16px;
+  padding: 40px;
+  text-align: center;
+  p { color: #5b6475; margin-bottom: 16px; }
+}
+
+// --- 🏆 À rendre ---
+.learn-deadlines {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.learn-deadline {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 18px;
+  border-radius: 14px;
+  background: #fff;
+  border: 1.5px solid rgba(239, 68, 68, 0.25);
+  text-decoration: none;
+  transition: border-color 0.2s, transform 0.2s;
+
+  &:hover {
+    border-color: #ef4444;
+    transform: translateX(4px);
+  }
+
+  &__icon { font-size: 1.3rem; }
+
+  &__body {
+    flex: 1;
+    strong { color: #0d1b3e; font-size: 0.9rem; display: block; }
+    small { color: #94a3b8; font-size: 0.75rem; }
+  }
+
+  &__kind {
+    padding: 4px 12px;
+    border-radius: 999px;
+    background: rgba(239, 68, 68, 0.1);
+    color: #dc2626;
+    font-size: 0.68rem;
+    font-weight: 800;
+    text-transform: uppercase;
+  }
+}

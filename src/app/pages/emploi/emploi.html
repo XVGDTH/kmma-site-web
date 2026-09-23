@@ -1,0 +1,204 @@
+<!-- HERO -->
+<section class="jobs-hero">
+  <div class="jobs-hero__glow jobs-hero__glow--1" aria-hidden="true"></div>
+  <div class="jobs-hero__glow jobs-hero__glow--2" aria-hidden="true"></div>
+  <div class="jobs-hero__grid" aria-hidden="true"></div>
+
+  <div class="jobs-hero__container">
+    <nav class="jobs-hero__breadcrumb" aria-label="Fil d'ariane">
+      <a routerLink="/">Accueil</a>
+      <span>/</span>
+      <span>Emploi</span>
+    </nav>
+
+    <span class="jobs-hero__eyebrow">
+      <span class="jobs-hero__dot"></span>
+      Carrières & partenariats
+    </span>
+
+    <h1 class="jobs-hero__title">
+      Construisez l’avenir<br />
+      <em>avec KMAA</em>
+    </h1>
+
+    <p class="jobs-hero__lead">
+      Rejoignez une équipe d’experts ou devenez partenaire pour former,
+      conseiller et transformer les organisations en Afrique de l’Ouest.
+    </p>
+        <!-- <div class="jobs-hero__actions">
+      <a href="#offres" class="btn btn-gold">Voir les offres</a>
+      <button type="button" class="btn btn-outline-light" (click)="scrollToSpontaneous()">
+        Candidature spontanée
+      </button>
+    </div> -->
+        <div class="jobs-hero__actions">
+      <button type="button" class="btn btn-gold" (click)="scrollToOffers()">
+        Voir les offres
+      </button>
+      <button type="button" class="btn btn-outline-light" (click)="scrollToSpontaneous()">
+        Candidature spontanée
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- À LA UNE -->
+<section class="jobs-featured">
+  <div class="jobs-featured__container">
+    <div class="jobs-featured__header">
+      <span class="jobs-eyebrow">À la une</span>
+      <h2>Opportunités prioritaires</h2>
+    </div>
+
+    <div class="jobs-featured__grid">
+      @for (job of featuredJobs(); track job.id) {
+        <a class="jobs-lead-card" [routerLink]="['/emploi', job.id]">
+          <div class="jobs-lead-card__visual">
+            <img [src]="job.image" [alt]="job.imageAlt" loading="lazy" />
+            <div class="jobs-lead-card__overlay"></div>
+            <span class="jobs-lead-card__badge">{{ job.typeLabel }}</span>
+          </div>
+          <div class="jobs-lead-card__body">
+            <span class="jobs-lead-card__meta">{{ job.department }} · {{ job.location }}</span>
+            <h3>{{ job.title }}</h3>
+            <p>{{ job.excerpt }}</p>
+            <span class="jobs-lead-card__cta">Voir l’offre →</span>
+          </div>
+        </a>
+      }
+    </div>
+  </div>
+</section>
+
+<!-- TOUTES LES OFFRES -->
+<section class="jobs-list" id="offres">
+  <div class="jobs-list__container">
+    <div class="jobs-list__header">
+      <span class="jobs-eyebrow jobs-eyebrow--dark">Toutes les offres</span>
+      <h2>Trouvez le rôle qui vous correspond</h2>
+    </div>
+
+    <div class="jobs-filters" role="tablist">
+      @for (f of filters; track f.id) {
+        <button
+          type="button"
+          class="jobs-filters__btn"
+          [class.jobs-filters__btn--active]="activeFilter() === f.id"
+          (click)="setFilter(f.id)"
+        >
+          {{ f.label }}
+        </button>
+      }
+    </div>
+
+    <div class="jobs-grid">
+      @for (job of filteredJobs(); track job.id) {
+        <a class="job-card" [routerLink]="['/emploi', job.id]">
+          <div class="job-card__top">
+            <span class="job-card__type">{{ job.typeLabel }}</span>
+            <span class="job-card__loc">{{ job.location }}</span>
+          </div>
+          <h3>{{ job.title }}</h3>
+          <p class="job-card__dept">{{ job.department }}</p>
+          <p class="job-card__excerpt">{{ job.excerpt }}</p>
+          <div class="job-card__tags">
+            @for (tag of job.tags; track tag) {
+              <span>{{ tag }}</span>
+            }
+          </div>
+          <span class="job-card__cta">Voir l’offre</span>
+        </a>
+      }
+    </div>
+  </div>
+</section>
+
+<!-- PARTENAIRES -->
+<section class="jobs-partners">
+  <div class="jobs-partners__container">
+    <div class="jobs-partners__text">
+      <span class="jobs-eyebrow">Entreprises & partenaires</span>
+      <h2>Recrutez les talents formés par KMAA</h2>
+      <p>
+        Accédez à un vivier d’apprenants et de professionnels qualifiés.
+        Stages, CDI, missions freelance ou formations sur mesure pour vos équipes.
+      </p>
+      <a routerLink="/contact" class="btn btn-gold">Devenir partenaire</a>
+    </div>
+    <div class="jobs-partners__points">
+      <div class="jobs-partners__point">
+        <span>01</span>
+        <h3>Talents prêts à l’emploi</h3>
+        <p>Profils formés sur des cas concrets et des outils du terrain.</p>
+      </div>
+      <div class="jobs-partners__point">
+        <span>02</span>
+        <h3>Matching ciblé</h3>
+        <p>Nous vous orientons vers les candidats alignés à vos besoins.</p>
+      </div>
+      <div class="jobs-partners__point">
+        <span>03</span>
+        <h3>Formations entreprise</h3>
+        <p>Parcours sur mesure pour monter en compétences vos équipes.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<!-- <section class="jobs-cta"> -->
+  <!-- CTA -->
+<section class="jobs-cta" id="spontaneous">
+  <div class="jobs-cta__card">
+    <span class="jobs-hero__eyebrow">
+      <span class="jobs-hero__dot"></span>
+      Candidature spontanée
+    </span>
+    <h2>Votre profil n’apparaît pas dans les offres ?</h2>
+    <p>
+      Envoyez-nous votre CV. Nous vous recontactons dès qu’une opportunité
+      correspond.
+    </p>
+
+    @if (spontaneousSuccess(); as success) {
+      <div class="job-apply-success">
+        <span>✓</span>
+        <p>{{ success }}</p>
+      </div>
+    } @else {
+
+      @if (!spontaneousOpen()) {
+        <button type="button" class="btn btn-gold" (click)="scrollToSpontaneous()">
+          Envoyer ma candidature
+        </button>
+      }
+
+      @if (spontaneousOpen()) {
+        <form
+          id="spontaneous-form"
+          class="jobs-spontaneous-form"
+          (submit)="$event.preventDefault(); submitSpontaneous()"
+        >
+          <input type="email" placeholder="Votre email *"
+            [value]="spontaneousEmail()"
+            (input)="spontaneousEmail.set($any($event.target).value)" />
+
+          <label class="jobs-cv-input">
+            <input type="file" accept=".pdf,.doc,.docx"
+              (change)="onSpontaneousCv($event)" hidden />
+            📎 {{ spontaneousCv?.name ?? 'Joindre mon CV (PDF) *' }}
+          </label>
+
+          @if (spontaneousError(); as err) {
+            <p class="job-apply-error">⚠️ {{ err }}</p>
+          }
+
+          <button type="submit" class="btn btn-gold" [disabled]="spontaneousSending()">
+            @if (spontaneousSending()) { Envoi… } @else { Envoyer mon CV }
+          </button>
+        </form>
+      }
+
+    }
+  </div>
+</section>

@@ -1,0 +1,44 @@
+<section class="stories" [class.stories--visible]="visible()">
+  <div class="stories__container">
+    <h2 class="stories__title">
+      <span class="stories__title-line" [style.animation-delay.ms]="0">
+        Des histoires vraies.
+      </span>
+      <br />
+      <span class="stories__title-line" [style.animation-delay.ms]="titleLineStaggerMs">
+        De vrais résultats.
+      </span>
+    </h2>
+
+    <!-- Images en escalier — révélées une à une par vague, du bas vers le haut -->
+    <div class="stories__gallery">
+      @for (story of stories; track story.title; let i = $index) {
+        <div
+          class="stories__gallery-item"
+          [attr.data-index]="i"
+          [style.animation-delay.ms]="delayFor(i)"
+          [style.animation-duration.ms]="waveDurationMs"
+        >
+          <img [src]="story.image" [alt]="story.imageAlt" loading="lazy" />
+        </div>
+      }
+    </div>
+
+    <!-- Textes sous les images — apparaissent en même temps que leur marche -->
+    <div class="stories__grid">
+      @for (story of stories; track story.title; let i = $index) {
+        <article
+          class="stories__card"
+          [style.animation-delay.ms]="delayFor(i)"
+        >
+          <h3 class="stories__card-title">{{ story.title }}</h3>
+          <p class="stories__card-desc">{{ story.description }}</p>
+          <a [routerLink]="story.route" class="stories__card-link">
+            En savoir plus
+            <span aria-hidden="true">→</span>
+          </a>
+        </article>
+      }
+    </div>
+  </div>
+</section>

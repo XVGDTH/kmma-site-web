@@ -1,0 +1,195 @@
+.pay-method {
+  min-height: 100vh;
+  padding: calc(42px + 100px) 1.5rem 4rem;
+  background: var(--navy-950, #050c22);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pay-method__card {
+  width: 100%;
+  max-width: 460px;
+  background: rgba(15, 20, 40, 0.75);
+  border: 1.5px solid rgba(255, 255, 255, 0.1);
+  border-radius: 24px;
+  padding: 36px 32px;
+  backdrop-filter: blur(10px);
+  text-align: center;
+}
+
+.pay-method__eyebrow {
+  display: block;
+  color: var(--gold-300);
+  font-weight: 700;
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.pay-method__card h1 {
+  color: var(--white);
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin: 0 0 8px;
+}
+
+.pay-method__course {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.9rem;
+  margin-bottom: 28px;
+}
+
+.pay-method__providers {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.provider-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+  border-radius: 12px;
+  border: 1.5px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--white);
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background 0.2s ease;
+
+  &:hover {
+    border-color: var(--provider-color);
+    background: rgba(255, 255, 255, 0.06);
+  }
+}
+
+.provider-btn__dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--provider-color);
+  flex-shrink: 0;
+}
+
+.pay-method__cancel {
+  color: rgba(255, 255, 255, 0.45);
+  font-size: 0.82rem;
+  text-decoration: underline;
+}
+
+// styles du bons
+.pay-method__providers {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem; // espace entre chaque option
+  margin-top: 1.5rem;
+}
+
+.provider-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 1rem 1.25rem;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.04);
+  color: #fff;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.2);
+  }
+}
+
+.provider-btn__dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--provider-color, #888);
+  flex-shrink: 0;
+}
+
+/* --- Option BON --- */
+.provider-btn--voucher {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.85rem;
+  cursor: default;
+  padding: 1.1rem 1.25rem;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.04);
+  }
+}
+
+.provider-btn__header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.provider-btn__dot--voucher {
+  background: #f59e0b; // orange/doré pour le bon
+}
+
+.provider-btn__name {
+  font-weight: 500;
+}
+
+.provider-btn__voucher-form {
+  display: flex;
+  gap: 0.6rem;
+  width: 100%;
+}
+
+.voucher-input {
+  flex: 1;
+  padding: 0.65rem 0.9rem;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(0, 0, 0, 0.25);
+  color: #fff;
+  font-size: 0.95rem;
+  outline: none;
+
+  &::placeholder {
+    color: rgba(255, 255, 255, 0.4);
+  }
+
+  &:focus {
+    border-color: #f59e0b;
+  }
+}
+
+.voucher-btn {
+  padding: 0.65rem 1.1rem;
+  border-radius: 8px;
+  border: none;
+  background: #f59e0b;
+  color: #111;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.2s;
+
+  &:hover {
+    background: #fbbf24;
+  }
+}
+
+.pay-method__voucher-msg {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #f87171; // rouge clair pour erreur
+}

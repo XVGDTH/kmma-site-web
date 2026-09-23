@@ -1,0 +1,48 @@
+@if (article(); as a) {
+  <article class="article">
+    <header class="article-hero">
+      <div class="article-hero__container">
+        <nav class="article-hero__breadcrumb">
+          <a routerLink="/">Accueil</a>
+          <span>/</span>
+          <a routerLink="/actualites">Actualités</a>
+          <span>/</span>
+          <span>{{ a.category }}</span>
+        </nav>
+
+        <span class="article-hero__badge">{{ a.category }}</span>
+        <h1>{{ a.title }}</h1>
+        <p class="article-hero__excerpt">{{ a.excerpt }}</p>
+
+        <div class="article-hero__meta">
+          <img [src]="a.authorImage" [alt]="a.author" class="article-hero__avatar" />
+          <div>
+            <strong>{{ a.author }}</strong>
+            <span>{{ a.authorRole }} · {{ a.date }} · {{ a.readTime }} de lecture</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="article-cover">
+      <img [src]="a.image" [alt]="a.imageAlt" />
+    </div>
+
+    <div class="article-body">
+      @for (p of a.content; track p) {
+        <p>{{ p }}</p>
+      }
+
+      <div class="article-body__cta">
+        <a routerLink="/actualites" class="btn btn-outline">← Retour aux actualités</a>
+        <a routerLink="/academy" class="btn btn-gold">Explorer les formations</a>
+      </div>
+    </div>
+  </article>
+} @else {
+  <section class="article-empty">
+    <h1>Article introuvable</h1>
+    <p>Cet article n’existe pas ou a été déplacé.</p>
+    <a routerLink="/actualites" class="btn btn-gold">Voir les actualités</a>
+  </section>
+}

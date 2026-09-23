@@ -1,0 +1,87 @@
+@if (course(); as c) {
+  <div class="live-session">
+
+    <header class="live-session__header">
+      <a [routerLink]="['/apprentissage', c.id]" class="live-session__back">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M19 12H5M12 19l-7-7 7-7" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Retour au cours
+      </a>
+      <span class="live-session__title">{{ c.title }} — Séance en direct</span>
+    </header>
+
+    @if (session().isLive) {
+      <div class="live-session__stage">
+
+        <!-- État : réunion disponible -->
+        @if (!joinUrl()) {
+          <div class="zoom-join-card">
+            <div class="zoom-join-card__icon">🎥</div>
+            <h2>La séance Zoom est en cours</h2>
+            <p>Clique sur le bouton ci-dessous pour rejoindre la réunion.</p>
+
+            @if (error(); as err) {
+              <p class="zoom-join-card__error">⚠️ {{ err }}</p>
+            }
+
+            <button
+              type="button"
+              class="zoom-join-card__btn"
+              (click)="joinZoom()"
+              [disabled]="loadingUrl()"
+            >
+              @if (loadingUrl()) {
+                ⏳ Chargement…
+              } @else {
+                ▶ Rejoindre la réunion Zoom
+              }
+            </button>
+
+            <p class="zoom-join-card__hint">
+              💡 La réunion s'ouvrira dans un nouvel onglet.
+            </p>
+          </div>
+        }
+
+        <!-- État : lien déjà ouvert -->
+        @else {
+          <div class="zoom-join-card">
+            <div class="zoom-join-card__icon">✅</div>
+            <h2>Vous avez rejoint la réunion</h2>
+            <p>
+              Si la fenêtre Zoom ne s'est pas ouverte, cliquez sur le bouton
+              ci-dessous.
+            </p>
+
+            @if (password(); as pwd) {
+              <p class="zoom-join-card__password">
+                🔐 Mot de passe : <strong>{{ pwd }}</strong>
+              </p>
+            }
+
+            <a
+              [href]="joinUrl()"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="zoom-join-card__btn"
+            >
+              🎥 Ouvrir Zoom à nouveau
+            </a>
+          </div>
+        }
+
+      </div>
+    } @else {
+      <div class="live-session__waiting">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <circle cx="12" cy="12" r="10"/>
+          <polyline points="12 6 12 12 16 14"/>
+        </svg>
+        <h2>Aucune séance en cours</h2>
+        <p>Le formateur n'a pas encore démarré la séance en direct. Revenez à l'heure prévue.</p>
+        <a [routerLink]="['/apprentissage', c.id]" class="live-session__link">Retour au programme du cours</a>
+      </div>
+    }
+  </div>
+}

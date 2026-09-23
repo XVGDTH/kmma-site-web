@@ -1,0 +1,86 @@
+@if (course(); as c) {
+  <div class="pay-otp">
+    <div class="pay-otp__card">
+
+      @switch (step()) {
+
+        @case ('numero') {
+          <span class="pay-otp__eyebrow">Étape 2 sur 3 — {{ providerLabel() }}</span>
+          <h1>Entrez votre numéro {{ providerLabel() }}</h1>
+          <p class="pay-otp__amount">Montant à payer : {{ formatPrice(checkout.session()?.amount ?? 0) }}</p>
+
+          <div class="pay-otp__field">
+            <input
+              type="tel"
+              placeholder="Ex: 70 12 34 56"
+              [ngModel]="phoneNumber()"
+              (ngModelChange)="phoneNumber.set($event)"
+            />
+          </div>
+
+          @if (errorMessage()) {
+            <span class="pay-otp__error">{{ errorMessage() }}</span>
+          }
+
+          <button
+            type="button"
+            class="pay-otp__submit"
+            [disabled]="isProcessing()"
+            (click)="requestOtp()"
+          >
+            @if (isProcessing()) {
+              <span class="pay-otp__spinner"></span>
+            } @else {
+              Recevoir le code de confirmation
+            }
+          </button>
+        }
+
+        @case ('otp') {
+          <span class="pay-otp__eyebrow">Étape 3 sur 3</span>
+          <h1>Confirmez le paiement</h1>
+          <p class="pay-otp__amount">
+            Un code à 4 chiffres a été envoyé au {{ phoneNumber() }}
+            <br />
+            <em class="pay-otp__simulation-note">(Simulation — code visible dans la console du navigateur : {{ generatedOtp() }})</em>
+          </p>
+
+          <div class="pay-otp__digits">
+            <input #d0 type="text" inputmode="numeric" maxlength="1" [value]="otpDigits()[0]" (input)="onDigitInput(0, $event, d1)" />
+            <input #d1 type="text" inputmode="numeric" maxlength="1" [value]="otpDigits()[1]" (input)="onDigitInput(1, $event, d2)" />
+            <input #d2 type="text" inputmode="numeric" maxlength="1" [value]="otpDigits()[2]" (input)="onDigitInput(2, $event, d3)" />
+            <input #d3 type="text" inputmode="numeric" maxlength="1" [value]="otpDigits()[3]" (input)="onDigitInput(3, $event)" />
+          </div>
+
+          @if (errorMessage()) {
+            <span class="pay-otp__error">{{ errorMessage() }}</span>
+          }
+
+          <button
+            type="button"
+            class="pay-otp__submit"
+            [disabled]="isProcessing()"
+            (click)="verifyOtp()"
+          >
+            @if (isProcessing()) {
+              <span class="pay-otp__spinner"></span>
+            } @else {
+              Valider le paiement
+            }
+          </button>
+        }
+
+        @case ('succes') {
+          <div class="pay-otp__success">
+            <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M20 6L9 17l-5-5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <h1>Paiement confirmé !</h1>
+            <p>Redirection vers votre espace de cours...</p>
+          </div>
+        }
+      }
+
+    </div>
+  </div>
+}

@@ -1,0 +1,1565 @@
+<div class="simulator-page">
+
+  <!-- ====================================================== -->
+  <!-- AMBIENT BACKGROUND -->
+  <!-- ====================================================== -->
+
+  <div class="ambient ambient-one"></div>
+  <div class="ambient ambient-two"></div>
+  <div class="grid-overlay"></div>
+
+
+  <!-- ====================================================== -->
+  <!-- HERO -->
+  <!-- ====================================================== -->
+
+  <section class="hero">
+
+    <div class="hero-content">
+
+      <div class="eyebrow">
+        <span class="eyebrow-dot"></span>
+        LABORATOIRE FISCAL
+      </div>
+
+      <h1>
+        Simulez.
+        <span>Comprenez.</span>
+        Décidez.
+      </h1>
+
+      <p class="hero-description">
+        Explorez votre situation fiscale grâce à des simulations
+        interactives conçues pour vous aider à anticiper vos
+        opérations et mieux comprendre leurs impacts.
+      </p>
+
+      <div class="hero-actions">
+
+        <button
+          type="button"
+          class="primary-button"
+          (click)="selectSimulator('tva')"
+        >
+          <span>Commencer une simulation</span>
+          <span class="button-arrow">→</span>
+        </button>
+
+        <button
+          type="button"
+          class="secondary-button"
+          (click)="openHistory()"
+        >
+          <span class="button-icon">◷</span>
+          <span>Historique</span>
+
+          @if (historyCount() > 0) {
+            <span class="history-count">
+              {{ historyCount() }}
+            </span>
+          }
+        </button>
+
+      </div>
+
+      <div class="hero-trust">
+
+        <div class="trust-item">
+          <span class="trust-check">✓</span>
+          Résultats instantanés
+        </div>
+
+        <div class="trust-item">
+          <span class="trust-check">✓</span>
+          Données conservées localement
+        </div>
+
+        <div class="trust-item">
+          <span class="trust-check">✓</span>
+          Interface sans complexité
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- HERO VISUAL -->
+
+    <div class="hero-visual">
+
+      <div class="orbit orbit-one"></div>
+      <div class="orbit orbit-two"></div>
+      <div class="orbit orbit-three"></div>
+
+      <div class="hero-core">
+
+        <div class="core-ring"></div>
+
+        <div class="core-content">
+          <span class="core-icon">∑</span>
+          <span class="core-label">FISCAL</span>
+          <strong>LAB</strong>
+        </div>
+
+      </div>
+
+      <div class="floating-card card-top">
+        <span class="floating-icon">🧾</span>
+
+        <div>
+          <small>TVA</small>
+          <strong>18 %</strong>
+        </div>
+      </div>
+
+      <div class="floating-card card-right">
+        <span class="floating-icon">₣</span>
+
+        <div>
+          <small>Résultat</small>
+          <strong>Instantané</strong>
+        </div>
+      </div>
+
+      <div class="floating-card card-bottom">
+        <span class="floating-icon">✓</span>
+
+        <div>
+          <small>Analyse</small>
+          <strong>Dynamique</strong>
+        </div>
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- ====================================================== -->
+  <!-- SIMULATOR SELECTOR -->
+  <!-- ====================================================== -->
+
+  <section class="simulator-selector section-container">
+
+    <div class="section-heading">
+
+      <div>
+        <span class="section-kicker">
+          CHOISISSEZ VOTRE OUTIL
+        </span>
+
+        <h2>
+          Que souhaitez-vous
+          <span>simuler ?</span>
+        </h2>
+      </div>
+
+      <button
+        type="button"
+        class="history-button"
+        (click)="openHistory()"
+      >
+        <span>◷</span>
+        Mes simulations
+
+        @if (favoriteCount() > 0) {
+          <span class="mini-badge">
+            {{ favoriteCount() }} ★
+          </span>
+        }
+      </button>
+
+    </div>
+
+
+    <div class="simulator-grid">
+
+      @for (
+        simulator of visibleSimulatorDefinitions();
+        track simulator.id
+      ) {
+
+        <button
+          type="button"
+          class="simulator-card"
+          [class.active]="activeSimulator() === simulator.id"
+          [attr.data-accent]="simulator.accent"
+          (click)="selectSimulator(simulator.id)"
+        >
+
+          <div class="card-topline">
+
+            <span class="simulator-icon">
+              {{ simulator.icon }}
+            </span>
+
+            @if (activeSimulator() === simulator.id) {
+              <span class="active-indicator">
+                ACTIF
+              </span>
+            }
+
+          </div>
+
+          <div class="simulator-card-body">
+
+            <span class="simulator-eyebrow">
+              {{ simulator.eyebrow }}
+            </span>
+
+            <h3>
+              {{ simulator.title }}
+            </h3>
+
+            <p>
+              {{ simulator.description }}
+            </p>
+
+          </div>
+
+          <div class="simulator-card-footer">
+
+            <span>
+              {{ simulator.steps.length }} étapes
+            </span>
+
+            <span class="card-arrow">
+              →
+            </span>
+
+          </div>
+
+        </button>
+
+      }
+
+    </div>
+
+  </section>
+
+
+  <!-- ====================================================== -->
+  <!-- WORKSPACE -->
+  <!-- ====================================================== -->
+
+  <section class="simulator-workspace section-container">
+
+    <div class="workspace-shell">
+
+      <!-- WORKSPACE HEADER -->
+
+      <div class="workspace-header">
+
+        <div class="workspace-title">
+
+          <div class="workspace-icon">
+            {{ activeDefinition().icon }}
+          </div>
+
+          <div>
+
+            <span>
+              {{ activeDefinition().eyebrow }}
+            </span>
+
+            <h2>
+              {{ activeDefinition().title }}
+            </h2>
+
+          </div>
+
+        </div>
+
+        <div class="workspace-status">
+          <span class="status-pulse"></span>
+          ESTIMATION
+        </div>
+
+      </div>
+
+
+      <!-- PROGRESS -->
+
+      <div class="progress-container">
+
+        <div class="progress-line">
+
+          <div
+            class="progress-fill"
+            [style.width.%]="
+              ((currentStep() - 1) / 2) * 100
+            "
+          ></div>
+
+        </div>
+
+        <div class="progress-steps">
+
+          @for (
+            step of activeDefinition().steps;
+            track step;
+            let index = $index
+          ) {
+
+            <button
+              type="button"
+              class="progress-step"
+              [class.active]="currentStep() === index + 1"
+              [class.completed]="currentStep() > index + 1"
+              (click)="goToStep(index + 1)"
+            >
+
+              <span class="step-number">
+                @if (currentStep() > index + 1) {
+                  ✓
+                } @else {
+                  {{ index + 1 }}
+                }
+              </span>
+
+              <span class="step-label">
+                {{ step }}
+              </span>
+
+            </button>
+
+          }
+
+        </div>
+
+      </div>
+
+
+      <!-- ================================================= -->
+      <!-- TVA -->
+      <!-- ================================================= -->
+
+      @if (activeSimulator() === 'tva') {
+
+        <div class="form-area">
+
+          @if (currentStep() === 1) {
+
+            <div class="intro-panel">
+
+              <div class="intro-icon">🧾</div>
+
+              <div>
+                <h3>
+                  Calculons votre TVA
+                </h3>
+
+                <p>
+                  Commencez par renseigner le montant hors taxes
+                  de votre opération.
+                </p>
+              </div>
+
+            </div>
+
+            <div class="field-grid">
+
+              <label class="field field-large">
+
+                <span class="field-label">
+                  Montant hors taxes
+                </span>
+
+                <div class="input-wrapper">
+
+                  <input
+                    type="number"
+                    min="0"
+                    [value]="tvaAmount()"
+                    (input)="updateNumber($event, 'tvaAmount')"
+                  />
+
+                  <span>FCFA</span>
+
+                </div>
+
+                <small>
+                  Montant de base de l'opération.
+                </small>
+
+              </label>
+
+            </div>
+
+          }
+
+
+          @if (currentStep() === 2) {
+
+            <div class="field-grid">
+
+              <label class="field">
+
+                <span class="field-label">
+                  Taux de TVA
+                </span>
+
+                <div class="input-wrapper">
+
+                  <input
+                    type="number"
+                    min="0"
+                    max="100"
+                    step="0.1"
+                    [value]="tvaRate()"
+                    (input)="updateNumber($event, 'tvaRate')"
+                  />
+
+                  <span>%</span>
+
+                </div>
+
+              </label>
+
+              <label class="field">
+
+                <span class="field-label">
+                  TVA déductible
+                </span>
+
+                <div class="input-wrapper">
+
+                  <input
+                    type="number"
+                    min="0"
+                    [value]="tvaDeductible()"
+                    (input)="updateNumber($event, 'tvaDeductible')"
+                  />
+
+                  <span>FCFA</span>
+
+                </div>
+
+                <small>
+                  Facultatif : montant de TVA déductible.
+                </small>
+
+              </label>
+
+            </div>
+
+            <div class="info-box">
+              <span>i</span>
+              <p>
+                Le taux proposé est une valeur de simulation.
+                Vérifiez toujours le taux réellement applicable
+                à votre opération.
+              </p>
+            </div>
+
+          }
+
+        </div>
+
+      }
+
+
+      <!-- ================================================= -->
+      <!-- SALARY -->
+      <!-- ================================================= -->
+
+      @if (activeSimulator() === 'salary') {
+
+        <div class="form-area">
+
+          @if (currentStep() === 1) {
+
+            <div class="intro-panel">
+
+              <div class="intro-icon">💰</div>
+
+              <div>
+                <h3>
+                  Votre rémunération
+                </h3>
+
+                <p>
+                  Nous allons estimer le passage du brut vers
+                  un montant net indicatif.
+                </p>
+              </div>
+
+            </div>
+
+            <div class="audience-selector">
+
+              @for (audience of audiences; track audience.value) {
+
+                <button
+                  type="button"
+                  [class.active]="
+                    selectedAudience() === audience.value
+                  "
+                  (click)="selectedAudience.set(audience.value)"
+                >
+                  <span>{{ audience.icon }}</span>
+                  {{ audience.label }}
+                </button>
+
+              }
+
+            </div>
+
+          }
+
+
+          @if (currentStep() === 2) {
+
+            <div class="field-grid">
+
+              <label class="field">
+
+                <span class="field-label">
+                  Salaire brut
+                </span>
+
+                <div class="input-wrapper">
+
+                  <input
+                    type="number"
+                    min="0"
+                    [value]="grossSalary()"
+                    (input)="updateNumber($event, 'grossSalary')"
+                  />
+
+                  <span>FCFA</span>
+
+                </div>
+
+              </label>
+
+              <label class="field">
+
+                <span class="field-label">
+                  Avantages
+                </span>
+
+                <div class="input-wrapper">
+
+                  <input
+                    type="number"
+                    min="0"
+                    [value]="salaryBenefits()"
+                    (input)="updateNumber($event, 'salaryBenefits')"
+                  />
+
+                  <span>FCFA</span>
+
+                </div>
+
+              </label>
+
+              <label class="field">
+
+                <span class="field-label">
+                  Autres retenues
+                </span>
+
+                <div class="input-wrapper">
+
+                  <input
+                    type="number"
+                    min="0"
+                    [value]="salaryOtherDeductions()"
+                    (input)="updateNumber($event, 'salaryOtherDeductions')"
+                  />
+
+                  <span>FCFA</span>
+
+                </div>
+
+              </label>
+
+            </div>
+
+          }
+
+        </div>
+
+      }
+
+
+      <!-- ================================================= -->
+      <!-- COMPANY TAX -->
+      <!-- ================================================= -->
+
+      @if (activeSimulator() === 'company-tax') {
+
+        <div class="form-area">
+
+          @if (currentStep() === 1) {
+
+            <div class="intro-panel">
+
+              <div class="intro-icon">🏢</div>
+
+              <div>
+                <h3>
+                  Fiscalité de votre entreprise
+                </h3>
+
+                <p>
+                  Entrez le résultat imposable que vous souhaitez
+                  utiliser pour la simulation.
+                </p>
+              </div>
+
+            </div>
+
+          }
+
+
+          @if (currentStep() === 2) {
+
+            <div class="field-grid">
+
+              <label class="field">
+
+                <span class="field-label">
+                  Résultat imposable
+                </span>
+
+                <div class="input-wrapper">
+
+                  <input
+                    type="number"
+                    min="0"
+                    [value]="taxableProfit()"
+                    (input)="updateNumber($event, 'taxableProfit')"
+                  />
+
+                  <span>FCFA</span>
+
+                </div>
+
+              </label>
+
+              <label class="field">
+
+                <span class="field-label">
+                  Taux d'imposition simulé
+                </span>
+
+                <div class="input-wrapper">
+
+                  <input
+                    type="number"
+                    min="0"
+                    max="100"
+                    step="0.1"
+                    [value]="companyRate()"
+                    (input)="updateNumber($event, 'companyRate')"
+                  />
+
+                  <span>%</span>
+
+                </div>
+
+              </label>
+
+            </div>
+
+            <div class="info-box warning">
+              <span>!</span>
+              <p>
+                Le taux est entièrement modifiable afin de vous
+                permettre d'adapter la simulation à votre régime.
+              </p>
+            </div>
+
+          }
+
+        </div>
+
+      }
+
+
+      <!-- ================================================= -->
+      <!-- WITHHOLDING -->
+      <!-- ================================================= -->
+
+      @if (activeSimulator() === 'withholding') {
+
+        <div class="form-area">
+
+          @if (currentStep() === 1) {
+
+            <div class="intro-panel">
+
+              <div class="intro-icon">📊</div>
+
+              <div>
+                <h3>
+                  Quelle opération souhaitez-vous analyser ?
+                </h3>
+
+                <p>
+                  Sélectionnez une nature d'opération pour
+                  contextualiser votre simulation.
+                </p>
+              </div>
+
+            </div>
+
+            <div class="select-wrapper">
+
+              <select
+                [value]="withholdingNature()"
+                (change)="updateSelect($event, 'withholdingNature')"
+              >
+                <option value="prestation">
+                  Prestation de services
+                </option>
+
+                <option value="loyer">
+                  Loyer
+                </option>
+
+                <option value="commission">
+                  Commission
+                </option>
+
+                <option value="autre">
+                  Autre opération
+                </option>
+              </select>
+
+              <span>⌄</span>
+
+            </div>
+
+          }
+
+
+          @if (currentStep() === 2) {
+
+            <div class="field-grid">
+
+              <label class="field">
+
+                <span class="field-label">
+                  Montant brut
+                </span>
+
+                <div class="input-wrapper">
+
+                  <input
+                    type="number"
+                    min="0"
+                    [value]="withholdingAmount()"
+                    (input)="updateNumber($event, 'withholdingAmount')"
+                  />
+
+                  <span>FCFA</span>
+
+                </div>
+
+              </label>
+
+              <label class="field">
+
+                <span class="field-label">
+                  Taux de retenue
+                </span>
+
+                <div class="input-wrapper">
+
+                  <input
+                    type="number"
+                    min="0"
+                    max="100"
+                    step="0.1"
+                    [value]="withholdingRate()"
+                    (input)="updateNumber($event, 'withholdingRate')"
+                  />
+
+                  <span>%</span>
+
+                </div>
+
+              </label>
+
+            </div>
+
+          }
+
+        </div>
+
+      }
+
+
+      <!-- ================================================= -->
+      <!-- HT TTC -->
+      <!-- ================================================= -->
+
+      @if (activeSimulator() === 'ht-ttc') {
+
+        <div class="form-area">
+
+          @if (currentStep() === 1) {
+
+            <div class="conversion-switch">
+
+              <button
+                type="button"
+                [class.active]="
+                  conversionDirection() === 'ht-to-ttc'
+                "
+                (click)="
+                  conversionDirection.set('ht-to-ttc')
+                "
+              >
+                HT → TTC
+              </button>
+
+              <button
+                type="button"
+                [class.active]="
+                  conversionDirection() === 'ttc-to-ht'
+                "
+                (click)="
+                  conversionDirection.set('ttc-to-ht')
+                "
+              >
+                TTC → HT
+              </button>
+
+            </div>
+
+            <div class="intro-panel">
+
+              <div class="intro-icon">🧮</div>
+
+              <div>
+                <h3>
+                  Conversion instantanée
+                </h3>
+
+                <p>
+                  Choisissez le sens de conversion puis
+                  renseignez le montant.
+                </p>
+              </div>
+
+            </div>
+
+          }
+
+
+          @if (currentStep() === 2) {
+
+            <div class="field-grid">
+
+              <label class="field">
+
+                <span class="field-label">
+                  Montant
+                </span>
+
+                <div class="input-wrapper">
+
+                  <input
+                    type="number"
+                    min="0"
+                    [value]="conversionAmount()"
+                    (input)="updateNumber($event, 'conversionAmount')"
+                  />
+
+                  <span>FCFA</span>
+
+                </div>
+
+              </label>
+
+              <label class="field">
+
+                <span class="field-label">
+                  Taux
+                </span>
+
+                <div class="input-wrapper">
+
+                  <input
+                    type="number"
+                    min="0"
+                    max="100"
+                    step="0.1"
+                    [value]="conversionRate()"
+                    (input)="updateNumber($event, 'conversionRate')"
+                  />
+
+                  <span>%</span>
+
+                </div>
+
+              </label>
+
+            </div>
+
+          }
+
+        </div>
+
+      }
+
+
+      <!-- ================================================= -->
+      <!-- DIAGNOSTIC -->
+      <!-- ================================================= -->
+
+      @if (activeSimulator() === 'diagnostic') {
+
+        <div class="diagnostic-area">
+
+          @if (currentStep() === 1) {
+
+            <div class="diagnostic-intro">
+
+              <div class="diagnostic-symbol">
+                🧭
+              </div>
+
+              <div>
+                <span class="section-kicker">
+                  ORIENTATION
+                </span>
+
+                <h3>
+                  Construisons votre profil fiscal
+                </h3>
+
+                <p>
+                  Quelques questions suffisent pour identifier
+                  les principaux sujets à vérifier.
+                </p>
+              </div>
+
+            </div>
+
+            <div class="diagnostic-question">
+
+              <div class="question-number">
+                01
+              </div>
+
+              <div class="question-content">
+
+                <h4>
+                  {{ diagnosticQuestions[0].question }}
+                </h4>
+
+                <p>
+                  {{ diagnosticQuestions[0].description }}
+                </p>
+
+                <div class="option-grid">
+
+                  @for (
+                    option of diagnosticQuestions[0].options;
+                    track option.value
+                  ) {
+
+                    <button
+                      type="button"
+                      class="diagnostic-option"
+                      [class.selected]="
+                        isDiagnosticSelected(
+                          diagnosticQuestions[0].id,
+                          option.value
+                        )
+                      "
+                      (click)="
+                        answerDiagnostic(
+                          diagnosticQuestions[0].id,
+                          option.value
+                        )
+                      "
+                    >
+                      <span>{{ option.icon }}</span>
+                      {{ option.label }}
+                    </button>
+
+                  }
+
+                </div>
+
+              </div>
+
+            </div>
+
+          }
+
+
+          @if (currentStep() === 2) {
+
+            <div class="diagnostic-list">
+
+              @for (
+                question of diagnosticQuestions.slice(1);
+                track question.id;
+                let index = $index
+              ) {
+
+                <div class="diagnostic-question compact">
+
+                  <div class="question-number">
+                    {{ '0' + (index + 2) }}
+                  </div>
+
+                  <div class="question-content">
+
+                    <h4>
+                      {{ question.question }}
+                    </h4>
+
+                    <p>
+                      {{ question.description }}
+                    </p>
+
+                    <div class="option-grid">
+
+                      @for (
+                        option of question.options;
+                        track option.value
+                      ) {
+
+                        <button
+                          type="button"
+                          class="diagnostic-option"
+                          [class.selected]="
+                            isDiagnosticSelected(
+                              question.id,
+                              option.value
+                            )
+                          "
+                          (click)="
+                            answerDiagnostic(
+                              question.id,
+                              option.value
+                            )
+                          "
+                        >
+                          <span>
+                            {{ option.icon }}
+                          </span>
+
+                          {{ option.label }}
+                        </button>
+
+                      }
+
+                    </div>
+
+                  </div>
+
+                </div>
+
+              }
+
+            </div>
+
+          }
+
+        </div>
+
+      }
+
+
+      <!-- ================================================= -->
+      <!-- ACTIONS -->
+      <!-- ================================================= -->
+
+      <div class="workspace-actions">
+
+        <button
+          type="button"
+          class="ghost-button"
+          [disabled]="currentStep() === 1"
+          (click)="previousStep()"
+        >
+          ← Retour
+        </button>
+
+        <div class="action-right">
+
+          @if (currentStep() < 3) {
+
+            <button
+              type="button"
+              class="primary-button"
+              (click)="nextStep()"
+            >
+              Continuer
+              <span>→</span>
+            </button>
+
+          } @else {
+
+            <button
+              type="button"
+              class="primary-button calculate-button"
+              [disabled]="isCalculating()"
+              (click)="runSimulation()"
+            >
+
+              @if (isCalculating()) {
+                <span class="spinner"></span>
+                Calcul en cours...
+              } @else {
+                Lancer la simulation
+                <span>↗</span>
+              }
+
+            </button>
+
+          }
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- ====================================================== -->
+  <!-- RESULT -->
+  <!-- ====================================================== -->
+
+  @if (showResult() && result(); as simulation) {
+
+    <section class="result-section section-container">
+
+      <div class="result-shell">
+
+        <div class="result-header">
+
+          <div>
+
+            <span class="section-kicker">
+              RÉSULTAT DE LA SIMULATION
+            </span>
+
+            <h2>
+              {{ simulation.title }}
+            </h2>
+
+            <p>
+              {{ simulation.subtitle }}
+            </p>
+
+          </div>
+
+          @if (simulation.score !== undefined) {
+
+            <div class="score-ring">
+
+              <div class="score-inner">
+
+                <strong>
+                  {{ simulation.score }}
+                </strong>
+
+                <span>/100</span>
+
+              </div>
+
+            </div>
+
+          }
+
+        </div>
+
+
+        <div class="result-values">
+
+          @for (
+            value of simulation.values;
+            track value.label
+          ) {
+
+            <div
+              class="result-value"
+              [class.emphasis]="value.emphasis"
+            >
+
+              <span>
+                {{ value.label }}
+              </span>
+
+              <strong>
+                {{ value.value }}
+              </strong>
+
+            </div>
+
+          }
+
+        </div>
+
+
+        <div class="result-analysis">
+
+          <div class="analysis-icon">
+            ✦
+          </div>
+
+          <div>
+
+            <span>
+              INTERPRÉTATION
+            </span>
+
+            <p>
+              {{ simulation.explanation }}
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <div class="result-actions">
+
+          <button
+            type="button"
+            class="secondary-button"
+            (click)="copyResult()"
+          >
+            <span>
+              {{ copied() ? '✓' : '⧉' }}
+            </span>
+
+            {{ copied() ? 'Copié !' : 'Copier' }}
+          </button>
+
+          <button
+            type="button"
+            class="secondary-button"
+            (click)="shareResult()"
+          >
+            <span>↗</span>
+            Partager
+          </button>
+
+          <button
+            type="button"
+            class="secondary-button"
+            (click)="printResult()"
+          >
+            <span>⤓</span>
+            Exporter
+          </button>
+
+          <button
+            type="button"
+            class="primary-button"
+            (click)="resetSimulation()"
+          >
+            Nouvelle simulation
+            <span>+</span>
+          </button>
+
+        </div>
+
+
+        <div class="result-disclaimer">
+
+          <span>!</span>
+
+          <p>
+            <strong>Simulation indicative.</strong>
+            Ce résultat ne constitue ni une déclaration fiscale,
+            ni un avis fiscal, ni une validation de votre situation.
+            Vérifiez les règles applicables à votre cas avant toute
+            démarche officielle.
+          </p>
+
+        </div>
+
+      </div>
+
+    </section>
+
+  }
+
+
+  <!-- ====================================================== -->
+  <!-- FEATURES -->
+  <!-- ====================================================== -->
+
+  <section class="features-section section-container">
+
+    <div class="section-heading centered">
+
+      <span class="section-kicker">
+        UNE EXPÉRIENCE PENSÉE POUR VOUS
+      </span>
+
+      <h2>
+        Plus qu'un calculateur.
+        <span>Un copilote fiscal.</span>
+      </h2>
+
+      <p>
+        L’objectif n’est pas seulement de donner un chiffre,
+        mais de vous aider à comprendre ce chiffre.
+      </p>
+
+    </div>
+
+
+    <div class="features-grid">
+
+      <article class="feature-card">
+
+        <span class="feature-number">
+          01
+        </span>
+
+        <span class="feature-icon">
+          ⚡
+        </span>
+
+        <h3>
+          Instantané
+        </h3>
+
+        <p>
+          Les résultats sont calculés directement dans votre
+          navigateur, sans attendre un traitement serveur.
+        </p>
+
+      </article>
+
+
+      <article class="feature-card">
+
+        <span class="feature-number">
+          02
+        </span>
+
+        <span class="feature-icon">
+          🧠
+        </span>
+
+        <h3>
+          Compréhensible
+        </h3>
+
+        <p>
+          Chaque résultat est accompagné d'une explication
+          afin de comprendre ce qui a été calculé.
+        </p>
+
+      </article>
+
+
+      <article class="feature-card">
+
+        <span class="feature-number">
+          03
+        </span>
+
+        <span class="feature-icon">
+          🔐
+        </span>
+
+        <h3>
+          Privé
+        </h3>
+
+        <p>
+          L’historique est conservé localement dans votre
+          navigateur et ne nécessite pas de compte.
+        </p>
+
+      </article>
+
+    </div>
+
+  </section>
+
+
+  <!-- ====================================================== -->
+  <!-- HISTORY DRAWER -->
+  <!-- ====================================================== -->
+
+  @if (showHistory()) {
+
+    <div
+      class="drawer-backdrop"
+      (click)="closeHistory()"
+    ></div>
+
+    <aside class="history-drawer">
+
+      <div class="drawer-header">
+
+        <div>
+
+          <span class="section-kicker">
+            VOTRE ESPACE
+          </span>
+
+          <h2>
+            Historique
+          </h2>
+
+        </div>
+
+        <button
+          type="button"
+          class="close-button"
+          (click)="closeHistory()"
+        >
+          ×
+        </button>
+
+      </div>
+
+
+      <div class="drawer-content">
+
+        @if (history().length === 0) {
+
+          <div class="empty-history">
+
+            <div class="empty-icon">
+              ◷
+            </div>
+
+            <h3>
+              Aucune simulation
+            </h3>
+
+            <p>
+              Vos prochaines simulations apparaîtront ici.
+            </p>
+
+            <button
+              type="button"
+              class="primary-button"
+              (click)="closeHistory()"
+            >
+              Commencer
+              <span>→</span>
+            </button>
+
+          </div>
+
+        } @else {
+
+          <div class="history-toolbar">
+
+            <span>
+              {{ historyCount() }} simulation(s)
+            </span>
+
+            <button
+              type="button"
+              (click)="clearHistory()"
+            >
+              Effacer
+            </button>
+
+          </div>
+
+
+          <div class="history-list">
+
+            @for (
+              item of history();
+              track item.id
+            ) {
+
+              <article class="history-item">
+
+                <div class="history-item-icon">
+                  {{ simulatorIcon(item.simulator) }}
+                </div>
+
+                <div class="history-item-content">
+
+                  <strong>
+                    {{ item.title }}
+                  </strong>
+
+                  <span>
+                    {{ item.amount }}
+                  </span>
+
+                  <small>
+                    {{ item.date }}
+                  </small>
+
+                </div>
+
+                <button
+                  type="button"
+                  class="favorite-button"
+                  [class.active]="item.favorite"
+                  (click)="toggleFavorite(item.id)"
+                >
+                  {{ item.favorite ? '★' : '☆' }}
+                </button>
+
+              </article>
+
+            }
+
+          </div>
+
+        }
+
+      </div>
+
+    </aside>
+
+  }
+
+
+  <!-- ====================================================== -->
+  <!-- FOOTER DISCLAIMER -->
+  <!-- ====================================================== -->
+
+  <section class="bottom-disclaimer section-container">
+
+    <div class="disclaimer-card">
+
+      <div class="disclaimer-symbol">
+        ⚖
+      </div>
+
+      <div>
+
+        <span>
+          À PROPOS DES SIMULATIONS
+        </span>
+
+        <h3>
+          Un outil d'aide à la décision, pas une déclaration.
+        </h3>
+
+        <p>
+          Les simulations proposées sont destinées à fournir
+          des estimations et à faciliter la compréhension des
+          mécanismes fiscaux. Les paramètres doivent être vérifiés
+          selon votre régime, votre situation et la réglementation
+          applicable.
+        </p>
+
+      </div>
+
+    </div>
+
+  </section>
+
+</div>

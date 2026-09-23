@@ -1,0 +1,75 @@
+<div class="live-host">
+
+  <header class="live-host__header">
+    <a routerLink="/formateur/tableau-de-bord" class="live-host__back">
+      ← Retour au tableau de bord
+    </a>
+    <span class="live-host__title">
+      {{ course()?.title ?? courseId() }} — Animation en direct
+    </span>
+  </header>
+
+  @if (!isLive()) {
+
+    <div class="live-host__start">
+      <h2>Prêt à démarrer la séance Zoom ?</h2>
+      <p>
+        Dès que vous démarrez, une réunion Zoom sera créée et les apprenants
+        inscrits verront apparaître le bouton pour rejoindre.
+      </p>
+
+      @if (error(); as err) {
+        <p class="live-host__error">⚠️ {{ err }}</p>
+      }
+
+      <button
+        type="button"
+        class="live-host__start-btn"
+        (click)="startSession()"
+        [disabled]="starting()"
+      >
+        @if (starting()) {
+          ⏳ Création de la réunion…
+        } @else {
+          🎥 Démarrer la séance Zoom
+        }
+      </button>
+    </div>
+
+  } @else {
+
+    <div class="live-host__stage">
+      <div class="zoom-host-card">
+        <div class="zoom-host-card__icon">🎥</div>
+        <h2>Votre réunion Zoom est active</h2>
+        <p>
+          Les apprenants peuvent rejoindre la séance depuis leur espace.
+          Cliquez ci-dessous pour ouvrir Zoom en tant qu'hôte.
+        </p>
+
+        @if (error(); as err) {
+          <p class="zoom-host-card__error">⚠️ {{ err }}</p>
+        }
+
+        <button
+          type="button"
+          class="zoom-host-card__btn"
+          (click)="openHostRoom()"
+          [disabled]="loadingHostUrl()"
+        >
+          @if (loadingHostUrl()) {
+            ⏳ Chargement…
+          } @else {
+            ▶ Rejoindre la réunion Zoom (hôte)
+          }
+        </button>
+      </div>
+    </div>
+
+    <button type="button" class="live-host__end-btn" (click)="endSession()">
+      ⏹ Terminer la séance
+    </button>
+
+  }
+
+</div>

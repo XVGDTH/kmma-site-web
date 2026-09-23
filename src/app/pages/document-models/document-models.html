@@ -1,0 +1,842 @@
+<main class="documents-page">
+
+  <!-- =====================================================
+       BACKGROUND
+  ====================================================== -->
+
+  <div class="ambient ambient-one"></div>
+  <div class="ambient ambient-two"></div>
+
+  <div class="grid-background"></div>
+
+
+  <!-- =====================================================
+       HERO
+  ====================================================== -->
+
+  <section class="documents-hero">
+
+    <div class="hero-inner">
+
+      <div class="hero-copy">
+
+        <span class="eyebrow">
+          CENTRE DOCUMENTAIRE FISCAL
+        </span>
+
+        <h1>
+          Tous vos modèles.
+          <span>Un seul espace.</span>
+        </h1>
+
+        <p>
+          Retrouvez rapidement les formulaires, déclarations,
+          états et documents fiscaux dont vous avez besoin,
+          directement depuis votre espace professionnel.
+        </p>
+
+
+        <div class="hero-actions">
+
+          <button
+            type="button"
+            class="primary-action"
+            (click)="openOfficialSource()"
+          >
+            <span>Explorer les documents officiels</span>
+            <span class="arrow">↗</span>
+          </button>
+
+          <button
+            type="button"
+            class="secondary-action"
+            (click)="toggleFavoritesOnly()"
+          >
+            <span>☆</span>
+            Mes favoris
+          </button>
+
+        </div>
+
+      </div>
+
+
+      <!-- HERO ORBIT -->
+
+      <div class="hero-orbit">
+
+        <div class="orbit orbit-one"></div>
+        <div class="orbit orbit-two"></div>
+        <div class="orbit orbit-three"></div>
+
+        <div class="orbit-core">
+
+          <div class="core-icon">
+            ◫
+          </div>
+
+          <strong>
+            {{ totalDocuments() }}
+          </strong>
+
+          <small>
+            documents
+          </small>
+
+        </div>
+
+        <span class="orbit-dot dot-one"></span>
+        <span class="orbit-dot dot-two"></span>
+        <span class="orbit-dot dot-three"></span>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- =====================================================
+       COMMAND BAR
+  ====================================================== -->
+
+  <section class="command-section">
+
+    <div class="command-card">
+
+      <div class="search-box">
+
+        <span class="search-icon">
+          ⌕
+        </span>
+
+        <input
+          type="search"
+          placeholder="Rechercher un document, une déclaration, une taxe..."
+          [value]="searchTerm()"
+          (input)="onSearch($any($event.target).value)"
+        />
+
+        @if (searchTerm()) {
+
+          <button
+            type="button"
+            class="clear-search"
+            aria-label="Effacer la recherche"
+            (click)="onSearch('')"
+          >
+            ×
+          </button>
+
+        }
+
+      </div>
+
+
+      <div class="command-divider"></div>
+
+
+      <div class="audience-selector">
+
+        <button
+          type="button"
+          [class.active]="activeAudience() === 'all'"
+          (click)="setAudience('all')"
+        >
+          Tous
+        </button>
+
+        <button
+          type="button"
+          [class.active]="activeAudience() === 'entreprise'"
+          (click)="setAudience('entreprise')"
+        >
+          Entreprises
+        </button>
+
+        <button
+          type="button"
+          [class.active]="activeAudience() === 'particulier'"
+          (click)="setAudience('particulier')"
+        >
+          Particuliers
+        </button>
+
+        <button
+          type="button"
+          [class.active]="activeAudience() === 'comptable'"
+          (click)="setAudience('comptable')"
+        >
+          Comptables
+        </button>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- =====================================================
+       KPI
+  ====================================================== -->
+
+  <section class="kpi-section">
+
+    <div class="kpi-grid">
+
+      <article class="kpi-card">
+
+        <span class="kpi-icon">
+          ◫
+        </span>
+
+        <div>
+          <strong>
+            {{ totalDocuments() }}
+          </strong>
+
+          <span>
+            modèles disponibles
+          </span>
+        </div>
+
+      </article>
+
+
+      <article class="kpi-card">
+
+        <span class="kpi-icon">
+          ◈
+        </span>
+
+        <div>
+          <strong>
+            {{ officialDocuments() }}
+          </strong>
+
+          <span>
+            sources officielles
+          </span>
+        </div>
+
+      </article>
+
+
+      <article class="kpi-card">
+
+        <span class="kpi-icon">
+          ◎
+        </span>
+
+        <div>
+          <strong>
+            {{ totalCategories() }}
+          </strong>
+
+          <span>
+            catégories fiscales
+          </span>
+        </div>
+
+      </article>
+
+
+      <article class="kpi-card accent">
+
+        <span class="kpi-icon">
+          ☆
+        </span>
+
+        <div>
+          <strong>
+            {{ favorites().length }}
+          </strong>
+
+          <span>
+            dans vos favoris
+          </span>
+        </div>
+
+      </article>
+
+    </div>
+
+  </section>
+
+
+  <!-- =====================================================
+       CATEGORY NAV
+  ====================================================== -->
+
+  <section class="category-section">
+
+    <div class="section-heading">
+
+      <div>
+
+        <span class="eyebrow">
+          BIBLIOTHÈQUE
+        </span>
+
+        <h2>
+          Trouvez votre document
+        </h2>
+
+      </div>
+
+      <span class="result-counter">
+        {{ filteredDocuments().length }}
+        résultat(s)
+      </span>
+
+    </div>
+
+
+    <div class="category-list">
+
+      @for (
+        category of categories;
+        track category.id
+      ) {
+
+        <button
+          type="button"
+          class="category-button"
+          [class.active]="activeCategory() === category.id"
+          (click)="setCategory(category.id)"
+        >
+
+          <span class="category-symbol">
+            {{ category.icon }}
+          </span>
+
+          <span>
+            {{ category.label }}
+          </span>
+
+        </button>
+
+      }
+
+    </div>
+
+  </section>
+
+
+  <!-- =====================================================
+       FEATURED
+  ====================================================== -->
+
+  @if (
+    activeCategory() === 'all' &&
+    !searchTerm() &&
+    !showOnlyFavorites()
+  ) {
+
+    <section class="featured-section">
+
+      <div class="section-heading">
+
+        <div>
+
+          <span class="eyebrow">
+            SÉLECTION
+          </span>
+
+          <h2>
+            Documents essentiels
+          </h2>
+
+        </div>
+
+      </div>
+
+
+      <div class="featured-grid">
+
+        @for (
+          document of featuredDocuments();
+          track document.id
+        ) {
+
+          <article
+            class="featured-card"
+            (click)="openDocument(document)"
+          >
+
+            <div class="featured-top">
+
+              <span class="document-format">
+                {{ document.format }}
+              </span>
+
+              <button
+                type="button"
+                class="favorite-button"
+                [class.active]="isFavorite(document.id)"
+                (click)="$event.stopPropagation(); toggleFavorite(document.id)"
+              >
+                {{ isFavorite(document.id) ? '★' : '☆' }}
+              </button>
+
+            </div>
+
+
+            <div class="document-symbol">
+
+              {{ categoryIcon(document.category) }}
+
+            </div>
+
+
+            <span class="document-category">
+
+              {{ document.categoryLabel }}
+
+            </span>
+
+
+            <h3>
+              {{ document.title }}
+            </h3>
+
+
+            <p>
+              {{ document.description }}
+            </p>
+
+
+            <div class="featured-footer">
+
+              <span>
+                Source officielle
+              </span>
+
+              <span class="open-arrow">
+                ↗
+              </span>
+
+            </div>
+
+          </article>
+
+        }
+
+      </div>
+
+    </section>
+
+  }
+
+
+  <!-- =====================================================
+       DOCUMENT GRID
+  ====================================================== -->
+
+  <section class="documents-section">
+
+    <div class="section-heading">
+
+      <div>
+
+        <span class="eyebrow">
+          DOCUMENTS
+        </span>
+
+        <h2>
+          Bibliothèque fiscale
+        </h2>
+
+      </div>
+
+      @if (
+        searchTerm() ||
+        activeCategory() !== 'all' ||
+        activeAudience() !== 'all' ||
+        showOnlyFavorites()
+      ) {
+
+        <button
+          type="button"
+          class="reset-button"
+          (click)="resetFilters()"
+        >
+          Réinitialiser les filtres
+        </button>
+
+      }
+
+    </div>
+
+
+    @if (filteredDocuments().length) {
+
+      <div class="documents-grid">
+
+        @for (
+          document of filteredDocuments();
+          track document.id
+        ) {
+
+          <article
+            class="document-card"
+            (click)="openDocument(document)"
+          >
+
+            <div class="card-top">
+
+              <span class="category-badge">
+
+                {{ categoryIcon(document.category) }}
+
+                {{ document.categoryLabel }}
+
+              </span>
+
+
+              <button
+                type="button"
+                class="favorite-button"
+                [class.active]="isFavorite(document.id)"
+                [attr.aria-label]="
+                  isFavorite(document.id)
+                    ? 'Retirer des favoris'
+                    : 'Ajouter aux favoris'
+                "
+                (click)="$event.stopPropagation(); toggleFavorite(document.id)"
+              >
+
+                {{ isFavorite(document.id) ? '★' : '☆' }}
+
+              </button>
+
+            </div>
+
+
+            <div class="file-preview">
+
+              <div class="file-glow"></div>
+
+              <div class="file-paper">
+
+                <div class="file-paper-top">
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                </div>
+
+                <div class="file-lines">
+
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                  <span></span>
+
+                </div>
+
+                <strong>
+                  {{ document.format }}
+                </strong>
+
+              </div>
+
+            </div>
+
+
+            <div class="document-content">
+
+              <div class="document-meta">
+
+                @if (document.official) {
+
+                  <span class="verified">
+
+                    ✓ Officiel
+
+                  </span>
+
+                }
+
+                <span>
+                  {{ document.date }}
+                </span>
+
+              </div>
+
+
+              <h3>
+                {{ document.title }}
+              </h3>
+
+
+              <p>
+                {{ document.description }}
+              </p>
+
+
+              <div class="tag-list">
+
+                @for (
+                  tag of document.tags.slice(0, 3);
+                  track tag
+                ) {
+
+                  <span>
+                    #{{ tag }}
+                  </span>
+
+                }
+
+              </div>
+
+            </div>
+
+
+            <div class="card-footer">
+
+              <span>
+                Consulter
+              </span>
+
+              <span class="card-arrow">
+                →
+              </span>
+
+            </div>
+
+          </article>
+
+        }
+
+      </div>
+
+    }
+
+    @else {
+
+      <div class="empty-state">
+
+        <div class="empty-icon">
+          ⌕
+        </div>
+
+        <h3>
+          Aucun document trouvé
+        </h3>
+
+        <p>
+          Essayez une autre recherche ou modifiez vos filtres.
+        </p>
+
+        <button
+          type="button"
+          (click)="resetFilters()"
+        >
+          Réinitialiser
+        </button>
+
+      </div>
+
+    }
+
+  </section>
+
+
+  <!-- =====================================================
+       OFFICIAL SOURCE
+  ====================================================== -->
+
+  <section class="official-section">
+
+    <div class="official-card">
+
+      <div class="official-emblem">
+        ✓
+      </div>
+
+      <div class="official-content">
+
+        <span class="eyebrow">
+          SOURCE DE RÉFÉRENCE
+        </span>
+
+        <h2>
+          Les documents restent sous contrôle de leur source officielle.
+        </h2>
+
+        <p>
+          Cette bibliothèque facilite l’accès aux modèles.
+          Les documents officiels sont consultés directement
+          depuis les ressources de la Direction Générale des Impôts.
+        </p>
+
+      </div>
+
+
+      <button
+        type="button"
+        class="official-button"
+        (click)="openOfficialSource()"
+      >
+        Voir la bibliothèque DGI
+        <span>↗</span>
+      </button>
+
+    </div>
+
+  </section>
+
+
+  <!-- =====================================================
+       DETAIL DRAWER
+  ====================================================== -->
+
+  @if (selectedDocument(); as document) {
+
+    <div
+      class="document-overlay"
+      (click)="closeDocument()"
+    >
+
+      <aside
+        class="document-drawer"
+        (click)="$event.stopPropagation()"
+      >
+
+        <button
+          type="button"
+          class="drawer-close"
+          aria-label="Fermer"
+          (click)="closeDocument()"
+        >
+          ×
+        </button>
+
+
+        <div class="drawer-file">
+
+          <div class="drawer-paper">
+
+            <strong>
+              {{ document.format }}
+            </strong>
+
+            <span>
+              DOCUMENT
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <span class="drawer-category">
+          {{ document.categoryLabel }}
+        </span>
+
+
+        <h2>
+          {{ document.title }}
+        </h2>
+
+
+        <p class="drawer-description">
+          {{ document.description }}
+        </p>
+
+
+        <div class="drawer-status">
+
+          <div>
+
+            <span>
+              Source
+            </span>
+
+            <strong>
+              {{ document.source }}
+            </strong>
+
+          </div>
+
+          <div>
+
+            <span>
+              Version
+            </span>
+
+            <strong>
+              {{ document.version || 'Disponible' }}
+            </strong>
+
+          </div>
+
+        </div>
+
+
+        <div class="drawer-tags">
+
+          @for (
+            tag of document.tags;
+            track tag
+          ) {
+
+            <span>
+              #{{ tag }}
+            </span>
+
+          }
+
+        </div>
+
+
+        <div class="drawer-actions">
+
+          <a
+            class="download-button"
+            [href]="document.url"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <span>↗</span>
+            Ouvrir le document
+          </a>
+
+
+          <button
+            type="button"
+            class="drawer-favorite"
+            [class.active]="isFavorite(document.id)"
+            (click)="toggleFavorite(document.id)"
+          >
+
+            {{ isFavorite(document.id)
+              ? '★ Retirer des favoris'
+              : '☆ Ajouter aux favoris'
+            }}
+
+          </button>
+
+        </div>
+
+
+        <div class="drawer-notice">
+
+          <span>✓</span>
+
+          <p>
+            Vous êtes redirigé vers la source officielle
+            du document. Vérifiez toujours la version en vigueur
+            avant utilisation.
+          </p>
+
+        </div>
+
+      </aside>
+
+    </div>
+
+  }
+
+</main>

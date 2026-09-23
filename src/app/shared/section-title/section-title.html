@@ -1,0 +1,14 @@
+<div class="section-title" [class.section-title--centered]="centered()" [class.section-title--dark]="theme() === 'dark'">
+  @if (eyebrow()) {
+    <span class="section-title__eyebrow">
+      <span class="section-title__dash"></span>
+      {{ eyebrow() }}
+    </span>
+  }
+
+  <h2 class="section-title__title">{{ title() }}</h2>
+
+  @if (description()) {
+    <p class="section-title__desc">{{ description() }}</p>
+  }
+</div>

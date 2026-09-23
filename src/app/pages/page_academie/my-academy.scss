@@ -1,0 +1,967 @@
+@use 'styles/colors';
+@use 'styles/typography';
+@use 'styles/responsive';
+
+.academy-hero,
+.academy-topics,
+.academy-partners,
+.academy-pricing,
+.academy-banner,
+.academy-diplomas,
+.academy-enterprise,
+.academy-steps {
+  --gradient-navy-gold: linear-gradient(135deg, var(--navy-900) 0%, var(--navy-950, #050c22) 45%, var(--gold-300) 100%);
+}
+
+// --- Hero -------------------------------------------------------------------
+.academy-hero {
+  background: var(--navy-950, #050c22);
+  padding: clamp(140px, 20vw, 180px) 1.5rem clamp(3rem, 6vw, 4.5rem);
+  // le padding-top compense le header fixe + le bandeau haut
+}
+
+.academy-hero__container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.academy-hero__breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+  color: var(--slate-300);
+  margin-bottom: 18px;
+
+  a {
+    color: var(--slate-300);
+    transition: color 0.2s ease;
+
+    &:hover {
+      color: var(--gold-300);
+    }
+  }
+
+  span:last-child {
+    color: var(--gold-300);
+    font-weight: 600;
+  }
+}
+
+.academy-hero__title {
+  color: var(--white);
+  font-family: var(--font-display);
+  font-size: clamp(2.1rem, 4vw, 3.2rem);
+  font-weight: 700;
+  margin: 0 0 14px;
+}
+// couleur du bouton mon espace apprenant
+.academy-hero__title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 14px;
+}
+
+.academy-hero__title-row .academy-hero__title {
+  margin-bottom: 0; // le gap du parent gère déjà l'espacement
+}
+
+.academy-hero__account-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--slate-300);
+  font-size: 0.9rem;
+  font-weight: 500;
+  padding: 9px 16px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  white-space: nowrap;
+  transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+
+  &:hover {
+    color: var(--white);
+    border-color: var(--gold-300);
+    background: rgba(255, 255, 255, 0.05);
+  }
+}
+
+//fin de cette section
+
+.academy-hero__subtitle {
+  color: var(--slate-300);
+  font-size: clamp(1rem, 1.3vw, 1.15rem);
+  max-width: 640px;
+  line-height: 1.6;
+  margin: 0;
+}
+
+// --- Section "Explorez nos parcours" ----------------------------------------
+.academy-topics {
+  background: linear-gradient(135deg, #fbeed9 0%, #f4e2d0 45%, #eadcf2 100%);
+  padding: clamp(3rem, 6vw, 5rem) 1.5rem clamp(5rem, 8vw, 7rem);
+}
+
+.academy-topics__card {
+  max-width: 1200px;
+  margin: 0 auto;
+  background: var(--white);
+  border-radius: 32px;
+  box-shadow: var(--shadow-elevated, 0 24px 60px rgba(5, 12, 34, 0.12));
+  padding: clamp(1.75rem, 4vw, 3rem);
+}
+
+.academy-topics__container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.academy-topics__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.academy-topics__title {
+  color: var(--navy-900);
+  font-family: var(--font-display);
+  font-size: clamp(1.7rem, 3vw, 2.4rem);
+  font-weight: 700;
+  margin: 0;
+}
+
+.academy-topics__see-all {
+  color: var(--gold-300);
+  font-weight: 700;
+  font-size: 0.95rem;
+  transition: opacity 0.2s ease;
+
+  &:hover {
+    opacity: 0.75;
+  }
+}
+
+.academy-topics__underline {
+  display: block;
+  width: 64px;
+  height: 4px;
+  border-radius: 4px;
+  background: var(--gradient-gold);
+  margin: 6px 0 clamp(2rem, 4vw, 3rem);
+}
+
+// --- Barre d'onglets ----------------------------------------------------------
+.academy-tabs {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: clamp(20px, 3vw, 42px);
+  border-bottom: 1px solid var(--line-dark, #e4e7ec);
+  margin-bottom: clamp(1.8rem, 3vw, 2.6rem);
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: var(--gold-300) transparent;
+
+  &::-webkit-scrollbar {
+    height: 5px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: var(--gold-300);
+    border-radius: 4px;
+  }
+}
+
+.academy-tabs__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 4px 16px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--slate-600);
+  border-bottom: 3px solid transparent;
+  white-space: nowrap;
+  transition: color 0.2s ease, border-color 0.2s ease;
+
+  &:hover {
+    color: var(--navy-900);
+  }
+
+  &--active {
+    color: var(--navy-900);
+    border-color: var(--gold-300);
+  }
+}
+
+.academy-tabs__icon-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--gradient-navy-gold);
+  color: var(--white);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.academy-tabs__item--active .academy-tabs__icon-badge {
+  transform: scale(1.1);
+  box-shadow: 0 10px 22px rgba(5, 12, 34, 0.3);
+}
+
+// --- Panneau de contenu -------------------------------------------------------
+.academy-panel {
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+  gap: clamp(2rem, 4vw, 3.5rem);
+  align-items: start;
+}
+
+.academy-panel__title {
+  color: var(--navy-900);
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 2.4vw, 2rem);
+  font-weight: 700;
+  margin: 0 0 16px;
+}
+
+.academy-panel__text {
+  color: var(--slate-600);
+  font-size: 1rem;
+  line-height: 1.65;
+  margin: 0 0 16px;
+}
+
+.academy-panel__quote {
+  margin: 24px 0;
+  padding-left: 18px;
+  border-left: 3px solid var(--gold-300);
+
+  p {
+    color: var(--navy-900);
+    font-style: italic;
+    font-size: 1.02rem;
+    line-height: 1.6;
+    margin: 0 0 8px;
+  }
+
+  cite {
+    display: block;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 0.88rem;
+    color: var(--slate-600);
+  }
+}
+
+.academy-panel__cta {
+  display: inline-flex;
+  align-items: center;
+  padding: 13px 28px;
+  border-radius: 999px;
+  background: var(--gradient-gold);
+  color: var(--navy-950, #050c22);
+  font-weight: 700;
+  font-size: 0.92rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 22px rgba(200, 160, 60, 0.35);
+  }
+}
+
+// --- Cartes de cours ------------------------------------------------------
+.academy-panel__courses {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+  align-content: start;
+}
+
+.academy-course-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  border-radius: 18px;
+  overflow: hidden;
+  background: var(--white);
+  border: 1px solid var(--line-dark, #e4e7ec);
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-elevated, 0 18px 34px rgba(5, 12, 34, 0.14));
+  }
+}
+
+.academy-course-card__image {
+  width: 100%;
+  aspect-ratio: 16 / 11;
+  background: linear-gradient(160deg, var(--navy-900) 0%, var(--navy-950, #050c22) 100%);
+  overflow: hidden;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+}
+
+.academy-course-card__content {
+  padding: 16px 18px 44px;
+  flex: 1;
+
+  h4 {
+    margin: 0 0 8px;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--navy-900);
+    line-height: 1.35;
+  }
+
+  p {
+    margin: 0;
+    font-size: 0.88rem;
+    line-height: 1.5;
+    color: var(--slate-600);
+  }
+}
+
+.academy-course-card__badge {
+  position: absolute;
+  left: 18px;
+  bottom: 16px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: var(--gold-100);
+  color: var(--navy-900);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+// --- Responsive ---------------------------------------------------------------
+@media (max-width: 900px) {
+  .academy-panel {
+    grid-template-columns: 1fr;
+  }
+
+  .academy-panel__courses {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .academy-tabs {
+    gap: 18px;
+  }
+}
+
+// --- Partenaires ---------------------------------------------------------
+// --- Nos matières (design futuriste) ----------------------------------------
+.academy-subjects {
+  position: relative;
+  overflow: hidden;
+  background: radial-gradient(circle at 20% 20%, #0d1a3f 0%, transparent 55%),
+    radial-gradient(circle at 85% 75%, #241a3f 0%, transparent 50%),
+    var(--navy-950, #050c22);
+  padding: clamp(3.5rem, 7vw, 6rem) 1.5rem;
+
+  // fine grille de points en fond, effet "constellation"
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+    background-size: 26px 26px;
+    pointer-events: none;
+  }
+}
+
+.academy-subjects__container {
+  position: relative;
+  z-index: 1;
+  max-width: 1200px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.academy-subjects__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--gold-300);
+  font-weight: 700;
+  font-size: 0.78rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.academy-subjects__title {
+  color: var(--white);
+  font-family: var(--font-display);
+  font-size: clamp(1.7rem, 3vw, 2.5rem);
+  font-weight: 700;
+  margin: 10px 0 12px;
+}
+
+.academy-subjects__subtitle {
+  color: var(--slate-300);
+  font-size: 1rem;
+  max-width: 560px;
+  margin: 0 auto clamp(2.5rem, 5vw, 3.5rem);
+  line-height: 1.6;
+}
+
+.academy-subjects__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 18px;
+  text-align: left;
+}
+
+.subject-card {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 20px 18px;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(6px);
+  overflow: hidden;
+  text-decoration: none;
+  transition: transform 0.25s ease, border-color 0.25s ease, background 0.25s ease;
+
+  &:hover {
+    transform: translateY(-4px);
+    border-color: rgba(242, 183, 5, 0.5);
+    background: rgba(255, 255, 255, 0.06);
+
+    .subject-card__glow {
+      opacity: 1;
+    }
+
+    .subject-card__icon {
+      color: var(--navy-950, #050c22);
+      background: var(--gradient-gold);
+      box-shadow: 0 0 22px rgba(242, 183, 5, 0.55);
+    }
+
+    .subject-card__arrow {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+}
+
+.subject-card__glow {
+  position: absolute;
+  inset: -40% -40% auto auto;
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(242, 183, 5, 0.35), transparent 70%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.subject-card__icon {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 46px;
+  height: 46px;
+  border-radius: 12px;
+  color: var(--gold-300);
+  background: rgba(242, 183, 5, 0.1);
+  transition: background 0.25s ease, color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.subject-card__label {
+  flex: 1;
+  color: var(--white);
+  font-size: 0.94rem;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.subject-card__arrow {
+  flex-shrink: 0;
+  display: inline-flex;
+  color: var(--gold-300);
+  opacity: 0;
+  transform: translateX(-6px);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+@media (max-width: 620px) {
+  .academy-subjects__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .subject-card {
+    padding: 16px 14px;
+  }
+}
+
+@media (max-width: 420px) {
+  .academy-subjects__grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+// --- Formules d'accompagnement ---------------------------------------------
+.academy-pricing {
+  background: linear-gradient(160deg, #fdf6e9 0%, #f3e6f7 100%);
+  padding: clamp(3rem, 6vw, 5rem) 1.5rem;
+}
+
+.academy-pricing__container {
+  max-width: 1100px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.academy-pricing__title {
+  color: var(--navy-900);
+  font-family: var(--font-display);
+  font-size: clamp(1.7rem, 3vw, 2.3rem);
+  font-weight: 700;
+  margin: 0 0 10px;
+}
+
+.academy-pricing__underline {
+  display: inline-block;
+  width: 64px;
+  height: 4px;
+  border-radius: 4px;
+  background: var(--gradient-gold);
+  margin-bottom: clamp(2rem, 4vw, 3rem);
+}
+
+.academy-pricing__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 22px;
+  text-align: left;
+}
+
+.academy-pricing-card {
+  background: var(--white);
+  border-radius: 22px;
+  padding: 28px 26px;
+  border: 1px solid var(--line-dark, #e4e7ec);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  h3 {
+    color: var(--navy-900);
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin: 0 0 12px;
+  }
+
+  &--featured {
+    border: 2px solid var(--gold-300);
+    box-shadow: 0 20px 40px rgba(200, 160, 60, 0.18);
+    transform: translateY(-6px);
+  }
+}
+
+.academy-pricing-card__price {
+  color: var(--navy-900);
+  font-size: 1.6rem;
+  font-weight: 800;
+  margin: 0;
+}
+
+.academy-pricing-card__note {
+  color: var(--slate-600);
+  font-size: 0.78rem;
+  margin: 2px 0 14px;
+}
+
+.academy-pricing-card__desc {
+  color: var(--slate-600);
+  font-size: 0.9rem;
+  line-height: 1.5;
+  margin: 0 0 18px;
+}
+
+.academy-pricing-card__cta {
+  display: block;
+  text-align: center;
+  padding: 12px 18px;
+  border-radius: 999px;
+  background: var(--gradient-navy-gold);
+  color: var(--white);
+  font-weight: 700;
+  font-size: 0.88rem;
+  margin-bottom: 20px;
+  transition: transform 0.2s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+  }
+}
+
+.academy-pricing-card__features {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  li {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    font-size: 0.86rem;
+    color: var(--navy-900);
+
+    span {
+      color: var(--gold-300);
+      font-weight: 700;
+    }
+
+    &.academy-pricing-card__features--off {
+      color: var(--slate-600);
+      opacity: 0.6;
+
+      span {
+        color: var(--slate-600);
+      }
+    }
+  }
+}
+
+// --- Bandeaux génériques (accessibilité, entreprise) ------------------------
+.academy-banner {
+  background: linear-gradient(160deg, #f6eef9 0%, #fdf3e4 100%);
+  padding: clamp(2rem, 5vw, 3.5rem) 1.5rem;
+}
+
+.academy-banner__card {
+  max-width: 1100px;
+  margin: 0 auto;
+  background: var(--white);
+  border-radius: 28px;
+  box-shadow: var(--shadow-elevated, 0 20px 46px rgba(5, 12, 34, 0.1));
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  gap: 32px;
+  padding: clamp(1.5rem, 3vw, 2.5rem);
+  align-items: center;
+}
+
+.academy-banner__image {
+  border-radius: 20px;
+  overflow: hidden;
+  aspect-ratio: 4 / 3;
+  background: var(--gradient-navy-gold);
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.academy-banner__eyebrow {
+  display: inline-block;
+  color: var(--gold-300);
+  font-weight: 700;
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.academy-banner__content h2 {
+  color: var(--navy-900);
+  font-family: var(--font-display);
+  font-size: clamp(1.4rem, 2.6vw, 2rem);
+  font-weight: 700;
+  margin: 0 0 8px;
+  line-height: 1.25;
+}
+
+.academy-banner__underline {
+  display: block;
+  width: 56px;
+  height: 4px;
+  border-radius: 4px;
+  background: var(--gradient-gold);
+  margin-bottom: 16px;
+
+  &--light {
+    background: var(--gold-300);
+  }
+}
+
+.academy-banner__content p {
+  color: var(--slate-600);
+  font-size: 0.98rem;
+  line-height: 1.6;
+  margin: 0 0 20px;
+}
+
+.academy-banner__cta {
+  display: inline-flex;
+  padding: 12px 26px;
+  border-radius: 999px;
+  background: var(--gradient-navy-gold);
+  color: var(--white);
+  font-weight: 700;
+  font-size: 0.9rem;
+  transition: transform 0.2s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+  }
+}
+
+// --- Bandeau carrière + scroll horizontal -----------------------------------
+.academy-career {
+  background: var(--white);
+  padding: clamp(2.5rem, 5vw, 4rem) 1.5rem;
+}
+
+.academy-career__container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.academy-career__container h2 {
+  color: var(--navy-900);
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 2.8vw, 2.1rem);
+  font-weight: 700;
+  margin: 0 0 8px;
+  max-width: 640px;
+}
+
+.academy-career__text {
+  color: var(--slate-600);
+  font-size: 0.98rem;
+  line-height: 1.6;
+  max-width: 620px;
+  margin: 0 0 20px;
+}
+
+.academy-career__scroll {
+  display: flex;
+  gap: 18px;
+  overflow-x: auto;
+  padding: 28px 4px 8px;
+  scroll-snap-type: x mandatory;
+
+  &::-webkit-scrollbar {
+    height: 6px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: var(--gold-300);
+    border-radius: 4px;
+  }
+}
+
+.academy-course-card--compact {
+  flex: 0 0 260px;
+  scroll-snap-align: start;
+}
+
+// --- Poussez vos compétences plus loin (fond navy/or) ------------------------
+.academy-diplomas {
+  background: var(--gradient-navy-gold);
+  padding: clamp(3rem, 6vw, 5rem) 1.5rem;
+}
+
+.academy-diplomas__container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.academy-diplomas__container h2 {
+  color: var(--white);
+  font-family: var(--font-display);
+  font-size: clamp(1.7rem, 3vw, 2.4rem);
+  font-weight: 700;
+  margin: 0 0 8px;
+}
+
+.academy-diplomas__text {
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 0.98rem;
+  max-width: 620px;
+  margin: 0 0 20px;
+}
+
+.academy-panel__cta--light {
+  background: var(--white);
+  color: var(--navy-900);
+}
+
+.academy-diplomas__grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px;
+  margin-top: clamp(1.75rem, 3vw, 2.5rem);
+}
+
+// --- Comment ça marche -------------------------------------------------------
+.academy-steps {
+  background: linear-gradient(160deg, #f6eef9 0%, #fdf3e4 100%);
+  padding: clamp(3rem, 6vw, 5rem) 1.5rem;
+}
+
+.academy-steps__card {
+  max-width: 1100px;
+  margin: 0 auto;
+  background: var(--white);
+  border-radius: 28px;
+  box-shadow: var(--shadow-elevated, 0 20px 46px rgba(5, 12, 34, 0.1));
+  padding: clamp(1.75rem, 4vw, 3rem);
+}
+
+.academy-steps__card h2 {
+  color: var(--navy-900);
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 2.8vw, 2.2rem);
+  font-weight: 700;
+  margin: 0 0 8px;
+}
+
+.academy-steps__tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 28px;
+  border-bottom: 1px solid var(--line-dark, #e4e7ec);
+  margin: clamp(1.5rem, 3vw, 2.2rem) 0 clamp(1.75rem, 3vw, 2.4rem);
+}
+
+.academy-steps__tab {
+  padding: 4px 2px 14px;
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--slate-600);
+  border-bottom: 3px solid transparent;
+  transition: color 0.2s ease, border-color 0.2s ease;
+
+  &:hover {
+    color: var(--navy-900);
+  }
+
+  &--active {
+    color: var(--navy-900);
+    border-color: var(--gold-300);
+  }
+}
+
+.academy-steps__grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 24px;
+}
+
+.academy-steps__number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--gradient-navy-gold);
+  color: var(--white);
+  font-weight: 800;
+  margin-bottom: 12px;
+}
+
+.academy-steps__item h4 {
+  color: var(--navy-900);
+  font-size: 1.02rem;
+  font-weight: 700;
+  margin: 0 0 8px;
+}
+
+.academy-steps__item p {
+  color: var(--slate-600);
+  font-size: 0.88rem;
+  line-height: 1.55;
+  margin: 0;
+}
+
+// --- Responsive pour toutes les nouvelles sections ---------------------------
+@media (max-width: 900px) {
+  .academy-pricing__grid,
+  .academy-diplomas__grid,
+  .academy-steps__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .academy-banner__card {
+    grid-template-columns: 1fr;
+  }
+
+  .academy-pricing-card--featured {
+    transform: none;
+  }
+}
+
+@media (max-width: 620px) {
+  .academy-pricing__grid,
+  .academy-diplomas__grid,
+  .academy-steps__grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+// scroll douce
+:host {
+  scroll-behavior: smooth;
+}
+
+// --- 🔴 Badge notifications sur « Mon espace » ---
+.academy-hero__account-link {
+  position: relative;   // ✅ ancre le badge
+}
+
+.academy-link__badge {
+  position: absolute;
+  bottom: -6px;
+  right: -8px;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: #ef4444;
+  color: #fff;
+  font-size: 0.68rem;
+  font-weight: 800;
+  font-family: system-ui, sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 0 2px #f4e3d3, 0 2px 8px rgba(0, 0, 0, 0.3);
+  animation: badge-pop 0.3s ease;
+}
+
+@keyframes badge-pop {
+  from { transform: scale(0); }
+  to   { transform: scale(1); }
+}

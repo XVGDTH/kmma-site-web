@@ -1,0 +1,108 @@
+<section class="pp">
+  @if (loading()) {
+    <p class="pp__loading">⏳ Chargement…</p>
+  } @else if (!training()) {
+    <p class="pp__error">Formation introuvable.</p>
+  } @else {
+
+    <!-- EN-TÊTE -->
+    <header class="pp__header">
+      <div>
+        <a routerLink="/formateur/formations-presentielles" class="pp__back">← Retour</a>
+        <h1>👥 {{ training().title }}</h1>
+        <p class="pp__meta">
+          📅 {{ training().starts_at }} → {{ training().ends_at }} ·
+          ⏱ {{ training().days_count }} jour(s) ·
+          📍 {{ training().location }}
+        </p>
+        <span class="pp__badge-type">
+          {{ training().certificate_type === 'certificate' ? '🏆 Certificat' : '📜 Attestation' }}
+        </span>
+      </div>
+
+      <div class="pp__actions">
+        <button class="btn btn-outline-dark" (click)="copyRegistrationLink()">
+          🔗 Copier le lien d'inscription
+        </button>
+        <button class="btn btn-gold"
+                (click)="downloadAllZip()"
+                [disabled]="readyCount === 0">
+          📦 Télécharger tous les certificats (ZIP)
+        </button>
+      </div>
+    </header>
+
+    @if (message(); as msg) {
+      <p class="pp__flash">✓ {{ msg }}</p>
+    }
+
+    <!-- STATISTIQUES -->
+    <div class="pp__stats">
+      <div class="pp__stat">
+        <strong>{{ participants().length }}</strong>
+        <span>Inscrits</span>
+      </div>
+      <div class="pp__stat">
+        <strong>{{ readyCount }}</strong>
+        <span>Certificats prêts</span>
+      </div>
+      <div class="pp__stat">
+        <strong>{{ participantsRevoked().length }}</strong>
+        <span>Retirés</span>
+      </div>
+    </div>
+
+    <!-- LISTE DES PARTICIPANTS -->
+    <div class="pp__list">
+      @for (p of participants(); track p.id) {
+        <div class="pp__card" [class.pp__card--revoked]="p.revoked">
+
+          <div class="pp__card-main">
+            <strong>{{ p.name }}</strong>
+            <span>📧 {{ p.email }}</span>
+            @if (p.phone) {
+              <span>📞 {{ p.phone }}</span>
+            }
+            <small>Inscrit le {{ p.registeredAt }}</small>
+          </div>
+
+          <div class="pp__card-cert">
+            @if (p.revoked) {
+              <span class="pp__badge pp__badge--danger">
+                🚫 Retiré — {{ p.revocationReason }}
+              </span>
+            } @else if (p.certificateId) {
+              <span class="pp__badge pp__badge--success">
+                ✓ {{ p.certificateRef }}
+              </span>
+            } @else {
+              <span class="pp__badge pp__badge--warning">
+                ⏳ En attente
+              </span>
+            }
+          </div>
+
+          <div class="pp__card-actions">
+            @if (p.certificateId && !p.revoked) {
+              <button class="btn btn-outline-dark"
+                      (click)="downloadCertificate(p)">
+                ⬇ Télécharger
+              </button>
+              <button class="btn btn-outline-dark"
+                      (click)="copyVerificationLink(p)">
+                🔗 Copier le lien de vérification
+              </button>
+            }
+          </div>
+
+        </div>
+      } @empty {
+        <p class="pp__empty">
+          Aucun participant inscrit pour le moment.<br>
+          Partagez le lien d'inscription : <strong>{{ registrationUrl() }}</strong>
+        </p>
+      }
+    </div>
+
+  }
+</section>

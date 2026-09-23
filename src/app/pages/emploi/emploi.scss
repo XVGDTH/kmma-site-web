@@ -1,0 +1,838 @@
+// $navy: #0b1220;
+// $navy-2: #111b2e;
+// $gold: #e0b03c;
+// $cream: #f6f1e8;
+// $text: #e8eef8;
+// $muted: rgba(232, 238, 248, 0.65);
+
+// .jobs-hero {
+//   position: relative;
+//   min-height: 70vh;
+//   padding: 8rem 1.5rem 5rem;
+//   background:
+//     radial-gradient(1100px 520px at 15% -10%, rgba($gold, 0.14), transparent 50%),
+//     radial-gradient(800px 480px at 95% 30%, rgba(50, 90, 180, 0.22), transparent 45%),
+//     $navy;
+//   overflow: hidden;
+//   color: $text;
+
+//   &__glow {
+//     position: absolute;
+//     border-radius: 50%;
+//     filter: blur(90px);
+//     pointer-events: none;
+//     &--1 { width: 400px; height: 400px; top: -60px; left: -40px; background: rgba($gold, 0.16); }
+//     &--2 { width: 340px; height: 340px; bottom: 8%; right: -50px; background: rgba(70, 110, 200, 0.2); }
+//   }
+
+//   &__grid {
+//     position: absolute;
+//     inset: 0;
+//     background-image:
+//       linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+//       linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+//     background-size: 48px 48px;
+//     mask-image: radial-gradient(ellipse at center, #000 15%, transparent 70%);
+//   }
+
+//   &__container { position: relative; max-width: 1100px; margin: 0 auto; }
+
+//   &__breadcrumb {
+//     display: flex; gap: 0.5rem; font-size: 0.9rem; margin-bottom: 2rem; color: $muted;
+//     a { color: $muted; text-decoration: none; &:hover { color: $gold; } }
+//     span:last-child { color: $gold; }
+//   }
+
+//   &__eyebrow {
+//     display: inline-flex; align-items: center; gap: 0.5rem;
+//     font-size: 0.8rem; letter-spacing: 0.14em; text-transform: uppercase;
+//     color: $gold; margin-bottom: 1.2rem;
+//   }
+//   &__dot {
+//     width: 8px; height: 8px; border-radius: 50%; background: $gold;
+//     box-shadow: 0 0 12px $gold;
+//   }
+
+//   &__title {
+//     font-family: Georgia, 'Times New Roman', serif;
+//     font-size: clamp(2.5rem, 6vw, 4.2rem);
+//     line-height: 1.08; font-weight: 500; margin: 0 0 1.4rem;
+//     em { font-style: italic; color: $gold; }
+//   }
+
+//   &__lead {
+//     max-width: 34rem; font-size: 1.08rem; line-height: 1.65;
+//     color: $muted; margin-bottom: 2rem;
+//   }
+
+//   &__actions { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+// }
+
+// .jobs-eyebrow {
+//   display: inline-block;
+//   font-size: 0.75rem; letter-spacing: 0.16em; text-transform: uppercase;
+//   color: $gold; margin-bottom: 0.7rem;
+//   &--dark { color: #b8860b; }
+// }
+
+// .jobs-featured {
+//   background: $navy-2; padding: 5rem 1.5rem; color: $text;
+//   &__container { max-width: 1200px; margin: 0 auto; }
+//   &__header {
+//     margin-bottom: 2.4rem;
+//     h2 {
+//       font-family: Georgia, serif;
+//       font-size: clamp(1.8rem, 3vw, 2.35rem);
+//       font-weight: 500; margin: 0;
+//     }
+//   }
+//   &__grid {
+//     display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.4rem;
+//     @media (max-width: 900px) { grid-template-columns: 1fr; }
+//   }
+// }
+
+// .jobs-lead-card {
+//   border-radius: 1.25rem; overflow: hidden;
+//   background: rgba(255,255,255,0.03);
+//   border: 1px solid rgba(255,255,255,0.08);
+//   transition: transform 0.35s, border-color 0.35s, box-shadow 0.35s;
+
+//   &:hover {
+//     transform: translateY(-6px);
+//     border-color: rgba($gold, 0.35);
+//     box-shadow: 0 24px 50px rgba(0,0,0,0.35);
+//   }
+
+//   &__visual {
+//     position: relative; aspect-ratio: 16 / 10; overflow: hidden;
+//     img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s; }
+//   }
+//   &:hover &__visual img { transform: scale(1.06); }
+
+//   &__overlay {
+//     position: absolute; inset: 0;
+//     background: linear-gradient(to top, rgba($navy, 0.75), transparent 55%);
+//   }
+//   &__badge {
+//     position: absolute; left: 1rem; top: 1rem;
+//     padding: 0.3rem 0.7rem; border-radius: 999px;
+//     background: rgba($gold, 0.95); color: $navy;
+//     font-size: 0.7rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase;
+//   }
+//   &__body { padding: 1.2rem 1.3rem 1.5rem; }
+//   &__meta { font-size: 0.78rem; color: $muted; }
+//   h3 { margin: 0.4rem 0 0.5rem; font-size: 1.15rem; }
+//   p { margin: 0 0 1rem; font-size: 0.92rem; line-height: 1.55; color: $muted; }
+//   &__cta {
+//     color: $gold; text-decoration: none; font-weight: 600; font-size: 0.9rem;
+//     &:hover { text-decoration: underline; }
+//   }
+// }
+
+// .jobs-list {
+//   background: $cream; padding: 5rem 1.5rem 6rem; color: #1a1f2e;
+//   &__container { max-width: 1100px; margin: 0 auto; }
+//   &__header {
+//     margin-bottom: 1.75rem;
+//     h2 {
+//       font-family: Georgia, serif;
+//       font-size: clamp(1.7rem, 3vw, 2.2rem);
+//       font-weight: 500; margin: 0;
+//     }
+//   }
+// }
+
+// .jobs-filters {
+//   display: flex; flex-wrap: wrap; gap: 0.55rem; margin-bottom: 2.2rem;
+
+//   &__btn {
+//     border: none; cursor: pointer;
+//     padding: 0.55rem 1.05rem; border-radius: 999px;
+//     background: #fff; color: #3a4258; font-size: 0.88rem; font-weight: 500;
+//     box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+//     transition: background 0.2s, color 0.2s, transform 0.2s;
+//     &:hover { transform: translateY(-1px); }
+//     &--active { background: $navy; color: #fff; }
+//   }
+// }
+
+// .jobs-grid {
+//   display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.15rem;
+//   @media (max-width: 700px) { grid-template-columns: 1fr; }
+// }
+
+// .job-card {
+//   background: #fff; border-radius: 1.15rem; padding: 1.35rem 1.4rem;
+//   box-shadow: 0 8px 28px rgba(15,23,42,0.06);
+//   transition: transform 0.3s, box-shadow 0.3s;
+//   display: flex; flex-direction: column;
+
+//   &:hover { transform: translateY(-4px); box-shadow: 0 16px 36px rgba(15,23,42,0.1); }
+
+//   &__top {
+//     display: flex; justify-content: space-between; align-items: center;
+//     margin-bottom: 0.75rem;
+//   }
+//   &__type {
+//     font-size: 0.7rem; font-weight: 700; letter-spacing: 0.06em;
+//     text-transform: uppercase; color: $gold;
+//   }
+//   &__loc { font-size: 0.8rem; color: #6b7280; }
+//   h3 { margin: 0 0 0.25rem; font-size: 1.1rem; }
+//   &__dept { margin: 0 0 0.6rem; font-size: 0.85rem; color: #6b7280; }
+//   &__excerpt { margin: 0 0 0.9rem; font-size: 0.9rem; line-height: 1.5; color: #4b5563; flex: 1; }
+//   &__tags {
+//     display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1rem;
+//     span {
+//       font-size: 0.72rem; padding: 0.25rem 0.55rem; border-radius: 999px;
+//       background: #f1f5f9; color: #475569;
+//     }
+//   }
+//   &__cta {
+//     align-self: flex-start;
+//     text-decoration: none; font-weight: 600; font-size: 0.9rem;
+//     color: $navy; border-bottom: 1.5px solid $gold; padding-bottom: 2px;
+//     &:hover { color: $gold; }
+//   }
+// }
+
+// .jobs-partners {
+//   background: $navy; color: $text; padding: 5rem 1.5rem;
+//   &__container {
+//     max-width: 1100px; margin: 0 auto;
+//     display: grid; grid-template-columns: 1fr 1.15fr; gap: 2.5rem;
+//     @media (max-width: 800px) { grid-template-columns: 1fr; }
+//   }
+//   &__text {
+//     h2 {
+//       font-family: Georgia, serif;
+//       font-size: clamp(1.7rem, 3vw, 2.3rem);
+//       font-weight: 500; margin: 0 0 1rem;
+//     }
+//     p { color: $muted; line-height: 1.65; margin: 0 0 1.5rem; }
+//   }
+//   &__points { display: grid; gap: 1rem; }
+//   &__point {
+//     padding: 1.2rem 1.35rem; border-radius: 1rem;
+//     background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+//     span { display: block; font-size: 0.75rem; color: $gold; letter-spacing: 0.12em; margin-bottom: 0.35rem; }
+//     h3 { margin: 0 0 0.3rem; font-size: 1.05rem; }
+//     p { margin: 0; font-size: 0.9rem; color: $muted; line-height: 1.5; }
+//   }
+// }
+
+// .jobs-cta {
+//   background: $navy-2; padding: 4rem 1.5rem 5rem;
+//   &__card {
+//     max-width: 700px; margin: 0 auto; text-align: center;
+//     padding: 3rem 2rem; border-radius: 1.5rem;
+//     background: linear-gradient(145deg, rgba($gold, 0.08), rgba(255,255,255,0.03));
+//     border: 1px solid rgba(255,255,255,0.1); color: $text;
+//     h2 {
+//       font-family: Georgia, serif;
+//       font-size: clamp(1.55rem, 3vw, 2.1rem);
+//       font-weight: 500; margin: 0.7rem 0 1rem;
+//     }
+//     p { color: $muted; max-width: 34rem; margin: 0 auto 1.6rem; line-height: 1.6; }
+//   }
+// }
+
+// .btn {
+//   display: inline-flex; align-items: center; justify-content: center;
+//   padding: 0.75rem 1.4rem; border-radius: 999px;
+//   font-weight: 600; font-size: 0.95rem; text-decoration: none;
+//   transition: transform 0.2s, box-shadow 0.2s;
+//   &:hover { transform: translateY(-1px); }
+
+//   &-gold {
+//     background: $gold; color: $navy;
+//     box-shadow: 0 8px 24px rgba($gold, 0.25);
+//   }
+//   &-outline-light {
+//     border: 1px solid rgba(255,255,255,0.35); color: #fff; background: transparent;
+//   }
+// }
+
+// Palette KMAA — charte officielle
+$navy: #0f3d3e;      // vert profond
+$navy-2: #0a2b2c;    // vert plus sombre
+$gold: #b87333;      // cuivre
+$cream: #f5f2ec;     // papier
+$text: #f5f2ec;      // texte clair
+$muted: rgba(245, 242, 236, 0.65);
+
+.jobs-hero {
+  position: relative;
+  min-height: 70vh;
+  padding: 8rem 1.5rem 5rem;
+  background:
+    radial-gradient(1100px 520px at 15% -10%, rgba($gold, 0.14), transparent 50%),
+    radial-gradient(800px 480px at 95% 30%, rgba(15, 61, 62, 0.45), transparent 45%),
+    $navy;
+  overflow: hidden;
+  color: $text;
+
+  &__glow {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(90px);
+    pointer-events: none;
+
+    &--1 {
+      width: 400px;
+      height: 400px;
+      top: -60px;
+      left: -40px;
+      background: rgba($gold, 0.16);
+    }
+
+    &--2 {
+      width: 340px;
+      height: 340px;
+      bottom: 8%;
+      right: -50px;
+      background: rgba(15, 61, 62, 0.35);
+    }
+  }
+
+  &__grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    background-size: 48px 48px;
+    mask-image: radial-gradient(ellipse at center, #000 15%, transparent 70%);
+  }
+
+  &__container {
+    position: relative;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  &__breadcrumb {
+    display: flex;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    margin-bottom: 2rem;
+    color: $muted;
+
+    a {
+      color: $muted;
+      text-decoration: none;
+
+      &:hover {
+        color: $gold;
+      }
+    }
+
+    span:last-child {
+      color: $gold;
+    }
+  }
+
+  &__eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.8rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: $gold;
+    margin-bottom: 1.2rem;
+  }
+
+  &__dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: $gold;
+    box-shadow: 0 0 12px rgba($gold, 0.6);
+  }
+
+  &__title {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: clamp(2.5rem, 6vw, 4.2rem);
+    line-height: 1.08;
+    font-weight: 500;
+    margin: 0 0 1.4rem;
+
+    // "avec KMAA" en cuivre
+    em {
+      font-style: italic;
+      color: $gold;
+    }
+  }
+
+  &__lead {
+    max-width: 34rem;
+    font-size: 1.08rem;
+    line-height: 1.65;
+    color: $muted;
+    margin-bottom: 2rem;
+  }
+
+  &__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+}
+
+.jobs-eyebrow {
+  display: inline-block;
+  font-size: 0.75rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: $gold;
+  margin-bottom: 0.7rem;
+
+  // section claire : cuivre un peu plus marqué
+  &--dark {
+    color: $gold;
+  }
+}
+
+.jobs-featured {
+  background: $navy-2;
+  padding: 5rem 1.5rem;
+  color: $text;
+
+  &__container {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  &__header {
+    margin-bottom: 2.4rem;
+
+    h2 {
+      font-family: Georgia, serif;
+      font-size: clamp(1.8rem, 3vw, 2.35rem);
+      font-weight: 500;
+      margin: 0;
+      color: $text; // titres principaux en clair / blanc cassé
+    }
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.4rem;
+
+    @media (max-width: 900px) {
+      grid-template-columns: 1fr;
+    }
+  }
+}
+
+.jobs-lead-card {
+  border-radius: 1.25rem;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba($gold, 0.18); // contour cuivre discret
+  transition: transform 0.35s, border-color 0.35s, box-shadow 0.35s;
+  text-decoration: none;
+  color: inherit;
+
+  &:hover {
+    transform: translateY(-6px);
+    border-color: rgba($gold, 0.45);
+    box-shadow: 0 24px 50px rgba(0, 0, 0, 0.35);
+  }
+
+  &__visual {
+    position: relative;
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.6s;
+    }
+  }
+
+  &:hover &__visual img {
+    transform: scale(1.06);
+  }
+
+  &__overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba($navy, 0.8), transparent 55%);
+  }
+
+  &__badge {
+    position: absolute;
+    left: 1rem;
+    top: 1rem;
+    padding: 0.3rem 0.7rem;
+    border-radius: 999px;
+    background: $gold;
+    color: $cream;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  &__body {
+    padding: 1.2rem 1.3rem 1.5rem;
+  }
+
+  &__meta {
+    font-size: 0.78rem;
+    color: $muted;
+  }
+
+  h3 {
+    margin: 0.4rem 0 0.5rem;
+    font-size: 1.15rem;
+    color: $text;
+  }
+
+  p {
+    margin: 0 0 1rem;
+    font-size: 0.92rem;
+    line-height: 1.55;
+    color: $muted;
+  }
+
+  &__cta {
+    color: $gold;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+.jobs-list {
+  background: $cream;
+  padding: 5rem 1.5rem 6rem;
+  color: $navy; // textes forts en vert profond sur fond clair
+
+  &__container {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  &__header {
+    margin-bottom: 1.75rem;
+
+    h2 {
+      font-family: Georgia, serif;
+      font-size: clamp(1.7rem, 3vw, 2.2rem);
+      font-weight: 500;
+      margin: 0;
+      color: $navy;
+    }
+  }
+}
+
+.jobs-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+  margin-bottom: 2.2rem;
+
+  &__btn {
+    border: 1px solid rgba($gold, 0.25);
+    cursor: pointer;
+    padding: 0.55rem 1.05rem;
+    border-radius: 999px;
+    background: #fff;
+    color: $navy;
+    font-size: 0.88rem;
+    font-weight: 500;
+    box-shadow: 0 1px 3px rgba(15, 61, 62, 0.06);
+    transition: background 0.2s, color 0.2s, transform 0.2s, border-color 0.2s;
+
+    &:hover {
+      transform: translateY(-1px);
+      border-color: $gold;
+    }
+
+    &--active {
+      background: $navy;
+      color: $cream;
+      border-color: $navy;
+    }
+  }
+}
+
+.jobs-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.15rem;
+
+  @media (max-width: 700px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.job-card {
+  background: #fff;
+  border-radius: 1.15rem;
+  padding: 1.35rem 1.4rem;
+  border: 1px solid rgba($gold, 0.2); // contour cuivre
+  box-shadow: 0 8px 28px rgba(15, 61, 62, 0.06);
+  transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  color: inherit;
+
+  &:hover {
+    transform: translateY(-4px);
+    border-color: rgba($gold, 0.5);
+    box-shadow: 0 16px 36px rgba(15, 61, 62, 0.1);
+  }
+
+  &__top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+  }
+
+  &__type {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: $gold;
+  }
+
+  &__loc {
+    font-size: 0.8rem;
+    color: rgba(15, 61, 62, 0.55);
+  }
+
+  h3 {
+    margin: 0 0 0.25rem;
+    font-size: 1.1rem;
+    color: $navy;
+  }
+
+  &__dept {
+    margin: 0 0 0.6rem;
+    font-size: 0.85rem;
+    color: rgba(15, 61, 62, 0.55);
+  }
+
+  &__excerpt {
+    margin: 0 0 0.9rem;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    color: rgba(15, 61, 62, 0.7);
+    flex: 1;
+  }
+
+  &__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-bottom: 1rem;
+
+    span {
+      font-size: 0.72rem;
+      padding: 0.25rem 0.55rem;
+      border-radius: 999px;
+      background: rgba($navy, 0.06);
+      color: $navy;
+    }
+  }
+
+  &__cta {
+    align-self: flex-start;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: $navy;
+    border-bottom: 1.5px solid $gold;
+    padding-bottom: 2px;
+
+    &:hover {
+      color: $gold;
+    }
+  }
+}
+
+.jobs-partners {
+  background: $navy;
+  color: $text;
+  padding: 5rem 1.5rem;
+
+  &__container {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1.15fr;
+    gap: 2.5rem;
+
+    @media (max-width: 800px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  &__text {
+    h2 {
+      font-family: Georgia, serif;
+      font-size: clamp(1.7rem, 3vw, 2.3rem);
+      font-weight: 500;
+      margin: 0 0 1rem;
+      color: $text;
+    }
+
+    p {
+      color: $muted;
+      line-height: 1.65;
+      margin: 0 0 1.5rem;
+    }
+  }
+
+  &__points {
+    display: grid;
+    gap: 1rem;
+  }
+
+  &__point {
+    padding: 1.2rem 1.35rem;
+    border-radius: 1rem;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba($gold, 0.2);
+
+    span {
+      display: block;
+      font-size: 0.75rem;
+      color: $gold;
+      letter-spacing: 0.12em;
+      margin-bottom: 0.35rem;
+    }
+
+    h3 {
+      margin: 0 0 0.3rem;
+      font-size: 1.05rem;
+      color: $text;
+    }
+
+    p {
+      margin: 0;
+      font-size: 0.9rem;
+      color: $muted;
+      line-height: 1.5;
+    }
+  }
+}
+
+.jobs-cta {
+  background: $navy-2;
+  padding: 4rem 1.5rem 5rem;
+
+  &__card {
+    max-width: 700px;
+    margin: 0 auto;
+    text-align: center;
+    padding: 3rem 2rem;
+    border-radius: 1.5rem;
+    background: linear-gradient(145deg, rgba($gold, 0.1), rgba(255, 255, 255, 0.03));
+    border: 1px solid rgba($gold, 0.25);
+    color: $text;
+
+    h2 {
+      font-family: Georgia, serif;
+      font-size: clamp(1.55rem, 3vw, 2.1rem);
+      font-weight: 500;
+      margin: 0.7rem 0 1rem;
+      color: $text;
+    }
+
+    p {
+      color: $muted;
+      max-width: 34rem;
+      margin: 0 auto 1.6rem;
+      line-height: 1.6;
+    }
+  }
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.4rem;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-decoration: none;
+  transition: transform 0.2s, box-shadow 0.2s;
+
+  &:hover {
+    transform: translateY(-1px);
+  }
+
+  &-gold {
+    background: $gold;
+    color: $cream;
+    box-shadow: 0 8px 24px rgba($gold, 0.28);
+  }
+
+  &-outline-light {
+    border: 1px solid rgba(245, 242, 236, 0.4);
+    color: $cream;
+    background: transparent;
+
+    &:hover {
+      border-color: $gold;
+      color: $gold;
+    }
+  }
+}
+
+// section candidature spontanée
+.jobs-spontaneous-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 420px;
+  margin: 1.5rem auto 0;
+
+  input[type='email'] {
+    padding: 13px 16px;
+    border-radius: 10px;
+    border: 1.5px solid rgba(255, 255, 255, 0.25);
+    background: rgba(255, 255, 255, 0.08);
+    color: #fff;
+    font-size: 0.95rem;
+
+    &::placeholder { color: rgba(255, 255, 255, 0.5); }
+    &:focus { outline: none; border-color: #c9992e; }
+  }
+
+  .jobs-cv-input {
+    padding: 13px 16px;
+    border-radius: 10px;
+    border: 1.5px dashed rgba(201, 153, 46, 0.6);
+    background: rgba(201, 153, 46, 0.08);
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-align: center;
+
+    &:hover { background: rgba(201, 153, 46, 0.15); }
+  }
+
+  .job-apply-error { color: #fca5a5; font-size: 0.85rem; margin: 0; }
+
+  .btn { align-self: center; }
+}
+
+.jobs-cta__card { text-align: center; }

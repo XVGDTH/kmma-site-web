@@ -1,0 +1,189 @@
+@if (course(); as c) {
+  <article class="course-detail">
+    <!-- HERO -->
+    <header class="course-hero">
+      <div class="course-hero__glow course-hero__glow--gold" aria-hidden="true"></div>
+      <div class="course-hero__glow course-hero__glow--navy" aria-hidden="true"></div>
+
+      <div class="course-hero__container">
+        <nav class="course-hero__breadcrumb" aria-label="Fil d'ariane">
+          <a routerLink="/">Accueil</a>
+          <span>/</span>
+          <a [routerLink]="['/formations', c.subject]">{{ c.category }}</a>
+          <span>/</span>
+          <span>{{ c.title }}</span>
+        </nav>
+
+        <div class="course-hero__grid">
+          <div class="course-hero__main">
+            <span class="course-hero__category">{{ c.category }}</span>
+            <h1 class="course-hero__title">{{ c.title }}</h1>
+            <p class="course-hero__description">{{ description }}</p>
+
+            <div class="course-hero__badges">
+              @if (c.isFree) {
+                <span class="course-hero__pill course-hero__pill--free">🎁 Cours gratuit</span>
+              } @else {
+                <span class="course-hero__pill course-hero__pill--paid">🎓 Certifiant — payant</span>
+              }
+              <span class="course-hero__pill course-hero__pill--level">{{ levelLabels[c.level] }}</span>
+              @if (c.badge) {
+                <span class="course-hero__pill course-hero__pill--accent">{{ c.badge }}</span>
+              }
+              @if (c.popular) {
+                <span class="course-hero__pill course-hero__pill--popular">
+                  ⭐ Formation populaire
+                </span>
+              }
+            </div>
+
+            <div class="course-hero__meta">
+              <div class="course-hero__meta-item">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+                  <path d="M6 12v5c3 3 9 3 12 0v-5"/>
+                </svg>
+                <div>
+                  <span class="course-hero__meta-label">Diplôme</span>
+                  <span class="course-hero__meta-value">{{ c.diploma }}</span>
+                </div>
+              </div>
+              <div class="course-hero__meta-item">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                  <line x1="16" y1="2" x2="16" y2="6"/>
+                  <line x1="8" y1="2" x2="8" y2="6"/>
+                  <line x1="3" y1="10" x2="21" y2="10"/>
+                </svg>
+                <div>
+                  <span class="course-hero__meta-label">Temps plein</span>
+                  <span class="course-hero__meta-value">{{ c.durationFull }}</span>
+                </div>
+              </div>
+              <div class="course-hero__meta-item">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                </svg>
+                <div>
+                  <span class="course-hero__meta-label">En alternance</span>
+                  <span class="course-hero__meta-value">{{ c.durationAlternance }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="course-hero__image">
+            <img [src]="c.image" [alt]="c.imageAlt" />
+            <div class="course-hero__image-ring" aria-hidden="true"></div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- CONTENU -->
+    <div class="course-body">
+      <div class="course-body__main">
+
+        <section class="course-section">
+          <h2>Ce que vous allez apprendre</h2>
+          <ul class="skills-grid">
+            @for (skill of skills; track skill) {
+              <li class="skills-grid__item">
+                <span class="skills-grid__check" aria-hidden="true">✓</span>
+                {{ skill }}
+              </li>
+            }
+          </ul>
+        </section>
+
+        <section class="course-section">
+          <h2>Programme de la formation</h2>
+          <ol class="modules-list">
+            @for (module of modules; track module; let i = $index) {
+              <li class="modules-list__item">
+                <span class="modules-list__number">{{ i + 1 }}</span>
+                <span class="modules-list__label">{{ module }}</span>
+              </li>
+            }
+          </ol>
+          
+          <a [routerLink]="['/formations', c.id, 'syllabus']" class="course-section__syllabus-link">
+    Voir le programme détaillé →
+  </a>
+        </section>
+
+        <section class="course-section">
+          <h2>Votre expert</h2>
+          <div class="instructor-card">
+            <div class="instructor-card__avatar" aria-hidden="true">
+              {{ instructor.charAt(0) }}
+            </div>
+            <div>
+              <span class="instructor-card__name">{{ instructor }}</span>
+              <span class="instructor-card__role">{{ instructorRole }}</span>
+            </div>
+          </div>
+        </section>
+
+      </div>
+
+      <!-- SIDEBAR STICKY -->
+      <aside class="course-sidebar">
+        <div class="enroll-card">
+          <span class="enroll-card__eyebrow">Prêt à commencer ?</span>
+          <h3 class="enroll-card__title">Rejoignez cette formation</h3>
+
+          <ul class="enroll-card__facts">
+            <li><span>Niveau</span><strong>{{ levelLabels[c.level] }}</strong></li>
+            <li><span>Diplôme</span><strong>{{ c.diploma }}</strong></li>
+            <li><span>Durée</span><strong>{{ c.durationFull }}</strong></li>
+          </ul>
+
+          <!--  redirection vers les syllabus  -->
+           <!-- ////// <a [routerLink]="['/formations', c.id, 'syllabus']" class="enroll-card__syllabus">
+    👀 Voir le programme détaillé avant de vous inscrire
+  </a>
+
+  <button type="button" class="enroll-card__cta" (click)="goToEnroll()">
+
+          <button type="button" class="enroll-card__cta" (click)="goToEnroll()">
+            @if (c.isFree) {
+              Se connecter pour suivre le cours gratuit
+            } @else {
+              Se connecter pour vous inscrire
+            }
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </button>
+
+          <p class="enroll-card__note">Accès immédiat après connexion à votre espace KMAA.</p> -->
+
+                    <!--  redirection vers les syllabus  -->
+          <a [routerLink]="['/formations', c.id, 'syllabus']" class="enroll-card__syllabus">
+            👀 Voir le programme détaillé avant de vous inscrire
+          </a>
+
+          <button type="button" class="enroll-card__cta" (click)="goToEnroll()">
+            @if (c.isFree) {
+              Se connecter pour suivre le cours gratuit
+            } @else {
+              Se connecter pour vous inscrire
+            }
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </button>
+
+          <p class="enroll-card__note">Accès immédiat après connexion à votre espace KMAA.</p>
+        </div>
+      </aside>
+    </div>
+  </article>
+} @else {
+  <div class="course-not-found">
+    <h1>Cours introuvable</h1>
+    <p>Le cours que vous recherchez n'existe pas ou plus.</p>
+    <a routerLink="/" class="course-not-found__link">Retour à l'accueil</a>
+  </div>
+}

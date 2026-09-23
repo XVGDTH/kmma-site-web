@@ -1,0 +1,102 @@
+<section class="philosophy" aria-labelledby="philosophy-title">
+  <div class="philosophy__container">
+    <header class="philosophy__header">
+      <!-- <h2 id="philosophy-title" class="philosophy__title">
+        Des connexions personnelles,
+        des solutions concrètes.
+      </h2> -->
+      <h2 class="philosophy__title">
+  <span class="philosophy__title-line1">Des connexions personnelles,</span><br />
+  <span class="philosophy__title-line2">des solutions concrètes.</span>
+</h2>
+      <p class="philosophy__subtitle">
+        {{ subtitle }}
+      </p>
+    </header>
+    <div class="philosophy__cards" [class.philosophy__cards--visible]="visible()">
+      @for (card of cards; track card.route; let i = $index) {
+        <a
+          class="philosophy-card"
+          [class]="'philosophy-card philosophy-card--' + card.tone"
+          [style.--order]="cardOrder[i]"
+          [style.--dir]="cardDirection[i]"
+          [routerLink]="card.route"
+          [attr.aria-label]="'Decouvrir : ' + card.title"
+        >
+          <span class="philosophy-card__vortex-ring" aria-hidden="true"></span>
+          <span class="philosophy-card__title">
+            {{ card.title }}
+          </span>
+          <span class="philosophy-card__arrow" aria-hidden="true">
+            <svg viewBox="0 0 24 24" role="presentation" focusable="false">
+              <path d="M7 17L17 7M17 7H9M17 7V15" stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>
+          </span>
+          <svg
+            class="philosophy-card__pattern"
+            viewBox="0 0 320 190"
+            preserveAspectRatio="none"
+            role="presentation"
+            focusable="false"
+          >
+            <g class="pattern-gold">
+              <path d="M-35 205 Q20 65 145 75 T355 20"></path>
+              <path d="M-30 215 Q30 78 150 88 T360 34"></path>
+              <path d="M-25 225 Q40 91 155 101 T365 48"></path>
+              <path d="M-15 235 Q50 104 165 114 T370 62"></path>
+              <path d="M-5 245 Q60 117 175 127 T375 76"></path>
+              <path d="M5 255 Q70 130 185 140 T380 90"></path>
+              <path d="M15 265 Q80 143 195 153 T385 104"></path>
+              <path d="M25 275 Q90 156 205 166 T390 118"></path>
+              <path d="M35 285 Q100 169 215 179 T395 132"></path>
+              <path d="M45 295 Q110 182 225 192 T400 146"></path>
+            </g>
+            <g class="pattern-purple">
+              <path d="M-40 205 Q25 45 145 62 T360 15"></path>
+              <path d="M-42 218 Q25 60 150 77 T365 30"></path>
+              <path d="M-44 231 Q28 75 155 92 T370 45"></path>
+              <path d="M-46 244 Q30 90 160 107 T375 60"></path>
+              <path d="M-48 257 Q32 105 165 122 T380 75"></path>
+              <path d="M-50 270 Q35 120 170 137 T385 90"></path>
+              <path d="M-52 283 Q38 135 175 152 T390 105"></path>
+              <path d="M-54 296 Q40 150 180 167 T395 120"></path>
+              <path d="M-56 309 Q42 165 185 182 T400 135"></path>
+              <path d="M-58 322 Q44 180 190 197 T405 150"></path>
+            </g>
+            <g class="pattern-blue">
+              <path d="M-28 220 Q20 45 112 76 T240 175 T360 78"></path>
+              <path d="M-32 232 Q18 58 110 89 T242 188 T365 91"></path>
+              <path d="M-36 244 Q16 71 108 102 T244 201 T370 104"></path>
+              <path d="M-40 256 Q14 84 106 115 T246 214 T375 117"></path>
+              <path d="M-44 268 Q12 97 104 128 T248 227 T380 130"></path>
+              <path d="M-48 280 Q10 110 102 141 T250 240 T385 143"></path>
+              <path d="M-52 292 Q8 123 100 154 T252 253 T390 156"></path>
+              <path d="M-56 304 Q6 136 98 167 T254 266 T395 169"></path>
+              <path d="M20 210 Q100 250 164 160 T328 48"></path>
+              <path d="M30 225 Q108 264 172 174 T338 62"></path>
+              <path d="M40 240 Q116 278 180 188 T348 76"></path>
+              <path d="M50 255 Q124 292 188 202 T358 90"></path>
+            </g>
+            <g class="pattern-cyan">
+              <path d="M-30 205 C45 110 78 155 135 195 S225 258 282 132 S350 25 370 0"></path>
+              <path d="M-30 217 C45 122 78 167 135 207 S225 270 282 144 S350 37 370 12"></path>
+              <path d="M-30 229 C45 134 78 179 135 219 S225 282 282 156 S350 49 370 24"></path>
+              <path d="M-30 241 C45 146 78 191 135 231 S225 294 282 168 S350 61 370 36"></path>
+              <path d="M-30 253 C45 158 78 203 135 243 S225 306 282 180 S350 73 370 48"></path>
+              <path d="M-30 265 C45 170 78 215 135 255 S225 318 282 192 S350 85 370 60"></path>
+              <path class="pattern-cyan__gold" d="M-30 196 C42 105 82 145 140 183 S224 240 292 120 S350 18 370 -4"></path>
+              <path class="pattern-cyan__gold" d="M-30 208 C42 117 82 157 140 195 S224 252 292 132 S350 30 370 8"></path>
+              <path class="pattern-cyan__gold" d="M-30 220 C42 129 82 169 140 207 S224 264 292 144 S350 42 370 20"></path>
+              <path class="pattern-cyan__vertical" d="M280 0 L230 190"></path>
+              <path class="pattern-cyan__vertical" d="M296 0 L246 190"></path>
+              <path class="pattern-cyan__vertical" d="M312 0 L262 190"></path>
+              <path class="pattern-cyan__vertical" d="M328 0 L278 190"></path>
+              <path class="pattern-cyan__vertical" d="M344 0 L294 190"></path>
+              <path class="pattern-cyan__vertical" d="M360 0 L310 190"></path>
+            </g>
+          </svg>
+        </a>
+      }
+    </div>
+  </div>
+</section>

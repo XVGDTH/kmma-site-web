@@ -1,0 +1,347 @@
+<div class="forum">
+
+  <!-- =========================
+       EN-TÊTE
+  ========================== -->
+  <div class="forum__header">
+
+    <h3>Questions & discussions</h3>
+
+    <button
+      type="button"
+      class="forum__new-btn"
+      (click)="toggleNewThreadForm()"
+    >
+      @if (showNewThreadForm()) {
+        Annuler
+      } @else {
+        Poser une question
+      }
+    </button>
+
+  </div>
+
+
+  <!-- =========================
+       MESSAGE D'ERREUR
+  ========================== -->
+  @if (error()) {
+
+    <div class="forum__error">
+      {{ error() }}
+    </div>
+
+  }
+
+
+  <!-- =========================
+       NOUVELLE DISCUSSION
+  ========================== -->
+  @if (showNewThreadForm()) {
+
+    <div class="forum__new-form">
+
+      <input
+        type="text"
+        placeholder="Titre de votre question"
+        [(ngModel)]="newTitle"
+      />
+
+      <textarea
+        rows="3"
+        placeholder="Détaillez votre question..."
+        [(ngModel)]="newContent"
+      ></textarea>
+
+      <button
+        type="button"
+        class="forum__submit-btn"
+        [disabled]="submitting()"
+        (click)="postThread()"
+      >
+        @if (submitting()) {
+          Publication...
+        } @else {
+          Publier la question
+        }
+      </button>
+
+    </div>
+
+  }
+
+
+  <!-- =========================
+       CHARGEMENT
+  ========================== -->
+  @if (loading()) {
+
+    <div class="forum__loading">
+      Chargement des discussions...
+    </div>
+
+  }
+
+
+  <!-- =========================
+       LISTE DES DISCUSSIONS
+  ========================== -->
+  @if (!loading()) {
+
+    <div class="forum__threads">
+
+      @for (thread of threads(); track thread.id) {
+
+        <div
+          class="thread"
+          [class.thread--resolved]="thread.resolved"
+        >
+
+          <!-- =========================
+               VOTE DISCUSSION
+          ========================== -->
+          <button
+            type="button"
+            class="thread__vote"
+            (click)="upvoteThread(thread.id)"
+          >
+
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                d="M12 19V5M5 12l7-7 7 7"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+
+            {{ thread.upvotes }}
+
+          </button>
+
+
+          <!-- =========================
+               CORPS DE LA DISCUSSION
+          ========================== -->
+          <div
+            class="thread__body"
+            (click)="toggleThread(thread.id)"
+          >
+
+            <div class="thread__meta">
+
+              <!-- Chapitre -->
+              @if (thread.chapter) {
+
+                <span class="thread__chapter-tag">
+                  {{ thread.chapter.title }}
+                </span>
+
+              }
+
+
+              <!-- Résolu -->
+              @if (thread.resolved) {
+
+                <span class="thread__resolved-tag">
+                  ✓ Résolu
+                </span>
+
+              }
+
+            </div>
+
+
+            <!-- Titre -->
+            <h4 class="thread__title">
+              {{ thread.title }}
+            </h4>
+
+
+            <!-- Auteur / date / réponses -->
+            <div class="thread__author-line">
+
+              <span class="thread__author">
+
+                {{ thread.user.name }}
+
+              </span>
+
+
+              <span class="thread__date">
+
+                {{ formatDate(thread.created_at) }}
+
+              </span>
+
+
+              <span class="thread__reply-count">
+
+                {{ thread.replies.length }}
+                réponse(s)
+
+              </span>
+
+            </div>
+
+          </div>
+
+
+          <!-- =========================
+               DÉTAIL DE LA DISCUSSION
+          ========================== -->
+          @if (openThreadId() === thread.id) {
+
+            <div class="thread__detail">
+
+              <!-- Contenu -->
+              <p class="thread__content">
+                {{ thread.content }}
+              </p>
+
+
+              <!-- =========================
+                   BOUTON RÉSOLU
+              ========================== -->
+              @if (canToggleResolved(thread)) {
+
+                <button
+                  type="button"
+                  class="thread__resolve-btn"
+                  (click)="toggleResolved(thread.id)"
+                >
+
+                  @if (thread.resolved) {
+
+                    Marquer comme non résolu
+
+                  } @else {
+
+                    Marquer comme résolu
+
+                  }
+
+                </button>
+
+              }
+
+
+              <!-- =========================
+                   RÉPONSES
+              ========================== -->
+              <div class="thread__replies">
+
+                @for (
+                  reply of thread.replies;
+                  track reply.id
+                ) {
+
+                  <div class="reply">
+
+                    <!-- Avatar -->
+                    <div class="reply__avatar">
+
+                      {{ reply.user.name.charAt(0).toUpperCase() }}
+
+                    </div>
+
+
+                    <!-- Contenu réponse -->
+                    <div class="reply__content">
+
+                      <div class="reply__meta">
+
+                        <span class="reply__author">
+
+                          {{ reply.user.name }}
+
+                        </span>
+
+
+                        <span class="reply__date">
+
+                          {{ formatDate(reply.created_at) }}
+
+                        </span>
+
+                      </div>
+
+
+                      <p>
+                        {{ reply.content }}
+                      </p>
+
+
+                      <!-- Vote réponse -->
+                      <button
+                        type="button"
+                        class="reply__vote"
+                        (click)="upvoteReply(thread.id, reply.id)"
+                      >
+
+                        👍 {{ reply.upvotes }}
+
+                      </button>
+
+                    </div>
+
+                  </div>
+
+                }
+
+              </div>
+
+
+              <!-- =========================
+                   FORMULAIRE RÉPONSE
+              ========================== -->
+              <div class="thread__reply-form">
+
+                <textarea
+                  rows="2"
+                  placeholder="Écrire une réponse..."
+                  [(ngModel)]="replyDraft"
+                ></textarea>
+
+                <button
+                  type="button"
+                  [disabled]="submitting()"
+                  (click)="postReply(thread.id)"
+                >
+
+                  @if (submitting()) {
+                    Envoi...
+                  } @else {
+                    Répondre
+                  }
+
+                </button>
+
+              </div>
+
+            </div>
+
+          }
+
+        </div>
+
+      } @empty {
+
+        <p class="forum__empty">
+          Aucune question pour ce cours pour l'instant.
+          Soyez le premier à en poser une !
+        </p>
+
+      }
+
+    </div>
+
+  }
+
+</div>

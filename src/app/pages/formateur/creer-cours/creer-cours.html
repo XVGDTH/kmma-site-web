@@ -1,0 +1,238 @@
+<section class="cc">
+
+  <!-- ═══════════ DÉCOR AMBIANT (orbes lumineux + grille) ═══════════ -->
+  <div class="cc__aurora" aria-hidden="true">
+    <span class="cc__orb cc__orb--1"></span>
+    <span class="cc__orb cc__orb--2"></span>
+    <span class="cc__orb cc__orb--3"></span>
+    <span class="cc__grid"></span>
+  </div>
+
+  <div class="cc__container">
+
+    <!-- Fil d'ariane -->
+    <nav class="cc__breadcrumb">
+      <a routerLink="/formateur">Espace formateur</a>
+      <span class="cc__breadcrumb-sep">→</span>
+      <span>Créer un cours</span>
+    </nav>
+
+    <!-- ═══════════ HERO ═══════════ -->
+    <header class="cc__hero">
+      <span class="cc__eyebrow">✦ Espace formateur · Studio de création</span>
+      <h1 class="cc__title">
+        Donnez vie à votre <em>prochain cours</em>
+      </h1>
+      <p class="cc__subtitle">
+        Rédigez, observez l'aperçu se construire en direct,
+        puis publiez. Chapitres, vidéos, TD/TP et quiz s'ajoutent juste après.
+      </p>
+    </header>
+
+    @if (error(); as err) {
+      <p class="cc__alert">⚠️ {{ err }}</p>
+    }
+
+    <!-- ═══════════ LAYOUT : FORMULAIRE + APERÇU ═══════════ -->
+    <div class="cc__layout">
+
+      <!-- ─────────── COLONNE GAUCHE : LE FORMULAIRE ─────────── -->
+      <form class="cc__panel" (submit)="$event.preventDefault(); save()">
+
+        <!-- Barre de progression -->
+        <div class="cc__progress">
+          <div class="cc__progress-head">
+            <span>Complétion de la fiche</span>
+            <strong>{{ formProgress() }}%</strong>
+          </div>
+          <div class="cc__progress-track">
+            <div class="cc__progress-fill" [style.width.%]="formProgress()"></div>
+          </div>
+        </div>
+
+        <!-- Section 1 : Identité -->
+        <div class="cc__group">
+          <span class="cc__group-label"><b>01</b> Identité du cours</span>
+
+          <div class="cc__field">
+            <label for="cc-title">Titre du cours <i>*</i></label>
+            <div class="cc__input">
+              <span class="cc__input-icon">✎</span>
+              <input id="cc-title" type="text"
+                     placeholder="Ex : Maîtriser la comptabilité générale"
+                     [value]="title()"
+                     (input)="title.set($any($event.target).value)" />
+            </div>
+          </div>
+
+          <div class="cc__row">
+            <div class="cc__field">
+              <label for="cc-subject">Matière</label>
+              <div class="cc__input">
+                <span class="cc__input-icon">📐</span>
+                <input id="cc-subject" type="text"
+                       placeholder="Ex : Comptabilité"
+                       [value]="subject()"
+                       (input)="subject.set($any($event.target).value)" />
+              </div>
+            </div>
+            <div class="cc__field">
+              <label for="cc-category">Catégorie</label>
+              <div class="cc__input">
+                <span class="cc__input-icon">🏷</span>
+                <input id="cc-category" type="text"
+                       placeholder="Ex : Gestion"
+                       [value]="category()"
+                       (input)="category.set($any($event.target).value)" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 2 : Pédagogie -->
+        <div class="cc__group">
+          <span class="cc__group-label"><b>02</b> Public & pédagogie</span>
+
+          <div class="cc__field">
+            <label>Niveau</label>
+            <div class="cc__pills">
+              @for (lvl of levels; track lvl) {
+                <button type="button" class="cc__pill"
+                        [class.cc__pill--active]="level() === lvl"
+                        (click)="level.set(lvl)">
+                  {{ lvl }}
+                </button>
+              }
+            </div>
+          </div>
+
+          <div class="cc__field">
+            <label for="cc-diploma">Diplôme préparé</label>
+            <div class="cc__input">
+              <span class="cc__input-icon">🎓</span>
+              <input id="cc-diploma" type="text"
+                     placeholder="Ex : BTS CG"
+                     [value]="diploma()"
+                     (input)="diploma.set($any($event.target).value)" />
+            </div>
+          </div>
+
+          <div class="cc__row">
+            <div class="cc__field">
+              <label for="cc-dfull">Durée · formation initiale</label>
+              <div class="cc__input">
+                <span class="cc__input-icon">⏱</span>
+                <input id="cc-dfull" type="text"
+                       placeholder="Ex : 3 mois"
+                       [value]="durationFull()"
+                       (input)="durationFull.set($any($event.target).value)" />
+              </div>
+            </div>
+            <div class="cc__field">
+              <label for="cc-dalt">Durée · alternance</label>
+              <div class="cc__input">
+                <span class="cc__input-icon">⏳</span>
+                <input id="cc-dalt" type="text"
+                       placeholder="Ex : 6 mois"
+                       [value]="durationAlternance()"
+                       (input)="durationAlternance.set($any($event.target).value)" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 3 : Description -->
+        <div class="cc__group">
+          <span class="cc__group-label"><b>03</b> Description</span>
+
+          <div class="cc__field">
+            <div class="cc__field-head">
+              <label for="cc-desc">Ce que vos apprenants vont apprendre</label>
+              <span class="cc__counter">{{ description().length }} / 600</span>
+            </div>
+            <textarea id="cc-desc" rows="5" maxlength="600"
+                      placeholder="Décrivez la promesse du cours, les compétences visées, la méthode…"
+                      [value]="description()"
+                      (input)="description.set($any($event.target).value)"></textarea>
+          </div>
+        </div>
+
+        <!-- Section 4 : Couverture -->
+        <div class="cc__group">
+          <span class="cc__group-label"><b>04</b> Image de couverture</span>
+
+          <label class="cc__dropzone" [class.cc__dropzone--filled]="imagePreview()">
+            <input type="file" accept="image/*" (change)="onImageSelected($event)" hidden />
+
+            @if (imagePreview(); as preview) {
+              <img [src]="preview" alt="Aperçu de la couverture" />
+              <span class="cc__dropzone-change">↻ Changer l'image</span>
+            } @else {
+              <span class="cc__dropzone-icon">🖼</span>
+              <span class="cc__dropzone-text">
+                <strong>Glissez ou sélectionnez une image</strong>
+                JPG, PNG ou WebP — ratio 16:9 recommandé
+              </span>
+            }
+          </label>
+        </div>
+
+        <!-- Soumission -->
+        <button type="submit" class="cc__submit"
+                [disabled]="saving() || !canSave()">
+          @if (saving()) {
+            <span class="cc__submit-spinner"></span> Création en cours…
+          } @else {
+            ✦ Créer le cours
+          }
+        </button>
+
+        <p class="cc__hint">
+          <i>*</i> Le titre suffit pour créer le cours.
+          Tout le reste se complète ensuite dans « Gérer le contenu ».
+        </p>
+      </form>
+
+      <!-- ─────────── COLONNE DROITE : APERÇU EN DIRECT ─────────── -->
+      <aside class="cc__aside">
+        <span class="cc__aside-label">◉ Aperçu en direct</span>
+
+        <article class="cc__card">
+          <div class="cc__card-image">
+            @if (imagePreview(); as preview) {
+              <img [src]="preview" alt="" />
+            } @else {
+              <span class="cc__card-image-empty">✦</span>
+            }
+            @if (level()) {
+              <span class="cc__card-level">{{ level() }}</span>
+            }
+          </div>
+
+          <div class="cc__card-body">
+            <span class="cc__card-category">
+              {{ category() || 'Catégorie' }}
+            </span>
+
+            <h3 class="cc__card-title">
+              {{ title() || 'Titre de votre futur cours…' }}
+            </h3>
+
+            <p class="cc__card-desc">
+              {{ description() || 'La description apparaîtra ici pendant que vous la rédigez.' }}
+            </p>
+
+            <div class="cc__card-meta">
+              <span>⏱ {{ durationFull() || '—' }}</span>
+              <span>⏳ {{ durationAlternance() || '—' }}</span>
+              @if (diploma()) { <span>🎓 {{ diploma() }}</span> }
+            </div>
+          </div>
+        </article>
+
+        <p class="cc__aside-hint">✨ Cet aperçu se met à jour pendant que vous tapez.</p>
+      </aside>
+
+    </div>
+  </div>
+</section>

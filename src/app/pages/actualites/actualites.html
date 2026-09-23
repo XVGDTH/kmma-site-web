@@ -1,0 +1,147 @@
+<section class="news">
+  <!-- ============= HERO ============= -->
+  <header class="news-hero">
+    <div class="news-hero__grid-bg" aria-hidden="true"></div>
+
+    <div class="news-hero__container">
+      <nav class="news-hero__breadcrumb" aria-label="Fil d'ariane">
+        <a routerLink="/">Accueil</a>
+        <span>/</span>
+        <span>Actualités</span>
+      </nav>
+
+      <span class="news-hero__eyebrow">
+        <span class="news-hero__dot"></span>
+        Le magazine KMAA
+      </span>
+
+      <h1 class="news-hero__title">
+        Ce qui se passe chez <span class="news-hero__title-accent">KMAA</span>
+      </h1>
+
+      <p class="news-hero__subtitle">
+        Formations, vie de l'école, conseils carrière et actualités du monde
+        professionnel — tout ce qui fait avancer votre parcours.
+      </p>
+
+      <div class="news-hero__search">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <circle cx="11" cy="11" r="7" />
+          <path d="M21 21l-4.3-4.3" stroke-linecap="round" />
+        </svg>
+        <input
+          type="search"
+          placeholder="Rechercher un article…"
+          [value]="searchQuery()"
+          (input)="updateSearch($any($event.target).value)"
+        />
+      </div>
+    </div>
+
+    <!-- ===== Bento grid des articles à la une ===== -->
+    <div class="news-hero__container">
+      <div class="featured-grid">
+        @for (article of featuredArticles(); track article.id; let i = $index) {
+          <a
+            class="featured-card"
+            [class.featured-card--main]="i === 0"
+            [routerLink]="article.route"
+          >
+            <img class="featured-card__image" [src]="article.image" [alt]="article.imageAlt" loading="lazy" />
+            <span class="featured-card__overlay" aria-hidden="true"></span>
+
+            <div class="featured-card__content">
+              <span class="chip" [attr.data-category]="article.category">
+                {{ categoryLabels[article.category] }}
+              </span>
+              <h2 class="featured-card__title">{{ article.title }}</h2>
+
+              @if (i === 0) {
+                <p class="featured-card__excerpt">{{ article.excerpt }}</p>
+              }
+
+              <div class="featured-card__meta">
+                <img class="featured-card__avatar" [src]="article.authorAvatar" [alt]="article.author" loading="lazy" />
+                <span class="featured-card__author">{{ article.author }}</span>
+                <span class="featured-card__dot" aria-hidden="true">·</span>
+                <span>{{ article.date }}</span>
+                <span class="featured-card__dot" aria-hidden="true">·</span>
+                <span>{{ article.readTime }} de lecture</span>
+              </div>
+            </div>
+          </a>
+        }
+      </div>
+    </div>
+  </header>
+
+  <!-- ============= FILTRES ============= -->
+  <div class="news-filters">
+    <div class="news-filters__inner">
+      @for (cat of categories; track cat.id) {
+        <button
+          type="button"
+          class="news-filters__pill"
+          [class.news-filters__pill--active]="activeCategory() === cat.id"
+          (click)="setCategory(cat.id)"
+        >
+          {{ cat.label }}
+        </button>
+      }
+    </div>
+  </div>
+
+  <!-- ============= GRILLE D'ARTICLES ============= -->
+  <div class="news-container">
+    <div class="news-grid">
+      @for (article of filteredArticles(); track article.id) {
+        <a class="article-card" [routerLink]="article.route">
+          <div class="article-card__media">
+            <img [src]="article.image" [alt]="article.imageAlt" loading="lazy" />
+            <span class="chip chip--floating" [attr.data-category]="article.category">
+              {{ categoryLabels[article.category] }}
+            </span>
+          </div>
+
+          <div class="article-card__body">
+            <h3 class="article-card__title">{{ article.title }}</h3>
+            <p class="article-card__excerpt">{{ article.excerpt }}</p>
+
+            <div class="article-card__meta">
+              <img class="article-card__avatar" [src]="article.authorAvatar" [alt]="article.author" loading="lazy" />
+              <div class="article-card__meta-text">
+                <span class="article-card__author">{{ article.author }}</span>
+                <span class="article-card__date">{{ article.date }} · {{ article.readTime }}</span>
+              </div>
+            </div>
+          </div>
+        </a>
+      } @empty {
+        <p class="news-empty">Aucun article ne correspond à votre recherche.</p>
+      }
+    </div>
+  </div>
+
+  <!-- ============= NEWSLETTER ============= -->
+  <div class="news-newsletter">
+    <div class="news-newsletter__inner">
+      <div class="news-newsletter__glow" aria-hidden="true"></div>
+
+      <span class="news-hero__eyebrow news-newsletter__eyebrow">
+        <span class="news-hero__dot"></span>
+        Restez informé
+      </span>
+
+      <h2>Ne manquez aucune actualité KMAA</h2>
+      <p>Recevez chaque mois nos derniers articles, nouveaux parcours et événements directement dans votre boîte mail.</p>
+
+    
+            <form class="news-newsletter__form" (submit)="$event.preventDefault(); subscribeNewsletter($any($event.target).email.value)">
+        <input type="email" name="email" placeholder="Votre adresse e-mail" required />
+        <button type="submit" class="btn btn-gold">S'abonner</button>
+      </form>
+      @if (newsletterSubmitted()) { <p>✓ Inscription confirmée.Merci !</p> }
+      @if (newsletterError(); as err) { <p>⚠️ {{ err }}</p> }
+    </div>
+  </div>
+</section>

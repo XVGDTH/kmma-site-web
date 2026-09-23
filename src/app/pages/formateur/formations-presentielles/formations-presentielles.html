@@ -1,0 +1,73 @@
+<section class="fp">
+  <header class="fp__header">
+    <h1>🎓 Formations présentielles</h1>
+    <button class="btn btn-gold" (click)="showForm.set(!showForm())">
+      @if (showForm()) { Annuler } @else { ➕ Nouvelle formation }
+    </button>
+  </header>
+
+  @if (message(); as msg) {
+    <p class="fp__flash">✓ {{ msg }}</p>
+  }
+
+  @if (showForm()) {
+    <form [formGroup]="form" (ngSubmit)="submit()" class="fp__form">
+      <input formControlName="title" placeholder="Titre de la formation" required />
+      <textarea formControlName="description" placeholder="Description" rows="2"></textarea>
+
+      <div class="fp__row">
+        <label>Date de début <input type="date" formControlName="starts_at" required /></label>
+        <label>Date de fin <input type="date" formControlName="ends_at" required /></label>
+      </div>
+
+      <div class="fp__row">
+        <label>Nombre de jours <input type="number" formControlName="days_count" required min="1" /></label>
+        <label>Volume horaire <input type="number" formControlName="hours_count" /></label>
+      </div>
+
+      <input formControlName="location" placeholder="Lieu" />
+      <input formControlName="instructor_name" placeholder="Nom du formateur" />
+      <input formControlName="instructor_role" placeholder="Fonction du formateur" />
+      <!-- <input type="number" formControlName="expected_participants" placeholder="Nombre de participants prévus" /> -->
+       <input type="number" formControlName="max_participants" placeholder="Nombre de participants prévus" />
+
+      <label>
+        Type de document
+        <select formControlName="certificate_type">
+          <option value="attestation">📜 Attestation</option>
+          <option value="certificate">🏆 Certificat</option>
+        </select>
+      </label>
+
+      <button type="submit" class="btn btn-ink" [disabled]="creating()">
+        @if (creating()) { Enregistrement… } @else { 💾 Créer la formation }
+      </button>
+    </form>
+  }
+
+  <div class="fp__list">
+    @for (t of trainings(); track t.id) {
+      <div class="fp__card">
+        <div class="fp__card-main">
+          <strong>{{ t.title }}</strong>
+          <span>{{ t.starts_at }} → {{ t.ends_at }} · {{ t.days_count }} j</span>
+          <span class="fp__badge" [class.fp__badge--cert]="t.certificate_type === 'certificate'">
+            {{ t.certificate_type === 'certificate' ? '🏆 Certificat' : '📜 Attestation' }}
+          </span>
+          <span class="fp__count">{{ t.registered_count }} inscrit(s)</span>
+        </div>
+        <div class="fp__card-actions">
+          <button class="btn btn-outline-dark" (click)="copyLink(t)">🔗 Copier le lien</button>
+          <!-- <a class="btn btn-outline-dark" [href]="'/formateur/formations-presentielles/' + t.id">
+            Voir les participants
+          </a> -->
+          <a class="btn btn-outline-dark" [routerLink]="['/formateur/formations-presentielles', t.id, 'participants']">
+  👥 Voir les participants
+</a>
+        </div>
+      </div>
+    } @empty {
+      <p class="fp__empty">Aucune formation présentielle pour le moment.</p>
+    }
+  </div>
+</section>

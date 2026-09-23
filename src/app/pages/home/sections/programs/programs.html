@@ -1,0 +1,76 @@
+<section class="programs" id="programs" aria-labelledby="programs-title">
+  <div class="programs__container">
+    <app-section-title
+      title="Ce que nous offrons"
+      description="Chez KMAA, nous mobilisons nos expertises pour accompagner les entreprises, les organisations et les porteurs de projets dans leurs enjeux stratégiques, financiers, administratifs et opérationnels."
+    
+      [centered]="true"
+    />
+
+    <div class="programs__grid">
+      @for (program of programs; track program.route) {
+        <article
+          class="program-card"
+          [class.program-card--highlighted]="program.highlighted"
+          [class]="'program-card program-card--' + program.tone"
+        >
+          <a
+            class="program-card__link-area"
+            [routerLink]="program.route"
+            [attr.aria-label]="'Découvrir le savoir-faire : ' + program.title"
+          >
+            <div class="program-card__media">
+              <img
+                [src]="program.image"
+                [alt]="program.title"
+                loading="lazy"
+                decoding="async"
+              />
+
+              <div class="program-card__overlay"></div>
+
+              <span class="program-card__number" aria-hidden="true">
+                {{ program.number }}
+              </span>
+
+              <span class="program-card__arrow" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none">
+                  <path
+                    d="M7 17L17 7M17 7H9M17 7V15"
+                    stroke="currentColor"
+                    stroke-width="1.7"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </span>
+            </div>
+
+            <div class="program-card__content">
+              <h3 class="program-card__title">
+                {{ program.title }}
+              </h3>
+
+              <p class="program-card__description">
+                {{ program.description }}
+              </p>
+
+              <span class="program-card__cta">
+                En savoir plus
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path
+                    d="M5 12H19M19 12L13 6M19 12L13 18"
+                    stroke="currentColor"
+                    stroke-width="1.7"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </span>
+            </div>
+          </a>
+        </article>
+      }
+    </div>
+  </div>
+</section>

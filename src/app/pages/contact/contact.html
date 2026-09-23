@@ -1,0 +1,151 @@
+<div class="contact">
+  <!-- Fond vidéo -->
+  <video class="contact__video" autoplay muted loop playsinline>
+    <source src="/videos/contact.mp4" type="video/mp4" />
+  </video>
+  <div class="contact__overlay" aria-hidden="true"></div>
+
+  <!-- Halos décoratifs futuristes -->
+  <div class="contact__glow contact__glow--gold" aria-hidden="true"></div>
+  <div class="contact__glow contact__glow--navy" aria-hidden="true"></div>
+
+  <div class="contact__content">
+
+    <!-- EN-TÊTE -->
+    <header class="contact__hero">
+      <span class="contact__eyebrow">Parlons de votre projet</span>
+      <h1 class="contact__title">Contactez-nous</h1>
+      <p class="contact__subtitle">
+        Une question, un besoin de formation ou un projet d'accompagnement ?
+        Notre équipe vous répond rapidement, par le canal qui vous convient.
+      </p>
+    </header>
+
+    <!-- CARTES DE CONTACT -->
+    <div class="contact__methods">
+      <a [href]="whatsappLink" target="_blank" rel="noopener" class="contact-card contact-card--whatsapp">
+        <span class="contact-card__icon">
+          <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+            <path d="M12 3a9 9 0 0 0-7.8 13.5L3 21l4.6-1.2A9 9 0 1 0 12 3Z" stroke-linejoin="round"/>
+            <path d="M8.5 9.2c.2-.6.5-.6.8-.6h.5c.2 0 .4 0 .6.5.2.5.7 1.6.7 1.8.1.2.1.3 0 .5-.1.2-.2.3-.3.5-.2.2-.3.3-.1.6.2.3.9 1.4 1.9 2.3 1.3 1.1 2.4 1.5 2.7 1.6.3.1.5.1.7-.1.2-.2.7-.8.9-1.1.2-.3.4-.2.7-.1.3.1 1.7.8 2 1 .3.1.5.2.6.3.1.2.1.9-.2 1.7-.3.8-1.7 1.5-2.4 1.6-.6.1-1.4.2-4.7-1-3.8-1.5-6.1-5.2-6.3-5.5-.2-.3-1.5-2-1.5-3.7 0-1.7.9-2.6 1.2-2.9Z" fill="currentColor" stroke="none"/>
+          </svg>
+        </span>
+        <span class="contact-card__label">WhatsApp</span>
+        <span class="contact-card__value">{{ whatsappNumber }}</span>
+        <span class="contact-card__cta">Discuter maintenant →</span>
+      </a>
+
+      <a [href]="phoneLink" class="contact-card contact-card--phone">
+        <span class="contact-card__icon">
+          <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </span>
+        <span class="contact-card__label">Appel téléphonique</span>
+        <span class="contact-card__value">{{ phoneNumber }}</span>
+        <span class="contact-card__cta">Appeler maintenant →</span>
+      </a>
+
+      <a [href]="emailLink" class="contact-card contact-card--email">
+        <span class="contact-card__icon">
+          <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+            <polyline points="22,6 12,13 2,6"/>
+          </svg>
+        </span>
+        <span class="contact-card__label">Email</span>
+        <span class="contact-card__value">{{ emailAddress }}</span>
+        <span class="contact-card__cta">Écrire un message →</span>
+      </a>
+    </div>
+
+    <!-- FORMULAIRE -->
+    <div class="contact__form-section">
+      <div class="contact__form-intro">
+        <span class="contact__eyebrow">Ou écrivez-nous directement</span>
+        <h2>Envoyez-nous un message</h2>
+        <p>Décrivez votre besoin, nous revenons vers vous sous 24h ouvrées.</p>
+      </div>
+
+      <form class="contact-form" (ngSubmit)="submitForm()" novalidate>
+        @if (submitted()) {
+          <div class="contact-form__success">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M20 6L9 17l-5-5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Votre message a bien été envoyé. Nous vous répondrons rapidement.
+          </div>
+        }
+
+        <div class="contact-form__row">
+          <div class="contact-form__field" [class.contact-form__field--focused]="nameFocused()" [class.contact-form__field--error]="nameError()">
+            <label for="fullName">Nom complet</label>
+            <input
+              id="fullName"
+              type="text"
+              name="fullName"
+              [(ngModel)]="fullName"
+              (focus)="nameFocused.set(true)"
+              (blur)="nameFocused.set(false)"
+              placeholder="Votre nom"
+            />
+            @if (nameError()) { <span class="contact-form__error">{{ nameError() }}</span> }
+          </div>
+
+          <div class="contact-form__field" [class.contact-form__field--focused]="emailFocused()" [class.contact-form__field--error]="emailError()">
+            <label for="contactEmail">Adresse email</label>
+            <input
+              id="contactEmail"
+              type="email"
+              name="contactEmail"
+              [(ngModel)]="email"
+              (focus)="emailFocused.set(true)"
+              (blur)="emailFocused.set(false)"
+              placeholder="vous@exemple.com"
+            />
+            @if (emailError()) { <span class="contact-form__error">{{ emailError() }}</span> }
+          </div>
+        </div>
+
+        <div class="contact-form__field" [class.contact-form__field--focused]="subjectFocused()">
+          <label for="subject">Sujet</label>
+          <input
+            id="subject"
+            type="text"
+            name="subject"
+            [(ngModel)]="subject"
+            (focus)="subjectFocused.set(true)"
+            (blur)="subjectFocused.set(false)"
+            placeholder="Objet de votre message"
+          />
+        </div>
+
+        <div class="contact-form__field" [class.contact-form__field--focused]="messageFocused()" [class.contact-form__field--error]="messageError()">
+          <label for="message">Message</label>
+          <textarea
+            id="message"
+            name="message"
+            rows="5"
+            [(ngModel)]="message"
+            (focus)="messageFocused.set(true)"
+            (blur)="messageFocused.set(false)"
+            placeholder="Décrivez votre besoin..."
+          ></textarea>
+          @if (messageError()) { <span class="contact-form__error">{{ messageError() }}</span> }
+        </div>
+
+        <button type="submit" class="contact-form__submit" [disabled]="isSubmitting()">
+          @if (isSubmitting()) {
+            <span class="contact-form__spinner" aria-hidden="true"></span>
+          } @else {
+            Envoyer le message
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          }
+        </button>
+      </form>
+    </div>
+
+  </div>
+</div>

@@ -1,0 +1,209 @@
+<div class="login">
+  <!-- Fond vidéo : dépose le fichier dans public/videos/login.mp4 -->
+  <video class="login__video" autoplay muted loop playsinline>
+    <source src="/videos/login.mp4" type="video/mp4" />
+  </video>
+
+  <div class="login__overlay" aria-hidden="true"></div>
+
+  <!-- Arcs décoratifs animés -->
+  <div class="login__arc login__arc--top" aria-hidden="true">
+    <svg viewBox="0 0 600 600">
+      <defs>
+        <linearGradient id="arcGradTop" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#e0b03c" stop-opacity="0" />
+          <stop offset="50%" stop-color="#e0b03c" stop-opacity="0.8" />
+          <stop offset="100%" stop-color="#e0b03c" stop-opacity="0" />
+        </linearGradient>
+      </defs>
+      <circle cx="300" cy="300" r="150" fill="none" stroke="url(#arcGradTop)" stroke-width="4" stroke-linecap="round" stroke-dasharray="450 500" />
+      <circle cx="300" cy="300" r="220" fill="none" stroke="url(#arcGradTop)" stroke-width="2.8" stroke-linecap="round" stroke-dasharray="500 700" opacity="0.7" />
+      <circle cx="300" cy="300" r="280" fill="none" stroke="url(#arcGradTop)" stroke-width="1.8" stroke-linecap="round" stroke-dasharray="400 900" opacity="0.45" />
+    </svg>
+  </div>
+
+  <div class="login__arc login__arc--bottom" aria-hidden="true">
+    <svg viewBox="0 0 500 500">
+      <defs>
+        <linearGradient id="arcGradBottom" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#e0b03c" stop-opacity="0" />
+          <stop offset="50%" stop-color="#e0b03c" stop-opacity="0.7" />
+          <stop offset="100%" stop-color="#e0b03c" stop-opacity="0" />
+        </linearGradient>
+      </defs>
+      <circle cx="250" cy="250" r="120" fill="none" stroke="url(#arcGradBottom)" stroke-width="4" stroke-linecap="round" stroke-dasharray="380 420" />
+      <circle cx="250" cy="250" r="180" fill="none" stroke="url(#arcGradBottom)" stroke-width="2.8" stroke-linecap="round" stroke-dasharray="420 600" opacity="0.6" />
+    </svg>
+  </div>
+
+  <!-- Formulaire centré -->
+  <div class="login__content">
+    <div class="login__box-wrapper">
+
+      <div class="login__title">
+        <div class="login__logo">
+          <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M12 15a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z" />
+            <path d="M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18Z" opacity="0.4" />
+          </svg>
+        </div>
+        <h1>CONNEXION</h1>
+        @if (isStaffLogin()) {
+          <p class="login__staff-tag">Espace formateur</p>
+        }
+        <div class="login__divider">
+          <span class="login__divider-fade login__divider-fade--left"></span>
+          <span class="login__divider-mid"></span>
+          <span class="login__divider-fade login__divider-fade--right"></span>
+        </div>
+      </div>
+
+      <!-- ============================================================ -->
+      <!-- ÉTAT 1 : COMPTE BLOQUÉ — on remplace le formulaire          -->
+      <!-- ============================================================ -->
+      @if (lockedMessage()) {
+
+        <div class="login__locked">
+
+          <div class="login__locked-icon">
+            <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+              <rect x="4" y="11" width="16" height="9" rx="2" />
+              <path d="M8 11V7a4 4 0 0 1 8 0v4" />
+            </svg>
+          </div>
+
+          <h2 class="login__locked-title">Compte temporairement bloqué</h2>
+
+          <p class="login__locked-text">
+            Suite à <strong>3 tentatives échouées</strong>, votre compte a été
+            bloqué pour des raisons de sécurité.
+          </p>
+
+          <div class="login__locked-countdown">
+            <span class="login__locked-countdown-label">⏱ Déblocage automatique dans</span>
+            <span class="login__locked-countdown-value">{{ formatTime(countdown()) }}</span>
+          </div>
+
+          <div class="login__locked-divider"></div>
+
+          <p class="login__locked-help">
+            Besoin d'un accès immédiat ?
+          </p>
+
+          <a href="mailto:contact@kmaa-ac.com?subject=Demande%20de%20d%C3%A9blocage%20de%20compte"
+             class="login__locked-btn login__locked-btn--primary">
+            📧 Contacter l'administration
+          </a>
+
+          <a routerLink="/"
+             class="login__locked-btn login__locked-btn--ghost">
+            ← Retour à l'accueil
+          </a>
+
+        </div>
+
+      } @else {
+
+        <!-- ============================================================ -->
+        <!-- ÉTAT 2 : FORMULAIRE NORMAL                                  -->
+        <!-- ============================================================ -->
+
+        <form class="login__form" (ngSubmit)="handleLogin()" novalidate>
+          <label class="login__label" for="email">Adresse email :</label>
+          <div class="login__field" [class.login__field--focused]="emailFocused()" [class.login__field--error]="emailError()">
+            <svg class="login__field-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+              <polyline points="22,6 12,13 2,6"/>
+            </svg>
+            <input
+              id="email"
+              type="email"
+              name="email"
+              [(ngModel)]="email"
+              (focus)="onEmailFocus(true)"
+              (blur)="onEmailFocus(false)"
+              placeholder="admin@kmaa.com"
+              autocomplete="email"
+            />
+          </div>
+          @if (emailError()) {
+            <span class="login__error-text">{{ emailError() }}</span>
+          }
+
+          <label class="login__label login__label--spaced" for="password">Mot de passe :</label>
+          <div class="login__field" [class.login__field--focused]="passwordFocused()" [class.login__field--error]="passwordError()">
+            <svg class="login__field-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <rect x="4" y="10" width="16" height="10" rx="2" />
+              <path d="M8 10V7a4 4 0 0 1 8 0v3" />
+            </svg>
+            <input
+              id="password"
+              [type]="obscurePassword ? 'password' : 'text'"
+              name="password"
+              [(ngModel)]="password"
+              (focus)="onPasswordFocus(true)"
+              (blur)="onPasswordFocus(false)"
+              placeholder="••••••••"
+              autocomplete="current-password"
+            />
+            <button
+              type="button"
+              class="login__field-toggle"
+              (click)="toggleObscure()"
+              [attr.aria-label]="obscurePassword ? 'Afficher le mot de passe' : 'Masquer le mot de passe'"
+            >
+              @if (obscurePassword) {
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8Z" />
+                  <circle cx="12" cy="12" r="3" />
+                </svg>
+              } @else {
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <path d="M17.94 17.94A10.94 10.94 0 0 1 12 20c-7 0-11-8-11-8a20.3 20.3 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a20.3 20.3 0 0 1-2.16 3.19M1 1l22 22" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              }
+            </button>
+          </div>
+          @if (passwordError()) {
+            <span class="login__error-text">{{ passwordError() }}</span>
+          }
+
+          <label class="login__remember">
+            <input type="checkbox" name="remember" [(ngModel)]="rememberMe" />
+            <span class="login__remember-box" aria-hidden="true"></span>
+            Se souvenir de moi
+          </label>
+
+          <button type="submit" class="login__submit" [disabled]="isLoading">
+            @if (isLoading) {
+              <span class="login__spinner" aria-hidden="true"></span>
+            } @else {
+              Se connecter
+            }
+          </button>
+
+          @if (errorMessage()) {
+            <div class="login__alert">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10" />
+                <line x1="12" y1="8" x2="12" y2="12" />
+                <line x1="12" y1="16" x2="12.01" y2="16" />
+              </svg>
+              {{ errorMessage() }}
+            </div>
+          }
+
+          <a routerLink="/compte/inscription" class="login__register-btn">
+            S'inscrire
+          </a>
+        </form>
+
+        <a routerLink="/compte/mot-de-passe-oublie" class="login__forgot">
+          Mot de passe oublié ? <span>Cliquez ici</span>
+        </a>
+
+      }
+
+    </div>
+  </div>
+</div>

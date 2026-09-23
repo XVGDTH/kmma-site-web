@@ -1,0 +1,1170 @@
+<div class="masterclass">
+
+  <!-- =====================================================
+       NAVIGATION FLOTTANTE
+  ====================================================== -->
+
+  <nav class="mc-nav">
+    <div class="mc-nav__brand">
+      <span class="mc-nav__brand-mark">K</span>
+
+      <div>
+        <strong>KMAA</strong>
+        <span>MASTERCLASS</span>
+      </div>
+    </div>
+
+    <div class="mc-nav__status">
+      <span
+        class="status-dot"
+        [class.status-dot--live]="eventStatus() === 'live'"
+      ></span>
+
+      @if (eventStatus() === 'live') {
+        EN DIRECT
+      } @else if (eventStatus() === 'replay') {
+        REPLAY
+      } @else {
+        À VENIR
+      }
+    </div>
+
+    <a href="#programme" class="mc-nav__link">
+      Programme
+    </a>
+
+    <a href="#live" class="mc-nav__link">
+      Session
+    </a>
+
+    <a href="#apres" class="mc-nav__link">
+      Après
+    </a>
+
+    <button
+      type="button"
+      class="mc-nav__cta"
+      (click)="register()"
+    >
+      @if (isRegistered()) {
+        ✓ Inscrit
+      } @else {
+        Participer
+      }
+    </button>
+  </nav>
+
+
+  <!-- =====================================================
+       HERO
+  ====================================================== -->
+
+  <section class="mc-hero">
+
+    <div class="mc-hero__grid"></div>
+    <div class="mc-hero__orb mc-hero__orb--one"></div>
+    <div class="mc-hero__orb mc-hero__orb--two"></div>
+
+    <div class="mc-hero__content">
+
+      <div class="mc-hero__eyebrow">
+        <span></span>
+        {{ masterclass().category }}
+      </div>
+
+      <h1>
+        {{ masterclass().title }}
+      </h1>
+
+      <p class="mc-hero__subtitle">
+        {{ masterclass().subtitle }}
+      </p>
+
+      <div class="mc-hero__meta">
+
+        <div>
+          <span>◷</span>
+          <strong>{{ masterclass().date }}</strong>
+        </div>
+
+        <div>
+          <span>◉</span>
+          <strong>{{ masterclass().time }} {{ masterclass().timezone }}</strong>
+        </div>
+
+        <div>
+          <span>◈</span>
+          <strong>{{ masterclass().language }}</strong>
+        </div>
+
+      </div>
+
+      <div class="mc-hero__actions">
+
+        <button
+          type="button"
+          class="mc-button mc-button--gold"
+          (click)="register()"
+        >
+          @if (isRegistered()) {
+            ✓ Vous êtes inscrit
+          } @else {
+            Réserver ma place
+          }
+        </button>
+
+        <a
+          href="#programme"
+          class="mc-button mc-button--outline"
+        >
+          Explorer le programme
+          <span>↓</span>
+        </a>
+
+      </div>
+
+    </div>
+
+    <div class="mc-hero__speaker">
+
+      <div class="speaker-card">
+
+        <div class="speaker-card__image">
+
+          <img
+            [src]="speaker().image"
+            [alt]="speaker().name"
+          />
+
+          <div class="speaker-card__live">
+            <span></span>
+            EXPERT
+          </div>
+
+        </div>
+
+        <div class="speaker-card__body">
+
+          <span>AVEC</span>
+
+          <h2>{{ speaker().name }}</h2>
+
+          <p>{{ speaker().role }}</p>
+
+          <div class="speaker-card__stats">
+
+            @for (stat of speaker().stats; track stat.label) {
+              <div>
+                <strong>{{ stat.value }}</strong>
+                <span>{{ stat.label }}</span>
+              </div>
+            }
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- =====================================================
+       COMPTE À REBOURS
+  ====================================================== -->
+
+  <section class="mc-countdown">
+
+    <div class="countdown__intro">
+      <span>PROCHAINE EXPÉRIENCE</span>
+      <strong>Le compte à rebours est lancé.</strong>
+    </div>
+
+    <div class="countdown__numbers">
+
+      <div>
+        <strong>{{ countdown().days | number:'2.0-0' }}</strong>
+        <span>Jours</span>
+      </div>
+
+      <b>:</b>
+
+      <div>
+        <strong>{{ countdown().hours | number:'2.0-0' }}</strong>
+        <span>Heures</span>
+      </div>
+
+      <b>:</b>
+
+      <div>
+        <strong>{{ countdown().minutes | number:'2.0-0' }}</strong>
+        <span>Minutes</span>
+      </div>
+
+      <b>:</b>
+
+      <div>
+        <strong>{{ countdown().seconds | number:'2.0-0' }}</strong>
+        <span>Secondes</span>
+      </div>
+
+    </div>
+
+    <div class="countdown__capacity">
+
+      <div class="capacity__top">
+        <span>{{ masterclass().participants }} participants</span>
+        <strong>{{ masterclass().capacity }} places</strong>
+      </div>
+
+      <div class="capacity__bar">
+        <div
+          [style.width.%]="(masterclass().participants / masterclass().capacity) * 100"
+        ></div>
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- =====================================================
+       AVANT — PRESENTATION
+  ====================================================== -->
+
+  <section class="mc-section mc-section--light">
+
+    <div class="mc-section__heading">
+
+      <span class="section-kicker">AVANT</span>
+
+      <h2>
+        Une expérience pensée
+        <span>de bout en bout.</span>
+      </h2>
+
+      <p>
+        Une Masterclass ne commence pas lorsque la vidéo démarre.
+        Elle commence dès l'inscription.
+      </p>
+
+    </div>
+
+    <div class="experience-flow">
+
+      <div class="flow-item flow-item--active">
+        <span>01</span>
+        <strong>Inscription</strong>
+        <small>Réservez votre place</small>
+      </div>
+
+      <div class="flow-line"></div>
+
+      <div class="flow-item">
+        <span>02</span>
+        <strong>Présentation</strong>
+        <small>Découvrez l'expert</small>
+      </div>
+
+      <div class="flow-line"></div>
+
+      <div class="flow-item">
+        <span>03</span>
+        <strong>Programme</strong>
+        <small>Préparez votre session</small>
+      </div>
+
+      <div class="flow-line"></div>
+
+      <div class="flow-item">
+        <span>04</span>
+        <strong>Rappel</strong>
+        <small>Ne manquez rien</small>
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- =====================================================
+       PROGRAMME
+  ====================================================== -->
+
+  <section
+    id="programme"
+    class="mc-section mc-section--navy"
+  >
+
+    <div class="mc-section__heading mc-section__heading--white">
+
+      <span class="section-kicker">LE PARCOURS</span>
+
+      <h2>
+        Deux heures pour
+        <span>changer de perspective.</span>
+      </h2>
+
+      <p>
+        Chaque séquence est conçue pour alterner théorie,
+        pratique et interaction.
+      </p>
+
+    </div>
+
+    <div class="timeline">
+
+      @for (session of sessions(); track session.time) {
+
+        <article
+          class="timeline-item"
+          [class.timeline-item--live]="session.status === 'live'"
+        >
+
+          <div class="timeline-item__time">
+            <strong>{{ session.time }}</strong>
+            <span>{{ session.duration }}</span>
+          </div>
+
+          <div class="timeline-item__marker">
+            @if (session.status === 'done') {
+              ✓
+            } @else if (session.status === 'live') {
+              <span></span>
+            } @else {
+              {{ $index + 1 }}
+            }
+          </div>
+
+          <div class="timeline-item__content">
+
+            <div>
+              @if (session.status === 'live') {
+                <span class="live-pill">EN COURS</span>
+              }
+            </div>
+
+            <h3>{{ session.title }}</h3>
+
+            <p>
+              {{ session.description }}
+            </p>
+
+          </div>
+
+        </article>
+
+      }
+
+    </div>
+
+  </section>
+
+
+  <!-- =====================================================
+       LIVE
+  ====================================================== -->
+
+  <section
+    id="live"
+    class="mc-section mc-section--dark"
+  >
+
+    <div class="mc-section__heading mc-section__heading--white">
+
+      <span class="section-kicker">PENDANT</span>
+
+      <h2>
+        Entrez dans
+        <span>la session.</span>
+      </h2>
+
+      <p>
+        Regardez, échangez, posez vos questions et participez
+        comme si vous étiez dans la salle.
+      </p>
+
+    </div>
+
+
+    <div class="live-layout">
+
+      <!-- VIDEO -->
+
+      <div class="video-stage">
+
+        <div class="video-stage__topbar">
+
+          <div class="video-stage__live">
+            <span></span>
+            LIVE SESSION
+          </div>
+
+          <div class="video-stage__viewers">
+            ● {{ masterclass().participants }} participants
+          </div>
+
+        </div>
+
+        <div class="video-frame">
+
+          <iframe
+             [src]="youtubeUrl()"
+            title="Masterclass vidéo"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowfullscreen>
+          </iframe>
+
+        </div>
+
+        <div class="video-stage__info">
+
+          <div>
+
+            <span class="video-stage__category">
+              {{ currentVideo()?.category }}
+            </span>
+
+            <h3>
+              {{ currentVideo()?.title }}
+            </h3>
+
+            <p>
+              {{ currentVideo()?.speaker }}
+            </p>
+
+          </div>
+
+          <div class="video-stage__progress">
+
+            <div class="progress-label">
+              <span>Votre progression</span>
+              <strong>{{ videoProgress() }}%</strong>
+            </div>
+
+            <div class="progress-bar">
+              <div
+                [style.width.%]="videoProgress()"
+              ></div>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- CHAT -->
+
+      <aside class="live-chat">
+
+        <div class="live-chat__header">
+
+          <div>
+            <span class="online-dot"></span>
+            <strong>Discussion en direct</strong>
+          </div>
+
+          <span>284</span>
+
+        </div>
+
+        <div class="live-chat__messages">
+
+          @for (message of chatMessages(); track message.id) {
+
+            <div
+              class="chat-message"
+              [class.chat-message--expert]="message.role === 'expert'"
+            >
+
+              <div class="chat-message__avatar">
+                {{ message.author.charAt(0) }}
+              </div>
+
+              <div>
+
+                <div class="chat-message__meta">
+                  <strong>{{ message.author }}</strong>
+
+                  @if (message.role === 'expert') {
+                    <span>EXPERT</span>
+                  }
+
+                  <small>{{ message.time }}</small>
+                </div>
+
+                <p>{{ message.message }}</p>
+
+              </div>
+
+            </div>
+
+          }
+
+        </div>
+
+        <form
+          class="live-chat__form"
+          (ngSubmit)="sendChatMessage()"
+        >
+
+          <input
+            type="text"
+            name="chat"
+            [(ngModel)]="chatDraft"
+            placeholder="Écrire un message..."
+            autocomplete="off"
+          />
+
+          <button type="submit">
+            →
+          </button>
+
+        </form>
+
+      </aside>
+
+    </div>
+
+
+    <!-- REACTIONS -->
+
+    <div class="reactions">
+
+      <span>Réagissez à la session</span>
+
+      <button
+        type="button"
+        (click)="react('heart')"
+      >
+        ❤️ {{ reactions().heart }}
+      </button>
+
+      <button
+        type="button"
+        (click)="react('fire')"
+      >
+        🔥 {{ reactions().fire }}
+      </button>
+
+      <button
+        type="button"
+        (click)="react('clap')"
+      >
+        👏 {{ reactions().clap }}
+      </button>
+
+      <button
+        type="button"
+        (click)="react('idea')"
+      >
+        💡 {{ reactions().idea }}
+      </button>
+
+    </div>
+
+  </section>
+
+
+  <!-- =====================================================
+       INTERACTIONS
+  ====================================================== -->
+
+  <section class="mc-section mc-section--light">
+
+    <div class="mc-section__heading">
+
+      <span class="section-kicker">INTERACTIONS</span>
+
+      <h2>
+        Votre voix fait partie
+        <span>de l'expérience.</span>
+      </h2>
+
+    </div>
+
+
+    <div class="interaction-grid">
+
+      <!-- QUESTIONS -->
+
+      <div class="interaction-card interaction-card--large">
+
+        <div class="interaction-card__header">
+
+          <div>
+            <span class="card-kicker">QUESTIONS</span>
+            <h3>Demandez à l'expert</h3>
+          </div>
+
+          <span class="counter">
+            {{ questions().length }}
+          </span>
+
+        </div>
+
+        <form
+          class="question-form"
+          (ngSubmit)="sendQuestion()"
+        >
+
+          <textarea
+            name="question"
+            [(ngModel)]="questionDraft"
+            rows="3"
+            placeholder="Posez votre question à l'expert..."
+          ></textarea>
+
+          <button type="submit">
+            Envoyer ma question →
+          </button>
+
+        </form>
+
+        <div class="questions-list">
+
+          @for (question of questions(); track question.id) {
+
+            <article class="question">
+
+              <div class="question__avatar">
+                {{ question.author.charAt(0) }}
+              </div>
+
+              <div class="question__content">
+
+                <div class="question__meta">
+                  <strong>{{ question.author }}</strong>
+
+                  @if (question.answered) {
+                    <span class="answered">✓ Répondu</span>
+                  }
+                </div>
+
+                <p>{{ question.question }}</p>
+
+                @if (question.answer) {
+
+                  <div class="expert-answer">
+
+                    <div class="expert-answer__header">
+                      <strong>M. Martial YAOGO</strong>
+                      <span>EXPERT</span>
+                    </div>
+
+                    <p>{{ question.answer }}</p>
+
+                  </div>
+
+                }
+
+                <button
+                  type="button"
+                  class="question__like"
+                  (click)="likeQuestion(question.id)"
+                >
+                  ♡ {{ question.likes }}
+                </button>
+
+              </div>
+
+            </article>
+
+          }
+
+        </div>
+
+      </div>
+
+
+      <!-- POLL -->
+
+      <div class="interaction-card">
+
+        <span class="card-kicker">SONDAGE EXPRESS</span>
+
+        <h3>
+          Qu'attendez-vous le plus
+          de cette Masterclass ?
+        </h3>
+
+        @if (!pollSubmitted()) {
+
+          <div class="poll-options">
+
+            @for (option of pollOptions; track option) {
+
+              <button
+                type="button"
+                class="poll-option"
+                [class.poll-option--selected]="selectedPoll() === option"
+                (click)="selectPoll(option)"
+              >
+
+                <span class="poll-radio"></span>
+
+                {{ option }}
+
+              </button>
+
+            }
+
+          </div>
+
+          <button
+            type="button"
+            class="mc-button mc-button--navy"
+            (click)="submitPoll()"
+          >
+            Voter
+          </button>
+
+        } @else {
+
+          <div class="poll-success">
+
+            <div>✓</div>
+
+            <strong>Merci pour votre réponse.</strong>
+
+            <p>
+              Votre choix a bien été enregistré.
+            </p>
+
+          </div>
+
+        }
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- =====================================================
+       APRÈS — REPLAY
+  ====================================================== -->
+
+  <section
+    id="apres"
+    class="mc-section mc-section--navy"
+  >
+
+    <div class="mc-section__heading mc-section__heading--white">
+
+      <span class="section-kicker">APRÈS</span>
+
+      <h2>
+        L'expérience
+        <span>continue.</span>
+      </h2>
+
+      <p>
+        Une Masterclass réussie ne s'arrête pas lorsque la vidéo
+        se termine.
+      </p>
+
+    </div>
+
+
+    <!-- VIDEO LIBRARY -->
+
+    <div class="video-library">
+
+      @for (video of videos(); track video.id) {
+
+        <button
+          type="button"
+          class="video-library__item"
+          [class.video-library__item--active]="currentVideoId() === video.id"
+          (click)="selectVideo(video.id)"
+        >
+
+          <div class="video-library__thumb">
+
+            <img
+              [src]="'https://img.youtube.com/vi/' + video.id + '/hqdefault.jpg'"
+              [alt]="video.title"
+            />
+
+            <span>▶</span>
+
+          </div>
+
+          <div class="video-library__info">
+
+            <span>{{ video.category }}</span>
+
+            <h3>{{ video.title }}</h3>
+
+            <p>{{ video.speaker }}</p>
+
+            <small>{{ video.duration }}</small>
+
+          </div>
+
+        </button>
+
+      }
+
+    </div>
+
+
+    <!-- RESSOURCES -->
+
+    <div class="resources-section">
+
+      <div class="resources-section__heading">
+
+        <div>
+          <span class="section-kicker">RESSOURCES</span>
+          <h3>Emportez la connaissance avec vous.</h3>
+        </div>
+
+        <span>{{ resources().length }} ressources</span>
+
+      </div>
+
+      <div class="resources-grid">
+
+        @for (resource of resources(); track resource.title) {
+
+          <article class="resource-card">
+
+            <div class="resource-card__icon">
+              {{ resource.icon }}
+            </div>
+
+            <div>
+              <h4>{{ resource.title }}</h4>
+              <span>
+                {{ resource.type }} · {{ resource.size }}
+              </span>
+            </div>
+
+            <button
+              type="button"
+              (click)="downloadResource(resource)"
+            >
+              ↓
+            </button>
+
+          </article>
+
+        }
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- =====================================================
+       QUIZ
+  ====================================================== -->
+
+  <section class="mc-section mc-section--light">
+
+    <div class="mc-section__heading">
+
+      <span class="section-kicker">VALIDATION</span>
+
+      <h2>
+        Testez ce que vous
+        <span>avez retenu.</span>
+      </h2>
+
+      <p>
+        Validez votre compréhension en quelques questions.
+      </p>
+
+    </div>
+
+
+    <div class="quiz">
+
+      @for (question of quizQuestions(); track $index; let i = $index) {
+
+        <article class="quiz-question">
+
+          <div class="quiz-question__number">
+            0{{ i + 1 }}
+          </div>
+
+          <div class="quiz-question__content">
+
+            <h3>
+              {{ question.question }}
+            </h3>
+
+            <div class="quiz-options">
+
+              @for (
+                option of question.options;
+                track $index;
+                let j = $index
+              ) {
+
+                <button
+                  type="button"
+                  class="quiz-option"
+                  [class.quiz-option--selected]="quizAnswers()[i] === j"
+                  [class.quiz-option--correct]="quizSubmitted() && question.correct === j"
+                  [class.quiz-option--wrong]="quizSubmitted() && quizAnswers()[i] === j && question.correct !== j"
+                  (click)="selectQuizAnswer(i, j)"
+                >
+
+                  <span>
+                    {{ ['A', 'B', 'C', 'D'][j] }}
+                  </span>
+
+                  {{ option }}
+
+                </button>
+
+              }
+
+            </div>
+
+          </div>
+
+        </article>
+
+      }
+
+
+      <div class="quiz-footer">
+
+        @if (!quizSubmitted()) {
+
+          <button
+            type="button"
+            class="mc-button mc-button--gold"
+            [disabled]="quizAnswers().length !== quizQuestions().length"
+            (click)="submitQuiz()"
+          >
+            Valider mon quiz →
+          </button>
+
+        } @else {
+
+          <div class="quiz-result">
+
+            <strong>
+              {{ quizScore() }}/{{ quizQuestions().length }}
+            </strong>
+
+            <span>
+              @if (quizScore() >= 2) {
+                Excellent travail 🎉
+              } @else {
+                Continuez vos efforts 💪
+              }
+            </span>
+
+          </div>
+
+        }
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- =====================================================
+       FEEDBACK
+  ====================================================== -->
+
+  <section class="feedback-section">
+
+    <div class="feedback-card">
+
+      <div class="feedback-card__visual">
+
+        <span>VOTRE AVIS</span>
+
+        <div class="feedback-card__quote">
+          “
+        </div>
+
+        <h2>
+          Votre feedback nous aide
+          à créer de meilleures expériences.
+        </h2>
+
+      </div>
+
+      <div class="feedback-card__form">
+
+        @if (!feedbackSubmitted()) {
+
+          <span class="card-kicker">
+            COMMENT S'EST PASSÉE VOTRE EXPÉRIENCE ?
+          </span>
+
+          <h3>
+            Notez cette Masterclass
+          </h3>
+
+          <div class="rating">
+
+            @for (star of [1,2,3,4,5]; track star) {
+
+              <button
+                type="button"
+                [class.rating__star--active]="rating() >= star"
+                (click)="setRating(star)"
+              >
+                ★
+              </button>
+
+            }
+
+          </div>
+
+          <textarea
+            name="feedback"
+            [(ngModel)]="feedbackComment"
+            rows="5"
+            placeholder="Qu'avez-vous pensé de cette expérience ?"
+          ></textarea>
+
+          <button
+            type="button"
+            class="mc-button mc-button--navy"
+            [disabled]="!rating()"
+            (click)="submitFeedback()"
+          >
+            Envoyer mon feedback
+          </button>
+
+        } @else {
+
+          <div class="feedback-success">
+
+            <div>✓</div>
+
+            <h3>Merci pour votre feedback.</h3>
+
+            <p>
+              Votre avis a bien été enregistré.
+            </p>
+
+          </div>
+
+        }
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- =====================================================
+       CERTIFICAT
+  ====================================================== -->
+
+  <section class="certificate-section">
+
+    <div class="certificate">
+
+      <div class="certificate__glow"></div>
+
+      <div class="certificate__content">
+
+        <span class="section-kicker">
+          CERTIFICATION
+        </span>
+
+        <div class="certificate__icon">
+          ✦
+        </div>
+
+        <h2>
+          Votre certificat
+          <span>vous attend.</span>
+        </h2>
+
+        @if (certificateUnlocked()) {
+
+          <p>
+            Félicitations ! Vous avez terminé les étapes
+            nécessaires pour obtenir votre certificat.
+          </p>
+
+          <button
+            type="button"
+            class="mc-button mc-button--gold"
+            (click)="downloadCertificate()"
+          >
+            Télécharger mon certificat
+          </button>
+
+        } @else {
+
+          <p>
+            Terminez le quiz avec au moins 2 bonnes réponses
+            et envoyez votre feedback pour débloquer votre certificat.
+          </p>
+
+          <div class="certificate__requirements">
+
+            <span [class.done]="quizSubmitted() && quizScore() >= 2">
+              {{ quizSubmitted() && quizScore() >= 2 ? '✓' : '○' }}
+              Quiz validé
+            </span>
+
+            <span [class.done]="feedbackSubmitted()">
+              {{ feedbackSubmitted() ? '✓' : '○' }}
+              Feedback envoyé
+            </span>
+
+          </div>
+
+        }
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- =====================================================
+       FOOTER
+  ====================================================== -->
+
+  <footer class="mc-footer">
+
+    <div class="mc-footer__brand">
+
+      <span class="mc-nav__brand-mark">K</span>
+
+      <div>
+        <strong>KMAA</strong>
+        <span>ACADEMY</span>
+      </div>
+
+    </div>
+
+    <p>
+      Apprendre. Expérimenter. Transformer.
+    </p>
+
+    <span>
+      © 2026 KMAA Academy
+    </span>
+
+  </footer>
+
+</div>

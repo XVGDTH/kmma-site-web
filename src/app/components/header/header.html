@@ -1,0 +1,473 @@
+<!-- BANDEAU HAUT -->
+<div class="header__topbar">
+  <div class="header__topbar-track">
+    <!-- Groupe 1 (visible pour les lecteurs d'écran) -->
+    <div class="header__topbar-group">
+      <a href="tel:+226 54 78 55 55" class="header__topbar-item">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
+        </svg>
+        +226 54 78 55 55
+      </a>
+      <span class="header__topbar-sep">•</span>
+
+      <a href="mailto:admin@convergesas.com" class="header__topbar-item">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+          <polyline points="22,6 12,13 2,6"/>
+        </svg>
+        admin@convergesas.com
+      </a>
+      <span class="header__topbar-sep">•</span>
+
+      <span class="header__topbar-item">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+          <circle cx="12" cy="10" r="3"/>
+        </svg>
+        Ouagadougou, Burkina Faso
+      </span>
+      <span class="header__topbar-sep">•</span>
+
+      <span class="header__topbar-item">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"/>
+          <polyline points="12 6 12 12 16 14"/>
+        </svg>
+        Lun - Ven : 8h - 18h
+      </span>
+      <span class="header__topbar-sep">•</span>
+    </div>
+
+    <!-- Groupe 2 : copie exacte, masquée aux lecteurs d'écran, sert juste à boucler visuellement -->
+    <div class="header__topbar-group" aria-hidden="true">
+      <a href="tel:+226 54 78 55 55" class="header__topbar-item" tabindex="-1">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
+        </svg>
+        +226 54 78 55 55
+      </a>
+      <span class="header__topbar-sep">•</span>
+
+      <a href="mailto:admin@convergesas.com" class="header__topbar-item" tabindex="-1">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+          <polyline points="22,6 12,13 2,6"/>
+        </svg>
+        admin@convergesas.com
+      </a>
+      <span class="header__topbar-sep">•</span>
+
+      <span class="header__topbar-item">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+          <circle cx="12" cy="10" r="3"/>
+        </svg>
+        Ouagadougou, Burkina Faso
+      </span>
+      <span class="header__topbar-sep">•</span>
+
+      <span class="header__topbar-item">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"/>
+          <polyline points="12 6 12 12 16 14"/>
+        </svg>
+        Lun - Ven : 8h - 18h
+      </span>
+      <span class="header__topbar-sep">•</span>
+    </div>
+  </div>
+</div>
+
+
+<header class="header" [class.header--scrolled]="scrolled()" (mouseleave)="closeDropdowns()">
+  <div class="header__bar">
+    <!-- <a class="header__logo" routerLink="/" (click)="closeMobileMenu()">
+      <span class="header__logo-mark">K</span>
+      <span class="header__logo-text">
+        <strong>KMAA</strong>
+        <small>Website</small>
+      </span>
+    </a> -->
+    <a
+  class="header__logo"
+  routerLink="/"
+  (click)="closeMobileMenu()"
+  aria-label="Retour à l’accueil KMAA"
+>
+  <img
+    class="header__logo-image"
+    src="/images/logo/logo.png"
+    alt="Logo KMAA"
+  />
+
+  <!-- <span class="header__logo-text">
+    <strong>KMAA</strong>
+    <small>WEBSITE</small>
+  </span> -->
+</a>
+
+
+    <nav class="header__nav" aria-label="Navigation principale">
+      @for (link of simpleLinks; track link.label) {
+        <a
+          class="header__link"
+          [routerLink]="link.route"
+          routerLinkActive="header__link--active"
+          [routerLinkActiveOptions]="{ exact: link.route === '/' }"
+        >
+          {{ link.label }}
+        </a>
+      }
+
+      <!-- EXPERTISES -->
+      <div class="header__dropdown header__dropdown--mega" (mouseenter)="openExpertisesMenu()">
+        <button
+          type="button"
+          class="header__link header__link--trigger"
+          [class.header__link--active]="openDropdown() === 'Expertises'"
+          (click)="toggleExpertisesMenu()"
+          [attr.aria-expanded]="openDropdown() === 'Expertises'"
+        >
+          Expertises
+          <svg class="header__chevron" width="10" height="6" viewBox="0 0 10 6" fill="none">
+            <path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </button>
+
+        @if (openDropdown() === 'Expertises') {
+          <div class="header__mega-panel">
+            <div class="header__mega-sidebar">
+              <span class="header__mega-sidebar-title">Nos services et expertises</span>
+              @for (item of expertises; track item.label) {
+                <a
+                  class="header__mega-sidebar-item"
+                  [class.header__mega-sidebar-item--active]="activeExpertise() === item.label"
+                  [routerLink]="item.route"
+                  (mouseenter)="setActiveExpertise(item.label)"
+                  (click)="closeDropdowns()"
+                >
+                  <svg class="header__mega-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                    <path [attr.d]="expertiseIcons[item.icon]" />
+                  </svg>
+                  <span>{{ item.label }}</span>
+                  <svg class="header__mega-sidebar-chevron" width="8" height="12" viewBox="0 0 8 12" fill="none">
+                    <path d="M1 1L6 6L1 11" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                </a>
+              }
+            </div>
+
+            @for (item of expertises; track item.label) {
+              @if (activeExpertise() === item.label) {
+                <div class="header__mega-content">
+                  <div class="header__mega-content-main">
+                    <span class="header__mega-content-eyebrow">{{ item.panel.title }}</span>
+                    <a class="header__mega-cta" [routerLink]="item.panel.ctaRoute" (click)="closeDropdowns()">
+                      {{ item.panel.ctaLabel }}
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round" />
+                      </svg>
+                    </a>
+                    <ul class="header__mega-links">
+                      @for (link of item.panel.links; track link.label) {
+                        <li>
+                          <a [routerLink]="link.route" (click)="closeDropdowns()">
+                            <svg width="8" height="12" viewBox="0 0 8 12" fill="none">
+                              <path d="M1 1L6 6L1 11" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                            {{ link.label }}
+                          </a>
+                        </li>
+                      }
+                    </ul>
+                    @if (item.panel.resources.length) {
+                      <span class="header__mega-content-eyebrow header__mega-content-eyebrow--resources">Ressources</span>
+                      <ul class="header__mega-links header__mega-links--resources">
+                        @for (res of item.panel.resources; track res.label) {
+                          <li><a [routerLink]="res.route" (click)="closeDropdowns()">{{ res.label }}</a></li>
+                        }
+                      </ul>
+                    }
+                  </div>
+                  <div class="header__mega-image">
+                    <img [src]="'/images/expertises/' + item.panel.image" [alt]="item.panel.imageAlt" loading="lazy" />
+                  </div>
+                </div>
+                <div class="header__mega-banner">
+                  <span>{{ item.panel.bannerQuestion }}</span>
+                  <div class="header__mega-banner-actions">
+                    @for (action of item.panel.bannerActions; track action.label) {
+                      <a
+                        [routerLink]="action.route"
+                        class="header__mega-banner-btn"
+                        [class.header__mega-banner-btn--primary]="action.style === 'primary'"
+                        (click)="closeDropdowns()"
+                      >
+                        {{ action.label }}
+                      </a>
+                    }
+                  </div>
+                </div>
+              }
+            }
+          </div>
+        }
+      </div>
+
+      <!-- EMPLOI (style Expertises) -->
+      <div class="header__dropdown header__dropdown--mega" (mouseenter)="openEmploiMenu()">
+        <button
+          type="button"
+          class="header__link header__link--trigger"
+          [class.header__link--active]="openDropdown() === 'Emploi'"
+          (click)="toggleEmploiMenu()"
+          [attr.aria-expanded]="openDropdown() === 'Emploi'"
+        >
+          Emploi
+          <svg class="header__chevron" width="10" height="6" viewBox="0 0 10 6" fill="none">
+            <path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </button>
+
+        @if (openDropdown() === 'Emploi') {
+          <div class="header__mega-panel">
+            <div class="header__mega-sidebar">
+              <span class="header__mega-sidebar-title">Emploi & Partenariats</span>
+              @for (item of emplois; track item.label) {
+                <a
+                  class="header__mega-sidebar-item"
+                  [class.header__mega-sidebar-item--active]="activeEmploi() === item.label"
+                  [routerLink]="item.route"
+                  (mouseenter)="setActiveEmploi(item.label)"
+                  (click)="closeDropdowns()"
+                >
+                  <svg class="header__mega-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                    <path [attr.d]="emploiIcons[item.icon]" />
+                  </svg>
+                  <span>{{ item.label }}</span>
+                  <svg class="header__mega-sidebar-chevron" width="8" height="12" viewBox="0 0 8 12" fill="none">
+                    <path d="M1 1L6 6L1 11" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                </a>
+              }
+            </div>
+
+            @for (item of emplois; track item.label) {
+              @if (activeEmploi() === item.label) {
+                <div class="header__mega-content">
+                  <div class="header__mega-content-main">
+                    <span class="header__mega-content-eyebrow">{{ item.panel.title }}</span>
+                    <a class="header__mega-cta" [routerLink]="item.panel.ctaRoute" (click)="closeDropdowns()">
+                      {{ item.panel.ctaLabel }}
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round" />
+                      </svg>
+                    </a>
+                    <ul class="header__mega-links">
+                      @for (link of item.panel.links; track link.label) {
+                        <li>
+                          <a [routerLink]="link.route" (click)="closeDropdowns()">
+                            <svg width="8" height="12" viewBox="0 0 8 12" fill="none">
+                              <path d="M1 1L6 6L1 11" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                            {{ link.label }}
+                          </a>
+                        </li>
+                      }
+                    </ul>
+                    @if (item.panel.resources.length) {
+                      <span class="header__mega-content-eyebrow header__mega-content-eyebrow--resources">Ressources</span>
+                      <ul class="header__mega-links header__mega-links--resources">
+                        @for (res of item.panel.resources; track res.label) {
+                          <li><a [routerLink]="res.route" (click)="closeDropdowns()">{{ res.label }}</a></li>
+                        }
+                      </ul>
+                    }
+                  </div>
+                  <div class="header__mega-image">
+                    <img [src]="'/images/emplois/' + item.panel.image" [alt]="item.panel.imageAlt" loading="lazy" />
+                  </div>
+                </div>
+                <div class="header__mega-banner">
+                  <span>{{ item.panel.bannerQuestion }}</span>
+                  <div class="header__mega-banner-actions">
+                    @for (action of item.panel.bannerActions; track action.label) {
+                      <a
+                        [routerLink]="action.route"
+                        class="header__mega-banner-btn"
+                        [class.header__mega-banner-btn--primary]="action.style === 'primary'"
+                        (click)="closeDropdowns()"
+                      >
+                        {{ action.label }}
+                      </a>
+                    }
+                  </div>
+                </div>
+              }
+            }
+          </div>
+        }
+      </div>
+
+
+        <!-- RESSOURCES (style Advyse) -->
+<div class="header__dropdown header__dropdown--ressources" (mouseenter)="openDropdown.set('Ressources')">
+  <button
+    type="button"
+    class="header__link header__link--trigger"
+    [class.header__link--active]="openDropdown() === 'Ressources'"
+    (click)="toggleDropdown('Ressources')"
+    [attr.aria-expanded]="openDropdown() === 'Ressources'"
+  >
+    Ressources
+    <svg class="header__chevron" width="10" height="6" viewBox="0 0 10 6" fill="none">
+      <path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+    </svg>
+  </button>
+
+  @if (openDropdown() === 'Ressources') {
+    <div class="header__ressources-panel">
+      <!-- Colonne gauche : liens -->
+      <div class="header__ressources-links">
+        <span class="header__ressources-title">RESSOURCES</span>
+        <ul>
+          @for (link of ressourcesLinks; track link.label) {
+            <li>
+              <a [routerLink]="link.route" (click)="closeDropdowns()">
+                <svg width="8" height="12" viewBox="0 0 8 12" fill="none">
+                  <path d="M1 1L6 6L1 11" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+                {{ link.label }}
+              </a>
+            </li>
+          }
+        </ul>
+      </div>
+
+      <!-- Colonne droite : derniers articles -->
+      <div class="header__ressources-articles">
+        <span class="header__ressources-title header__ressources-title--articles">DERNIERS ARTICLES DU BLOG</span>
+        <div class="header__ressources-articles-list">
+          @for (article of ressourcesArticles; track article.title) {
+            <a class="header__ressources-article" [routerLink]="article.route" (click)="closeDropdowns()">
+              <div class="header__ressources-article-image">
+                <img
+                  [src]="'/images/ressources/' + article.image"
+                  [alt]="article.imageAlt"
+                  loading="lazy"
+                />
+              </div>
+              <div class="header__ressources-article-content">
+                <h4>{{ article.title }}</h4>
+                <p>{{ article.excerpt }}</p>
+              </div>
+            </a>
+          }
+        </div>
+      </div>
+    </div>
+  }
+</div>
+
+
+
+    </nav>
+
+    <div class="header__actions">
+      <a routerLink="/academy" class="btn btn-gold header__cta">KMAA-Academia</a>
+      <button
+        type="button"
+        class="header__burger"
+        [class.header__burger--open]="mobileMenuOpen()"
+        (click)="toggleMobileMenu()"
+        [attr.aria-expanded]="mobileMenuOpen()"
+        aria-label="Ouvrir le menu"
+      >
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+
+  <!-- MENU MOBILE -->
+  <div class="header__mobile-menu" [class.header__mobile-menu--open]="mobileMenuOpen()">
+    <nav class="header__mobile-nav" aria-label="Navigation mobile">
+      @for (link of simpleLinks; track link.label) {
+        <a class="header__mobile-link" [routerLink]="link.route" (click)="closeMobileMenu()">
+          {{ link.label }}
+        </a>
+      }
+
+      <!-- Expertises mobile -->
+      <div class="header__mobile-accordion">
+        <button
+          type="button"
+          class="header__mobile-link header__mobile-link--trigger"
+          (click)="toggleMobileAccordion('Expertises')"
+          [attr.aria-expanded]="openMobileAccordion() === 'Expertises'"
+        >
+          Expertises
+          <svg class="header__chevron" [class.header__chevron--open]="openMobileAccordion() === 'Expertises'" width="12" height="7" viewBox="0 0 10 6" fill="none">
+            <path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </button>
+        @if (openMobileAccordion() === 'Expertises') {
+          <div class="header__mobile-sublist">
+            @for (item of expertises; track item.label) {
+              <a class="header__mobile-sublink" [routerLink]="item.route" (click)="closeMobileMenu()">{{ item.label }}</a>
+            }
+          </div>
+        }
+      </div>
+
+      <!-- Emploi mobile -->
+      <div class="header__mobile-accordion">
+        <button
+          type="button"
+          class="header__mobile-link header__mobile-link--trigger"
+          (click)="toggleMobileAccordion('Emploi')"
+          [attr.aria-expanded]="openMobileAccordion() === 'Emploi'"
+        >
+          Emploi
+          <svg class="header__chevron" [class.header__chevron--open]="openMobileAccordion() === 'Emploi'" width="12" height="7" viewBox="0 0 10 6" fill="none">
+            <path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </button>
+        @if (openMobileAccordion() === 'Emploi') {
+          <div class="header__mobile-sublist">
+            @for (item of emplois; track item.label) {
+              <a class="header__mobile-sublink" [routerLink]="item.route" (click)="closeMobileMenu()">{{ item.label }}</a>
+            }
+          </div>
+        }
+      </div>
+
+      <div class="header__mobile-accordion">
+  <button
+    type="button"
+    class="header__mobile-link header__mobile-link--trigger"
+    (click)="toggleMobileAccordion('Ressources')"
+    [attr.aria-expanded]="openMobileAccordion() === 'Ressources'"
+  >
+    Ressources
+    <svg class="header__chevron" [class.header__chevron--open]="openMobileAccordion() === 'Ressources'" width="12" height="7" viewBox="0 0 10 6" fill="none">
+      <path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+    </svg>
+  </button>
+  @if (openMobileAccordion() === 'Ressources') {
+    <div class="header__mobile-sublist">
+      @for (link of ressourcesLinks; track link.label) {
+        <a class="header__mobile-sublink" [routerLink]="link.route" (click)="closeMobileMenu()">{{ link.label }}</a>
+      }
+    </div>
+  }
+</div>
+
+    
+      <a routerLink="/academy" class="btn btn-gold header__mobile-cta" (click)="closeMobileMenu()">
+        <!-- My Academy -->
+         KMAA-Academia
+      </a>
+    </nav>
+  </div>
+</header>

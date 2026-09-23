@@ -1,0 +1,39 @@
+:root {
+  // --- Vert profond (couleur primaire de marque) ---
+  --navy-950: #081f1f; // fond très sombre (footer, overlays profonds)
+  --navy-900: #0f3d3e; // vert profond — couleur de marque, fond principal header / hero
+  --navy-800: #155352; // surfaces, cartes sombres
+  --navy-700: #1c6b69; // hover / états actifs sur fond sombre
+  --navy-600: #23837f; // accents secondaires verts
+
+  // --- Cuivre (couleur d'accent — filet et repère UNIQUEMENT) ---
+  --gold-600: #8f5a28; // cuivre profond (texte sur fond clair)
+  --gold-500: #b87333; // cuivre standard (référence exacte de la charte)
+  --gold-400: #c98a4f; // cuivre lumineux (hover, liens, icônes)
+  --gold-300: #d9a476; // cuivre clair (highlights, lignes fines, soulignements)
+  --gold-100: #f2e3d5; // cuivre très clair (fonds subtils uniquement)
+
+  // --- Neutres ---
+  --ivory: #f5f2ec; // papier — blanc chaud non pur, fond clair chaleureux
+  --white: #f5f2ec; // texte clair aligné sur le papier — jamais de blanc pur
+  --ink: #151515; // encre — corps de texte, jamais noir pur #000000
+  --slate-600: #6e7780; // gris — mentions secondaires, légendes, pieds de page
+  --slate-300: rgba(245, 242, 236, 0.65); // papier atténué, texte secondaire sur fond sombre
+  --line-light: rgba(21, 21, 21, 0.08);
+  --line-dark: rgba(245, 242, 236, 0.12);
+
+  // --- Dégradés signature ---
+  --gradient-navy: linear-gradient(160deg, var(--navy-900) 0%, var(--navy-950) 100%);
+  --gradient-gold: linear-gradient(100deg, var(--gold-500) 0%, var(--gold-300) 100%);
+  --gradient-overlay: linear-gradient(
+    180deg,
+    rgba(8, 31, 31, 0.35) 0%,
+    rgba(8, 31, 31, 0.78) 65%,
+    rgba(8, 31, 31, 0.94) 100%
+  );
+
+  // --- Ombres ---
+  --shadow-soft: 0 8px 30px rgba(8, 31, 31, 0.12);
+  --shadow-gold: 0 10px 25px rgba(184, 115, 51, 0.35);
+  --shadow-elevated: 0 20px 60px rgba(8, 31, 31, 0.35);
+}

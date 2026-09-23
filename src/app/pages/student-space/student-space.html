@@ -1,0 +1,479 @@
+<div class="student-space">
+
+  <!-- ====================================================== -->
+  <!-- EN-TÊTE -->
+  <!-- ====================================================== -->
+
+  <header class="student-space__header">
+    <div class="student-space__avatar">
+      {{ studentName().charAt(0) }}
+    </div>
+
+    <div class="student-space__header-info">
+      <span class="student-space__eyebrow">Mon espace</span>
+      <h1>Bonjour, {{ studentName() }}</h1>
+    </div>
+
+    <!-- // bouton dashboard -->
+     <button
+      type="button"
+      class="student-space__logout"
+      (click)="goToDashboard()"
+    >
+      🏠 Mon tableau de bord
+    </button>
+
+
+    <button
+      type="button"
+      class="student-space__logout"
+      (click)="logout()"
+    >
+      Déconnexion
+    </button>
+  </header>
+
+
+  <!-- ====================================================== -->
+  <!-- ONGLETS -->
+  <!-- ====================================================== -->
+
+  <nav class="student-space__tabs" role="tablist">
+    <button
+      type="button"
+      class="student-space__tab"
+      [class.student-space__tab--active]="activeTab() === 'cours'"
+      (click)="setTab('cours')"
+    >
+      Mes cours
+    </button>
+    <button
+      type="button"
+      class="student-space__tab"
+      [class.student-space__tab--active]="activeTab() === 'certificats'"
+      (click)="setTab('certificats')"
+    >
+      Certificats
+    </button>
+    <button
+      type="button"
+      class="student-space__tab"
+      [class.student-space__tab--active]="activeTab() === 'paiements'"
+      (click)="setTab('paiements')"
+    >
+      Historique de paiement
+    </button>
+    <button
+      type="button"
+      class="student-space__tab"
+      [class.student-space__tab--active]="activeTab() === 'maformule'"
+      (click)="setTab('maformule')"
+    >
+      💳 Ma formule
+    </button>
+    <!-- // bouton mes evaluations  -->
+        <!-- <button
+      type="button"
+      class="student-space__tab"
+      [class.student-space__tab--active]="activeTab() === 'evaluations'"
+      (click)="setTab('evaluations')"
+    >
+      🏆 Évaluations
+    </button> -->
+        <button
+      type="button"
+      class="student-space__tab"
+      [class.student-space__tab--active]="activeTab() === 'evaluations'"
+      (click)="setTab('evaluations')"
+    >
+      🏆 Évaluations
+
+      <!-- @if (accessService.unreadCount() > 0) {
+        <span class="student-space__tab-badge">{{ accessService.unreadCount() }}</span>
+      } -->
+              @if (notifService.unreadCount() > 0) {
+        <span class="student-space__tab-badge">{{ notifService.unreadCount() }}</span>
+      }
+    </button>
+    <button
+      type="button"
+      class="student-space__tab"
+      [class.student-space__tab--active]="activeTab() === 'profil'"
+      (click)="setTab('profil')"
+    >
+      Profil
+    </button>
+  </nav>
+
+
+  <!-- ====================================================== -->
+  <!-- MES COURS -->
+  <!-- ====================================================== -->
+
+  @if (activeTab() === 'cours') {
+    <section class="student-space__section">
+      <h2>Cours en cours</h2>
+
+      <div class="course-grid">
+        @for (item of inProgress(); track item.courseId) {
+          <a
+            [routerLink]="['/apprentissage', item.courseId]"
+            class="course-tile"
+          >
+            <div class="course-tile__image">
+              <div class="course-tile__placeholder">
+                {{ item.courseId.charAt(0).toUpperCase() }}
+              </div>
+            </div>
+
+            <div class="course-tile__body">
+              <span class="course-tile__category">
+                {{ item.courseId }}
+              </span>
+
+              <h3>{{ item.courseId }}</h3>
+
+              <div class="course-tile__progress-bar">
+                <div
+                  class="course-tile__progress-fill"
+                  [style.width.%]="item.progressPercent"
+                ></div>
+              </div>
+
+              <span class="course-tile__progress-label">
+                {{ item.progressPercent }}% terminé
+              </span>
+
+              <span class="course-tile__meta">
+                Dernier accès : {{ item.lastAccessedAt }}
+              </span>
+            </div>
+          </a>
+        } @empty {
+          <p class="student-space__empty">
+            Vous n'avez aucun cours en cours.
+            <a routerLink="/formations">Explorez nos formations</a>.
+          </p>
+        }
+      </div>
+    </section>
+  }
+
+
+  <!-- ====================================================== -->
+  <!-- CERTIFICATS -->
+  <!-- ====================================================== -->
+
+  @if (activeTab() === 'certificats') {
+    <section class="student-space__section">
+      <h2>Mes certificats</h2>
+
+      <div class="cert-grid">
+        @for (item of completed(); track item.courseId) {
+          <div class="cert-card">
+            <div class="cert-card__ribbon">
+              <svg
+                width="28"
+                height="28"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.6"
+              >
+                <circle cx="12" cy="8" r="6" />
+                <path d="M9 14l-2 7 5-3 5 3-2-7" />
+              </svg>
+            </div>
+
+            <h3>{{ item.courseId }}</h3>
+            <p>Terminé le {{ item.enrolledAt }}</p>
+
+            <button
+              type="button"
+              class="cert-card__download"
+              (click)="generateCertificate(item.courseId)"
+            >
+              Télécharger le certificat
+            </button>
+          </div>
+        } @empty {
+          <p class="student-space__empty">
+            Aucun certificat obtenu pour l'instant.
+            Terminez un cours pour en débloquer un.
+          </p>
+        }
+      </div>
+    </section>
+  }
+
+
+  <!-- ====================================================== -->
+  <!-- HISTORIQUE DE PAIEMENT -->
+  <!-- ====================================================== -->
+
+  @if (activeTab() === 'paiements') {
+    <section class="student-space__section">
+      <h2>Historique de paiement</h2>
+
+      <div class="payments-table">
+        @for (payment of payments(); track $index) {
+          <div class="payments-row">
+            <div class="payments-row__info">
+              <span class="payments-row__course">
+                {{ payment.planName }}
+              </span>
+            </div>
+
+            <span class="payments-row__amount">
+              {{ formatPrice(payment.amount) }}
+            </span>
+          </div>
+        } @empty {
+          <p class="student-space__empty">
+            Aucun paiement enregistré.
+          </p>
+        }
+      </div>
+    </section>
+  }
+
+
+  <!-- ====================================================== -->
+  <!-- 💳 MA FORMULE -->
+  <!-- ====================================================== -->
+
+  @if (activeTab() === 'maformule') {
+    <section class="student-space__section">
+      <h2>Ma formule par cours</h2>
+
+      <!-- Sélecteur de cours (l'accès est par cours) -->
+      <div class="plan-courses">
+        @for (item of enrollments(); track item.courseId) {
+          <button
+            type="button"
+            class="plan-courses__btn"
+            [class.active]="selectedCourseSlug() === item.courseId"
+            (click)="selectCourseForPlan(item.courseId)"
+          >
+            📚 {{ item.courseId }}
+          </button>
+        } @empty {
+          <p class="student-space__empty">
+            Inscrivez-vous à un cours pour voir votre formule.
+          </p>
+        }
+      </div>
+
+      @if (myPlanLoaded() && selectedCourseSlug()) {
+
+        <div class="my-plan-panel">
+
+          <div class="my-plan-panel__head">
+            <div>
+              <span class="my-plan-panel__label">MA FORMULE ACTUELLE</span>
+              <h2>{{ accessService.myPlan().planName }}</h2>
+            </div>
+            <span class="my-plan-level">
+              Niveau {{ accessService.myPlan().level }}
+            </span>
+          </div>
+
+          @if (accessService.myPlan().level === 0) {
+            <p class="my-plan-panel__empty">
+              Vous n'avez pas encore de formule pour ce cours.
+              Choisissez celle qui vous convient ci-dessous. 👇
+            </p>
+          }
+
+          <!-- Comparatif des formules -->
+          <div class="my-plan-compare">
+            @for (plan of accessService.myPlan().allPlans; track plan.id) {
+              <div
+                class="my-plan-compare__card"
+                [class.current]="plan.isCurrent"
+              >
+                @if (plan.isCurrent) {
+                  <span class="my-plan-compare__tag">✓ Votre formule</span>
+                }
+                @if (plan.badge) {
+                  <span class="my-plan-compare__badge">{{ plan.badge }}</span>
+                }
+
+                <h3>{{ plan.name }}</h3>
+                <strong>{{ formatPrice(plan.price) }}</strong>
+
+                <ul>
+                  @for (f of plan.features; track f) {
+                    <li>{{ f }}</li>
+                  }
+                </ul>
+
+                @if (!plan.isCurrent) {
+                  <a
+                    [routerLink]="['/paiement', selectedCourseSlug()]"
+                    class="my-plan-compare__upgrade"
+                  >
+                    Passer à {{ plan.name }} →
+                  </a>
+                } @else {
+                  <span class="my-plan-compare__current-label">
+                    Formule active
+                  </span>
+                }
+              </div>
+            }
+          </div>
+
+        </div>
+
+      }
+    </section>
+  }
+
+
+        <!-- 🏆 MES ÉVALUATIONS (pour le cours sélectionné) -->
+        <!-- ====================================================== -->
+  <!-- 🏆 MES ÉVALUATIONS -->
+  <!-- ====================================================== -->
+
+  @if (activeTab() === 'evaluations') {
+    <section class="student-space__section">
+      <h2>Mes évaluations</h2>
+
+      <!-- Sélecteur de cours -->
+      <div class="plan-courses">
+        @for (item of enrollments(); track item.courseId) {
+          <button
+            type="button"
+            class="plan-courses__btn"
+            [class.active]="selectedCourseSlug() === item.courseId"
+            (click)="selectCourseForPlan(item.courseId)"
+          >
+            📚 {{ item.courseId }}
+          </button>
+        } @empty {
+          <p class="student-space__empty">
+            Inscrivez-vous à un cours pour voir vos évaluations.
+          </p>
+        }
+      </div>
+
+      @if (selectedCourseSlug()) {
+
+        @if (accessService.evaluations().length > 0) {
+
+          <div class="eval-section__head">
+            <h3>📊 Notes et retours de ton formateur</h3>
+
+            @if (accessService.averageGrade(); as avg) {
+              <span class="eval-section__avg">
+                Moyenne : {{ avg | number:'1.1-1' }}/20
+              </span>
+            }
+          </div>
+
+          <div class="eval-section__list">
+            @for (evalItem of accessService.evaluations(); track evalItem.id) {
+
+              <div
+                class="eval-card"
+                [class.eval-card--ok]="evalItem.status === 'corrige' || evalItem.status === 'reussi'"
+                [class.eval-card--wait]="evalItem.status === 'soumis'"
+              >
+
+                <span class="eval-card__icon">
+                  {{ evalItem.type === 'quiz' ? '🎯' : '📝' }}
+                </span>
+
+                <div class="eval-card__body">
+                  <strong>{{ evalItem.title }}</strong>
+
+                  @if (evalItem.type === 'devoir') {
+                    @if (evalItem.status === 'corrige' && evalItem.grade !== null) {
+                      <span class="eval-card__note">
+                        Note : {{ evalItem.grade }}/20
+                      </span>
+                    } @else if (evalItem.status === 'retourne') {
+                      <span class="eval-card__pending">
+                        ↩ À refaire
+                      </span>
+                    } @else {
+                      <span class="eval-card__pending">
+                        ⏳ En attente de correction
+                      </span>
+                    }
+                  } @else {
+                    <span class="eval-card__note">✓ Réussi</span>
+                  }
+
+                  @if (evalItem.feedback) {
+                    <p class="eval-card__feedback">💬 {{ evalItem.feedback }}</p>
+                  }
+
+                  <small>Déposé le {{ evalItem.submittedAt }}</small>
+                </div>
+
+                <a
+                  [routerLink]="['/apprentissage', selectedCourseSlug()]"
+                  class="eval-card__link"
+                >
+                  Ouvrir →
+                </a>
+
+              </div>
+
+            }
+          </div>
+
+        } @else {
+          <p class="student-space__empty">
+            Aucune évaluation pour ce cours pour le moment.
+            Soumets un devoir (formule Standard+) pour démarrer.
+          </p>
+        }
+
+      }
+    </section>
+  }
+
+  <!-- ====================================================== -->
+  <!-- PROFIL -->
+  <!-- ====================================================== -->
+
+  @if (activeTab() === 'profil') {
+    <section class="student-space__section">
+      <h2>Mon profil</h2>
+
+      <div class="profile-card">
+        <div class="profile-card__field">
+          <label>Nom complet</label>
+          <input type="text" [value]="studentName()" />
+        </div>
+
+        <div class="profile-card__field">
+          <label>Adresse email</label>
+          <input type="email" [value]="studentEmail()" />
+        </div>
+
+        <button type="button" class="profile-card__save">
+          Enregistrer les modifications
+        </button>
+
+        <hr class="profile-card__divider" />
+
+        <div class="profile-card__field">
+          <label>Nouveau mot de passe</label>
+          <input type="password" placeholder="••••••••" />
+        </div>
+
+        <button
+          type="button"
+          class="profile-card__save profile-card__save--ghost"
+        >
+          Changer le mot de passe
+        </button>
+      </div>
+    </section>
+  }
+
+</div>

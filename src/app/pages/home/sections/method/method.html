@@ -1,0 +1,126 @@
+<section
+  class="method"
+  id="method"
+  aria-labelledby="method-title"
+  [class.method--visible]="visible()"
+>
+  <div class="method__decor method__decor--top" aria-hidden="true">
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+
+  <div class="method__container">
+    <header class="method__header">
+      <span class="method__eyebrow">
+        <span class="method__eyebrow-line"></span>
+        {{ eyebrow }}
+      </span>
+
+      <h2 id="method-title" class="method__title">
+        Votre projet,
+
+        <em>notre méthode.</em>
+      </h2>
+
+      <p class="method__description">
+        {{ description }}
+      </p>
+    </header>
+
+    <div
+      class="method__path"
+      aria-label="Les quatre étapes de notre accompagnement"
+    >
+      <div class="method__path-line" aria-hidden="true">
+        <span
+          class="method__path-progress"
+          [style.animation-duration.ms]="pathDurationMs"
+        ></span>
+      </div>
+
+      <div class="method__steps">
+        @for (step of steps; track step.number; let index = $index) {
+          <article
+            class="method-step"
+            [class]="'method-step method-step--' + step.tone"
+            [style.--step-index]="index"
+            [style.animation-delay.ms]="stepDelay(index)"
+          >
+            <div class="method-step__honeycomb">
+              <a
+                class="method-step__shape"
+                [routerLink]="step.route"
+                [attr.aria-label]="'Découvrir l’étape : ' + step.title"
+              >
+                <img
+                  class="method-step__image"
+                  [src]="step.image"
+                  [alt]="'Illustration de l’étape ' + step.title"
+                  loading="lazy"
+                  decoding="async"
+                />
+
+                <span class="method-step__image-overlay"></span>
+                <span class="method-step__number">{{ step.number }}</span>
+                <span class="method-step__arrow" aria-hidden="true">↗</span>
+              </a>
+            </div>
+
+            <div class="method-step__content">
+              <h3 class="method-step__title">{{ step.title }}</h3>
+
+              <p class="method-step__description">
+                {{ step.description }}
+              </p>
+
+              <a
+                class="method-step__link"
+                [routerLink]="step.route"
+              >
+                Découvrir
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path
+                    d="M5 12H19M19 12L13 6M19 12L13 18"
+                    stroke="currentColor"
+                    stroke-width="1.7"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </a>
+            </div>
+          </article>
+        }
+      </div>
+    </div>
+
+    <div class="method__footer">
+      <p>
+        Une démarche simple, lisible et construite autour de vos priorités.
+      </p>
+
+      <a class="method__footer-link" routerLink="/contact">
+        Parlons de votre projet
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path
+            d="M5 12H19M19 12L13 6M19 12L13 18"
+            stroke="currentColor"
+            stroke-width="1.7"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+      </a>
+    </div>
+  </div>
+
+  <div class="method__decor method__decor--bottom" aria-hidden="true">
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</section>

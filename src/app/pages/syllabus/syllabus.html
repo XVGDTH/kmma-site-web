@@ -1,0 +1,232 @@
+@if (course(); as c) {
+  <div class="syllabus">
+    <!-- HERO -->
+    <header class="syllabus-hero">
+      <div class="syllabus-hero__glow" aria-hidden="true"></div>
+
+      <div class="syllabus-hero__container">
+        <nav class="syllabus-hero__breadcrumb" aria-label="Fil d'ariane">
+          <a routerLink="/">Accueil</a>
+          <span>/</span>
+          <a [routerLink]="['/cours', c.id]">{{ c.category }}</a>
+          <span>/</span>
+          <span>Programme détaillé</span>
+        </nav>
+
+        <span class="syllabus-hero__eyebrow">Programme détaillé de la formation</span>
+        <h1 class="syllabus-hero__title">{{ c.title }}</h1>
+
+        @if (c.description) {
+          <p class="syllabus-hero__description">{{ c.description }}</p>
+        }
+
+        <div class="syllabus-hero__badges">
+          <span class="syllabus-badge syllabus-badge--level">{{ levelLabels[c.level] ?? c.level }}</span>
+          <span class="syllabus-badge">{{ c.category }}</span>
+          <span class="syllabus-badge syllabus-badge--gold">{{ certificateLabel(c) }}</span>
+          @if (c.isFree) {
+            <span class="syllabus-badge syllabus-badge--free">🎁 Gratuit</span>
+          }
+        </div>
+      </div>
+    </header>
+
+    <div class="syllabus-body">
+      <!-- COLONNE PRINCIPALE -->
+      <main class="syllabus-main">
+
+        <!-- STATS RAPIDES -->
+        <section class="syllabus-stats">
+          <div class="stat-card">
+            <span class="stat-card__value">{{ chapters().length }}</span>
+            <span class="stat-card__label">Chapitres</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-card__value">{{ totalVideos() }}</span>
+            <span class="stat-card__label">Vidéos</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-card__value">{{ totalAssignments() }}</span>
+            <span class="stat-card__label">Devoirs / TP / TD</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-card__value">{{ totalQuizzes() }}</span>
+            <span class="stat-card__label">Quiz</span>
+          </div>
+        </section>
+
+        <!-- CE QUE VOUS ALLEZ APPRENDRE -->
+        @if (learningOutcomes().length) {
+          <section class="syllabus-section">
+            <h2>Ce que vous allez apprendre</h2>
+            <ul class="outcomes-grid">
+              @for (outcome of learningOutcomes(); track outcome) {
+                <li class="outcomes-grid__item">
+                  <span class="outcomes-grid__check" aria-hidden="true">✓</span>
+                  {{ outcome }}
+                </li>
+              }
+            </ul>
+          </section>
+        }
+
+        <!-- PROGRAMME DÉTAILLÉ -->
+        <section class="syllabus-section">
+          <div class="syllabus-section__head">
+            <h2>Programme détaillé</h2>
+            <span class="syllabus-section__count">{{ totalSequences() }} séquence(s) au total</span>
+          </div>
+
+          <div class="curriculum-list">
+            @for (chapter of chapters(); track chapter.id; let i = $index) {
+              <div class="curriculum-chapter" [class.curriculum-chapter--open]="openChapterId() === chapter.id">
+                <button
+                  type="button"
+                  class="curriculum-chapter__head"
+                  (click)="toggleChapter(chapter.id)"
+                  [attr.aria-expanded]="openChapterId() === chapter.id"
+                >
+                  <span class="curriculum-chapter__number">{{ i + 1 }}</span>
+                  <span class="curriculum-chapter__title">{{ chapter.title }}</span>
+                  <span class="curriculum-chapter__meta">{{ chapter.sequences.length }} séquence(s)</span>
+                  <svg class="curriculum-chapter__chevron" width="14" height="8" viewBox="0 0 10 6" fill="none">
+                    <path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                </button>
+
+                @if (openChapterId() === chapter.id) {
+                  <ul class="curriculum-sequence-list">
+                    @for (seq of chapter.sequences; track seq.id) {
+                      <li class="curriculum-sequence-item">
+                        <span class="curriculum-sequence-item__icon" [attr.data-type]="seq.type">
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <path [attr.d]="typeIcons[seq.type]" />
+                          </svg>
+                        </span>
+                        <span class="curriculum-sequence-item__title">{{ seq.title }}</span>
+                        <span class="curriculum-sequence-item__type">{{ typeLabels[seq.type] }}</span>
+                        @if (seq.duration) {
+                          <span class="curriculum-sequence-item__duration">{{ seq.duration }}</span>
+                        }
+                      </li>
+                    }
+                  </ul>
+                }
+              </div>
+            } @empty {
+              <p class="syllabus-empty">Le programme détaillé sera bientôt disponible pour ce cours.</p>
+            }
+          </div>
+        </section>
+
+        <!-- PRÉREQUIS & PUBLIC -->
+        <section class="syllabus-section syllabus-section--two-col">
+          <div>
+            <h2>Prérequis</h2>
+            <p class="syllabus-section__text">
+              <!-- TODO (Salomon) : champ dédié à ajouter côté Filament (prerequisites, texte libre) -->
+              Aucun prérequis technique n'est nécessaire pour suivre cette formation. Une motivation à apprendre et un accès régulier à internet suffisent.
+            </p>
+          </div>
+          <div>
+            <h2>Public concerné</h2>
+            <p class="syllabus-section__text">
+              <!-- TODO (Salomon) : champ dédié à ajouter côté Filament (target_audience, texte libre) -->
+              Cette formation s'adresse à toute personne souhaitant développer ses compétences dans le domaine {{ c.category | lowercase }}, débutant ou en reconversion professionnelle.
+            </p>
+          </div>
+        </section>
+
+        <!-- MODALITÉS D'ÉVALUATION -->
+        <section class="syllabus-section">
+          <h2>Modalités d'évaluation</h2>
+          <div class="evaluation-grid">
+            @if (totalQuizzes() > 0) {
+              <div class="evaluation-card">
+                <span class="evaluation-card__icon">🎯</span>
+                <strong>Quiz de validation</strong>
+                <p>{{ totalQuizzes() }} quiz répartis tout au long du parcours pour valider vos acquis.</p>
+              </div>
+            }
+            @if (totalAssignments() > 0) {
+              <div class="evaluation-card">
+                <span class="evaluation-card__icon">📝</span>
+                <strong>Travaux pratiques</strong>
+                <p>{{ totalAssignments() }} devoir(s), TP ou TD à réaliser et à soumettre pour évaluation.</p>
+              </div>
+            }
+            <div class="evaluation-card">
+              <span class="evaluation-card__icon">🎓</span>
+              <strong>{{ certificateLabel(c) }}</strong>
+              <p>Délivré automatiquement à l'issue du parcours, avec QR code de vérification d'authenticité.</p>
+            </div>
+          </div>
+        </section>
+
+      </main>
+
+      <!-- SIDEBAR STICKY -->
+      <aside class="syllabus-sidebar">
+        <div class="facts-card">
+          <div class="facts-card__image">
+            <img [src]="c.image" [alt]="c.imageAlt" />
+          </div>
+
+          <ul class="facts-card__list">
+            <li>
+              <span>Format</span>
+              <strong>100% en ligne</strong>
+            </li>
+            <li>
+              <span>Durée (temps plein)</span>
+              <strong>{{ c.durationFull }}</strong>
+            </li>
+            <li>
+              <span>Durée (alternance)</span>
+              <strong>{{ c.durationAlternance }}</strong>
+            </li>
+            <li>
+              <span>Niveau</span>
+              <strong>{{ levelLabels[c.level] ?? c.level }}</strong>
+            </li>
+            <li>
+              <span>Langue</span>
+              <strong>Français</strong>
+            </li>
+            <li>
+              <span>Document délivré</span>
+              <strong>{{ certificateLabel(c) }}</strong>
+            </li>
+          </ul>
+
+          @if (c.isFree) {
+            <a [routerLink]="['/cours', c.id]" class="facts-card__cta">
+              S'inscrire gratuitement
+            </a>
+          } @else {
+            <a [routerLink]="['/cours', c.id]" class="facts-card__cta">
+              Voir les formules d'inscription
+            </a>
+          }
+
+          <p class="facts-card__note">Accès immédiat après inscription à votre espace KMAA.</p>
+        </div>
+
+        @if (c.instructor) {
+          <div class="instructor-card">
+            <div class="instructor-card__avatar">{{ initials(c.instructor) }}</div>
+            <div>
+              <span class="instructor-card__name">{{ c.instructor }}</span>
+              <span class="instructor-card__role">{{ c.instructorRole }}</span>
+            </div>
+          </div>
+        }
+      </aside>
+    </div>
+  </div>
+} @else {
+  <div class="syllabus-not-found">
+    <h1>Cours introuvable</h1>
+    <a routerLink="/">Retour à l'accueil</a>
+  </div>
+}

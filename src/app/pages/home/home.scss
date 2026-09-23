@@ -1,0 +1,6 @@
+// Les sections gèrent leur propre espacement (padding-block).
+// Ce fichier reste volontairement minimal : il ne fait qu'ancrer
+// le composant Home dans le flux normal du document.
+:host {
+  display: block;
+}

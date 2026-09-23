@@ -1,0 +1,101 @@
+<section class="about" id="about" aria-labelledby="about-title" [class.about--visible]="visible()">
+  <div class="about__container">
+    <div class="about__visual" [style.animation-delay.ms]="imageDelay">
+      <div class="about__visual-orb about__visual-orb--one" aria-hidden="true"></div>
+      <div class="about__visual-orb about__visual-orb--two" aria-hidden="true"></div>
+      <div class="about__visual-lines" aria-hidden="true"></div>
+
+      <!-- Paillettes décoratives -->
+      @for (s of sparkles; track s) {
+        <span
+          class="about__sparkle"
+          [class]="'about__sparkle about__sparkle--' + s"
+          [style.animation-delay.ms]="sparkleDelay(s)"
+          aria-hidden="true"
+        ></span>
+      }
+
+      <div class="about__image-frame" [style.animation-delay.ms]="imageDelay">
+        <img
+          class="about__image"
+          src="images/about/about.png"
+          alt="Équipe KMAA en réunion"
+          loading="lazy"
+          decoding="async"
+        />
+        <span class="about__image-shine" aria-hidden="true"></span>
+      </div>
+
+      <div
+        class="about__badge"
+        tabindex="0"
+        aria-label="Les valeurs de KMAA"
+        [style.animation-delay.ms]="badgeDelay"
+      >
+        <div class="about__badge-orbit" aria-hidden="true">
+          <span class="about__badge-word about__badge-word--top">EXPERTISE</span>
+          <span class="about__badge-word about__badge-word--right">IMPACT</span>
+          <span class="about__badge-word about__badge-word--bottom">ÉTHIQUE</span>
+          <span class="about__badge-word about__badge-word--left">PROXIMITÉ</span>
+        </div>
+
+        <div class="about__badge-core">
+          <span class="about__badge-core-symbol">✦</span>
+          <strong>KMAA</strong>
+          <small>ENSEMBLE
+PLUS LOIN</small>
+        </div>
+      </div>
+
+      <div class="about__visual-caption" [style.animation-delay.ms]="captionDelay">
+        <span class="about__visual-caption-dot"></span>
+        <span>Une expertise proche de vos réalités</span>
+      </div>
+    </div>
+
+    <div class="about__content">
+      <span class="about__eyebrow" [style.animation-delay.ms]="eyebrowDelay">{{ eyebrow }}</span>
+
+      <h2 id="about-title" class="about__title" [style.animation-delay.ms]="titleDelay">
+        {{ title }}
+      </h2>
+
+      <div class="about__values">
+        @for (value of values; track value.title; let i = $index) {
+          <article class="about-value" [style.animation-delay.ms]="valueDelay(i)">
+            <span class="about-value__icon" aria-hidden="true">
+              {{ value.icon }}
+            </span>
+            <div>
+              <h3 class="about-value__title">{{ value.title }}</h3>
+              <p class="about-value__description">{{ value.description }}</p>
+            </div>
+          </article>
+        }
+      </div>
+
+      <div class="about__copy">
+        <p class="about__intro" [style.animation-delay.ms]="copyStart">{{ intro }}</p>
+
+        @for (paragraph of paragraphs; track paragraph; let i = $index) {
+          <p [style.animation-delay.ms]="paragraphDelay(i)">{{ paragraph }}</p>
+        }
+      </div>
+
+      <div class="about__focus" [style.animation-delay.ms]="focusStart">
+        <h3 class="about__focus-title">Notre champ d'action</h3>
+
+        <div class="about__focus-list">
+          @for (area of focusAreas; track area; let i = $index) {
+            <span class="about__focus-item" [style.animation-delay.ms]="focusItemDelay(i)">
+              <span class="about__focus-check" aria-hidden="true">✓</span>
+              {{ area }}
+            </span>
+          }
+        </div>
+      </div>
+
+
+    </div>
+  </div>
+</section>

@@ -1,0 +1,137 @@
+.pay-otp {
+  min-height: 100vh;
+  padding: calc(42px + 100px) 1.5rem 4rem;
+  background: var(--navy-950, #050c22);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pay-otp__card {
+  width: 100%;
+  max-width: 420px;
+  background: rgba(15, 20, 40, 0.75);
+  border: 1.5px solid rgba(255, 255, 255, 0.1);
+  border-radius: 24px;
+  padding: 36px 32px;
+  backdrop-filter: blur(10px);
+  text-align: center;
+}
+
+.pay-otp__eyebrow {
+  display: block;
+  color: var(--gold-300);
+  font-weight: 700;
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.pay-otp__card h1 {
+  color: var(--white);
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin: 0 0 10px;
+}
+
+.pay-otp__amount {
+  color: rgba(255, 255, 255, 0.65);
+  font-size: 0.88rem;
+  margin-bottom: 26px;
+  line-height: 1.5;
+}
+
+.pay-otp__simulation-note {
+  display: block;
+  margin-top: 6px;
+  color: var(--gold-300);
+  font-style: normal;
+  font-size: 0.78rem;
+}
+
+.pay-otp__field input {
+  width: 100%;
+  padding: 14px 16px;
+  border-radius: 10px;
+  background: rgba(5, 8, 20, 0.85);
+  border: 1.5px solid rgba(224, 176, 60, 0.4);
+  color: var(--white);
+  font-size: 1rem;
+  text-align: center;
+  margin-bottom: 16px;
+
+  &::placeholder { color: rgba(255, 255, 255, 0.3); }
+}
+
+.pay-otp__digits {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 16px;
+
+  input {
+    width: 52px;
+    height: 60px;
+    border-radius: 12px;
+    background: rgba(5, 8, 20, 0.85);
+    border: 1.5px solid rgba(224, 176, 60, 0.4);
+    color: var(--white);
+    font-size: 1.5rem;
+    font-weight: 700;
+    text-align: center;
+
+    &:focus {
+      outline: none;
+      border-color: var(--gold-300);
+    }
+  }
+}
+
+.pay-otp__error {
+  display: block;
+  color: #e5544a;
+  font-size: 0.82rem;
+  margin-bottom: 14px;
+}
+
+.pay-otp__submit {
+  width: 100%;
+  padding: 14px 18px;
+  border: none;
+  border-radius: 12px;
+  background: var(--gradient-gold);
+  color: var(--navy-950, #050c22);
+  font-weight: 800;
+  font-size: 0.95rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease;
+
+  &:hover { transform: translateY(-2px); }
+  &:disabled { opacity: 0.7; cursor: wait; }
+}
+
+.pay-otp__spinner {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2.5px solid rgba(5, 12, 34, 0.25);
+  border-top-color: var(--navy-950, #050c22);
+  animation: otp-spin 0.7s linear infinite;
+}
+
+@keyframes otp-spin { to { transform: rotate(360deg); } }
+
+.pay-otp__success {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #4ade80;
+
+  h1 { color: var(--white); margin: 16px 0 6px; }
+  p { color: rgba(255, 255, 255, 0.6); font-size: 0.88rem; }
+}

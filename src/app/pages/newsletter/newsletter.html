@@ -1,0 +1,191 @@
+<div class="nl-page">
+
+  <!-- ================= HERO + FORMULAIRE ================= -->
+  <section class="nl-hero">
+    <div class="nl-hero__grid" aria-hidden="true"></div>
+    <div class="nl-hero__glow nl-hero__glow--1" aria-hidden="true"></div>
+    <div class="nl-hero__glow nl-hero__glow--2" aria-hidden="true"></div>
+
+    <div class="nl-hero__container">
+
+      @if (unsubscribeToken()) {
+
+        <!-- ===== MODE DÉSINSCRIPTION ===== -->
+        <div class="nl-unsubscribe">
+          <div class="nl-unsubscribe__icon">✉️</div>
+
+          @if (unsubscribeMessage()) {
+            <h1>Désinscription confirmée</h1>
+            <p>{{ unsubscribeMessage() }}</p>
+            <a routerLink="/" class="nl-btn nl-btn--gold">Retour à l'accueil</a>
+          } @else if (unsubscribeError()) {
+            <h1>Oups…</h1>
+            <p>{{ unsubscribeError() }}</p>
+            <a routerLink="/" class="nl-btn nl-btn--gold">Retour à l'accueil</a>
+          } @else {
+            <p class="nl-loading">Traitement de votre demande…</p>
+          }
+        </div>
+
+      } @else {
+
+        <!-- ===== MODE INSCRIPTION ===== -->
+        <span class="nl-hero__eyebrow">
+          <span class="nl-dot"></span>
+          KMAA BRIEF · LA NEWSLETTER
+        </span>
+
+        <h1>
+          Les idées importantes,<br />
+          <em>directement dans votre boîte mail.</em>
+        </h1>
+
+        <p class="nl-hero__lead">
+          Une sélection périodique des meilleurs articles, guides, analyses
+          et opportunités KMAA sur la finance, la comptabilité, la fiscalité
+          et la gestion d'entreprise.
+        </p>
+
+        <div class="nl-form-card">
+
+          @if (success(); as msg) {
+
+            <div class="nl-success">
+              <div class="nl-success__icon">✓</div>
+              <h2>Inscription enregistrée !</h2>
+              <p>{{ msg }}</p>
+              <a routerLink="/blog" class="nl-btn nl-btn--gold">Explorer le blog</a>
+            </div>
+
+          } @else {
+
+            <form (submit)="$event.preventDefault(); subscribe()">
+              <label class="nl-field">
+                <span>Votre nom <small>(optionnel)</small></span>
+                <input
+                  type="text"
+                  placeholder="Ex : Awa Compaoré"
+                  [value]="name()"
+                  (input)="onNameInput($any($event.target).value)"
+                />
+              </label>
+
+              <label class="nl-field">
+                <span>Votre adresse email <b>*</b></span>
+                <input
+                  type="email"
+                  placeholder="nom@entreprise.com"
+                  required
+                  [value]="email()"
+                  (input)="onEmailInput($any($event.target).value)"
+                />
+              </label>
+
+              @if (error(); as err) {
+                <p class="nl-error">⚠️ {{ err }}</p>
+              }
+
+              <button
+                type="submit"
+                class="nl-btn nl-btn--gold nl-btn--block"
+                [disabled]="sending()"
+              >
+                @if (sending()) { Inscription… } @else { M'abonner gratuitement → }
+              </button>
+
+              <small class="nl-form-note">
+                ✓ Gratuit · ✓ Désinscription en 1 clic · ✓ Aucun spam
+              </small>
+            </form>
+
+          }
+
+        </div>
+
+      }
+
+    </div>
+  </section>
+
+  <!-- ================= BÉNÉFICES ================= -->
+  <section class="nl-benefits">
+    <div class="nl-benefits__container">
+      <h2>Pourquoi rejoindre le <span>KMAA Brief</span> ?</h2>
+
+      <div class="nl-benefits__grid">
+        <div class="nl-benefit">
+          <span class="nl-benefit__icon">🎯</span>
+          <h3>Sélection éditoriale</h3>
+          <p>Seulement l'essentiel : analyses, guides et opportunités vérifiés par nos experts.</p>
+        </div>
+        <div class="nl-benefit">
+          <span class="nl-benefit__icon">🗓️</span>
+          <h3>Rythme maîtrisé</h3>
+          <p>Un envoi périodique, jamais de flood. Votre boîte mail reste respirable.</p>
+        </div>
+        <div class="nl-benefit">
+          <span class="nl-benefit__icon">🚀</span>
+          <h3>Passage à l'action</h3>
+          <p>Chaque édition contient au moins un conseil directement applicable.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= DERNIERS CONTENUS ================= -->
+  <section class="nl-preview">
+    <div class="nl-preview__container">
+      <div class="nl-preview__header">
+        <span class="nl-eyebrow">APERÇU GRATUIT</span>
+        <h2>Ce que vous auriez déjà reçu</h2>
+        <p>Un avant-goût de nos dernières publications.</p>
+      </div>
+
+      @if (articlesLoaded()) {
+        <div class="nl-preview__grid">
+          @for (article of latestArticles(); track article.route) {
+            <a class="nl-preview-card" [routerLink]="article.route">
+              <span class="nl-preview-card__category">{{ article.category }}</span>
+              <h3>{{ article.title }}</h3>
+              <p>{{ article.excerpt }}</p>
+              <span class="nl-preview-card__meta">{{ article.date }}</span>
+              <b>Lire →</b>
+            </a>
+          }
+        </div>
+      } @else {
+        <p class="nl-preview__loading">Chargement des derniers contenus…</p>
+      }
+
+      <a routerLink="/blog" class="nl-btn nl-btn--outline">Voir tout le blog →</a>
+    </div>
+  </section>
+
+  <!-- ================= FAQ ================= -->
+  <section class="nl-faq">
+    <div class="nl-faq__container">
+      <span class="nl-eyebrow">QUESTIONS FRÉQUENTES</span>
+      <h2>Tout savoir avant de s'abonner</h2>
+
+      <div class="nl-faq__grid">
+        <div class="nl-faq__item">
+          <h3>Combien d'emails vais-je recevoir ?</h3>
+          <p>Un envoi par période, jamais plus. Notre promesse : de la qualité, pas de la quantité.</p>
+        </div>
+        <div class="nl-faq__item">
+          <h3>Est-ce vraiment gratuit ?</h3>
+          <p>Oui, totalement. La newsletter fait partie de notre mission : rendre l'expertise accessible.</p>
+        </div>
+        <div class="nl-faq__item">
+          <h3>Comment me désinscrire ?</h3>
+          <p>Chaque email contient un lien de désinscription en un clic, effectif immédiatement.</p>
+        </div>
+        <div class="nl-faq__item">
+          <h3>Mes données sont-elles protégées ?</h3>
+          <p>Votre email sert exclusivement à l'envoi du KMAA Brief. Jamais revendu, jamais partagé.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>

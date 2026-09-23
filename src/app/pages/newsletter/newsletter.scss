@@ -1,0 +1,361 @@
+// ============================================================
+// NEWSLETTER — KMAA BRIEF
+// ============================================================
+
+.nl-page {
+  min-height: 100vh;
+  background: #f4f5f8;
+}
+
+// --- Boutons ---
+.nl-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 30px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+
+  &:hover:not(:disabled) { transform: translateY(-2px); }
+
+  &--gold {
+    background: linear-gradient(120deg, #c9992e, #e3b74f);
+    color: #070d1f;
+    box-shadow: 0 10px 30px rgba(201, 153, 46, 0.35);
+  }
+
+  &--outline {
+    background: transparent;
+    border: 1.5px solid #0f3d3e;
+    color: #0f3d3e;
+
+    &:hover { background: rgba(15, 61, 62, 0.06); }
+  }
+
+  &--block { width: 100%; }
+  &:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+}
+
+// --- Hero + formulaire ---
+.nl-hero {
+  position: relative;
+  padding: 160px 1.5rem 5rem;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse 70% 50% at 50% -10%, rgba(201, 153, 46, 0.15), transparent),
+    #070d1f;
+  color: #f5f7fc;
+  text-align: center;
+}
+
+.nl-hero__grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: radial-gradient(ellipse 70% 60% at 50% 20%, black 30%, transparent 75%);
+}
+
+.nl-hero__glow {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(90px);
+  opacity: 0.4;
+
+  &--1 {
+    width: 420px; height: 420px;
+    top: -120px; left: -80px;
+    background: radial-gradient(circle, #c9992e, transparent 70%);
+  }
+  &--2 {
+    width: 360px; height: 360px;
+    bottom: -100px; right: -80px;
+    background: radial-gradient(circle, #1e4e5f, transparent 70%);
+  }
+}
+
+.nl-hero__container {
+  position: relative;
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.nl-hero__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 20px;
+  border-radius: 999px;
+  border: 1px solid rgba(201, 153, 46, 0.4);
+  background: rgba(201, 153, 46, 0.1);
+  color: #e3b74f;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-bottom: 1.5rem;
+}
+
+.nl-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: #22c55e;
+  box-shadow: 0 0 10px #22c55e;
+}
+
+.nl-hero h1 {
+  font-family: Georgia, serif;
+  font-size: clamp(2rem, 4.5vw, 3rem);
+  font-weight: 800;
+  line-height: 1.15;
+  margin-bottom: 1rem;
+
+  em {
+    font-style: normal;
+    background: linear-gradient(100deg, #e3b74f, #f7e3a1, #c9992e);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+}
+
+.nl-hero__lead {
+  max-width: 560px;
+  margin: 0 auto 2.5rem;
+  color: rgba(232, 236, 245, 0.7);
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
+// --- Carte formulaire ---
+.nl-form-card {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 2rem;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(18px);
+  text-align: left;
+
+  &::before {
+    content: '';
+    display: block;
+    height: 1px;
+    margin: -2rem 10% 2rem;
+    background: linear-gradient(90deg, transparent, rgba(227, 183, 79, 0.7), transparent);
+  }
+}
+
+.nl-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 16px;
+
+  span {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: rgba(232, 236, 245, 0.8);
+
+    small { color: rgba(232, 236, 245, 0.4); font-weight: 400; }
+    b { color: #e3b74f; }
+  }
+
+  input {
+    padding: 14px 16px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.06);
+    color: #f5f7fc;
+    font-size: 0.95rem;
+    transition: border-color 0.25s, box-shadow 0.25s;
+
+    &::placeholder { color: rgba(232, 236, 245, 0.35); }
+
+    &:focus {
+      outline: none;
+      border-color: rgba(227, 183, 79, 0.7);
+      box-shadow: 0 0 0 3px rgba(201, 153, 46, 0.18);
+    }
+  }
+}
+
+.nl-error {
+  margin: 0 0 12px;
+  color: #fca5a5;
+  font-size: 0.85rem;
+}
+
+.nl-form-note {
+  display: block;
+  margin-top: 14px;
+  text-align: center;
+  font-size: 0.75rem;
+  color: rgba(232, 236, 245, 0.45);
+}
+
+// --- Succès ---
+.nl-success {
+  text-align: center;
+  padding: 1rem 0;
+
+  &__icon {
+    width: 60px; height: 60px;
+    margin: 0 auto 16px;
+    border-radius: 50%;
+    background: #22c55e;
+    color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.6rem;
+    font-weight: 800;
+  }
+
+  h2 { font-size: 1.3rem; margin-bottom: 8px; color: #f5f7fc; }
+  p { color: rgba(232, 236, 245, 0.65); margin-bottom: 20px; font-size: 0.92rem; }
+}
+
+// --- Désinscription ---
+.nl-unsubscribe {
+  padding: 3rem 0;
+
+  &__icon { font-size: 3rem; margin-bottom: 1rem; }
+  h1 { font-size: 1.8rem; margin-bottom: 12px; }
+  p { color: rgba(232, 236, 245, 0.7); margin-bottom: 24px; }
+}
+
+.nl-loading { color: rgba(232, 236, 245, 0.6); }
+
+// --- Sections claires communes ---
+.nl-benefits,
+.nl-preview,
+.nl-faq {
+  padding: 5rem 1.5rem;
+
+  h2 {
+    font-family: Georgia, serif;
+    color: #0d1b3e;
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    margin-bottom: 0.5rem;
+
+    span { color: #c9992e; }
+  }
+}
+
+.nl-benefits__container,
+.nl-preview__container,
+.nl-faq__container {
+  max-width: 1100px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.nl-eyebrow {
+  display: inline-block;
+  color: #c9992e;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+// --- Bénéfices ---
+.nl-benefits__grid {
+  margin-top: 2.5rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 20px;
+}
+
+.nl-benefit {
+  background: #fff;
+  border-radius: 18px;
+  padding: 28px 24px;
+  box-shadow: 0 8px 24px rgba(5, 12, 34, 0.07);
+  text-align: left;
+
+  &__icon { font-size: 2rem; display: block; margin-bottom: 12px; }
+  h3 { color: #0d1b3e; font-size: 1.05rem; margin-bottom: 8px; }
+  p { color: #5b6475; font-size: 0.9rem; line-height: 1.6; margin: 0; }
+}
+
+// --- Aperçu articles ---
+.nl-preview {
+  background: #fff;
+}
+
+.nl-preview__header p { color: #5b6475; margin-bottom: 2rem; }
+
+.nl-preview__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+  margin-bottom: 2.5rem;
+  text-align: left;
+}
+
+.nl-preview-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 24px;
+  border-radius: 16px;
+  border: 1px solid #eef0f4;
+  text-decoration: none;
+  transition: transform 0.2s, box-shadow 0.2s;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 30px rgba(5, 12, 34, 0.1);
+  }
+
+  &__category {
+    align-self: flex-start;
+    padding: 4px 12px;
+    border-radius: 999px;
+    background: rgba(201, 153, 46, 0.12);
+    color: #b87333;
+    font-size: 0.68rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  h3 { color: #0d1b3e; font-size: 1rem; line-height: 1.4; margin: 0; }
+  p {
+    color: #5b6475; font-size: 0.85rem; line-height: 1.6; margin: 0;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+  }
+  &__meta { font-size: 0.75rem; color: #94a3b8; }
+  b { color: #c9992e; font-size: 0.85rem; }
+}
+
+.nl-preview__loading { color: #94a3b8; font-size: 0.9rem; }
+
+// --- FAQ ---
+.nl-faq__grid {
+  margin-top: 2.5rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 20px;
+  text-align: left;
+}
+
+.nl-faq__item {
+  background: #fff;
+  border-radius: 14px;
+  padding: 22px;
+  border: 1px solid #eef0f4;
+
+  h3 { color: #0d1b3e; font-size: 0.95rem; margin-bottom: 8px; }
+  p { color: #5b6475; font-size: 0.85rem; line-height: 1.6; margin: 0; }
+}

@@ -1,0 +1,1129 @@
+<div class="dashboard">
+
+  <!-- ====================================================== -->
+  <!-- EN-TÊTE DU DASHBOARD -->
+  <!-- ====================================================== -->
+
+  <header class="dashboard__header">
+
+    <!-- Carte formateur connecté -->
+    <div class="dashboard__welcome">
+
+      <div class="dashboard__avatar">
+        @if (instructorAvatar(); as avatar) {
+          <img [src]="avatar" [alt]="instructorName()" />
+        } @else {
+          <span>{{ instructorInitials() }}</span>
+        }
+      </div>
+
+      <div>
+        <span class="dashboard__eyebrow">Espace formateur</span>
+        <h1>Bonjour, {{ instructorName() }}</h1>
+        @if (instructorEmail()) {
+          <span class="dashboard__email">✉️ {{ instructorEmail() }}</span>
+        }
+      </div>
+
+    </div>
+
+    <div class="dashboard__summary">
+
+      <div class="dashboard__summary-item">
+        <strong>{{ totalStudents() }}</strong>
+        <span>Apprenants inscrits</span>
+      </div>
+
+      <div class="dashboard__summary-item">
+        <strong>{{ totalOnline() }}</strong>
+        <span>Connectés maintenant</span>
+      </div>
+
+      <div
+        class="dashboard__summary-item"
+        [class.dashboard__summary-item--live]="activeLiveCount() > 0"
+      >
+        <strong>{{ activeLiveCount() }}</strong>
+        <span>Séance(s) en direct</span>
+      </div>
+
+    </div>
+
+    <!-- <a routerLink="/formateur/nouveau-cours"
+       class="course-card__btn course-card__btn--primary"
+       style="align-self: flex-start;">
+      + Créer un nouveau cours
+    </a>
+
+  </header> -->
+
+      <!-- Actions rapides -->
+    <div class="dashboard__quick-actions">
+
+      <a routerLink="/formateur/nouveau-cours"
+         class="course-card__btn course-card__btn--primary">
+        + Créer un cours en ligne
+      </a>
+
+      <a routerLink="/formateur/formations-presentielles"
+         class="course-card__btn course-card__btn--ghost">
+        🎓 Diplomes des formations en presentielles
+      </a>
+
+    </div>
+
+  </header>
+
+
+  <!-- ====================================================== -->
+  <!-- MES COURS -->
+  <!-- ====================================================== -->
+
+  <section class="dashboard__section">
+
+    <h2>Mes cours</h2>
+
+    <div class="dashboard__courses">
+
+      @for (item of myCourses(); track item.course!.id) {
+
+        <article class="course-card">
+
+          <div class="course-card__image">
+
+            <!-- <img
+              [src]="item.course!.image"
+              [alt]="item.course!.imageAlt"
+            /> -->
+            <img [src]="assetUrl(item.course!.image) ?? undefined"
+     [alt]="item.course!.imageAlt" />
+
+
+
+            @if (item.live.isLive) {
+
+              <span class="course-card__live-badge">
+                <span class="course-card__live-dot"></span>
+                En direct
+              </span>
+
+            }
+
+          </div>
+
+
+          <div class="course-card__body">
+
+            <span class="course-card__category">
+              {{ item.course!.category }}
+            </span>
+
+            <h3>
+              {{ item.course!.title }}
+            </h3>
+
+
+            <div class="course-card__stats">
+
+              <div>
+                <strong>{{ item.stat.enrolledCount }}</strong>
+                <span>Inscrits</span>
+              </div>
+
+              <div>
+                <strong>{{ item.stat.onlineNow }}</strong>
+                <span>En ligne</span>
+              </div>
+
+              <div>
+                <strong>{{ item.stat.completionRate }}%</strong>
+                <span>Progression moy.</span>
+              </div>
+
+            </div>
+
+
+            <div class="course-card__progress-bar">
+
+              <div
+                class="course-card__progress-fill"
+                [style.width.%]="item.stat.completionRate"
+              ></div>
+
+            </div>
+
+
+            <div class="course-card__actions">
+
+              <a
+                [routerLink]="['/cours', item.course!.id]"
+                class="course-card__btn course-card__btn--ghost"
+              >
+                Voir la fiche
+              </a>
+
+
+              <!-- <a
+                [routerLink]="[
+                  '/formateur/importer-cours',
+                  item.course!.id
+                ]"
+                class="course-card__btn course-card__btn--ghost"
+              >
+                Importer le contenu
+              </a> -->
+              <!-- Remplace l'ancien lien "Importer le contenu" par : -->
+<a [routerLink]="['/formateur/importer-cours', item.course!.courseId ?? item.course!.id]"
+   class="course-card__btn course-card__btn--ghost">
+  Gérer le contenu
+</a>
+
+
+              <a
+                [routerLink]="[
+                  '/formateur/cours',
+                  item.course!.id,
+                  'direct'
+                ]"
+                class="course-card__btn course-card__btn--primary"
+              >
+
+                @if (item.live.isLive) {
+                  Rejoindre ma séance
+                } @else {
+                  Démarrer une séance
+                }
+
+              </a>
+
+            </div>
+
+          </div>
+
+        </article>
+
+      } @empty {
+
+        <p class="dashboard__empty">
+          Aucun cours ne vous est assigné pour le moment.
+        </p>
+
+      }
+
+    </div>
+
+  </section>
+
+
+
+  <!-- ====================================================== -->
+  <!-- CONTENUS PUBLIÉS -->
+  <!-- ====================================================== -->
+
+  <section class="dashboard__section">
+
+  <div class="dashboard__section-header">
+    <h2>Contenus publiés</h2>
+    <span class="dashboard__badge">{{ totalPublishedSequences() }}</span>
+  </div>
+
+  @if (publishedContents().length === 0) {
+    <p class="dashboard__empty">
+      Aucun contenu publié pour le moment.
+      Utilise « Gérer le contenu » sur un cours pour ajouter
+      chapitres, vidéos, TD/TP et quiz.
+    </p>
+  } @else {
+    <div class="published-list">
+      @for (item of publishedContents(); track item.course.id) {
+        <article class="published-card">
+          <div class="published-card__top">
+            <span class="published-card__course">{{ item.course.title }}</span>
+            <span class="published-card__label">
+              {{ item.content.chapters.length }} chapitre(s)
+            </span>
+          </div>
+
+          @for (chapter of item.content.chapters; track chapter.id) {
+            <div class="published-card__meta">
+              <strong>📘 {{ chapter.title }}</strong>
+              <span>{{ chapter.sequences.length }} séquence(s)</span>
+            </div>
+
+            @if (chapter.sequences.length > 0) {
+              <ul class="published-card__assignments">
+                @for (seq of chapter.sequences; track seq.id) {
+                  <li>
+                    <span class="published-card__kind">{{ seq.type.toUpperCase() }}</span>
+                    {{ seq.title }}
+                  </li>
+                }
+              </ul>
+            }
+          }
+
+          <div class="published-card__actions">
+            <a [routerLink]="['/formateur/importer-cours', item.course.courseId ?? item.course.id]"
+               class="course-card__btn course-card__btn--ghost">
+              Gérer / ajouter du contenu
+            </a>
+            <a [routerLink]="['/apprentissage', item.course.id]"
+               class="course-card__btn course-card__btn--primary">
+              Voir côté apprenant
+            </a>
+          </div>
+        </article>
+      }
+    </div>
+  }
+</section>
+
+
+
+
+  <!-- ====================================================== -->
+  <!-- FORUM DES COURS -->
+  <!-- ====================================================== -->
+
+  <section class="dashboard__section">
+
+    <div class="dashboard__section-header">
+
+      <div>
+
+        <span class="dashboard__eyebrow">
+          Échanges avec les apprenants
+        </span>
+
+        <h2>Discussions du forum</h2>
+
+      </div>
+
+
+      <span class="dashboard__badge">
+        {{ totalForumThreads() }}
+      </span>
+
+    </div>
+
+
+    <!-- ==================================================== -->
+    <!-- STATISTIQUES DU FORUM -->
+    <!-- ==================================================== -->
+
+    <div class="course-card__stats">
+
+      <div>
+
+        <strong>
+          {{ totalForumThreads() }}
+        </strong>
+
+        <span>
+          Discussion(s)
+        </span>
+
+      </div>
+
+
+      <div>
+
+        <strong>
+          {{ forumQuestionsToHandle().length }}
+        </strong>
+
+        <span>
+          Question(s) sans réponse
+        </span>
+
+      </div>
+
+
+      <div>
+
+        <strong>
+          {{ totalForumReplies() }}
+        </strong>
+
+        <span>
+          Réponse(s)
+        </span>
+
+      </div>
+
+
+      <div>
+
+        <strong>
+          {{ resolvedForumThreads().length }}
+        </strong>
+
+        <span>
+          Résolue(s)
+        </span>
+
+      </div>
+
+    </div>
+
+
+
+    <!-- ==================================================== -->
+    <!-- CHARGEMENT -->
+    <!-- ==================================================== -->
+
+    @if (forumLoading()) {
+
+      <div class="dashboard__empty">
+
+        <p>
+          Chargement des discussions du forum...
+        </p>
+
+      </div>
+
+    }
+
+
+
+    <!-- ==================================================== -->
+    <!-- ERREUR -->
+    <!-- ==================================================== -->
+
+    @if (forumError(); as error) {
+
+      <div class="dashboard__empty">
+
+        <p>
+          ⚠️ {{ error }}
+        </p>
+
+      </div>
+
+    }
+
+
+
+    <!-- ==================================================== -->
+    <!-- MESSAGE AUCUNE DISCUSSION -->
+    <!-- ==================================================== -->
+
+    @if (
+      !forumLoading() &&
+      !forumError() &&
+      forumThreads().length === 0
+    ) {
+
+      <div class="dashboard__empty">
+
+        <p>
+          💬 Aucune discussion n'a encore été publiée
+          dans vos cours.
+        </p>
+
+      </div>
+
+    }
+
+
+
+    <!-- ==================================================== -->
+    <!-- LISTE DES DISCUSSIONS -->
+    <!-- ==================================================== -->
+
+    @if (forumThreads().length > 0) {
+
+      <div class="published-list">
+
+        @for (
+          thread of forumThreads();
+          track thread.id
+        ) {
+
+          <article class="published-card">
+
+            <!-- ============================================ -->
+            <!-- EN-TÊTE -->
+            <!-- ============================================ -->
+
+            <div class="published-card__top">
+
+              <div>
+
+                <span class="published-card__course">
+                  📚 {{ thread.course.title }}
+                </span>
+
+              </div>
+
+
+              @if (thread.resolved) {
+
+                <span class="published-card__label">
+                  ✅ Résolue
+                </span>
+
+              } @else {
+
+                <span class="published-card__label">
+                  🔴 À traiter
+                </span>
+
+              }
+
+            </div>
+
+
+
+            <!-- ============================================ -->
+            <!-- INFORMATIONS -->
+            <!-- ============================================ -->
+
+            <div class="published-card__meta">
+
+              <span>
+                👤 {{ thread.user.name }}
+              </span>
+
+
+              @if (thread.chapter) {
+
+                <span>
+                  📖 {{ thread.chapter.title }}
+                </span>
+
+              }
+
+
+              <span>
+                🕐 {{ formatDate(thread.created_at) }}
+              </span>
+
+            </div>
+
+
+
+            <!-- ============================================ -->
+            <!-- QUESTION -->
+            <!-- ============================================ -->
+
+            <div>
+
+              <h3>
+                {{ thread.title }}
+              </h3>
+
+
+              <p>
+                {{ thread.content }}
+              </p>
+
+            </div>
+
+
+
+            <!-- ============================================ -->
+            <!-- STATISTIQUES -->
+            <!-- ============================================ -->
+
+            <div class="published-card__stats">
+
+              <div>
+
+                <strong>
+                  {{ thread.replies?.length ?? 0 }}
+                </strong>
+
+                <span>
+                  Réponse(s)
+                </span>
+
+              </div>
+
+
+              <div>
+
+                <strong>
+                  {{ thread.upvotes ?? 0 }}
+                </strong>
+
+                <span>
+                  👍 Vote(s)
+                </span>
+
+              </div>
+
+            </div>
+
+
+
+            <!-- ================================================= -->
+            <!-- DÉTAIL DE LA DISCUSSION -->
+            <!-- ================================================= -->
+
+            @if (expandedThreadId() === thread.id) {
+
+              <div class="forum-thread-detail">
+
+                <div class="forum-thread-detail__question">
+
+                  <strong>
+                    Question de {{ thread.user.name }}
+                  </strong>
+
+                  <p>
+                    {{ thread.content }}
+                  </p>
+
+                </div>
+
+
+                <!-- =========================================== -->
+                <!-- RÉPONSES EXISTANTES -->
+                <!-- =========================================== -->
+
+                @if (thread.replies?.length) {
+
+                  <div class="published-card__assignments">
+
+                    <strong>
+                      💬 Réponses
+                    </strong>
+
+
+                    @for (
+                      reply of thread.replies;
+                      track reply.id
+                    ) {
+
+                      <div class="submission-row">
+
+                        <div class="submission-row__avatar">
+                          {{ reply.user.name.charAt(0).toUpperCase() }}
+                        </div>
+
+
+                        <div class="submission-row__info">
+
+                          <span class="submission-row__name">
+                            {{ reply.user.name }}
+                          </span>
+
+
+                          <span class="submission-row__task">
+                            {{ reply.content }}
+                          </span>
+
+
+                          <span class="submission-row__date">
+
+                            {{ formatDate(reply.created_at) }}
+
+                            · 👍
+                            {{ reply.upvotes ?? 0 }}
+
+                          </span>
+
+                        </div>
+
+                      </div>
+
+                    }
+
+                  </div>
+
+                } @else {
+
+                  <div class="dashboard__empty">
+
+                    <p>
+                      💬 Aucune réponse pour le moment.
+                    </p>
+
+                  </div>
+
+                }
+
+
+
+                <!-- =========================================== -->
+                <!-- FORMULAIRE DE RÉPONSE -->
+                <!-- =========================================== -->
+
+                @if (
+                  replyingThreadId() === thread.id &&
+                  !thread.resolved
+                ) {
+
+                  <form
+                    class="forum-reply-form"
+                    (submit)="submitReply(thread.id, replyInput.value); $event.preventDefault()"
+                  >
+
+                    <label>
+                      Votre réponse
+                    </label>
+
+
+                    <textarea
+                      #replyInput
+                      rows="5"
+                      placeholder="Écrivez votre réponse à l'apprenant..."
+                      required
+                      minlength="2"
+                      [disabled]="replyLoadingId() === thread.id"
+                    ></textarea>
+
+
+                    <div class="published-card__actions">
+
+                      <button
+                        type="submit"
+                        class="course-card__btn course-card__btn--primary"
+                        [disabled]="replyLoadingId() === thread.id"
+                      >
+
+                        @if (replyLoadingId() === thread.id) {
+                          Publication...
+                        } @else {
+                          📤 Publier la réponse
+                        }
+
+                      </button>
+
+
+                      <button
+                        type="button"
+                        class="course-card__btn course-card__btn--ghost"
+                        (click)="cancelReply()"
+                        [disabled]="replyLoadingId() === thread.id"
+                      >
+                        Annuler
+                      </button>
+
+                    </div>
+
+                  </form>
+
+                }
+
+              </div>
+
+            }
+
+
+
+            <!-- ================================================= -->
+            <!-- MESSAGE ERREUR RÉPONSE -->
+            <!-- ================================================= -->
+
+            @if (replyErrorForThread() === thread.id) {
+
+              <div class="dashboard__empty">
+
+                <p>
+                  ⚠️ {{ replyError() }}
+                </p>
+
+              </div>
+
+            }
+
+
+
+            <!-- ================================================= -->
+            <!-- ACTIONS -->
+            <!-- ================================================= -->
+
+            <div class="published-card__actions">
+
+              <!-- VOIR / MASQUER -->
+
+              <button
+                type="button"
+                class="course-card__btn course-card__btn--ghost"
+                (click)="toggleDiscussion(thread.id)"
+              >
+
+                @if (expandedThreadId() === thread.id) {
+                  Masquer la discussion
+                } @else {
+                  Voir la discussion
+                }
+
+              </button>
+
+
+
+              <!-- RÉPONDRE -->
+
+              @if (!thread.resolved) {
+
+                <button
+                  type="button"
+                  class="course-card__btn course-card__btn--primary"
+                  (click)="openReply(thread.id)"
+                >
+
+                  @if (replyingThreadId() === thread.id) {
+                    Réponse ouverte
+                  } @else {
+                    Répondre
+                  }
+
+                </button>
+
+              }
+
+
+
+              <!-- RÉSOUDRE -->
+
+              @if (!thread.resolved) {
+
+                <button
+                  type="button"
+                  class="course-card__btn course-card__btn--ghost"
+                  (click)="resolveDiscussion(thread.id)"
+                  [disabled]="resolvingThreadId() === thread.id"
+                >
+
+                  @if (resolvingThreadId() === thread.id) {
+                    Traitement...
+                  } @else {
+                    ✅ Marquer comme résolue
+                  }
+
+                </button>
+
+              }
+
+            </div>
+
+          </article>
+
+        }
+
+      </div>
+
+    }
+
+  </section>
+
+
+
+  <!-- ====================================================== -->
+  <!-- DEVOIRS À CORRIGER -->
+  <!-- ====================================================== -->
+
+  <!-- <section class="dashboard__section">
+
+    <div class="dashboard__section-header">
+
+      <h2>Travaux à corriger</h2>
+
+      <span class="dashboard__badge">
+        {{ pendingSubmissions().length }}
+      </span>
+
+    </div>
+
+
+    <div class="submissions-list">
+
+      @for (
+        sub of pendingSubmissions();
+        track sub.id
+      ) {
+
+        <div class="submission-row">
+
+          <div class="submission-row__avatar">
+            {{ sub.studentName.charAt(0) }}
+          </div>
+
+
+          <div class="submission-row__info">
+
+            <span class="submission-row__name">
+              {{ sub.studentName }}
+            </span>
+
+            <span class="submission-row__task">
+              {{ sub.sequenceTitle }}
+            </span>
+
+            <span class="submission-row__date">
+              Déposé le {{ sub.submittedAt }}
+            </span>
+
+          </div>
+
+
+          <a
+            href="#"
+            class="submission-row__view"
+            (click)="$event.preventDefault()"
+          >
+            Consulter
+          </a>
+
+
+          <div class="submission-row__grade">
+
+            <input
+              type="number"
+              min="0"
+              max="20"
+              placeholder="/20"
+              #gradeInput
+            />
+
+
+            <button
+              type="button"
+              (click)="
+                gradeSubmission(
+                  sub.id,
+                  gradeInput.valueAsNumber
+                )
+              "
+            >
+              Noter
+            </button>
+
+          </div>
+
+        </div>
+
+      } @empty {
+
+        <p class="dashboard__empty">
+          Aucun travail en attente de correction 🎉
+        </p>
+
+      }
+
+    </div>
+
+  </section> -->
+    <section class="dashboard__section">
+
+    <div class="dashboard__section-header">
+
+      <h2>Travaux à corriger</h2>
+
+      <span class="dashboard__badge">
+        {{ pendingSubmissions().length }}
+      </span>
+
+    </div>
+
+
+    @if (submissionsLoading()) {
+
+      <p class="dashboard__empty">Chargement…</p>
+
+    } @for (sub of pendingSubmissions(); track sub.id) {
+
+      <div class="submission-row">
+
+        <div class="submission-row__avatar">
+          {{ sub.studentName.charAt(0) }}
+        </div>
+
+
+        <div class="submission-row__info">
+
+          <span class="submission-row__name">
+            {{ sub.studentName }}
+          </span>
+
+          <span class="submission-row__task">
+            {{ sub.sequenceTitle }} · {{ sub.courseTitle }}
+          </span>
+
+          @if (sub.comment) {
+            <span class="submission-row__date">
+              💬 {{ sub.comment }}
+            </span>
+          }
+
+          <span class="submission-row__date">
+            Déposé le {{ sub.submittedAt }}
+          </span>
+
+        </div>
+
+
+        @if (submissionFileUrl(sub); as fileUrl) {
+
+          <a
+            [href]="fileUrl"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="submission-row__view"
+          >
+            📄 Voir le devoir
+          </a>
+
+        }
+
+
+        <div class="submission-row__grade">
+
+          <input
+            type="number"
+            min="0"
+            max="20"
+            placeholder="/20"
+            #gradeInput
+          />
+
+
+          <input
+            type="text"
+            placeholder="Feedback…"
+            #feedbackInput
+            class="submission-row__feedback"
+          />
+
+
+          <button
+            type="button"
+            [disabled]="gradingId() === sub.id"
+            (click)="
+              gradeRealSubmission(
+                sub,
+                gradeInput.valueAsNumber,
+                feedbackInput.value
+              )
+            "
+          >
+            Corriger
+          </button>
+
+        </div>
+
+      </div>
+
+    } @empty {
+
+      <p class="dashboard__empty">
+        Aucun travail en attente de correction 🎉
+      </p>
+
+    }
+
+  </section>
+
+
+
+  <!-- ====================================================== -->
+  <!-- TRAVAUX DÉJÀ NOTÉS -->
+  <!-- ====================================================== -->
+
+  <!-- @if (gradedSubmissions().length) {
+
+    <section class="dashboard__section">
+
+      <h2>
+        Travaux déjà notés
+      </h2>
+
+
+      <div class="submissions-list">
+
+        @for (
+          sub of gradedSubmissions();
+          track sub.id
+        ) {
+
+          <div
+            class="submission-row submission-row--graded"
+          >
+
+            <div class="submission-row__avatar">
+              {{ sub.studentName.charAt(0) }}
+            </div>
+
+
+            <div class="submission-row__info">
+
+              <span class="submission-row__name">
+                {{ sub.studentName }}
+              </span>
+
+              <span class="submission-row__task">
+                {{ sub.sequenceTitle }}
+              </span>
+
+            </div>
+
+
+            <span class="submission-row__final-grade">
+              {{ sub.grade }}/20
+            </span>
+
+          </div>
+
+        }
+
+      </div>
+
+    </section>
+
+  } -->
+
+    @if (gradedSubmissions().length) {
+
+    <section class="dashboard__section">
+
+      <h2>Travaux déjà notés</h2>
+
+
+      <div class="submissions-list">
+
+        @for (sub of gradedSubmissions(); track sub.id) {
+
+          <div class="submission-row submission-row--graded">
+
+            <div class="submission-row__avatar">
+              {{ sub.studentName.charAt(0) }}
+            </div>
+
+
+            <div class="submission-row__info">
+
+              <span class="submission-row__name">
+                {{ sub.studentName }}
+              </span>
+
+              <span class="submission-row__task">
+                {{ sub.sequenceTitle }}
+              </span>
+
+              @if (sub.feedback) {
+                <span class="submission-row__date">
+                  💬 {{ sub.feedback }}
+                </span>
+              }
+
+            </div>
+
+
+            <span class="submission-row__final-grade">
+              {{ sub.grade }}/20
+            </span>
+
+          </div>
+
+        }
+
+      </div>
+
+    </section>
+
+  }
+
+</div>

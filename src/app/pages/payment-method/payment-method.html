@@ -1,0 +1,62 @@
+@if (course(); as c) {
+  <div class="pay-method">
+    <div class="pay-method__card">
+      <span class="pay-method__eyebrow">Étape 1 sur 3</span>
+      <h1>Choisissez votre moyen de paiement</h1>
+      <p class="pay-method__course">
+        {{ c.title }} — {{ formatPrice(checkout.session()?.amount ?? 0) }}
+      </p>
+
+      <!-- LISTE DES MOYENS DE PAIEMENT -->
+      <div class="pay-method__providers">
+
+        <!-- OPTION BON / VOUCHER -->
+        <div class="provider-btn provider-btn--voucher">
+          <div class="provider-btn__header">
+            <span class="provider-btn__dot provider-btn__dot--voucher"></span>
+            <span class="provider-btn__name">J'ai un bon</span>
+          </div>
+
+          <div class="provider-btn__voucher-form">
+            <input
+              type="text"
+              placeholder="Saisissez votre code bon"
+              [(ngModel)]="voucherCode"
+              class="voucher-input"
+            />
+            <button
+              type="button"
+              class="voucher-btn"
+              (click)="redeemVoucher()"
+            >
+              Valider
+            </button>
+          </div>
+
+          @if (voucherMessage()) {
+            <p class="pay-method__voucher-msg">
+              {{ voucherMessage() }}
+            </p>
+          }
+        </div>
+
+        <!-- ORANGE / MOOV / CORIS -->
+        @for (p of providers; track p.id) {
+          <button
+            type="button"
+            class="provider-btn"
+            [style.--provider-color]="p.color"
+            (click)="selectProvider(p.id)"
+          >
+            <span class="provider-btn__dot"></span>
+            {{ p.name }}
+          </button>
+        }
+      </div>
+
+      <a [routerLink]="['/cours', c.id]" class="pay-method__cancel">
+        Annuler et revenir au cours
+      </a>
+    </div>
+  </div>
+}

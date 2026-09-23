@@ -1,0 +1,69 @@
+<section class="mes-cours">
+  <header class="page-header">
+    <p class="eyebrow">Nos formations</p>
+    <h1>{{ currentSubjectLabel() }}</h1>
+    <p class="subtitle">
+      Découvrez tous les parcours certifiants et diplômants liés à cette matière.
+    </p>
+  </header>
+
+  <!-- Filtres style Coursera -->
+  <div class="filters">
+    @for (f of filters; track f.id) {
+      <button
+        type="button"
+        class="filter-btn"
+        [class.active]="activeFilter() === f.id"
+        (click)="setFilter(f.id)"
+      >
+        {{ f.label }}
+      </button>
+    }
+  </div>
+
+  <!-- Grille de cards -->
+  <div class="courses-grid">
+    @for (course of filteredCourses(); track course.id) {
+      <article class="course-card">
+        <!-- <a [routerLink]="course.route" class="card-link"> -->
+            <a [routerLink]="['/cours', course.id]" class="card-link">
+          <div class="card-image">
+            <img [src]="course.image" [alt]="course.imageAlt" loading="lazy" />
+          </div>
+
+          <div class="card-body">
+            <span class="category">{{ course.category }}</span>
+            <h3 class="title">{{ course.title }}</h3>
+
+            <ul class="meta">
+              <li>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+                  <path d="M6 12v5c3 3 9 3 12 0v-5"/>
+                </svg>
+                {{ course.diploma }}
+              </li>
+              <li>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                  <line x1="16" y1="2" x2="16" y2="6"/>
+                  <line x1="8" y1="2" x2="8" y2="6"/>
+                  <line x1="3" y1="10" x2="21" y2="10"/>
+                </svg>
+                Durée de la formation : {{ course.durationFull }}
+              </li>
+              <li>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                </svg>
+                Durée en alternance : {{ course.durationAlternance }}
+              </li>
+            </ul>
+          </div>
+        </a>
+      </article>
+    } @empty {
+      <p class="empty">Aucun cours trouvé pour ce filtre.</p>
+    }
+  </div>
+</section>

@@ -1,0 +1,137 @@
+@if (job(); as j) {
+  <section class="job-detail">
+    <header class="job-detail-hero">
+      <div class="job-detail-hero__container">
+        <nav class="job-detail-hero__breadcrumb">
+          <a routerLink="/">Accueil</a>
+          <span>/</span>
+          <a routerLink="/emploi">Emploi</a>
+          <span>/</span>
+          <span>{{ j.typeLabel }}</span>
+        </nav>
+
+        <div class="job-detail-hero__tags">
+          <span>{{ j.typeLabel }}</span>
+          <span>{{ j.department }}</span>
+          <span>{{ j.location }}</span>
+        </div>
+
+        <h1>{{ j.title }}</h1>
+        <p>{{ j.excerpt }}</p>
+
+        <!-- <div class="job-detail-hero__actions">
+          <a routerLink="/contact" class="btn btn-gold">Postuler maintenant</a>
+          <a routerLink="/emploi" class="btn btn-outline-light">← Toutes les offres</a>
+        </div> -->
+                <div class="job-detail-hero__actions">
+          <button type="button" class="btn btn-gold" (click)="scrollToApply()">
+            Postuler maintenant
+          </button>
+          <a routerLink="/emploi" class="btn btn-outline-light">← Toutes les offres</a>
+        </div>
+      </div>
+    </header>
+
+    <div class="job-detail-layout">
+      <div class="job-detail-main">
+        <img class="job-detail-cover" [src]="j.image" [alt]="j.imageAlt" />
+
+        <h2>Le poste</h2>
+        @for (p of j.description; track p) {
+          <p>{{ p }}</p>
+        }
+
+        <h2>Missions</h2>
+        <ul>
+          @for (m of j.missions; track m) {
+            <li>{{ m }}</li>
+          }
+        </ul>
+
+        <h2>Profil recherché</h2>
+        <ul>
+          @for (p of j.profile; track p) {
+            <li>{{ p }}</li>
+          }
+        </ul>
+      </div>
+
+
+            <aside class="job-detail-side">
+        <!-- <div class="job-detail-card"> -->
+           <div class="job-detail-card" id="apply-card">
+          <h3>Cette offre vous intéresse ?</h3>
+
+          @if (applySuccess(); as success) {
+            <div class="job-apply-success">
+              <span>✓</span>
+              <p>{{ success }}</p>
+            </div>
+          } @else {
+
+            @if (!showApplyForm()) {
+              <p>Envoyez votre CV et une courte motivation. Nous revenons vers vous rapidement.</p>
+              <button type="button" class="btn btn-gold btn-block" (click)="toggleApplyForm()">
+                Postuler maintenant
+              </button>
+            } @else {
+              <form (submit)="$event.preventDefault(); submitApplication()">
+
+                <input type="text" placeholder="Nom complet *"
+                  [value]="applicantName()"
+                  (input)="applicantName.set($any($event.target).value)" />
+
+                <input type="email" placeholder="Email *"
+                  [value]="applicantEmail()"
+                  (input)="applicantEmail.set($any($event.target).value)" />
+
+                <input type="tel" placeholder="Téléphone (optionnel)"
+                  [value]="applicantPhone()"
+                  (input)="applicantPhone.set($any($event.target).value)" />
+
+                <textarea rows="3" placeholder="Quelques mots sur votre motivation…"
+                  [value]="applicantMessage()"
+                  (input)="applicantMessage.set($any($event.target).value)"></textarea>
+
+                <label class="job-cv-input">
+                  <input type="file" accept=".pdf,.doc,.docx"
+                    (change)="onCvSelected($event)" hidden />
+                  📎 {{ applicantCv?.name ?? 'Joindre mon CV (PDF) *' }}
+                </label>
+
+                @if (applyError(); as err) {
+                  <p class="job-apply-error">⚠️ {{ err }}</p>
+                }
+
+                <button type="submit" class="btn btn-gold btn-block"
+                  [disabled]="applying()">
+                  @if (applying()) { Envoi… } @else { Envoyer ma candidature }
+                </button>
+
+                <button type="button" class="job-detail-card__link"
+                  (click)="toggleApplyForm()">Annuler</button>
+              </form>
+            }
+
+          }
+
+          <a routerLink="/equipe" class="job-detail-card__link">Découvrir l'équipe →</a>
+        </div>
+
+        <div class="job-detail-card job-detail-card--soft">
+          <h4>Mots-clés</h4>
+          <div class="job-detail-tags">
+            @for (t of j.tags; track t) {
+              <span>{{ t }}</span>
+            }
+          </div>
+        </div>
+      </aside>
+    </div>
+  </section>
+} @else {
+  <section class="article-empty">
+    <h1>Offre introuvable</h1>
+    <a routerLink="/emploi" class="btn btn-gold">Voir les offres</a>
+  </section>
+}

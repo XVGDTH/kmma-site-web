@@ -1,0 +1,618 @@
+@use 'styles/colors';
+@use 'styles/typography';
+
+// ============================================================
+// CONTENEUR PRINCIPAL
+// ============================================================
+
+.student-space {
+  min-height: 100vh;
+  padding: 210px 1.5rem 4rem;   // ✅ CORRIGÉ : était calc(42px + 32px) = 74px (trop court)
+  background: #f4f5f8;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+// ============================================================
+// EN-TÊTE (UNE SEULE déclaration — avec position pour le menu)
+// ============================================================
+
+.student-space__header {
+  position: relative;           // ✅ ancre le menu déroulant avatar
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin-bottom: clamp(1.5rem, 3vw, 2.5rem);
+  padding-bottom: 18px;         // ✅ espace avant la ligne de séparation
+  border-bottom: 1px solid #e4e7ec;   // ✅ sépare visuellement du contenu
+}
+
+.student-space__header-info {
+  flex: 1;
+}
+
+.student-space__avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--gradient-gold);
+  color: var(--navy-950, #050c22);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.4rem;
+  flex-shrink: 0;
+}
+
+.student-space__eyebrow {
+  display: block;
+  color: var(--gold-300);
+  font-weight: 700;
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.student-space__header h1 {
+  color: var(--navy-900);
+  font-family: var(--font-display);
+  font-size: clamp(1.4rem, 2.4vw, 1.8rem);
+  font-weight: 700;
+  margin: 2px 0 0;
+}
+
+// --- Boutons (Dashboard + Déconnexion) ---
+.student-space__logout {
+  padding: 10px 18px;
+  border-radius: 10px;
+  border: 1.5px solid #e4e7ec;
+  background: #fff;
+  color: #0d1b3e;
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(5, 12, 34, 0.08);   // ✅ détache du fond
+  white-space: nowrap;
+
+  &:hover {
+    background: #fef2f2;
+    border-color: #fca5a5;
+    color: #b91c1c;
+  }
+}
+
+// ============================================================
+// ONGLETS
+// ============================================================
+
+.student-space__tabs {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  border-bottom: 1px solid #e4e7ec;
+  margin-bottom: clamp(1.5rem, 3vw, 2.5rem);
+}
+
+.student-space__tab {
+  padding: 10px 18px;
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--slate-600);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: color 0.2s ease, border-color 0.2s ease;
+
+  &:hover { color: var(--navy-900); }
+
+  &--active {
+    color: var(--navy-900);
+    border-color: var(--gold-300);
+  }
+}
+
+.student-space__section h2 {
+  color: var(--navy-900);
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin: 0 0 20px;
+}
+
+.student-space__empty {
+  color: var(--slate-600);
+  background: var(--white);
+  padding: 20px;
+  border-radius: 12px;
+  font-size: 0.9rem;
+
+  a { color: var(--gold-300); font-weight: 700; }
+}
+
+// ============================================================
+// CARTES DE COURS
+// ============================================================
+
+.course-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 18px;
+}
+
+.course-tile {
+  display: block;
+  background: var(--white);
+  border-radius: 16px;
+  overflow: hidden;
+  text-decoration: none;
+  box-shadow: 0 6px 18px rgba(5, 12, 34, 0.06);
+  transition: transform 0.2s ease;
+
+  &:hover { transform: translateY(-3px); }
+}
+
+.course-tile__image {
+  aspect-ratio: 16 / 9;
+  img { width: 100%; height: 100%; object-fit: cover; }
+}
+
+.course-tile__body {
+  padding: 16px 18px 18px;
+}
+
+.course-tile__category {
+  display: block;
+  color: var(--gold-300);
+  font-weight: 700;
+  font-size: 0.68rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.course-tile__body h3 {
+  color: var(--navy-900);
+  font-size: 0.98rem;
+  font-weight: 700;
+  margin: 0 0 12px;
+  line-height: 1.35;
+}
+
+.course-tile__progress-bar {
+  height: 6px;
+  border-radius: 999px;
+  background: #e4e7ec;
+  overflow: hidden;
+  margin-bottom: 6px;
+}
+
+.course-tile__progress-fill {
+  height: 100%;
+  background: var(--gradient-gold);
+}
+
+.course-tile__progress-label {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--navy-900);
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.course-tile__meta {
+  font-size: 0.72rem;
+  color: var(--slate-600);
+}
+
+// ============================================================
+// CERTIFICATS
+// ============================================================
+
+.cert-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 18px;
+}
+
+.cert-card {
+  background: var(--white);
+  border-radius: 18px;
+  padding: 24px;
+  text-align: center;
+  box-shadow: 0 6px 18px rgba(5, 12, 34, 0.06);
+}
+
+.cert-card__ribbon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: var(--gradient-gold);
+  color: var(--navy-950, #050c22);
+  margin-bottom: 14px;
+}
+
+.cert-card h3 {
+  color: var(--navy-900);
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin: 0 0 6px;
+}
+
+.cert-card p {
+  color: var(--slate-600);
+  font-size: 0.8rem;
+  margin: 0 0 16px;
+}
+
+.cert-card__download {
+  display: inline-block;
+  padding: 10px 20px;
+  border-radius: 999px;
+  background: var(--navy-900);
+  color: var(--white);
+  font-weight: 700;
+  font-size: 0.82rem;
+}
+
+// ============================================================
+// PAIEMENTS
+// ============================================================
+
+.payments-table {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.payments-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 16px 20px;
+  background: var(--white);
+  border-radius: 14px;
+  box-shadow: 0 4px 14px rgba(5, 12, 34, 0.05);
+  flex-wrap: wrap;
+}
+
+.payments-row__info {
+  display: flex;
+  flex-direction: column;
+}
+
+.payments-row__course {
+  font-weight: 700;
+  color: var(--navy-900);
+  font-size: 0.9rem;
+}
+
+.payments-row__date {
+  font-size: 0.78rem;
+  color: var(--slate-600);
+}
+
+.payments-row__amount {
+  font-weight: 800;
+  color: var(--navy-900);
+}
+
+.payments-row__status {
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: #dcfce7;
+  color: #166534;
+  font-size: 0.75rem;
+  font-weight: 700;
+
+  &--refunded {
+    background: #fee2e2;
+    color: #991b1b;
+  }
+}
+
+// ============================================================
+// PROFIL
+// ============================================================
+
+.profile-card {
+  background: var(--white);
+  border-radius: 18px;
+  padding: 28px;
+  max-width: 480px;
+  box-shadow: 0 6px 18px rgba(5, 12, 34, 0.06);
+}
+
+.profile-card__field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 16px;
+
+  label {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--navy-900);
+  }
+
+  input {
+    padding: 11px 14px;
+    border-radius: 10px;
+    border: 1.5px solid #e4e7ec;
+    font-size: 0.9rem;
+
+    &:focus {
+      outline: none;
+      border-color: var(--gold-300);
+    }
+  }
+}
+
+.profile-card__save {
+  padding: 11px 22px;
+  border: none;
+  border-radius: 10px;
+  background: var(--navy-900);
+  color: var(--white);
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+
+  &--ghost {
+    background: transparent;
+    border: 1.5px solid var(--navy-900);
+    color: var(--navy-900);
+  }
+}
+
+.profile-card__divider {
+  margin: 22px 0;
+  border: none;
+  border-top: 1px solid #e4e7ec;
+}
+
+@media (max-width: 640px) {
+  .payments-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .student-space__header {
+    flex-wrap: wrap;
+  }
+}
+
+// ============================================================
+// 💳 MA FORMULE
+// ============================================================
+
+.plan-courses {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 20px;
+
+  h3 { width: 100%; color: var(--navy-900); font-size: 0.95rem; }
+}
+
+.plan-courses__btn {
+  padding: 8px 16px;
+  border-radius: 999px;
+  border: 1.5px solid #e4e7ec;
+  background: #fff;
+  font-weight: 600;
+  font-size: 0.8rem;
+  cursor: pointer;
+
+  &.active {
+    border-color: #c9992e;
+    background: rgba(201, 153, 46, 0.1);
+    color: #b87333;
+  }
+}
+
+.my-plan-panel {
+  background: #fff;
+  border-radius: 18px;
+  padding: 28px;
+  box-shadow: 0 6px 18px rgba(5, 12, 34, 0.06);
+
+  h2 { color: var(--navy-900); font-size: 1.2rem; margin-bottom: 4px; }
+}
+
+.my-plan-panel__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.my-plan-panel__label {
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #b87333;
+}
+
+.my-plan-panel__empty {
+  color: #5b6475;
+  font-size: 0.9rem;
+  margin: 12px 0;
+}
+
+.my-plan-level {
+  padding: 5px 14px;
+  border-radius: 999px;
+  background: rgba(201, 153, 46, 0.12);
+  color: #b87333;
+  font-weight: 700;
+  font-size: 0.78rem;
+}
+
+.my-plan-compare {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 16px;
+}
+
+.my-plan-compare__card {
+  position: relative;
+  border: 2px solid #eef0f4;
+  border-radius: 16px;
+  padding: 26px 16px 18px;
+  text-align: center;
+
+  &.current { border-color: #22c55e; background: #f0fdf4; }
+
+  h3 { color: #0d1b3e; margin: 6px 0 4px; font-size: 1rem; }
+  strong { color: #0f3d3e; display: block; margin-bottom: 12px; font-size: 0.95rem; }
+
+  ul {
+    list-style: none; padding: 0; margin: 0 0 14px;
+    li { font-size: 0.78rem; color: #5b6475; padding: 3px 0; }
+  }
+}
+
+.my-plan-compare__tag {
+  position: absolute; top: -10px; left: 50%; transform: translateX(-50%);
+  background: #22c55e; color: #fff;
+  font-size: 0.62rem; font-weight: 800;
+  padding: 3px 12px; border-radius: 999px;
+  white-space: nowrap;
+}
+
+.my-plan-compare__badge {
+  position: absolute; top: -10px; right: 10px;
+  background: #c9992e; color: #0d1b3e;
+  font-size: 0.62rem; font-weight: 800;
+  padding: 3px 10px; border-radius: 999px;
+}
+
+.my-plan-compare__upgrade {
+  display: block;
+  padding: 9px;
+  border-radius: 10px;
+  border: 1.5px solid #c9992e;
+  color: #b87333;
+  font-weight: 700;
+  font-size: 0.78rem;
+  text-decoration: none;
+
+  &:hover { background: rgba(201, 153, 46, 0.1); }
+}
+
+.my-plan-compare__current-label {
+  display: block;
+  font-size: 0.75rem;
+  color: #22c55e;
+  font-weight: 700;
+}
+
+// ============================================================
+// 🏆 ÉVALUATIONS
+// ============================================================
+
+.eval-section__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+
+  h3 { color: var(--navy-900); font-size: 1.05rem; margin: 0; }
+}
+
+.eval-section__avg {
+  padding: 6px 16px;
+  border-radius: 999px;
+  background: var(--gradient-gold);
+  color: #0d1b3e;
+  font-weight: 800;
+  font-size: 0.85rem;
+}
+
+.eval-section__list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.eval-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 18px;
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0 4px 14px rgba(5, 12, 34, 0.05);
+  border-left: 4px solid #e4e7ec;
+
+  &--ok { border-left-color: #22c55e; }
+  &--wait { border-left-color: #f59e0b; }
+
+  &__icon { font-size: 1.3rem; }
+
+  &__body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 0;
+
+    strong { color: #0d1b3e; font-size: 0.92rem; }
+    small { color: #94a3b8; font-size: 0.72rem; }
+  }
+
+  &__note { color: #16a34a; font-weight: 700; font-size: 0.85rem; }
+  &__pending { color: #f59e0b; font-weight: 600; font-size: 0.85rem; }
+
+  &__feedback {
+    background: #f8f9fb;
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 0.82rem;
+    color: #334155;
+    margin: 4px 0 0;
+    border-left: 3px solid #22c55e;
+  }
+
+  &__link {
+    color: #b87333;
+    font-weight: 700;
+    font-size: 0.8rem;
+    text-decoration: none;
+
+    &:hover { text-decoration: underline; }
+  }
+}
+
+
+// bagde notifications 
+// student-space.scss
+.student-space__tab {
+  position: relative;   // ✅ (ajoute à la déclaration existante)
+}
+
+.student-space__tab-badge {
+  position: absolute;
+  top: -6px;
+  right: 2px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: #ef4444;
+  color: #fff;
+  font-size: 0.65rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

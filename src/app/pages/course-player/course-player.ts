@@ -1,4 +1,4 @@
-import {
+﻿import {
   ChangeDetectionStrategy,
   Component,
   computed,
@@ -60,7 +60,7 @@ import type {
   UploadedVideoMeta,
   WeekAssignment,
 } from '../../data/Course builder.model ';
-import { computeWeekDuration } from '../../data/Course builder.model '; // 🆕
+import { computeWeekDuration } from '../../data/Course builder.model '; // ðŸ†•
 
 
 
@@ -68,7 +68,7 @@ import { computeWeekDuration } from '../../data/Course builder.model '; // 🆕
 
 
 // ============================================================
-// TYPE DU COURS RETOURNÉ PAR L'API
+// TYPE DU COURS RETOURNÃ‰ PAR L'API
 // ============================================================
 
 // type CourseFromApi = {
@@ -88,8 +88,8 @@ type CourseFromApi = {
   instructor?: string;
   instructorRole?: string;
 
-  chapters?: CourseChapter[];       // ancien système
-  modules?: Array<{                 // 🆕 nouveau système HEC
+  chapters?: CourseChapter[];       // ancien systÃ¨me
+  modules?: Array<{                 // ðŸ†• nouveau systÃ¨me HEC
     id: number;
     title: string;
     description?: string | null;
@@ -103,7 +103,7 @@ type CourseFromApi = {
     }>;
     moduleQuiz?: CourseSequence | null;
   }>;
-  finalExam?: CourseSequence | null; // 🆕
+  finalExam?: CourseSequence | null; // ðŸ†•
 
   [key: string]: unknown;
 };
@@ -168,7 +168,7 @@ export class CoursePlayer {
   // ============================================================
 
   private readonly apiBaseUrl =
-    'http://127.0.0.1:8000';
+    'https://api.convergesas.com';
 
 
   // ============================================================
@@ -191,7 +191,7 @@ export class CoursePlayer {
 
 
   // ============================================================
-  // COURS CHARGÉ DEPUIS LARAVEL
+  // COURS CHARGÃ‰ DEPUIS LARAVEL
   // ============================================================
 
   readonly courseDetail = toSignal(
@@ -279,7 +279,7 @@ export class CoursePlayer {
 
   //         instructor:
   //           course.instructor ??
-  //           'Équipe pédagogique KMAA',
+  //           'Ã‰quipe pÃ©dagogique KMAA',
 
   //         instructorRole:
   //           course.instructorRole ??
@@ -369,7 +369,7 @@ export class CoursePlayer {
     }
 
     // ============================================================
-    // 🆕 PRIORITÉ 1 : Structure HEC (modules → chapters → séquences)
+    // ðŸ†• PRIORITÃ‰ 1 : Structure HEC (modules â†’ chapters â†’ sÃ©quences)
     // ============================================================
 
     if (Array.isArray(course.modules) && course.modules.length > 0) {
@@ -385,7 +385,7 @@ export class CoursePlayer {
             position: chapter.position,
             weekNumber: chapter.weekNumber ?? null,
 
-            // 🆕 métadonnées du module parent (pour l'affichage groupé)
+            // ðŸ†• mÃ©tadonnÃ©es du module parent (pour l'affichage groupÃ©)
             moduleId: module.id,
             moduleTitle: module.title,
             modulePosition: module.position,
@@ -409,14 +409,14 @@ export class CoursePlayer {
 
       return {
         courseId: String(course.id),
-        instructor: course.instructor ?? 'Équipe pédagogique KMAA',
+        instructor: course.instructor ?? 'Ã‰quipe pÃ©dagogique KMAA',
         instructorRole: course.instructorRole ?? 'Formateurs experts du domaine',
         chapters: flatChapters,
       };
     }
 
     // ============================================================
-    // PRIORITÉ 2 : Ancien système (chapters directs)
+    // PRIORITÃ‰ 2 : Ancien systÃ¨me (chapters directs)
     // ============================================================
 
     const chapters = course.chapters;
@@ -424,7 +424,7 @@ export class CoursePlayer {
     if (Array.isArray(chapters) && chapters.length > 0) {
       return {
         courseId: String(course.id),
-        instructor: course.instructor ?? 'Équipe pédagogique KMAA',
+        instructor: course.instructor ?? 'Ã‰quipe pÃ©dagogique KMAA',
         instructorRole: course.instructorRole ?? 'Formateurs experts du domaine',
         chapters: chapters.map((chapter: CourseChapter) => ({
           id: String(chapter.id),
@@ -447,7 +447,7 @@ export class CoursePlayer {
     }
 
     // ============================================================
-    // PRIORITÉ 3 : Fallback statique
+    // PRIORITÃ‰ 3 : Fallback statique
     // ============================================================
 
     return (
@@ -457,7 +457,7 @@ export class CoursePlayer {
   });
 
 
-  /** 🆕 Examen final (isFinal=true) renvoyé par l'API */
+  /** ðŸ†• Examen final (isFinal=true) renvoyÃ© par l'API */
 readonly finalExam = computed<CourseSequence | null>(() => {
   const course = this.courseDetail() as CourseFromApi | null;
   const exam = course?.finalExam;
@@ -476,7 +476,7 @@ readonly finalExam = computed<CourseSequence | null>(() => {
   };
 });
 
-/** 🆕 Nombre de modules (pour l'affichage) */
+/** ðŸ†• Nombre de modules (pour l'affichage) */
 readonly modulesCount = computed(() => {
   const course = this.courseDetail() as CourseFromApi | null;
   return course?.modules?.length ?? 0;
@@ -515,7 +515,7 @@ readonly modulesCount = computed(() => {
     });
 
       // ============================================================
-  // 🏆 MES ÉVALUATIONS (panneau latéral)
+  // ðŸ† MES Ã‰VALUATIONS (panneau latÃ©ral)
   // ============================================================
 
   readonly evalFilter = signal<'tous' | 'corrige' | 'attente'>('tous');
@@ -533,14 +533,14 @@ readonly modulesCount = computed(() => {
     this.evalFilter.set(f);
   }
 
-  /** Clic sur une éval → ouvre la séquence correspondante. */
+  /** Clic sur une Ã©val â†’ ouvre la sÃ©quence correspondante. */
   goToEvaluation(sequenceId: string): void {
     this.selectSequence(sequenceId);
   }
 
 
   // ============================================================
-  // CONTENU PUBLIÉ
+  // CONTENU PUBLIÃ‰
   // ============================================================
 
   readonly publishedWeeks =
@@ -562,7 +562,7 @@ readonly modulesCount = computed(() => {
 
 
   // ============================================================
-  // ÉTAT DE L'INTERFACE
+  // Ã‰TAT DE L'INTERFACE
   // ============================================================
 
   readonly expandedWeekId =
@@ -596,7 +596,7 @@ readonly modulesCount = computed(() => {
 
 
   // ============================================================
-  // SÉQUENCE ACTIVE
+  // SÃ‰QUENCE ACTIVE
   // ============================================================
 
   readonly activeSequenceId =
@@ -621,6 +621,88 @@ readonly modulesCount = computed(() => {
     });
 
 
+
+    // nouveau design pour le style hec paris
+
+    // nouveau design pour le style hec paris
+
+// ============================================================
+// 🆕 ONGLETS HORIZONTAUX (façon HEC : Cours / Discussion / Progression...)
+// ============================================================
+
+readonly activeTab =
+  signal<'cours' | 'discussion' | 'progression' | 'evaluations' | 'formule' | 'live'>('cours');
+
+setTab(tab: 'cours' | 'discussion' | 'progression' | 'evaluations' | 'formule' | 'live'): void {
+  this.activeTab.set(tab);
+}
+
+// ============================================================
+// 🆕 ACCORDÉON MULTI-NIVEAU (plusieurs sections ouvertes à la fois)
+// ============================================================
+
+readonly expandedNodeIds = signal<Set<string>>(new Set());
+
+toggleNode(nodeId: string): void {
+  this.expandedNodeIds.update((current) => {
+    const next = new Set(current);
+    next.has(nodeId) ? next.delete(nodeId) : next.add(nodeId);
+    return next;
+  });
+}
+
+isNodeExpanded(nodeId: string): boolean {
+  return this.expandedNodeIds().has(nodeId);
+}
+
+// ============================================================
+// 🆕 FAVORIS (bookmark d'une séquence)
+// ============================================================
+
+readonly bookmarkedIds = signal<Set<string>>(new Set());
+
+toggleBookmark(sequenceId: string): void {
+  this.bookmarkedIds.update((current) => {
+    const next = new Set(current);
+    next.has(sequenceId) ? next.delete(sequenceId) : next.add(sequenceId);
+    return next;
+  });
+}
+
+// ============================================================
+// 🆕 AVIS DE FIN DE SECTION (texte + émoji)
+// ============================================================
+
+readonly feedbackText = signal('');
+readonly feedbackRating = signal<number | null>(null);
+readonly feedbackSent = signal(false);
+
+setFeedbackRating(rating: number): void {
+  this.feedbackRating.set(rating);
+}
+
+submitFeedback(): void {
+  const seq = this.activeSequence;
+  if (!seq) return;
+
+  this.http.post(`${this.apiBaseUrl}/api/sequences/${seq.id}/feedback`, {
+    comment: this.feedbackText(),
+    rating: this.feedbackRating(),
+  }).subscribe({
+    next: () => {
+      this.feedbackSent.set(true);
+      this.feedbackText.set('');
+      this.feedbackRating.set(null);
+    },
+    error: () => alert("Impossible d'envoyer votre avis pour le moment."),
+  });
+}
+
+
+    // fin du design
+    
+
+
   // ============================================================
   // QUIZ
   // ============================================================
@@ -632,7 +714,7 @@ readonly modulesCount = computed(() => {
     signal(false);
 
       // ============================================================
-  // 🎯 QUIZ LARAVEL — moteur de scoring (QCM + texte)
+  // ðŸŽ¯ QUIZ LARAVEL â€” moteur de scoring (QCM + texte)
   // ============================================================
 
   readonly laravelQuizAnswers =
@@ -661,7 +743,7 @@ readonly modulesCount = computed(() => {
     let loadedCourseId = '';
 
     // ----------------------------------------------------------
-    // 1. PROGRESSION SERVEUR (inchangé)
+    // 1. PROGRESSION SERVEUR (inchangÃ©)
     // ----------------------------------------------------------
 
     effect(() => {
@@ -678,7 +760,7 @@ readonly modulesCount = computed(() => {
           courseId;
 
         this.loadProgress();
-        this.accessService.loadAccess(courseId);   // ✅ droits d'accès
+        this.accessService.loadAccess(courseId);   // âœ… droits d'accÃ¨s
 
       }
 
@@ -686,7 +768,7 @@ readonly modulesCount = computed(() => {
 
 
     // ----------------------------------------------------------
-    // 2. SÉANCE EN DIRECT : état initial (✅ effect de PREMIER niveau)
+    // 2. SÃ‰ANCE EN DIRECT : Ã©tat initial (âœ… effect de PREMIER niveau)
     // ----------------------------------------------------------
 
     effect(() => {
@@ -700,7 +782,7 @@ readonly modulesCount = computed(() => {
     });
 
     // ----------------------------------------------------------
-    // 3. POLLING toutes les 15 s (✅ HORS effect : une seule fois)
+    // 3. POLLING toutes les 15 s (âœ… HORS effect : une seule fois)
     // ----------------------------------------------------------
 
     setInterval(() => {
@@ -715,7 +797,7 @@ readonly modulesCount = computed(() => {
 
 
     // ----------------------------------------------------------
-    // 4. OUVERTURE PAR DÉFAUT (curriculum / semaines)
+    // 4. OUVERTURE PAR DÃ‰FAUT (curriculum / semaines)
     // ----------------------------------------------------------
 
     effect(() => {
@@ -727,7 +809,7 @@ readonly modulesCount = computed(() => {
         this.publishedWeeks();
 
               // ----------------------------------------------------------
-      // ✅ PRIORITÉ : ?seq=... (lien « Reprendre » du dashboard)
+      // âœ… PRIORITÃ‰ : ?seq=... (lien Â« Reprendre Â» du dashboard)
       // ----------------------------------------------------------
 
       const seqParam =
@@ -747,7 +829,7 @@ readonly modulesCount = computed(() => {
       }
 
 
-      // SEMAINES PUBLIÉES
+      // SEMAINES PUBLIÃ‰ES
 
       if (weeks.length > 0) {
 
@@ -782,7 +864,7 @@ readonly modulesCount = computed(() => {
       }
 
 
-      // PREMIÈRE SÉQUENCE
+      // PREMIÃˆRE SÃ‰QUENCE
 
       if (!this.activeSequenceId()) {
 
@@ -806,7 +888,7 @@ readonly modulesCount = computed(() => {
 
 
   // ============================================================
-  // SEMAINES PUBLIÉES
+  // SEMAINES PUBLIÃ‰ES
   // ============================================================
 
   togglePublishedWeek(
@@ -851,7 +933,7 @@ readonly modulesCount = computed(() => {
 
 
   // ============================================================
-  // VIDÉO PUBLIÉE
+  // VIDÃ‰O PUBLIÃ‰E
   // ============================================================
 
   async selectPublishedVideo(
@@ -907,7 +989,7 @@ readonly modulesCount = computed(() => {
 
 
   // ============================================================
-  // DEVOIR PUBLIÉ
+  // DEVOIR PUBLIÃ‰
   // ============================================================
 
   selectPublishedAssignment(
@@ -948,7 +1030,7 @@ readonly modulesCount = computed(() => {
 
 
   // ============================================================
-  // QUIZ PUBLIÉ
+  // QUIZ PUBLIÃ‰
   // ============================================================
 
   selectPublishedQuiz(
@@ -995,7 +1077,7 @@ readonly modulesCount = computed(() => {
 
 
   // ============================================================
-  // FIN DE VIDÉO PUBLIÉE
+  // FIN DE VIDÃ‰O PUBLIÃ‰E
   // ============================================================
 
   onPublishedVideoEnded(
@@ -1018,7 +1100,7 @@ readonly modulesCount = computed(() => {
 
 
   // ============================================================
-  // FORMAT DURÉE
+  // FORMAT DURÃ‰E
   // ============================================================
 
   formatDuration(
@@ -1043,7 +1125,7 @@ readonly modulesCount = computed(() => {
   // modele de cours comme hec paris
   // ============================================================
 
-// 🆕 méthode à ajouter dans la classe CoursePlayer, n'importe où après formatDuration()
+// ðŸ†• mÃ©thode Ã  ajouter dans la classe CoursePlayer, n'importe oÃ¹ aprÃ¨s formatDuration()
 weekEstimatedDuration(week: CourseWeek): string {
   const minutes = computeWeekDuration(week);
   if (minutes < 60) return `${minutes} min`;
@@ -1052,7 +1134,7 @@ weekEstimatedDuration(week: CourseWeek): string {
   return m > 0 ? `${h}h${m.toString().padStart(2, '0')}` : `${h}h`;
 }
 
-// 🆕 signal pour afficher/masquer le transcript sous la vidéo
+// ðŸ†• signal pour afficher/masquer le transcript sous la vidÃ©o
 readonly transcriptOpen = signal(false);
 toggleTranscript(): void { this.transcriptOpen.update(v => !v); }
 
@@ -1076,12 +1158,12 @@ toggleTranscript(): void { this.transcriptOpen.update(v => !v); }
   }
 
 
-  /** Reprendre : ouvre la première séquence non terminée du cours */
+  /** Reprendre : ouvre la premiÃ¨re sÃ©quence non terminÃ©e du cours */
 goToFirstIncomplete(): void {
   for (const chapter of this.curriculum().chapters) {
     for (const seq of chapter.sequences) {
       if (!seq.completed) {
-        // Ouvre le chapitre parent + sélectionne la séquence
+        // Ouvre le chapitre parent + sÃ©lectionne la sÃ©quence
         this.openChapterId.set(chapter.id);
         this.selectSequence(seq.id);
         return;
@@ -1089,7 +1171,7 @@ goToFirstIncomplete(): void {
     }
   }
 
-  // Si tout est terminé, ouvre la première séquence
+  // Si tout est terminÃ©, ouvre la premiÃ¨re sÃ©quence
   const first = this.curriculum().chapters[0]?.sequences[0];
   if (first) {
     this.openChapterId.set(this.curriculum().chapters[0].id);
@@ -1099,11 +1181,11 @@ goToFirstIncomplete(): void {
 
 
   // ============================================================
-  // SÉLECTIONNER UNE SÉQUENCE
+  // SÃ‰LECTIONNER UNE SÃ‰QUENCE
   // ============================================================
 
     // ============================================================
-  // SÉLECTIONNER UNE SÉQUENCE
+  // SÃ‰LECTIONNER UNE SÃ‰QUENCE
   // ============================================================
 
   selectSequence(
@@ -1134,7 +1216,7 @@ goToFirstIncomplete(): void {
       false
     );
 
-        // 🎯 Reset du quiz Laravel
+        // ðŸŽ¯ Reset du quiz Laravel
     this.laravelQuizAnswers.set({});
     this.laravelQuizSubmitted.set(false);
     this.laravelQuizScore.set(null);
@@ -1147,7 +1229,7 @@ goToFirstIncomplete(): void {
 
 
     // ----------------------------------------------------------
-    // VIDÉO
+    // VIDÃ‰O
     // ----------------------------------------------------------
 
     if (
@@ -1175,7 +1257,7 @@ goToFirstIncomplete(): void {
 
 
     // ----------------------------------------------------------
-    // ✅ DEVOIR : charger la soumission existante
+    // âœ… DEVOIR : charger la soumission existante
     //    (statut, note, feedback du formateur)
     // ----------------------------------------------------------
 
@@ -1190,7 +1272,7 @@ goToFirstIncomplete(): void {
   }
 
   // ============================================================
-  // TROUVER UNE SÉQUENCE
+  // TROUVER UNE SÃ‰QUENCE
   // ============================================================
 
   private findSequenceById(
@@ -1223,7 +1305,7 @@ goToFirstIncomplete(): void {
 
 
   // ============================================================
-  // TRANSFORMER UNE URL MÉDIA
+  // TRANSFORMER UNE URL MÃ‰DIA
   // ============================================================
 
   
@@ -1301,7 +1383,7 @@ resolveMediaUrl(
   // sequences-documents/fichier.pdf
   //
   // devient :
-  // http://127.0.0.1:8000/storage/sequences-documents/fichier.pdf
+  // https://api.convergesas.com/storage/sequences-documents/fichier.pdf
   // ----------------------------------------------------------
 
   const path =
@@ -1470,7 +1552,7 @@ getYoutubeEmbedUrl(
 
 
   // Protection minimale :
-  // un ID YouTube normal contient uniquement ces caractères.
+  // un ID YouTube normal contient uniquement ces caractÃ¨res.
 
   if (
     !/^[A-Za-z0-9_-]{6,}$/.test(videoId)
@@ -1541,7 +1623,7 @@ getPdfResourceUrl(
 
 
 // ============================================================
-// PDF D'UN DEVOIR PUBLIÉ
+// PDF D'UN DEVOIR PUBLIÃ‰
 // ============================================================
 
 safePdfUrl():
@@ -1652,7 +1734,7 @@ safePdfUrl():
     } catch (error) {
 
       console.warn(
-        'URL média invalide :',
+        'URL mÃ©dia invalide :',
         url,
         error
       );
@@ -1666,7 +1748,7 @@ safePdfUrl():
 
 
   // ============================================================
-  // SÉQUENCE ACTIVE
+  // SÃ‰QUENCE ACTIVE
   // ============================================================
 
   get activeSequence():
@@ -1689,7 +1771,7 @@ safePdfUrl():
 
 
   // ============================================================
-  // NOMBRE TOTAL DE SÉQUENCES
+  // NOMBRE TOTAL DE SÃ‰QUENCES
   // ============================================================
 
   get totalSequences(): number {
@@ -1710,7 +1792,7 @@ safePdfUrl():
 
 
   // ============================================================
-  // NOMBRE DE SÉQUENCES TERMINÉES
+  // NOMBRE DE SÃ‰QUENCES TERMINÃ‰ES
   // ============================================================
 
   get completedSequences(): number {
@@ -1790,7 +1872,7 @@ private loadProgress(): void {
 
 
   // ============================================================
-  // RÉPONSE AU QUIZ
+  // RÃ‰PONSE AU QUIZ
   // ============================================================
 
   selectQuizAnswer(
@@ -1826,7 +1908,7 @@ private loadProgress(): void {
 
 
   // ============================================================
-  // VÉRIFIER UNE RÉPONSE
+  // VÃ‰RIFIER UNE RÃ‰PONSE
   // ============================================================
 
   isCorrectAnswer(
@@ -1842,7 +1924,7 @@ private loadProgress(): void {
 
 
     // ----------------------------------------------------------
-    // QUIZ D'UNE SÉQUENCE LARAVEL
+    // QUIZ D'UNE SÃ‰QUENCE LARAVEL
     // ----------------------------------------------------------
 
     if (
@@ -1864,7 +1946,7 @@ private loadProgress(): void {
 
 
     // ----------------------------------------------------------
-    // QUIZ PUBLIÉ FORMATEUR
+    // QUIZ PUBLIÃ‰ FORMATEUR
     // ----------------------------------------------------------
 
     const week =
@@ -1888,16 +1970,16 @@ private loadProgress(): void {
 
 
     // ============================================================
-  // 🎯 QUIZ LARAVEL — sélection, scoring, reset
+  // ðŸŽ¯ QUIZ LARAVEL â€” sÃ©lection, scoring, reset
   // ============================================================
   // ============================================================
-  // 🎯 QUIZ LARAVEL — sélection, scoring, reset
+  // ðŸŽ¯ QUIZ LARAVEL â€” sÃ©lection, scoring, reset
   // ============================================================
 
   /**
    * QCM (oi = number) OU texte (value = string).
-   * ✅ Toutes les réponses sont stockées en STRING
-   *    pour éviter les conflits de typage dans le template.
+   * âœ… Toutes les rÃ©ponses sont stockÃ©es en STRING
+   *    pour Ã©viter les conflits de typage dans le template.
    */
   selectLaravelQuizAnswer(index: number, value: string | number): void {
     this.laravelQuizAnswers.update((current) => ({
@@ -1906,46 +1988,46 @@ private loadProgress(): void {
     }));
   }
 
-  /** QCM : cette option est-elle sélectionnée ? (helper template) */
+  /** QCM : cette option est-elle sÃ©lectionnÃ©e ? (helper template) */
   isQcmSelected(index: number, optionIndex: number): boolean {
     return this.laravelQuizAnswers()[index] === String(optionIndex);
   }
 
-  /** Nombre de questions ayant reçu une réponse. (helper template) */
+  /** Nombre de questions ayant reÃ§u une rÃ©ponse. (helper template) */
   laravelAnsweredCount(): number {
     return Object.keys(this.laravelQuizAnswers()).length;
   }
-    /** Une séquence est déverrouillée si toutes les PRÉCÉDENTES sont complétées. */
+    /** Une sÃ©quence est dÃ©verrouillÃ©e si toutes les PRÃ‰CÃ‰DENTES sont complÃ©tÃ©es. */
   isSequenceUnlocked(sequenceId: string): boolean {
     const chapters = this.curriculum().chapters;
 
     for (const chapter of chapters) {
       for (const seq of chapter.sequences) {
         if (String(seq.id) === String(sequenceId)) {
-          return true;   // on est arrivé à la cible → tout est ok
+          return true;   // on est arrivÃ© Ã  la cible â†’ tout est ok
         }
         if (!seq.completed) {
-          return false;  // une séquence antérieure non complétée (quiz raté inclus) bloque
+          return false;  // une sÃ©quence antÃ©rieure non complÃ©tÃ©e (quiz ratÃ© inclus) bloque
         }
       }
     }
     return false;
   }
 
-  /** Valide et calcule le score instantanément. */
+  /** Valide et calcule le score instantanÃ©ment. */
 
   //   submitLaravelQuiz(): void {
   //   const seq = this.activeSequence;
   //   if (!seq?.quizQuestions?.length) return;
 
-  //   // Vérifie que chaque question a une réponse
+  //   // VÃ©rifie que chaque question a une rÃ©ponse
   //   if (this.laravelAnsweredCount() < seq.quizQuestions.length) {
   //     return;
   //   }
 
   //   this.laravelQuizSubmitting.set(true);
 
-  //   // ✅ Envoie les réponses BRUTES → le backend corrige et note
+  //   // âœ… Envoie les rÃ©ponses BRUTES â†’ le backend corrige et note
   //   this.http
   //     .post<{ data: { scorePercent: number; passed: boolean; threshold: number } }>(
   //       `${this.apiBaseUrl}/api/sequences/${seq.id}/complete`,
@@ -1973,14 +2055,14 @@ private loadProgress(): void {
     const seq = this.activeSequence;
     if (!seq?.quizQuestions?.length) return;
 
-    // Vérifie que chaque question a une réponse
+    // VÃ©rifie que chaque question a une rÃ©ponse
     if (this.laravelAnsweredCount() < seq.quizQuestions.length) {
       return;
     }
 
     this.laravelQuizSubmitting.set(true);
 
-    // ✅ Envoie les réponses BRUTES → le backend corrige et note
+    // âœ… Envoie les rÃ©ponses BRUTES â†’ le backend corrige et note
     this.http
       .post<{ data: { scorePercent: number; passed: boolean; threshold: number } }>(
         `${this.apiBaseUrl}/api/sequences/${seq.id}/complete`,
@@ -2011,7 +2093,7 @@ private loadProgress(): void {
     this.laravelQuizScore.set(null);
   }
 
-  /** Vérifie une réponse donnée (pour la coloration après validation). */
+  /** VÃ©rifie une rÃ©ponse donnÃ©e (pour la coloration aprÃ¨s validation). */
   isLaravelAnswerCorrect(index: number, given: string): boolean {
     const q = this.activeSequence?.quizQuestions?.[index];
     if (!q) return false;
@@ -2025,14 +2107,14 @@ private loadProgress(): void {
 
 
     // ============================================================
-  // REJOINDRE LA SÉANCE EN DIRECT (gated : formule Standard+)
+  // REJOINDRE LA SÃ‰ANCE EN DIRECT (gated : formule Standard+)
   // ============================================================
 
   // joinLive(): void {
   //   this.liveService.getJoinRoom(
   //     this.courseId(),
   //     (roomName) => window.open(`https://meet.jit.si/${roomName}`, '_blank'),
-  //     (msg) => alert(msg),   // ex : "incluses dès la formule Standard" si Basique
+  //     (msg) => alert(msg),   // ex : "incluses dÃ¨s la formule Standard" si Basique
   //   );
   // }
 
@@ -2043,10 +2125,10 @@ private loadProgress(): void {
       window.open(joinUrl, '_blank', 'noopener,noreferrer');
 
       if (password) {
-        alert(`🔐 Mot de passe de la réunion : ${password}`);
+        alert(`ðŸ” Mot de passe de la rÃ©union : ${password}`);
       }
     },
-    (msg) => alert(msg),   // ex : "incluses dès la formule Standard" si Basique
+    (msg) => alert(msg),   // ex : "incluses dÃ¨s la formule Standard" si Basique
   );
 }
 
@@ -2055,12 +2137,12 @@ private loadProgress(): void {
 
 
   // ============================================================
-  // TERMINER UNE SÉQUENCE
+  // TERMINER UNE SÃ‰QUENCE
   // ============================================================
 
 
   // ============================================================
-// TERMINER UNE SÉQUENCE
+// TERMINER UNE SÃ‰QUENCE
 // ============================================================
 
 markSequenceDone(): void {
@@ -2089,7 +2171,7 @@ markSequenceDone(): void {
       next: () => {
 
         /*
-         * Mise à jour visuelle immédiate.
+         * Mise Ã  jour visuelle immÃ©diate.
          */
         sequence.completed = true;
 
@@ -2101,7 +2183,7 @@ markSequenceDone(): void {
         );
 
         /*
-         * On recharge la progression réelle
+         * On recharge la progression rÃ©elle
          * depuis Laravel.
          */
         this.loadProgress();
@@ -2111,13 +2193,13 @@ markSequenceDone(): void {
       error: (error) => {
 
         console.error(
-          'Erreur lors de la validation de la séquence :',
+          'Erreur lors de la validation de la sÃ©quence :',
           error
         );
 
         alert(
           error?.error?.message ??
-          'Impossible de valider cette séquence.'
+          'Impossible de valider cette sÃ©quence.'
         );
 
       },
@@ -2149,7 +2231,7 @@ markSequenceDone(): void {
     this.submissionComment.set(value);
   }
 
-  /** Charge la soumission existante (statut, note, feedback) d'une séquence. */
+  /** Charge la soumission existante (statut, note, feedback) d'une sÃ©quence. */
   loadSubmission(sequenceId: string): void {
     this.currentSubmission.set(null);
     this.submitSuccess.set(null);
@@ -2174,7 +2256,7 @@ markSequenceDone(): void {
     return `${this.apiBaseUrl}${sub.fileUrl}`;
   }
 
-  /** Envoie (ou re-envoie) le devoir — upsert côté backend. */
+  /** Envoie (ou re-envoie) le devoir â€” upsert cÃ´tÃ© backend. */
   submitAssignmentWork(): void {
     const seq = this.activeSequence;
     if (!seq || this.submitting()) return;
@@ -2199,7 +2281,7 @@ markSequenceDone(): void {
       .subscribe({
         next: (res) => {
           this.submitting.set(false);
-          this.submitSuccess.set(res.message ?? 'Devoir soumis avec succès !');
+          this.submitSuccess.set(res.message ?? 'Devoir soumis avec succÃ¨s !');
           this.currentSubmission.set(res.data);
           this.submissionFile.set(null);
           this.submissionComment.set('');
@@ -2214,13 +2296,13 @@ markSequenceDone(): void {
   }
 
 // ============================================================
-// TÉLÉCHARGER LE CERTIFICAT
+// TÃ‰LÃ‰CHARGER LE CERTIFICAT
 // ============================================================
 
 
 
   // ============================================================
-  // TÉLÉCHARGER LE CERTIFICAT
+  // TÃ‰LÃ‰CHARGER LE CERTIFICAT
   // ============================================================
 
   downloadCertificate(): void {
@@ -2251,14 +2333,14 @@ markSequenceDone(): void {
           if (!certificateUuid) {
 
             alert(
-              'Le certificat n\'a pas pu être généré.'
+              'Le certificat n\'a pas pu Ãªtre gÃ©nÃ©rÃ©.'
             );
 
             return;
           }
 
-          // ✅ URL de téléchargement construite depuis le UUID —
-          //    le endpoint /download génère le PDF à la volée.
+          // âœ… URL de tÃ©lÃ©chargement construite depuis le UUID â€”
+          //    le endpoint /download gÃ©nÃ¨re le PDF Ã  la volÃ©e.
           window.open(
             `${this.apiBaseUrl}/api/certificates/${certificateUuid}/download`,
             '_blank'
@@ -2269,13 +2351,13 @@ markSequenceDone(): void {
         error: (error) => {
 
           console.error(
-            'Erreur lors de la génération du certificat :',
+            'Erreur lors de la gÃ©nÃ©ration du certificat :',
             error
           );
 
           alert(
             error?.error?.message ??
-            'Erreur lors de la génération du certificat.'
+            'Erreur lors de la gÃ©nÃ©ration du certificat.'
           );
 
         },

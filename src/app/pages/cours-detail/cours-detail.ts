@@ -1,4 +1,4 @@
-import {
+﻿import {
   ChangeDetectionStrategy,
   Component,
   inject,
@@ -24,7 +24,7 @@ export class CoursDetail {
   private readonly http = inject(HttpClient);
   private readonly coursesApi = inject(CoursesApiService);
 
-  /** Slug du cours depuis l’URL */
+  /** Slug du cours depuis lâ€™URL */
   readonly courseSlug = toSignal(
     this.route.paramMap.pipe(map((params) => params.get('id') ?? '')),
     { initialValue: '' },
@@ -38,7 +38,7 @@ export class CoursDetail {
         if (!slug) return of(undefined);
         return this.coursesApi.getCourseDetail(slug).pipe(
           catchError((err) => {
-            console.error('Erreur chargement détail cours :', err);
+            console.error('Erreur chargement dÃ©tail cours :', err);
             return of(undefined);
           }),
         );
@@ -48,23 +48,23 @@ export class CoursDetail {
   );
 
   readonly levelLabels: Record<string, string> = {
-    debutant: 'Débutant',
-    intermediaire: 'Intermédiaire',
-    avance: 'Avancé',
+    debutant: 'DÃ©butant',
+    intermediaire: 'IntermÃ©diaire',
+    avance: 'AvancÃ©',
   };
 
   readonly fallbackSkills = [
-    'Maîtrise des concepts fondamentaux du domaine',
+    'MaÃ®trise des concepts fondamentaux du domaine',
     'Application pratique sur des cas concrets',
-    'Capacité à structurer et présenter son travail',
-    'Autonomie dans la résolution de problèmes',
+    'CapacitÃ© Ã  structurer et prÃ©senter son travail',
+    'Autonomie dans la rÃ©solution de problÃ¨mes',
   ];
 
   readonly fallbackModules = [
     'Introduction et mise en contexte',
-    'Concepts clés et fondamentaux théoriques',
-    'Ateliers pratiques et études de cas',
-    'Projet d’application et évaluation finale',
+    'Concepts clÃ©s et fondamentaux thÃ©oriques',
+    'Ateliers pratiques et Ã©tudes de cas',
+    'Projet dâ€™application et Ã©valuation finale',
   ];
 
   get skills(): string[] {
@@ -82,14 +82,14 @@ export class CoursDetail {
     return (
       c.description ??
       `Ce parcours en ${c.category?.toLowerCase() ?? 'formation'} ` +
-        `vous permet d'acquérir des compétences solides et ` +
-        `directement applicables, à travers une pédagogie active ` +
-        `combinant théorie et mise en pratique.`
+        `vous permet d'acquÃ©rir des compÃ©tences solides et ` +
+        `directement applicables, Ã  travers une pÃ©dagogie active ` +
+        `combinant thÃ©orie et mise en pratique.`
     );
   }
 
   get instructor(): string {
-    return this.course()?.instructor ?? 'Équipe pédagogique KMAA';
+    return this.course()?.instructor ?? 'Ã‰quipe pÃ©dagogique KMAA';
   }
 
   get instructorRole(): string {
@@ -100,12 +100,12 @@ export class CoursDetail {
     const c = this.course();
     if (!c) return;
 
-    const courseKey = c.id; // slug renvoyé par l’API
+    const courseKey = c.id; // slug renvoyÃ© par lâ€™API
 
     if (c.isFree) {
-      // Cours gratuit → on tente l'inscription puis on redirige vers la connexion
+      // Cours gratuit â†’ on tente l'inscription puis on redirige vers la connexion
       this.http
-        .post('http://127.0.0.1:8000/api/enrollments', {
+        .post('https://api.convergesas.com/api/enrollments', {
           course_slug: courseKey,
         })
         .subscribe({
@@ -117,14 +117,14 @@ export class CoursDetail {
           error: (err) => {
             console.error('Erreur inscription cours gratuit :', err);
 
-            // Même en cas d'erreur (ex: non connecté), on envoie vers la connexion
+            // MÃªme en cas d'erreur (ex: non connectÃ©), on envoie vers la connexion
             this.router.navigate(['/compte/connexion'], {
               queryParams: { redirect: '/apprentissage/' + courseKey },
             });
           },
         });
     } else {
-      // Cours payant → redirection vers la connexion puis paiement
+      // Cours payant â†’ redirection vers la connexion puis paiement
       this.router.navigate(['/compte/connexion'], {
         queryParams: { redirect: '/paiement/' + courseKey },
       });

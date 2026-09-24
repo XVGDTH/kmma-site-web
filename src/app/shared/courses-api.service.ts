@@ -1,9 +1,9 @@
-import { Injectable } from '@angular/core';
+﻿import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
 import { Course } from '../data/courses';
 
-const API_URL = 'http://127.0.0.1:8000/api';
+const API_URL = 'https://api.convergesas.com/api';
 
 @Injectable({ providedIn: 'root' })
 export class CoursesApiService {

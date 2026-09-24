@@ -1,4 +1,4 @@
-import {
+﻿import {
   ChangeDetectionStrategy,
   Component,
   inject,
@@ -32,7 +32,7 @@ export class PaymentOtp {
   readonly checkout = inject(CheckoutService);
   private readonly coursesApi = inject(CoursesApiService);
 
-  private readonly apiUrl = 'http://127.0.0.1:8000/api';
+  private readonly apiUrl = 'https://api.convergesas.com/api';
 
   readonly courseId = toSignal(
     this.route.paramMap.pipe(map((p) => p.get('id') ?? '')),
@@ -75,14 +75,14 @@ export class PaymentOtp {
   }
 
   // ============================================================
-  // ÉTAPE 1 : DEMANDER LE CODE OTP (simulation)
+  // Ã‰TAPE 1 : DEMANDER LE CODE OTP (simulation)
   // ============================================================
 
   requestOtp(): void {
     this.errorMessage.set(null);
 
     if (this.phoneNumber().trim().length < 8) {
-      this.errorMessage.set('Numéro de téléphone invalide');
+      this.errorMessage.set('NumÃ©ro de tÃ©lÃ©phone invalide');
       return;
     }
 
@@ -92,7 +92,7 @@ export class PaymentOtp {
     setTimeout(() => {
       const otp = Math.floor(1000 + Math.random() * 9000).toString();
       this.generatedOtp.set(otp);
-      console.log('[SIMULATION] Code OTP généré :', otp);
+      console.log('[SIMULATION] Code OTP gÃ©nÃ©rÃ© :', otp);
       this.isProcessing.set(false);
       this.step.set('otp');
     }, 1200);
@@ -119,7 +119,7 @@ export class PaymentOtp {
   }
 
   // ============================================================
-  // ÉTAPE 2 : VÉRIFIER L'OTP → PAIEMENT → INSCRIPTION
+  // Ã‰TAPE 2 : VÃ‰RIFIER L'OTP â†’ PAIEMENT â†’ INSCRIPTION
   // ============================================================
 
   verifyOtp(): void {
@@ -133,12 +133,12 @@ export class PaymentOtp {
 
     this.isProcessing.set(true);
 
-    // Simulation de vérification OTP
-    // TODO : vraie vérification via l'API Mobile Money
+    // Simulation de vÃ©rification OTP
+    // TODO : vraie vÃ©rification via l'API Mobile Money
     setTimeout(() => {
       if (entered !== this.generatedOtp()) {
         this.isProcessing.set(false);
-        this.errorMessage.set('Code incorrect. Réessayez.');
+        this.errorMessage.set('Code incorrect. RÃ©essayez.');
         this.otpDigits.set(['', '', '', '']);
         return;
       }
@@ -151,7 +151,7 @@ export class PaymentOtp {
     const session = this.checkout.session() as any;
 
     // ----------------------------------------------------------
-    // 1️⃣ ENREGISTRER LE PAIEMENT (visible dans Filament)
+    // 1ï¸âƒ£ ENREGISTRER LE PAIEMENT (visible dans Filament)
     // ----------------------------------------------------------
 
     this.http
@@ -167,7 +167,7 @@ export class PaymentOtp {
       .subscribe({
         next: () => {
           // ----------------------------------------------------
-          // 2️⃣ INSCRIRE L'APPRENANT AU COURS
+          // 2ï¸âƒ£ INSCRIRE L'APPRENANT AU COURS
           // ----------------------------------------------------
           this.http
             .post(`${this.apiUrl}/enrollments`, {
@@ -188,7 +188,7 @@ export class PaymentOtp {
                 this.isProcessing.set(false);
                 this.errorMessage.set(
                   err.error?.message ??
-                    'Paiement enregistré mais inscription échouée. Contactez le support.',
+                    'Paiement enregistrÃ© mais inscription Ã©chouÃ©e. Contactez le support.',
                 );
               },
             });
@@ -197,7 +197,7 @@ export class PaymentOtp {
           console.error('Erreur paiement :', err);
           this.isProcessing.set(false);
           this.errorMessage.set(
-            err.error?.message ?? 'Le paiement a échoué. Réessayez.',
+            err.error?.message ?? 'Le paiement a Ã©chouÃ©. RÃ©essayez.',
           );
         },
       });

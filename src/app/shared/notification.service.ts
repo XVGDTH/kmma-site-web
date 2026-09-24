@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+﻿import { HttpClient } from '@angular/common/http';
 import { Injectable, inject, signal } from '@angular/core';
 
 export interface AppNotification {
@@ -14,12 +14,12 @@ export interface AppNotification {
 @Injectable({ providedIn: 'root' })
 export class NotificationService {
   private readonly http = inject(HttpClient);
-  private readonly apiUrl = 'http://127.0.0.1:8000/api';
+  private readonly apiUrl = 'https://api.convergesas.com/api';
 
   readonly notifications = signal<AppNotification[]>([]);
   readonly unreadCount = signal(0);
 
-  /** Charge la liste + le badge (appelé au boot + au polling). */
+  /** Charge la liste + le badge (appelÃ© au boot + au polling). */
   load(): void {
     this.http
       .get<{ data: AppNotification[]; unreadCount: number }>(

@@ -1,4 +1,4 @@
-import {
+﻿import {
   ChangeDetectionStrategy,
   Component,
   computed,
@@ -31,10 +31,10 @@ export class Newsletter {
 
   private readonly route = inject(ActivatedRoute);
   private readonly http = inject(HttpClient);
-  private readonly apiUrl = 'http://127.0.0.1:8000/api';
+  private readonly apiUrl = 'https://api.convergesas.com/api';
 
   // ============================================================
-  // DÉSINSCRIPTION (via lien email : /newsletter?token=xxx)
+  // DÃ‰SINSCRIPTION (via lien email : /newsletter?token=xxx)
   // ============================================================
 
   readonly unsubscribeToken = toSignal(
@@ -56,7 +56,7 @@ export class Newsletter {
   readonly error = signal<string | null>(null);
 
   // ============================================================
-  // APERÇU DES DERNIERS CONTENUS (blog + actualités)
+  // APERÃ‡U DES DERNIERS CONTENUS (blog + actualitÃ©s)
   // ============================================================
 
   readonly latestArticles = signal<PreviewArticle[]>([]);
@@ -64,13 +64,13 @@ export class Newsletter {
   readonly articlesLoaded = computed(() => this.latestArticles().length > 0);
 
   constructor() {
-    // 1. Gestion du lien de désinscription
+    // 1. Gestion du lien de dÃ©sinscription
     effect(() => {
       const token = this.unsubscribeToken();
       if (token) this.processUnsubscribe(token);
     });
 
-    // 2. Chargement des derniers articles (aperçu "ce que vous recevez")
+    // 2. Chargement des derniers articles (aperÃ§u "ce que vous recevez")
     this.loadLatestArticles();
   }
 
@@ -82,7 +82,7 @@ export class Newsletter {
       .subscribe({
         next: (res) => this.unsubscribeMessage.set(res.message),
         error: (err) => this.unsubscribeError.set(
-          err?.error?.message ?? 'Lien de désinscription invalide.'
+          err?.error?.message ?? 'Lien de dÃ©sinscription invalide.'
         ),
       });
   }
@@ -101,7 +101,7 @@ export class Newsletter {
           }));
           this.latestArticles.set(articles);
         },
-        error: () => {}, // section simplement masquée si l'API est down
+        error: () => {}, // section simplement masquÃ©e si l'API est down
       });
   }
 

@@ -6,7 +6,7 @@
     <!-- BARRE DU HAUT -->
     <!-- ========================================================= -->
 
-    <header class="player__topbar">
+    <!-- <header class="player__topbar">
 
       <a
         [routerLink]="['/cours', c.id]"
@@ -106,12 +106,47 @@
 
       </div>
 
-    </header>
+    </header> -->
+
+
+    <header class="player__topbar player__topbar--hec">
+  <a [routerLink]="['/cours', c.id]" class="player__breadcrumb">‹ Sommaire</a>
+
+  <div class="player__topbar-title">
+    <span class="player__topbar-eyebrow">{{ c.category }}</span>
+    <h1>{{ c.title }}</h1>
+    @if (activeSequence; as seq) {
+      <p class="player__topbar-subtitle">{{ seq.title }}</p>
+    }
+  </div>
+
+  <div class="player__stats" title="Statistiques en temps réel">
+    <div class="player__stat">
+      <span class="player__stat-dot player__stat-dot--live"></span>
+      {{ stats().currentlyOnline }} en ligne
+    </div>
+    <div class="player__stat">{{ stats().videoViewers }} regardent une vidéo</div>
+    <div class="player__stat">{{ stats().totalEnrolled }} inscrits</div>
+  </div>
+</header>
+
+<nav class="player__tabbar" role="tablist">
+  <button type="button" role="tab" [class.active]="activeTab() === 'cours'" (click)="setTab('cours')">Cours</button>
+  <button type="button" role="tab" [class.active]="activeTab() === 'discussion'" (click)="setTab('discussion')">Discussion</button>
+  <button type="button" role="tab" [class.active]="activeTab() === 'progression'" (click)="setTab('progression')">Progression</button>
+  <button type="button" role="tab" [class.active]="activeTab() === 'evaluations'" (click)="setTab('evaluations')">Évaluations</button>
+  <button type="button" role="tab" [class.active]="activeTab() === 'formule'" (click)="setTab('formule')">Ma formule</button>
+  <button type="button" role="tab" [class.active]="activeTab() === 'live'" (click)="setTab('live')">
+    Séances en direct
+    @if (liveSession().isLive) { <span class="player__tabbar-dot"></span> }
+  </button>
+</nav>
 
 
     <!-- ========================================================= -->
     <!-- CORPS -->
     <!-- ========================================================= -->
+     @if (activeTab() === 'cours') {
 
     <div class="player__body">
 
@@ -190,255 +225,15 @@
         }
 
 
-                <!-- ===================================================== -->
-        <!-- MA FORMULE -->
-        <!-- ===================================================== -->
-
-        <div class="player__plan-card">
-
-          <div class="player__plan-head">
-            <span class="player__plan-label">💳 Ma formule</span>
-            <strong class="player__plan-name">
-              {{ accessService.myPlan().planName }}
-            </strong>
-            <span class="player__plan-level">
-              Niveau {{ accessService.myPlan().level }}
-            </span>
-          </div>
-
-          @if (accessService.myPlan().level === 0) {
-            <p class="player__plan-hint">
-              Vous n'avez pas encore de formule pour ce cours.
-            </p>
-            <a
-              [routerLink]="['/paiement', courseId()]"
-              class="player__certificate-btn"
-            >
-              Choisir une formule →
-            </a>
-          } @else {
-            <ul class="player__plan-features">
-              <li [class.ok]="accessService.can('certificate')">
-                {{ accessService.can('certificate') ? '✓' : '🔒' }} Certificat
-              </li>
-              <li [class.ok]="accessService.can('live_sessions')">
-                {{ accessService.can('live_sessions') ? '✓' : '🔒' }} Séances en direct
-              </li>
-              <li [class.ok]="accessService.can('assignment_review')">
-                {{ accessService.can('assignment_review') ? '✓' : '🔒' }} Correction des devoirs
-              </li>
-              <li [class.ok]="accessService.can('coaching')">
-                {{ accessService.can('coaching') ? '✓' : '🔒' }} Coaching individuel
-              </li>
-            </ul>
-
-            @if (accessService.myPlan().level < 4) {
-              <a
-                [routerLink]="['/paiement', courseId()]"
-                class="player__plan-upgrade"
-              >
-                Passer au plan supérieur →
-              </a>
-            }
-          }
-
-        </div>
 
 
         <!-- ===================================================== -->
         <!-- SESSION LIVE (gated : formule Standard+) -->
         <!-- ===================================================== -->
 
-        <div class="player__live-info">
+        
 
-          <div class="player__live-header">
-
-            <span
-              class="player__live-dot"
-              [class.player__live-dot--active]="liveSession().isLive"
-            ></span>
-
-            <span>
-              {{
-                liveSession().isLive
-                  ? 'Séance en cours'
-                  : 'Prochaines séances en direct'
-              }}
-            </span>
-
-          </div>
-
-          <div class="player__live-days">
-
-            @for (day of liveSchedule().days; track day) {
-
-              <span class="player__live-day">
-                {{ day }}
-              </span>
-
-            }
-
-          </div>
-
-          <p class="player__live-time">
-
-            {{ liveSchedule().time }}
-            —
-            {{ liveSchedule().timezone }}
-
-          </p>
-
-          @if (liveSession().isLive) {
-
-            @if (accessService.can('live_sessions')) {
-
-              <button
-                type="button"
-                class="live-join-btn"
-                (click)="joinLive()"
-              >
-                🔴 La séance est en direct. Veuillez la rejoindre maintenant.
-              </button>
-
-            } @else {
-
-              <div class="locked-feature">
-                <span class="locked-feature__icon">🔒</span>
-                <strong>Les séances en direct sont incluses dès la formule Standard</strong>
-                <p>Passez à la formule supérieure pour rejoindre l'expert en direct.</p>
-                <a
-                  [routerLink]="['/paiement', courseId()]"
-                  class="player__certificate-btn"
-                >
-                  Passer à Standard →
-                </a>
-              </div>
-
-            }
-
-          } @else {
-
-            <span class="player__live-waiting">
-              Le bouton apparaîtra ici dès que le formateur démarre
-              la séance.
-            </span>
-
-          }
-
-        </div>
-
-                <!-- ===================================================== -->
-        <!-- 🏆 MES ÉVALUATIONS (notes + devoirs) -->
-        <!-- ===================================================== -->
-
-        <div class="player__evaluations">
-
-          <div class="player__evaluations-head">
-
-            <span class="player__evaluations-title">
-              🏆 Mes évaluations
-            </span>
-
-            @if (accessService.averageGrade(); as avg) {
-              <span class="player__evaluations-avg">
-                {{ avg | number:'1.1-1' }}/20
-              </span>
-            }
-
-          </div>
-
-          <div class="player__evaluations-filters">
-
-            <button
-              type="button"
-              [class.active]="evalFilter() === 'tous'"
-              (click)="setEvalFilter('tous')"
-            >
-              Tous
-            </button>
-
-            <button
-              type="button"
-              [class.active]="evalFilter() === 'corrige'"
-              (click)="setEvalFilter('corrige')"
-            >
-              Corrigés
-            </button>
-
-            <button
-              type="button"
-              [class.active]="evalFilter() === 'attente'"
-              (click)="setEvalFilter('attente')"
-            >
-              En attente
-            </button>
-
-          </div>
-
-          @if (filteredEvaluations().length > 0) {
-
-            <ul class="player__evaluations-list">
-
-              @for (evalItem of filteredEvaluations(); track evalItem.id) {
-
-                <li>
-                  <button
-                    type="button"
-                    class="eval-item"
-                    (click)="goToEvaluation(evalItem.sequenceId)"
-                  >
-
-                    <span class="eval-item__icon">
-                      {{ evalItem.type === 'quiz' ? '🎯' : '📝' }}
-                    </span>
-
-                    <span class="eval-item__body">
-
-                      <span class="eval-item__title">
-                        {{ evalItem.title }}
-                      </span>
-
-                      @if (evalItem.type === 'devoir') {
-
-                        @if (evalItem.status === 'corrige' && evalItem.grade !== null) {
-                          <span class="eval-item__grade eval-item__grade--ok">
-                            {{ evalItem.grade }}/20
-                          </span>
-                        } @else if (evalItem.status === 'retourne') {
-                          <span class="eval-item__grade eval-item__grade--ko">
-                            À refaire
-                          </span>
-                        } @else {
-                          <span class="eval-item__grade">
-                            ⏳ En attente
-                          </span>
-                        }
-
-                      } @else {
-                        <span class="eval-item__grade eval-item__grade--ok">
-                          ✓ Réussi
-                        </span>
-                      }
-
-                    </span>
-
-                  </button>
-                </li>
-
-              }
-
-            </ul>
-
-          } @else {
-
-            <p class="player__evaluations-empty">
-              Aucune évaluation pour le moment.
-              Tes devoirs notés et quiz apparaîtront ici.
-            </p>
-
-          }
-
-        </div>
+         
 
 
         <!-- ===================================================== -->
@@ -2341,20 +2136,303 @@
 }
 
 
-        <!-- ===================================================== -->
-        <!-- FORUM DU COURS -->
-        <!-- ===================================================== -->
 
-        <div class="player__forum-section">
-          <app-course-forum
-            [courseId]="c.id"
-          ></app-course-forum>
-        </div>
+      <!-- </main>
 
+    </div>
+
+  </div>
+
+
+} @else { -->
 
       </main>
 
     </div>
+    }
+
+    @if (activeTab() === 'discussion') {
+      <div class="player__tab-panel">
+        <app-course-forum [courseId]="c.id"></app-course-forum>
+      </div>
+    }
+
+    @if (activeTab() === 'progression') {
+      <div class="player__tab-panel">
+        <div class="player__progress">
+          <div class="player__progress-header">
+            <span>Votre progression</span>
+            <strong>{{ progressPercent }}%</strong>
+          </div>
+          <div class="player__progress-bar">
+            <div class="player__progress-fill" [style.width.%]="progressPercent"></div>
+          </div>
+        </div>
+      </div>
+    }
+
+    @if (activeTab() === 'evaluations') {
+      <div class="player__tab-panel">
+        <!-- 🔽 colle ici tout le contenu que tu vas couper à l'étape 5 -->
+
+               <!-- ===================================================== -->
+        <!-- 🏆 MES ÉVALUATIONS (notes + devoirs) -->
+        <!-- ===================================================== -->
+
+        <div class="player__evaluations">
+
+          <div class="player__evaluations-head">
+
+            <span class="player__evaluations-title">
+              🏆 Mes évaluations
+            </span>
+
+            @if (accessService.averageGrade(); as avg) {
+              <span class="player__evaluations-avg">
+                {{ avg | number:'1.1-1' }}/20
+              </span>
+            }
+
+          </div>
+
+          <div class="player__evaluations-filters">
+
+            <button
+              type="button"
+              [class.active]="evalFilter() === 'tous'"
+              (click)="setEvalFilter('tous')"
+            >
+              Tous
+            </button>
+
+            <button
+              type="button"
+              [class.active]="evalFilter() === 'corrige'"
+              (click)="setEvalFilter('corrige')"
+            >
+              Corrigés
+            </button>
+
+            <button
+              type="button"
+              [class.active]="evalFilter() === 'attente'"
+              (click)="setEvalFilter('attente')"
+            >
+              En attente
+            </button>
+
+          </div>
+
+          @if (filteredEvaluations().length > 0) {
+
+            <ul class="player__evaluations-list">
+
+              @for (evalItem of filteredEvaluations(); track evalItem.id) {
+
+                <li>
+                  <button
+                    type="button"
+                    class="eval-item"
+                    (click)="goToEvaluation(evalItem.sequenceId)"
+                  >
+
+                    <span class="eval-item__icon">
+                      {{ evalItem.type === 'quiz' ? '🎯' : '📝' }}
+                    </span>
+
+                    <span class="eval-item__body">
+
+                      <span class="eval-item__title">
+                        {{ evalItem.title }}
+                      </span>
+
+                      @if (evalItem.type === 'devoir') {
+
+                        @if (evalItem.status === 'corrige' && evalItem.grade !== null) {
+                          <span class="eval-item__grade eval-item__grade--ok">
+                            {{ evalItem.grade }}/20
+                          </span>
+                        } @else if (evalItem.status === 'retourne') {
+                          <span class="eval-item__grade eval-item__grade--ko">
+                            À refaire
+                          </span>
+                        } @else {
+                          <span class="eval-item__grade">
+                            ⏳ En attente
+                          </span>
+                        }
+
+                      } @else {
+                        <span class="eval-item__grade eval-item__grade--ok">
+                          ✓ Réussi
+                        </span>
+                      }
+
+                    </span>
+
+                  </button>
+                </li>
+
+              }
+
+            </ul>
+
+          } @else {
+
+            <p class="player__evaluations-empty">
+              Aucune évaluation pour le moment.
+              Tes devoirs notés et quiz apparaîtront ici.
+            </p>
+
+          }
+
+        </div>
+      </div>
+      
+    }
+
+    @if (activeTab() === 'formule') {
+      <div class="player__tab-panel">
+        <!-- 🔽 colle ici tout le contenu que tu vas couper à l'étape 4 -->
+         
+                <!-- ===================================================== -->
+        <!-- MA FORMULE -->
+        <!-- ===================================================== -->
+
+        <div class="player__plan-card">
+
+          <div class="player__plan-head">
+            <span class="player__plan-label">💳 Ma formule</span>
+            <strong class="player__plan-name">
+              {{ accessService.myPlan().planName }}
+            </strong>
+            <span class="player__plan-level">
+              Niveau {{ accessService.myPlan().level }}
+            </span>
+          </div>
+
+          @if (accessService.myPlan().level === 0) {
+            <p class="player__plan-hint">
+              Vous n'avez pas encore de formule pour ce cours.
+            </p>
+            <a
+              [routerLink]="['/paiement', courseId()]"
+              class="player__certificate-btn"
+            >
+              Choisir une formule →
+            </a>
+          } @else {
+            <ul class="player__plan-features">
+              <li [class.ok]="accessService.can('certificate')">
+                {{ accessService.can('certificate') ? '✓' : '🔒' }} Certificat
+              </li>
+              <li [class.ok]="accessService.can('live_sessions')">
+                {{ accessService.can('live_sessions') ? '✓' : '🔒' }} Séances en direct
+              </li>
+              <li [class.ok]="accessService.can('assignment_review')">
+                {{ accessService.can('assignment_review') ? '✓' : '🔒' }} Correction des devoirs
+              </li>
+              <li [class.ok]="accessService.can('coaching')">
+                {{ accessService.can('coaching') ? '✓' : '🔒' }} Coaching individuel
+              </li>
+            </ul>
+
+            @if (accessService.myPlan().level < 4) {
+              <a
+                [routerLink]="['/paiement', courseId()]"
+                class="player__plan-upgrade"
+              >
+                Passer au plan supérieur →
+              </a>
+            }
+          }
+
+        </div>
+      </div>
+    }
+
+    @if (activeTab() === 'live') {
+      <div class="player__tab-panel">
+        <!-- 🔽 colle ici tout le contenu que tu vas couper à l'étape 4bis -->
+         <div class="player__live-info">
+
+          <div class="player__live-header">
+
+            <span
+              class="player__live-dot"
+              [class.player__live-dot--active]="liveSession().isLive"
+            ></span>
+
+            <span>
+              {{
+                liveSession().isLive
+                  ? 'Séance en cours'
+                  : 'Prochaines séances en direct'
+              }}
+            </span>
+
+          </div>
+
+          <div class="player__live-days">
+
+            @for (day of liveSchedule().days; track day) {
+
+              <span class="player__live-day">
+                {{ day }}
+              </span>
+
+            }
+
+          </div>
+
+          <p class="player__live-time">
+
+            {{ liveSchedule().time }}
+            —
+            {{ liveSchedule().timezone }}
+
+          </p>
+
+          @if (liveSession().isLive) {
+
+            @if (accessService.can('live_sessions')) {
+
+              <button
+                type="button"
+                class="live-join-btn"
+                (click)="joinLive()"
+              >
+                🔴 La séance est en direct. Veuillez la rejoindre maintenant.
+              </button>
+
+            } @else {
+
+              <div class="locked-feature">
+                <span class="locked-feature__icon">🔒</span>
+                <strong>Les séances en direct sont incluses dès la formule Standard</strong>
+                <p>Passez à la formule supérieure pour rejoindre l'expert en direct.</p>
+                <a
+                  [routerLink]="['/paiement', courseId()]"
+                  class="player__certificate-btn"
+                >
+                  Passer à Standard →
+                </a>
+              </div>
+
+            }
+
+          } @else {
+
+            <span class="player__live-waiting">
+              Le bouton apparaîtra ici dès que le formateur démarre
+              la séance.
+            </span>
+
+          }
+
+        </div>
+      </div>
+    }
 
   </div>
 

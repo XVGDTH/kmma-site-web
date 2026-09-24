@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+﻿import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
 
@@ -7,7 +7,7 @@ import {
   ForumReply
 } from '../data/forum';
 
-const API_URL = 'http://127.0.0.1:8000/api';
+const API_URL = 'https://api.convergesas.com/api';
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +17,7 @@ export class ForumApiService {
   constructor(private http: HttpClient) {}
 
   /**
-   * Récupérer toutes les discussions d'un cours
+   * RÃ©cupÃ©rer toutes les discussions d'un cours
    */
   getThreads(courseId: number): Observable<ForumThread[]> {
     return this.http
@@ -30,7 +30,7 @@ export class ForumApiService {
   }
 
   /**
-   * Créer une discussion
+   * CrÃ©er une discussion
    */
   createThread(data: {
     course_id: number;
@@ -50,7 +50,7 @@ export class ForumApiService {
   }
 
   /**
-   * Ajouter une réponse
+   * Ajouter une rÃ©ponse
    */
   createReply(
     threadId: number,
@@ -87,7 +87,7 @@ export class ForumApiService {
   }
 
   /**
-   * Upvote d'une réponse
+   * Upvote d'une rÃ©ponse
    */
   upvoteReply(
     replyId: number
@@ -104,7 +104,7 @@ export class ForumApiService {
   }
 
   /**
-   * Marquer / démarquer comme résolu
+   * Marquer / dÃ©marquer comme rÃ©solu
    */
   toggleResolved(
     threadId: number

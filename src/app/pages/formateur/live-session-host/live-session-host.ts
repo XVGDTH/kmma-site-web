@@ -1,4 +1,4 @@
-import {
+﻿import {
   ChangeDetectionStrategy,
   Component,
   computed,
@@ -14,7 +14,7 @@ import { map } from 'rxjs/operators';
 import { LiveSessionService } from '../../../shared/live-session.service';
 import { AuthService } from '../../../shared/auth.service';
 
-const API_URL = 'http://127.0.0.1:8000/api';
+const API_URL = 'https://api.convergesas.com/api';
 
 @Component({
   selector: 'app-live-session-host',
@@ -38,7 +38,7 @@ export class LiveSessionHost {
   );
 
   // ----------------------------------------------------------
-  // Cours chargé depuis l'API
+  // Cours chargÃ© depuis l'API
   // ----------------------------------------------------------
 
   readonly course = signal<{ title: string } | null>(null);
@@ -51,7 +51,7 @@ export class LiveSessionHost {
   readonly session = computed(() => this.liveService.getSession(this.courseId()));
   readonly isLive = computed(() => this.session()?.isLive ?? false);
 
-  /** Vrai nom du formateur connecté */
+  /** Vrai nom du formateur connectÃ© */
   readonly displayName = computed(
     () => this.authService.currentUser()?.name ?? 'Formateur KMAA'
   );
@@ -59,7 +59,7 @@ export class LiveSessionHost {
   /** URL Zoom pour le formateur (host) */
   readonly hostUrl = signal<string | null>(null);
 
-  /** État de chargement */
+  /** Ã‰tat de chargement */
   readonly starting = signal(false);
   readonly loadingHostUrl = signal(false);
   readonly error = signal<string | null>(null);
@@ -87,7 +87,7 @@ export class LiveSessionHost {
   }
 
   // ----------------------------------------------------------
-  // Démarrer la session Zoom (création de la réunion)
+  // DÃ©marrer la session Zoom (crÃ©ation de la rÃ©union)
   // ----------------------------------------------------------
   startSession(): void {
     if (this.starting()) return;
@@ -101,7 +101,7 @@ export class LiveSessionHost {
         this.hostUrl.set(hostUrl);
         this.starting.set(false);
 
-        // Ouvre Zoom immédiatement pour l'hôte
+        // Ouvre Zoom immÃ©diatement pour l'hÃ´te
         window.open(hostUrl, '_blank', 'noopener,noreferrer');
       },
       (msg) => {
@@ -112,7 +112,7 @@ export class LiveSessionHost {
   }
 
   // ----------------------------------------------------------
-  // Récupérer le start_url (hôte) si on a rechargé la page
+  // RÃ©cupÃ©rer le start_url (hÃ´te) si on a rechargÃ© la page
   // ----------------------------------------------------------
   openHostRoom(): void {
     if (this.loadingHostUrl()) return;

@@ -81,9 +81,9 @@ export class Header {
   readonly activeEmploi = signal<string | null>(null);
 
   readonly simpleLinks: NavLink[] = [
-    { label: 'Accueil', route: '/' },
+    // { label: 'Accueil', route: '/' },
     { label: 'Actualités', route: '/actualites' },  
-    { label: 'Équipe', route: '/equipe' },
+    // { label: 'Équipe', route: '/equipe' },
   ];
 
   readonly expertiseIcons: Record<ExpertiseItem['icon'], string> = {
@@ -211,11 +211,11 @@ export class Header {
 
   readonly emplois: EmploiItem[] = [
   {
-    label: 'Carrières',
+    label: 'Offres d\'emploi',
     route: '/emploi',
     icon: 'carrieres',
     panel: {
-      title: 'CARRIÈRES',
+      title: 'OFFRES D\'EMPLOI',
       ctaLabel: 'Voir les offres d\'emploi',
       ctaRoute: '/emploi',
       links: [

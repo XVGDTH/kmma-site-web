@@ -21,7 +21,7 @@ interface AboutValue {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class About implements AfterViewInit, OnDestroy {
-  readonly eyebrow = 'À PROPOS DE KMAA';
+  readonly eyebrow = 'A propos';
 
   readonly title =
     'Expertise, conseil et solutions concrètes pour faire progresser vos organisations.';

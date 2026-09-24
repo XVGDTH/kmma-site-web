@@ -1,4 +1,4 @@
-// import { HttpClient } from '@angular/common/http';
+﻿// import { HttpClient } from '@angular/common/http';
 // import { Injectable, inject, signal } from '@angular/core';
 
 // export interface LiveSessionState {
@@ -8,7 +8,7 @@
 //   startedAt?: Date;
 // }
 
-// const API_URL = 'http://127.0.0.1:8000/api';
+// const API_URL = 'https://api.convergesas.com/api';
 
 // @Injectable({ providedIn: 'root' })
 // export class LiveSessionService {
@@ -16,19 +16,19 @@
 //   private readonly http = inject(HttpClient);
 
 //   /**
-//    * État live par cours.
+//    * Ã‰tat live par cours.
 //    *
-//    * ✅ Désormais SYNCHRONISÉ avec le backend Laravel :
-//    * - le formateur démarre → optimiste en local + POST /live/start (DB)
-//    * - l'apprenant lit l'état → GET /live-sessions/{courseId} (polling)
+//    * âœ… DÃ©sormais SYNCHRONISÃ‰ avec le backend Laravel :
+//    * - le formateur dÃ©marre â†’ optimiste en local + POST /live/start (DB)
+//    * - l'apprenant lit l'Ã©tat â†’ GET /live-sessions/{courseId} (polling)
 //    *
-//    * Évolution future possible : WebSocket (Laravel Reverb / Pusher)
-//    * pour un temps réel instantané au lieu du polling 15 s.
+//    * Ã‰volution future possible : WebSocket (Laravel Reverb / Pusher)
+//    * pour un temps rÃ©el instantanÃ© au lieu du polling 15 s.
 //    */
 //   private readonly sessions = signal<Record<string, LiveSessionState>>({});
 
 //   // ============================================================
-//   // LECTURE (synchrone — compatible avec tous tes templates)
+//   // LECTURE (synchrone â€” compatible avec tous tes templates)
 //   // ============================================================
 
 //   getSession(courseId: string): LiveSessionState {
@@ -40,7 +40,7 @@
 //       }
 //     );
 //   }
-// // methode pour acceder au live session en fonction des prix payés par l'user.
+// // methode pour acceder au live session en fonction des prix payÃ©s par l'user.
 //     getJoinRoom(
 //     courseId: string,
 //     onSuccess: (roomName: string) => void,
@@ -52,16 +52,16 @@
 //       )
 //       .subscribe({
 //         next: (res) => onSuccess(res.data.roomName),
-//         error: (err) => onError(err?.error?.message ?? 'Accès refusé.'),
+//         error: (err) => onError(err?.error?.message ?? 'AccÃ¨s refusÃ©.'),
 //       });
 //   }
 
 //   // ============================================================
-//   // FORMATEUR : DÉMARRER
+//   // FORMATEUR : DÃ‰MARRER
 //   // ============================================================
 
 //   startSession(courseId: string): void {
-//     // 1. Mise à jour optimiste (l'interface réagit instantanément)
+//     // 1. Mise Ã  jour optimiste (l'interface rÃ©agit instantanÃ©ment)
 //     this.sessions.update((current) => ({
 //       ...current,
 //       [courseId]: {
@@ -72,7 +72,7 @@
 //       },
 //     }));
 
-//     // 2. Enregistrement côté Laravel (visible par les apprenants)
+//     // 2. Enregistrement cÃ´tÃ© Laravel (visible par les apprenants)
 //     this.http
 //       .post<{ data: { room_name: string } }>(
 //         `${API_URL}/formateur/courses/${encodeURIComponent(courseId)}/live/start`,
@@ -80,8 +80,8 @@
 //       )
 //       .subscribe({
 //         next: (res) => {
-//           // On aligne le roomName sur celui généré par le backend
-//           // (source de vérité partagée formateur / apprenants)
+//           // On aligne le roomName sur celui gÃ©nÃ©rÃ© par le backend
+//           // (source de vÃ©ritÃ© partagÃ©e formateur / apprenants)
 //           this.sessions.update((current) => ({
 //             ...current,
 //             [courseId]: {
@@ -95,9 +95,9 @@
 //             },
 //           }));
 //         },
-//         // Si l'API échoue, l'état local optimiste reste actif
+//         // Si l'API Ã©choue, l'Ã©tat local optimiste reste actif
 //         error: (err) =>
-//           console.error('⚠️ Impossible d\'enregistrer la séance live :', err),
+//           console.error('âš ï¸ Impossible d\'enregistrer la sÃ©ance live :', err),
 //       });
 //   }
 
@@ -120,16 +120,16 @@
 //       )
 //       .subscribe({
 //         error: (err) =>
-//           console.error('⚠️ Impossible de terminer la séance live :', err),
+//           console.error('âš ï¸ Impossible de terminer la sÃ©ance live :', err),
 //       });
 //   }
 
 //   // ============================================================
-//   // APPRENANT : RAFRAÎCHIR DEPUIS LE SERVEUR (POLLING)
+//   // APPRENANT : RAFRAÃŽCHIR DEPUIS LE SERVEUR (POLLING)
 //   // ============================================================
 
 //   /**
-//    * Appelé par le composant apprenant (CoursePlayer) :
+//    * AppelÃ© par le composant apprenant (CoursePlayer) :
 //    * - une fois au chargement de la page ;
 //    * - puis toutes les 15 secondes via setInterval.
 //    */
@@ -159,7 +159,7 @@
 //             },
 //           }));
 //         },
-//         // Pas de session en DB (404) ou erreur réseau : reste à isLive=false
+//         // Pas de session en DB (404) ou erreur rÃ©seau : reste Ã  isLive=false
 //         error: () => {},
 //       });
 //   }
@@ -169,7 +169,7 @@
 //   // ============================================================
 
 //   private buildRoomName(courseId: string): string {
-//     // Nom peu devinable pour éviter qu'un inconnu tombe dessus au hasard
+//     // Nom peu devinable pour Ã©viter qu'un inconnu tombe dessus au hasard
 //     return `KMAA-${courseId}-formation-2026`;
 //   }
 // }
@@ -181,13 +181,13 @@ import { Injectable, inject, signal } from '@angular/core';
 export interface LiveSessionState {
   courseId: string;
   isLive: boolean;
-  joinUrl?: string;       // ⬅️ Apprenant
-  hostUrl?: string;       // ⬅️ Formateur (start_url)
+  joinUrl?: string;       // â¬…ï¸ Apprenant
+  hostUrl?: string;       // â¬…ï¸ Formateur (start_url)
   password?: string;
   startedAt?: Date;
 }
 
-const API_URL = 'http://127.0.0.1:8000/api';
+const API_URL = 'https://api.convergesas.com/api';
 
 @Injectable({ providedIn: 'root' })
 export class LiveSessionService {
@@ -224,12 +224,12 @@ export class LiveSessionService {
       )
       .subscribe({
         next: (res) => onSuccess(res.data.joinUrl, res.data.password),
-        error: (err) => onError(err?.error?.message ?? 'Accès refusé.'),
+        error: (err) => onError(err?.error?.message ?? 'AccÃ¨s refusÃ©.'),
       });
   }
 
   // ============================================================
-  // FORMATEUR : Récupérer son start_url (hôte)
+  // FORMATEUR : RÃ©cupÃ©rer son start_url (hÃ´te)
   // ============================================================
 
   getHostUrl(
@@ -243,12 +243,12 @@ export class LiveSessionService {
       )
       .subscribe({
         next: (res) => onSuccess(res.data.startUrl),
-        error: (err) => onError(err?.error?.message ?? 'Impossible de récupérer le lien hôte.'),
+        error: (err) => onError(err?.error?.message ?? 'Impossible de rÃ©cupÃ©rer le lien hÃ´te.'),
       });
   }
 
   // ============================================================
-  // FORMATEUR : Démarrer
+  // FORMATEUR : DÃ©marrer
   // ============================================================
 
   startSession(
@@ -286,7 +286,7 @@ export class LiveSessionService {
           onSuccess?.(res.data.hostUrl);
         },
         error: (err) => {
-          console.error('❌ Erreur démarrage Zoom :', err);
+          console.error('âŒ Erreur dÃ©marrage Zoom :', err);
 
           // Rollback optimiste
           this.sessions.update((current) => ({
@@ -297,7 +297,7 @@ export class LiveSessionService {
             },
           }));
 
-          onError?.(err?.error?.message ?? 'Impossible de démarrer la session Zoom.');
+          onError?.(err?.error?.message ?? 'Impossible de dÃ©marrer la session Zoom.');
         },
       });
   }
@@ -321,12 +321,12 @@ export class LiveSessionService {
       )
       .subscribe({
         error: (err) =>
-          console.error('⚠️ Impossible de terminer la séance Zoom :', err),
+          console.error('âš ï¸ Impossible de terminer la sÃ©ance Zoom :', err),
       });
   }
 
   // ============================================================
-  // APPRENANT : Rafraîchir (polling)
+  // APPRENANT : RafraÃ®chir (polling)
   // ============================================================
 
   refreshFromServer(courseId: string): void {

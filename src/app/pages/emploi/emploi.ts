@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+﻿import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 
@@ -29,7 +29,7 @@ interface JobOffer {
 export class Emploi {
 
   private readonly http = inject(HttpClient);
-  private readonly apiUrl = 'http://127.0.0.1:8000/api';
+  private readonly apiUrl = 'https://api.convergesas.com/api';
 
   readonly activeFilter = signal<JobType>('tous');
 
@@ -42,31 +42,31 @@ export class Emploi {
     { id: 'partenaire', label: 'Partenaires' },
   ];
 
-  // ✅ Fallback statique → remplacé par l'API
+  // âœ… Fallback statique â†’ remplacÃ© par l'API
   readonly jobs = signal<JobOffer[]>([
     {
-      id: 'j1', title: 'Consultant(e) en contrôle de gestion', type: 'cdi', typeLabel: 'CDI',
+      id: 'j1', title: 'Consultant(e) en contrÃ´le de gestion', type: 'cdi', typeLabel: 'CDI',
       location: 'Ouagadougou', department: 'Conseil',
-      excerpt: 'Accompagnez nos clients PME et institutions dans le pilotage de leur performance financière.',
-      tags: ['Contrôle de gestion', 'Tableaux de bord', 'Client'],
+      excerpt: 'Accompagnez nos clients PME et institutions dans le pilotage de leur performance financiÃ¨re.',
+      tags: ['ContrÃ´le de gestion', 'Tableaux de bord', 'Client'],
       featured: true,
       image: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=900&q=80',
-      imageAlt: 'Consultant contrôle de gestion',
+      imageAlt: 'Consultant contrÃ´le de gestion',
     },
     {
-      id: 'j2', title: 'Formateur(trice) comptabilité OHADA', type: 'cdi', typeLabel: 'CDI',
+      id: 'j2', title: 'Formateur(trice) comptabilitÃ© OHADA', type: 'cdi', typeLabel: 'CDI',
       location: 'Ouagadougou / Hybride', department: 'Formation',
       excerpt: 'Animez des parcours certifiants et transmettez une expertise terrain aux apprenants KMAA.',
-      tags: ['Pédagogie', 'OHADA', 'Formation'],
+      tags: ['PÃ©dagogie', 'OHADA', 'Formation'],
       featured: true,
       image: 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=900&q=80',
-      imageAlt: 'Formateur comptabilité',
+      imageAlt: 'Formateur comptabilitÃ©',
     },
     {
-      id: 'j3', title: 'Chargé(e) de partenariats entreprises', type: 'partenaire', typeLabel: 'Partenariat',
-      location: 'Ouagadougou', department: 'Développement',
-      excerpt: "Développez le réseau d'entreprises partenaires pour stages, recrutements et formations sur mesure.",
-      tags: ['B2B', 'Réseau', 'Business development'],
+      id: 'j3', title: 'ChargÃ©(e) de partenariats entreprises', type: 'partenaire', typeLabel: 'Partenariat',
+      location: 'Ouagadougou', department: 'DÃ©veloppement',
+      excerpt: "DÃ©veloppez le rÃ©seau d'entreprises partenaires pour stages, recrutements et formations sur mesure.",
+      tags: ['B2B', 'RÃ©seau', 'Business development'],
       featured: true,
       image: 'https://images.unsplash.com/photo-1521791136064-7986c2920216?w=900&q=80',
       imageAlt: 'Partenariats entreprises',
@@ -74,26 +74,26 @@ export class Emploi {
     {
       id: 'j4', title: 'Auditeur(trice) junior', type: 'cdd', typeLabel: 'CDD',
       location: 'Ouagadougou', department: 'Audit',
-      excerpt: "Participez aux missions d'audit interne et de cartographie des risques auprès de nos clients.",
+      excerpt: "Participez aux missions d'audit interne et de cartographie des risques auprÃ¨s de nos clients.",
       tags: ['Audit', 'Risques', 'Terrain'],
       image: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=900&q=80',
       imageAlt: 'Auditeur junior',
     },
     {
-      id: 'j5', title: 'Stagiaire pédagogie digitale', type: 'stage', typeLabel: 'Stage',
+      id: 'j5', title: 'Stagiaire pÃ©dagogie digitale', type: 'stage', typeLabel: 'Stage',
       location: 'Ouagadougou', department: 'Academy',
-      excerpt: "Contribuez à la conception de modules e-learning et au suivi des parcours en ligne.",
+      excerpt: "Contribuez Ã  la conception de modules e-learning et au suivi des parcours en ligne.",
       tags: ['E-learning', 'Contenu', 'Innovation'],
       image: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=900&q=80',
-      imageAlt: 'Stage pédagogie digitale',
+      imageAlt: 'Stage pÃ©dagogie digitale',
     },
     {
-      id: 'j6', title: 'Expert(e) fiscalité freelance', type: 'freelance', typeLabel: 'Freelance',
+      id: 'j6', title: 'Expert(e) fiscalitÃ© freelance', type: 'freelance', typeLabel: 'Freelance',
       location: 'Remote / Ouaga', department: 'Conseil',
-      excerpt: "Interventions ponctuelles sur missions fiscales, conformité et accompagnement d'entreprises.",
-      tags: ['Fiscalité', 'Mission', 'Indépendant'],
+      excerpt: "Interventions ponctuelles sur missions fiscales, conformitÃ© et accompagnement d'entreprises.",
+      tags: ['FiscalitÃ©', 'Mission', 'IndÃ©pendant'],
       image: 'https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=900&q=80',
-      imageAlt: 'Expert fiscalité freelance',
+      imageAlt: 'Expert fiscalitÃ© freelance',
     },
   ]);
 
@@ -111,7 +111,7 @@ export class Emploi {
           }
         },
         error: (err) =>
-          console.warn("Offres API indisponible — contenu statique affiché.", err),
+          console.warn("Offres API indisponible â€” contenu statique affichÃ©.", err),
       });
   }
 
@@ -149,7 +149,7 @@ export class Emploi {
   }
 
     // ============================================================
-  // CANDIDATURE SPONTANÉE (CV + email uniquement)
+  // CANDIDATURE SPONTANÃ‰E (CV + email uniquement)
   // ============================================================
 
   readonly spontaneousOpen = signal(false);
@@ -175,8 +175,8 @@ export class Emploi {
   }
 
   scrollToSpontaneous(): void {
-    // ✅ Ouvre le formulaire PUIS défile vers la SECTION CTA
-    // (toujours présente dans le DOM, contrairement au formulaire)
+    // âœ… Ouvre le formulaire PUIS dÃ©file vers la SECTION CTA
+    // (toujours prÃ©sente dans le DOM, contrairement au formulaire)
     this.spontaneousOpen.set(true);
     requestAnimationFrame(() => {
       document.getElementById('spontaneous')?.scrollIntoView({
@@ -212,7 +212,7 @@ export class Emploi {
       .subscribe({
         next: (res) => {
           this.spontaneousSending.set(false);
-          this.spontaneousSuccess.set(res.message ?? 'Candidature envoyée !');
+          this.spontaneousSuccess.set(res.message ?? 'Candidature envoyÃ©e !');
         },
         error: (err) => {
           this.spontaneousSending.set(false);

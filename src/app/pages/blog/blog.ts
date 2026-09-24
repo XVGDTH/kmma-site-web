@@ -1,4 +1,4 @@
-import {
+﻿import {
   ChangeDetectionStrategy,
   Component,
   computed,
@@ -42,7 +42,7 @@ interface BlogPost {
   popular?: boolean;
   route: string;
   tags: string[];
-  level?: 'Débutant' | 'Intermédiaire' | 'Avancé';
+  level?: 'DÃ©butant' | 'IntermÃ©diaire' | 'AvancÃ©';
   audience?: string;
 }
 
@@ -75,7 +75,7 @@ interface BlogTool {
 export class Blog {
 
   private readonly http = inject(HttpClient);
-  private readonly apiUrl = 'http://127.0.0.1:8000/api';
+  private readonly apiUrl = 'https://api.convergesas.com/api';
 
   readonly apiLoaded = signal(false);
 
@@ -89,185 +89,185 @@ export class Blog {
   readonly favorites = signal<Set<string>>(new Set());
 
   readonly categories: { id: BlogCategory; label: string; icon: string }[] = [
-    { id: 'tous', label: 'Tous', icon: '◈' },
-    { id: 'finance', label: 'Finance', icon: '₣' },
-    { id: 'comptabilite', label: 'Comptabilité', icon: '▤' },
-    { id: 'fiscalite', label: 'Fiscalité', icon: '◫' },
-    { id: 'audit', label: 'Audit', icon: '✓' },
-    { id: 'gestion', label: 'Gestion', icon: '↗' },
-    { id: 'entreprise', label: 'Entreprise', icon: '⌂' },
-    { id: 'carriere', label: 'Carrière', icon: '◆' },
-    { id: 'formation', label: 'Formation', icon: '▣' },
+    { id: 'tous', label: 'Tous', icon: 'â—ˆ' },
+    { id: 'finance', label: 'Finance', icon: 'â‚£' },
+    { id: 'comptabilite', label: 'ComptabilitÃ©', icon: 'â–¤' },
+    { id: 'fiscalite', label: 'FiscalitÃ©', icon: 'â—«' },
+    { id: 'audit', label: 'Audit', icon: 'âœ“' },
+    { id: 'gestion', label: 'Gestion', icon: 'â†—' },
+    { id: 'entreprise', label: 'Entreprise', icon: 'âŒ‚' },
+    { id: 'carriere', label: 'CarriÃ¨re', icon: 'â—†' },
+    { id: 'formation', label: 'Formation', icon: 'â–£' },
   ];
 
   readonly kinds: { id: ContentKind; label: string }[] = [
     { id: 'tous', label: 'Tous les formats' },
     { id: 'article', label: 'Articles' },
     { id: 'guide', label: 'Guides' },
-    { id: 'actualite', label: 'Actualités' },
+    { id: 'actualite', label: 'ActualitÃ©s' },
     { id: 'conseil', label: 'Conseils' },
   ];
 
   /**
-   * ✅ Contenu statique par défaut (affiché immédiatement).
-   * Remplacé automatiquement par les articles de la base de
-   * données dès que l'API /blog-posts en renvoie.
+   * âœ… Contenu statique par dÃ©faut (affichÃ© immÃ©diatement).
+   * RemplacÃ© automatiquement par les articles de la base de
+   * donnÃ©es dÃ¨s que l'API /blog-posts en renvoie.
    */
   readonly posts = signal<BlogPost[]>([
     {
       id: 'finance-tresorerie',
-      title: 'Gestion de trésorerie : les indicateurs financiers que tout dirigeant devrait suivre',
-      excerpt: 'Trésorerie nette, BFR, capacité d’autofinancement et cash-flow : découvrez les indicateurs essentiels pour piloter la santé financière d’une entreprise.',
+      title: 'Gestion de trÃ©sorerie : les indicateurs financiers que tout dirigeant devrait suivre',
+      excerpt: 'TrÃ©sorerie nette, BFR, capacitÃ© dâ€™autofinancement et cash-flow : dÃ©couvrez les indicateurs essentiels pour piloter la santÃ© financiÃ¨re dâ€™une entreprise.',
       category: 'finance', kind: 'article',
       image: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=1400&q=85',
-      imageAlt: 'Analyse financière et gestion de trésorerie',
-      author: 'Issouf Ouédraogo', authorRole: 'Expert financier',
+      imageAlt: 'Analyse financiÃ¨re et gestion de trÃ©sorerie',
+      author: 'Issouf OuÃ©draogo', authorRole: 'Expert financier',
       authorAvatar: 'https://i.pravatar.cc/100?img=12',
       date: '03 septembre 2026', dateIso: '2026-09-03', readTime: '9 min', readMinutes: 9,
       featured: true, popular: true,
       route: '/blog/gestion-tresorerie-indicateurs',
-      tags: ['trésorerie', 'finance', 'PME', 'gestion financière'],
-      level: 'Intermédiaire', audience: 'Dirigeants & PME',
+      tags: ['trÃ©sorerie', 'finance', 'PME', 'gestion financiÃ¨re'],
+      level: 'IntermÃ©diaire', audience: 'Dirigeants & PME',
     },
     {
       id: 'guide-tva-burkina',
-      title: 'Guide pratique de la TVA : comprendre, calculer et préparer sa déclaration',
-      excerpt: 'Un parcours structuré pour comprendre la logique de la TVA, organiser ses pièces et éviter les erreurs courantes avant la déclaration.',
+      title: 'Guide pratique de la TVA : comprendre, calculer et prÃ©parer sa dÃ©claration',
+      excerpt: 'Un parcours structurÃ© pour comprendre la logique de la TVA, organiser ses piÃ¨ces et Ã©viter les erreurs courantes avant la dÃ©claration.',
       category: 'fiscalite', kind: 'guide',
       image: 'https://images.unsplash.com/photo-1554224154-22dec7ec8818?w=1200&q=85',
       imageAlt: 'Documents fiscaux et calculatrice',
-      author: 'Équipe KMAA', authorRole: 'Pôle fiscalité', authorAvatar: 'https://i.pravatar.cc/100?img=8',
+      author: 'Ã‰quipe KMAA', authorRole: 'PÃ´le fiscalitÃ©', authorAvatar: 'https://i.pravatar.cc/100?img=8',
       date: '02 septembre 2026', dateIso: '2026-09-02', readTime: '14 min', readMinutes: 14,
       popular: true, route: '/blog/guide-tva',
-      tags: ['TVA', 'déclaration', 'fiscalité', 'entreprise'], level: 'Débutant', audience: 'Entrepreneurs & comptables',
+      tags: ['TVA', 'dÃ©claration', 'fiscalitÃ©', 'entreprise'], level: 'DÃ©butant', audience: 'Entrepreneurs & comptables',
     },
     {
       id: 'expert-comptable',
-      title: 'Expert-comptable : quelles sont réellement ses missions auprès d’une PME ?',
-      excerpt: 'Bien plus qu’un producteur d’états financiers, l’expert-comptable peut devenir un véritable partenaire stratégique du dirigeant.',
+      title: 'Expert-comptable : quelles sont rÃ©ellement ses missions auprÃ¨s dâ€™une PME ?',
+      excerpt: 'Bien plus quâ€™un producteur dâ€™Ã©tats financiers, lâ€™expert-comptable peut devenir un vÃ©ritable partenaire stratÃ©gique du dirigeant.',
       category: 'comptabilite', kind: 'article',
       image: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=1000&q=85',
-      imageAlt: 'Expert-comptable travaillant sur les comptes d’une entreprise',
+      imageAlt: 'Expert-comptable travaillant sur les comptes dâ€™une entreprise',
       author: 'Fatou Zongo', authorRole: 'Experte-comptable', authorAvatar: 'https://i.pravatar.cc/100?img=45',
       date: '01 septembre 2026', dateIso: '2026-09-01', readTime: '7 min', readMinutes: 7,
       popular: true, route: '/blog/missions-expert-comptable-pme',
-      tags: ['expert-comptable', 'comptabilité', 'PME'], audience: 'PME',
+      tags: ['expert-comptable', 'comptabilitÃ©', 'PME'], audience: 'PME',
     },
     {
       id: 'actualite-rentree-fiscale',
-      title: 'Rentrée fiscale : 7 points à vérifier dans votre organisation avant la prochaine échéance',
-      excerpt: 'Une synthèse opérationnelle pour remettre à niveau vos dossiers, responsabilités internes et preuves documentaires.',
+      title: 'RentrÃ©e fiscale : 7 points Ã  vÃ©rifier dans votre organisation avant la prochaine Ã©chÃ©ance',
+      excerpt: 'Une synthÃ¨se opÃ©rationnelle pour remettre Ã  niveau vos dossiers, responsabilitÃ©s internes et preuves documentaires.',
       category: 'fiscalite', kind: 'actualite',
       image: 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=1000&q=85',
       imageAlt: 'Documents administratifs et stylo',
-      author: 'Aïcha Ouédraogo', authorRole: 'Consultante fiscale', authorAvatar: 'https://i.pravatar.cc/100?img=47',
-      date: '31 août 2026', dateIso: '2026-08-31', readTime: '6 min', readMinutes: 6,
-      route: '/blog/rentree-fiscale-checklist', tags: ['actualité', 'échéances', 'organisation'], audience: 'Entreprises',
+      author: 'AÃ¯cha OuÃ©draogo', authorRole: 'Consultante fiscale', authorAvatar: 'https://i.pravatar.cc/100?img=47',
+      date: '31 aoÃ»t 2026', dateIso: '2026-08-31', readTime: '6 min', readMinutes: 6,
+      route: '/blog/rentree-fiscale-checklist', tags: ['actualitÃ©', 'Ã©chÃ©ances', 'organisation'], audience: 'Entreprises',
     },
     {
       id: 'bilan-comptable',
-      title: 'Lire un bilan comptable : méthode simple pour comprendre la situation financière d’une entreprise',
-      excerpt: 'Actif, passif, capitaux propres, dettes : apprenez à lire un bilan comptable sans être vous-même comptable.',
+      title: 'Lire un bilan comptable : mÃ©thode simple pour comprendre la situation financiÃ¨re dâ€™une entreprise',
+      excerpt: 'Actif, passif, capitaux propres, dettes : apprenez Ã  lire un bilan comptable sans Ãªtre vous-mÃªme comptable.',
       category: 'comptabilite', kind: 'guide',
       image: 'https://images.unsplash.com/photo-1554224154-26032ffc0d07?w=1000&q=85',
-      imageAlt: 'Documents comptables et analyse financière',
-      author: 'Moussa Coulibaly', authorRole: 'Formateur en comptabilité', authorAvatar: 'https://i.pravatar.cc/100?img=15',
-      date: '29 août 2026', dateIso: '2026-08-29', readTime: '8 min', readMinutes: 8,
+      imageAlt: 'Documents comptables et analyse financiÃ¨re',
+      author: 'Moussa Coulibaly', authorRole: 'Formateur en comptabilitÃ©', authorAvatar: 'https://i.pravatar.cc/100?img=15',
+      date: '29 aoÃ»t 2026', dateIso: '2026-08-29', readTime: '8 min', readMinutes: 8,
       popular: true, route: '/blog/lire-bilan-comptable',
-      tags: ['bilan', 'comptabilité', 'analyse financière'], level: 'Débutant', audience: 'Étudiants & dirigeants',
+      tags: ['bilan', 'comptabilitÃ©', 'analyse financiÃ¨re'], level: 'DÃ©butant', audience: 'Ã‰tudiants & dirigeants',
     },
     {
       id: 'fiscalite-entreprise',
-      title: 'Fiscalité d’entreprise : les principales obligations à connaître en tant que dirigeant',
-      excerpt: 'Déclarations, échéances, obligations comptables et fiscales : les fondamentaux à maîtriser pour éviter les mauvaises surprises.',
+      title: 'FiscalitÃ© dâ€™entreprise : les principales obligations Ã  connaÃ®tre en tant que dirigeant',
+      excerpt: 'DÃ©clarations, Ã©chÃ©ances, obligations comptables et fiscales : les fondamentaux Ã  maÃ®triser pour Ã©viter les mauvaises surprises.',
       category: 'fiscalite', kind: 'guide',
       image: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=1000&q=85',
       imageAlt: 'Documents fiscaux et calculs financiers',
-      author: 'Aïcha Ouédraogo', authorRole: 'Consultante fiscale', authorAvatar: 'https://i.pravatar.cc/100?img=47',
-      date: '27 août 2026', dateIso: '2026-08-27', readTime: '10 min', readMinutes: 10,
+      author: 'AÃ¯cha OuÃ©draogo', authorRole: 'Consultante fiscale', authorAvatar: 'https://i.pravatar.cc/100?img=47',
+      date: '27 aoÃ»t 2026', dateIso: '2026-08-27', readTime: '10 min', readMinutes: 10,
       route: '/blog/obligations-fiscales-entreprise',
-      tags: ['fiscalité', 'entreprise', 'impôts'], level: 'Débutant', audience: 'Dirigeants',
+      tags: ['fiscalitÃ©', 'entreprise', 'impÃ´ts'], level: 'DÃ©butant', audience: 'Dirigeants',
     },
     {
       id: 'controle-gestion',
-      title: 'Contrôle de gestion : comment transformer les chiffres en décisions stratégiques',
-      excerpt: 'Le contrôle de gestion permet au dirigeant de comprendre ce qui fonctionne, ce qui coûte et où concentrer ses efforts.',
+      title: 'ContrÃ´le de gestion : comment transformer les chiffres en dÃ©cisions stratÃ©giques',
+      excerpt: 'Le contrÃ´le de gestion permet au dirigeant de comprendre ce qui fonctionne, ce qui coÃ»te et oÃ¹ concentrer ses efforts.',
       category: 'gestion', kind: 'article',
       image: 'https://images.unsplash.com/photo-1556761175-b413da4baf72?w=1000&q=85',
-      imageAlt: 'Réunion de travail et analyse des performances',
+      imageAlt: 'RÃ©union de travail et analyse des performances',
       author: 'Boureima Sawadogo', authorRole: 'Consultant en gestion', authorAvatar: 'https://i.pravatar.cc/100?img=33',
-      date: '25 août 2026', dateIso: '2026-08-25', readTime: '8 min', readMinutes: 8,
-      route: '/blog/controle-gestion-performance', tags: ['contrôle de gestion', 'performance', 'KPI'], audience: 'Managers',
+      date: '25 aoÃ»t 2026', dateIso: '2026-08-25', readTime: '8 min', readMinutes: 8,
+      route: '/blog/controle-gestion-performance', tags: ['contrÃ´le de gestion', 'performance', 'KPI'], audience: 'Managers',
     },
     {
       id: 'audit-financier',
-      title: 'Audit financier : pourquoi une entreprise devrait-elle faire contrôler ses comptes ?',
-      excerpt: 'L’audit ne se limite pas à rechercher des erreurs. Il contribue aussi à renforcer la fiabilité de l’information financière.',
+      title: 'Audit financier : pourquoi une entreprise devrait-elle faire contrÃ´ler ses comptes ?',
+      excerpt: 'Lâ€™audit ne se limite pas Ã  rechercher des erreurs. Il contribue aussi Ã  renforcer la fiabilitÃ© de lâ€™information financiÃ¨re.',
       category: 'audit', kind: 'article',
       image: 'https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=1000&q=85',
-      imageAlt: 'Réunion autour de documents financiers',
-      author: 'David Kaboré', authorRole: 'Auditeur financier', authorAvatar: 'https://i.pravatar.cc/100?img=51',
-      date: '22 août 2026', dateIso: '2026-08-22', readTime: '7 min', readMinutes: 7,
-      route: '/blog/audit-financier-entreprise', tags: ['audit', 'contrôle', 'finance'], audience: 'Entreprises',
+      imageAlt: 'RÃ©union autour de documents financiers',
+      author: 'David KaborÃ©', authorRole: 'Auditeur financier', authorAvatar: 'https://i.pravatar.cc/100?img=51',
+      date: '22 aoÃ»t 2026', dateIso: '2026-08-22', readTime: '7 min', readMinutes: 7,
+      route: '/blog/audit-financier-entreprise', tags: ['audit', 'contrÃ´le', 'finance'], audience: 'Entreprises',
     },
     {
       id: 'business-plan',
       title: 'Business plan financier : les chiffres indispensables avant de lancer son entreprise',
-      excerpt: 'Prévisions de chiffre d’affaires, charges, investissement, trésorerie et rentabilité : construisez un modèle financier cohérent.',
+      excerpt: 'PrÃ©visions de chiffre dâ€™affaires, charges, investissement, trÃ©sorerie et rentabilitÃ© : construisez un modÃ¨le financier cohÃ©rent.',
       category: 'entreprise', kind: 'guide',
       image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1000&q=85',
-      imageAlt: 'Tableau financier et stratégie d’entreprise',
-      author: 'Aminata Kaboré', authorRole: 'Consultante entreprise', authorAvatar: 'https://i.pravatar.cc/100?img=20',
-      date: '20 août 2026', dateIso: '2026-08-20', readTime: '11 min', readMinutes: 11,
-      route: '/blog/business-plan-financier', tags: ['business plan', 'entrepreneuriat', 'finance'], level: 'Intermédiaire', audience: 'Entrepreneurs',
+      imageAlt: 'Tableau financier et stratÃ©gie dâ€™entreprise',
+      author: 'Aminata KaborÃ©', authorRole: 'Consultante entreprise', authorAvatar: 'https://i.pravatar.cc/100?img=20',
+      date: '20 aoÃ»t 2026', dateIso: '2026-08-20', readTime: '11 min', readMinutes: 11,
+      route: '/blog/business-plan-financier', tags: ['business plan', 'entrepreneuriat', 'finance'], level: 'IntermÃ©diaire', audience: 'Entrepreneurs',
     },
     {
       id: 'ratios-financiers',
-      title: '10 ratios financiers à connaître pour analyser la performance d’une entreprise',
-      excerpt: 'Rentabilité, liquidité, solvabilité et structure financière : les ratios qui permettent de mieux interpréter les comptes.',
+      title: '10 ratios financiers Ã  connaÃ®tre pour analyser la performance dâ€™une entreprise',
+      excerpt: 'RentabilitÃ©, liquiditÃ©, solvabilitÃ© et structure financiÃ¨re : les ratios qui permettent de mieux interprÃ©ter les comptes.',
       category: 'finance', kind: 'guide',
       image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1000&q=85',
-      imageAlt: 'Graphiques et analyse financière',
-      author: 'Issouf Ouédraogo', authorRole: 'Expert financier', authorAvatar: 'https://i.pravatar.cc/100?img=12',
-      date: '18 août 2026', dateIso: '2026-08-18', readTime: '12 min', readMinutes: 12,
-      popular: true, route: '/blog/ratios-financiers', tags: ['ratios', 'finance', 'analyse'], level: 'Intermédiaire', audience: 'Analystes & dirigeants',
+      imageAlt: 'Graphiques et analyse financiÃ¨re',
+      author: 'Issouf OuÃ©draogo', authorRole: 'Expert financier', authorAvatar: 'https://i.pravatar.cc/100?img=12',
+      date: '18 aoÃ»t 2026', dateIso: '2026-08-18', readTime: '12 min', readMinutes: 12,
+      popular: true, route: '/blog/ratios-financiers', tags: ['ratios', 'finance', 'analyse'], level: 'IntermÃ©diaire', audience: 'Analystes & dirigeants',
     },
     {
       id: 'carriere-comptable',
-      title: 'Devenir expert-comptable : compétences, parcours et réalités du métier',
-      excerpt: 'Le métier évolue rapidement. Découvrez les compétences techniques et humaines recherchées dans les métiers de la comptabilité.',
+      title: 'Devenir expert-comptable : compÃ©tences, parcours et rÃ©alitÃ©s du mÃ©tier',
+      excerpt: 'Le mÃ©tier Ã©volue rapidement. DÃ©couvrez les compÃ©tences techniques et humaines recherchÃ©es dans les mÃ©tiers de la comptabilitÃ©.',
       category: 'carriere', kind: 'conseil',
       image: 'https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=1000&q=85',
       imageAlt: 'Professionnels travaillant dans un bureau',
-      author: 'Équipe KMAA', authorRole: 'KMAA Academy', authorAvatar: 'https://i.pravatar.cc/100?img=8',
-      date: '15 août 2026', dateIso: '2026-08-15', readTime: '6 min', readMinutes: 6,
-      route: '/blog/carriere-expertise-comptable', tags: ['carrière', 'comptabilité', 'expertise'], audience: 'Étudiants & professionnels',
+      author: 'Ã‰quipe KMAA', authorRole: 'KMAA Academy', authorAvatar: 'https://i.pravatar.cc/100?img=8',
+      date: '15 aoÃ»t 2026', dateIso: '2026-08-15', readTime: '6 min', readMinutes: 6,
+      route: '/blog/carriere-expertise-comptable', tags: ['carriÃ¨re', 'comptabilitÃ©', 'expertise'], audience: 'Ã‰tudiants & professionnels',
     },
     {
       id: 'formation-comptable',
-      title: 'Pourquoi se former régulièrement aux métiers de la finance et de la comptabilité ?',
-      excerpt: 'Normes, outils numériques, fiscalité et pratiques professionnelles évoluent. La formation continue devient un véritable avantage compétitif.',
+      title: 'Pourquoi se former rÃ©guliÃ¨rement aux mÃ©tiers de la finance et de la comptabilitÃ© ?',
+      excerpt: 'Normes, outils numÃ©riques, fiscalitÃ© et pratiques professionnelles Ã©voluent. La formation continue devient un vÃ©ritable avantage compÃ©titif.',
       category: 'formation', kind: 'conseil',
       image: 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=1000&q=85',
-      imageAlt: 'Formation professionnelle en comptabilité',
+      imageAlt: 'Formation professionnelle en comptabilitÃ©',
       author: 'M. Martial YAOGO', authorRole: 'Formateur KMAA', authorAvatar: 'https://i.pravatar.cc/100?img=11',
-      date: '12 août 2026', dateIso: '2026-08-12', readTime: '6 min', readMinutes: 6,
-      route: '/blog/formation-continue-finance', tags: ['formation', 'finance', 'comptabilité'], audience: 'Professionnels',
+      date: '12 aoÃ»t 2026', dateIso: '2026-08-12', readTime: '6 min', readMinutes: 6,
+      route: '/blog/formation-continue-finance', tags: ['formation', 'finance', 'comptabilitÃ©'], audience: 'Professionnels',
     },
   ]);
 
   readonly guideCollections: GuideCollection[] = [
-    { id: 'fiscalite', icon: '◫', title: 'Fiscalité & obligations', description: 'Déclarations, échéances, TVA et organisation fiscale expliquées pas à pas.', count: 8, category: 'fiscalite', accent: '01' },
-    { id: 'comptabilite', icon: '▤', title: 'Comptabilité pratique', description: 'Lire les états financiers, organiser les pièces et comprendre les écritures essentielles.', count: 7, category: 'comptabilite', accent: '02' },
-    { id: 'finance', icon: '₣', title: 'Finance & pilotage', description: 'Trésorerie, ratios, BFR, rentabilité et indicateurs utiles pour décider.', count: 6, category: 'finance', accent: '03' },
-    { id: 'entreprise', icon: '⌂', title: 'Entrepreneuriat', description: 'Business plan, structuration, bonnes pratiques de gestion et croissance durable.', count: 5, category: 'entreprise', accent: '04' },
+    { id: 'fiscalite', icon: 'â—«', title: 'FiscalitÃ© & obligations', description: 'DÃ©clarations, Ã©chÃ©ances, TVA et organisation fiscale expliquÃ©es pas Ã  pas.', count: 8, category: 'fiscalite', accent: '01' },
+    { id: 'comptabilite', icon: 'â–¤', title: 'ComptabilitÃ© pratique', description: 'Lire les Ã©tats financiers, organiser les piÃ¨ces et comprendre les Ã©critures essentielles.', count: 7, category: 'comptabilite', accent: '02' },
+    { id: 'finance', icon: 'â‚£', title: 'Finance & pilotage', description: 'TrÃ©sorerie, ratios, BFR, rentabilitÃ© et indicateurs utiles pour dÃ©cider.', count: 6, category: 'finance', accent: '03' },
+    { id: 'entreprise', icon: 'âŒ‚', title: 'Entrepreneuriat', description: 'Business plan, structuration, bonnes pratiques de gestion et croissance durable.', count: 5, category: 'entreprise', accent: '04' },
   ];
 
   readonly tools: BlogTool[] = [
-    { icon: '▤', title: 'Guides pratiques', description: 'Des parcours structurés pour progresser étape par étape.', label: 'Explorer les guides', route: '/blog' },
-    { icon: '⌗', title: 'Modèles professionnels', description: 'Retrouvez vos documents et modèles utiles au même endroit.', label: 'Voir les modèles', route: '/modeles-documents' },
-    { icon: '◫', title: 'Calendrier fiscal', description: 'Anticipez vos échéances et organisez vos obligations fiscales.', label: 'Voir le calendrier', route: '/calendrier-fiscal' },
-    { icon: '↗', title: 'Formation', description: 'Approfondissez vos compétences avec les parcours KMAA Academy.', label: 'Découvrir les formations', route: '/formations' },
+    { icon: 'â–¤', title: 'Guides pratiques', description: 'Des parcours structurÃ©s pour progresser Ã©tape par Ã©tape.', label: 'Explorer les guides', route: '/blog' },
+    { icon: 'âŒ—', title: 'ModÃ¨les professionnels', description: 'Retrouvez vos documents et modÃ¨les utiles au mÃªme endroit.', label: 'Voir les modÃ¨les', route: '/modeles-documents' },
+    { icon: 'â—«', title: 'Calendrier fiscal', description: 'Anticipez vos Ã©chÃ©ances et organisez vos obligations fiscales.', label: 'Voir le calendrier', route: '/calendrier-fiscal' },
+    { icon: 'â†—', title: 'Formation', description: 'Approfondissez vos compÃ©tences avec les parcours KMAA Academy.', label: 'DÃ©couvrir les formations', route: '/formations' },
   ];
 
   constructor() {
@@ -288,14 +288,14 @@ export class Blog {
             .filter((p): p is BlogPost => p !== null);
 
           // On ne remplace le contenu statique que si l'API
-          // renvoie réellement des articles publiés.
+          // renvoie rÃ©ellement des articles publiÃ©s.
           if (mapped.length > 0) {
             this.posts.set(mapped);
           }
           this.apiLoaded.set(true);
         },
         error: (err) => {
-          console.warn('Blog API indisponible — contenu statique affiché.', err);
+          console.warn('Blog API indisponible â€” contenu statique affichÃ©.', err);
           this.apiLoaded.set(true);
         },
       });
@@ -318,7 +318,7 @@ export class Blog {
       kind: kind as BlogPost['kind'],
       image: raw.image ?? 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=1000&q=85',
       imageAlt: raw.imageAlt ?? raw.title,
-      author: raw.author ?? 'Équipe KMAA',
+      author: raw.author ?? 'Ã‰quipe KMAA',
       authorRole: raw.authorRole ?? 'KMAA Academy',
       authorAvatar: raw.authorAvatar ?? 'https://i.pravatar.cc/100?img=8',
       date: raw.date ?? dateIso,
@@ -335,7 +335,7 @@ export class Blog {
   }
 
   // ============================================================
-  // DÉRIVÉS
+  // DÃ‰RIVÃ‰S
   // ============================================================
 
   readonly featuredPost = computed(() => this.posts().find((post) => post.featured));
@@ -408,7 +408,7 @@ export class Blog {
 
   kindLabel(kind: Exclude<ContentKind, 'tous'>): string {
     const labels: Record<Exclude<ContentKind, 'tous'>, string> = {
-      article: 'Article', guide: 'Guide', actualite: 'Actualité', conseil: 'Conseil',
+      article: 'Article', guide: 'Guide', actualite: 'ActualitÃ©', conseil: 'Conseil',
     };
     return labels[kind];
   }

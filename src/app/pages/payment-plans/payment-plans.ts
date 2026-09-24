@@ -1,4 +1,4 @@
-import {
+﻿import {
   ChangeDetectionStrategy,
   Component,
   inject,
@@ -29,14 +29,14 @@ export class PaymentPlans {
   private readonly checkout = inject(CheckoutService);
   private readonly coursesApi = inject(CoursesApiService);
   private readonly http = inject(HttpClient);
-  private readonly apiUrl = 'http://127.0.0.1:8000/api';
+  private readonly apiUrl = 'https://api.convergesas.com/api';
 
   readonly courseId = toSignal(
     this.route.paramMap.pipe(map((p) => p.get('id') ?? '')),
     { initialValue: '' },
   );
 
-  /** Cours chargé depuis Laravel (slug = paramètre d'URL) */
+  /** Cours chargÃ© depuis Laravel (slug = paramÃ¨tre d'URL) */
   readonly course = toSignal(
     toObservable(this.courseId).pipe(
       switchMap((slug) =>
@@ -47,8 +47,8 @@ export class PaymentPlans {
   );
 
   /**
-   * ✅ Formules : contenu statique par défaut → remplacé
-   * automatiquement par les formules créées dans Filament.
+   * âœ… Formules : contenu statique par dÃ©faut â†’ remplacÃ©
+   * automatiquement par les formules crÃ©Ã©es dans Filament.
    */
   readonly plans = signal<PricingPlan[]>(PRICING_PLANS);
 
@@ -71,7 +71,7 @@ export class PaymentPlans {
           }
         },
         error: () =>
-          console.warn('Formules API indisponible — contenu statique affiché.'),
+          console.warn('Formules API indisponible â€” contenu statique affichÃ©.'),
       });
   }
 

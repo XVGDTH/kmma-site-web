@@ -1,9 +1,9 @@
-// import { HttpClient } from '@angular/common/http';
+﻿// import { HttpClient } from '@angular/common/http';
 // import { Injectable, inject, signal } from '@angular/core';
 // import { Observable } from 'rxjs';
 
-// export const API_URL = 'http://127.0.0.1:8000/api';
-// export const LARAVEL_URL = 'http://127.0.0.1:8000';
+// export const API_URL = 'https://api.convergesas.com/api';
+// export const LARAVEL_URL = 'https://api.convergesas.com';
 
 // // ============================================================
 // // TYPES
@@ -37,7 +37,7 @@
 //   instructions: string | null;
 //   position: number;
 // }
-// // ⬇️⬇️ AJOUTE ICI le nouveau type
+// // â¬‡ï¸â¬‡ï¸ AJOUTE ICI le nouveau type
 // export interface WeekDto {
 //   id: number;
 //   number: number;
@@ -94,7 +94,7 @@
 // // HELPERS
 // // ============================================================
 
-// /** Laravel peut renvoyer "/storage/..." → URL absolue pour Angular. */
+// /** Laravel peut renvoyer "/storage/..." â†’ URL absolue pour Angular. */
 // export function toAbsoluteUrl(url: string | null | undefined): string | null {
 //   if (!url) return null;
 //   if (url.startsWith('http')) return url;
@@ -123,17 +123,17 @@
 
 //   private readonly http = inject(HttpClient);
 
-//   // État du cours actuellement géré
+//   // Ã‰tat du cours actuellement gÃ©rÃ©
 //   readonly content = signal<CourseContentDto | null>(null);
 //   readonly loading = signal(false);
 //   readonly error = signal<string | null>(null);
 
-//     // ⬇️⬇️ AJOUTE ICI le nouveau signal type pour les cours en lignes
+//     // â¬‡ï¸â¬‡ï¸ AJOUTE ICI le nouveau signal type pour les cours en lignes
 //   readonly weeks    = signal<WeekDto[]>([]);
 
 
 //   // ----------------------------------------------------------
-//   // COURS (création par le formateur)
+//   // COURS (crÃ©ation par le formateur)
 //   // ----------------------------------------------------------
 
 //   createCourse(payload: CoursePayload): Observable<{ data: CreatedCourseDto }> {
@@ -173,7 +173,7 @@
 //       .subscribe({
 //         next: (res) => {
 //           this.content.set(res.data);
-//           this.weeks.set(res.data.weeks ?? []);   // ⬅️ AJOUT
+//           this.weeks.set(res.data.weeks ?? []);   // â¬…ï¸ AJOUT
 //           this.loading.set(false);
 //         },
 //         error: (err) => {
@@ -269,7 +269,7 @@
 //   }
 
 //   // ----------------------------------------------------------
-//   // SÉQUENCES
+//   // SÃ‰QUENCES
 //   // ----------------------------------------------------------
 
 //   createSequence(chapterId: number, payload: SequencePayload): Observable<{ data: SequenceDto }> {
@@ -297,7 +297,7 @@
 //   }
 
 //   // ----------------------------------------------------------
-//   // MISE À JOUR LOCALE DE L'ÉTAT (après mutation réussie)
+//   // MISE Ã€ JOUR LOCALE DE L'Ã‰TAT (aprÃ¨s mutation rÃ©ussie)
 //   // ----------------------------------------------------------
 
 //   // appendChapter(chapter: ChapterDto): void {
@@ -309,13 +309,13 @@
 //   // }
 
 //     appendChapter(chapter: ChapterDto, weekId?: number | null): void {
-//     // Cas 1 : le chapitre appartient à une semaine → on met à jour weeks
+//     // Cas 1 : le chapitre appartient Ã  une semaine â†’ on met Ã  jour weeks
 //     if (weekId != null) {
 //       this.appendChapterToWeek(weekId, chapter);
 //       return;
 //     }
 
-//     // Cas 2 : chapitre "orphelin" → ancien comportement
+//     // Cas 2 : chapitre "orphelin" â†’ ancien comportement
 //     this.content.update((c) =>
 //       c
 //         ? { ...c, chapters: [...c.chapters, { ...chapter, sequences: chapter.sequences ?? [] }] }
@@ -339,7 +339,7 @@
 //   // }
 
 //   replaceChapter(chapter: ChapterDto): void {
-//     // Met à jour dans content.chapters
+//     // Met Ã  jour dans content.chapters
 //     this.content.update((c) =>
 //       c
 //         ? {
@@ -353,7 +353,7 @@
 //         : c
 //     );
 
-//     // Met à jour dans weeks[].chapters
+//     // Met Ã  jour dans weeks[].chapters
 //     this.weeks.update((list) =>
 //       list.map((w) => ({
 //         ...w,
@@ -477,8 +477,8 @@
 //     if (payload.instructions) fd.append('instructions', payload.instructions);
 
 //     if (payload.quizQuestions?.length) {
-//       // Un FormData ne transporte pas d'objets → JSON
-//       // (décodé par le patch Laravel 1.3)
+//       // Un FormData ne transporte pas d'objets â†’ JSON
+//       // (dÃ©codÃ© par le patch Laravel 1.3)
 //       fd.append('quiz_questions', JSON.stringify(payload.quizQuestions));
 //     }
 
@@ -498,8 +498,8 @@ import { Observable } from 'rxjs';
 // CONFIGURATION
 // ============================================================
 
-export const API_URL     = 'http://127.0.0.1:8000/api';
-export const LARAVEL_URL = 'http://127.0.0.1:8000';
+export const API_URL     = 'https://api.convergesas.com/api';
+export const LARAVEL_URL = 'https://api.convergesas.com';
 
 // ============================================================
 // TYPES
@@ -522,15 +522,15 @@ export type SequenceType =
   | 'quiz';
 
 /**
- * ⚠️ CONVENTION DE NOMMAGE
- * ─────────────────────────────────────────────
- * Base de données (Laravel)   →   Interface (Angular)
- * ─────────────────────────────────────────────
- * Module                      →   Module
- * Chapter                     →   Chapitre
- * Sequence                    →   Séquence
- * ─────────────────────────────────────────────
- * Structure : Cours → Module → Chapitre (Semaine N) → Séquence
+ * âš ï¸ CONVENTION DE NOMMAGE
+ * â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+ * Base de donnÃ©es (Laravel)   â†’   Interface (Angular)
+ * â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+ * Module                      â†’   Module
+ * Chapter                     â†’   Chapitre
+ * Sequence                    â†’   SÃ©quence
+ * â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+ * Structure : Cours â†’ Module â†’ Chapitre (Semaine N) â†’ SÃ©quence
  */
 
 export interface SequenceDto {
@@ -779,7 +779,7 @@ export class FormateurContentService {
   }
 
   // ----------------------------------------------------------
-  // SÉQUENCES
+  // SÃ‰QUENCES
   // ----------------------------------------------------------
 
   createSequence(chapterId: number, payload: SequencePayload): Observable<{ data: SequenceDto }> {
@@ -821,7 +821,7 @@ export class FormateurContentService {
   }
 
   // ----------------------------------------------------------
-  // MUTATIONS LOCALES — MODULES
+  // MUTATIONS LOCALES â€” MODULES
   // ----------------------------------------------------------
 
   appendModule(module: ModuleDto): void {
@@ -850,7 +850,7 @@ export class FormateurContentService {
   }
 
   // ----------------------------------------------------------
-  // MUTATIONS LOCALES — CHAPITRES
+  // MUTATIONS LOCALES â€” CHAPITRES
   // ----------------------------------------------------------
 
   appendChapterToModule(moduleId: number, chapter: ChapterDto): void {
@@ -901,7 +901,7 @@ export class FormateurContentService {
   }
 
   // ----------------------------------------------------------
-  // MUTATIONS LOCALES — SÉQUENCES
+  // MUTATIONS LOCALES â€” SÃ‰QUENCES
   // ----------------------------------------------------------
 
   upsertSequence(sequence: SequenceDto): void {
@@ -945,7 +945,7 @@ export class FormateurContentService {
   }
 
   // ----------------------------------------------------------
-  // MUTATIONS LOCALES — QUIZ DE MODULE / EXAMEN FINAL
+  // MUTATIONS LOCALES â€” QUIZ DE MODULE / EXAMEN FINAL
   // ----------------------------------------------------------
 
   setModuleQuiz(moduleId: number, quiz: SequenceDto): void {

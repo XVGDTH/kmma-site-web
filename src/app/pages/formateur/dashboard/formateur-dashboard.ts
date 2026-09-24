@@ -1,4 +1,4 @@
-import {
+﻿import {
   ChangeDetectionStrategy,
   Component,
   computed,
@@ -30,11 +30,11 @@ import { AuthService } from '../../../shared/auth.service';
 // API
 // ============================================================
 
-const API_URL = 'http://127.0.0.1:8000/api';
+const API_URL = 'https://api.convergesas.com/api';
 
 // reception des devoirs  soumis par les apprenants
 
-const LARAVEL_URL = 'http://127.0.0.1:8000';
+const LARAVEL_URL = 'https://api.convergesas.com';
 
 interface ApiSubmission {
   id: string;
@@ -51,7 +51,7 @@ interface ApiSubmission {
 
 
 // ============================================================
-// STRUCTURE D'UN COURS RENVOYÉ PAR LARAVEL
+// STRUCTURE D'UN COURS RENVOYÃ‰ PAR LARAVEL
 // ============================================================
 
 type ApiCourse = {
@@ -63,7 +63,7 @@ type ApiCourse = {
   id: string;
 
   /**
-   * Identifiant SQL réel du cours.
+   * Identifiant SQL rÃ©el du cours.
    */
   courseId?: number;
 
@@ -160,7 +160,7 @@ export class FormateurDashboard {
   // ==========================================================
 
   // ==========================================================
-  // INFORMATIONS DU FORMATEUR CONNECTÉ (depuis l'API)
+  // INFORMATIONS DU FORMATEUR CONNECTÃ‰ (depuis l'API)
   // ==========================================================
 
   readonly currentUser =
@@ -174,7 +174,7 @@ export class FormateurDashboard {
   readonly instructorEmail =
     computed(() => this.currentUser()?.email ?? '');
 
-  /** Initiales pour l'avatar (ex : "Martial YAOGO" → "MY"). */
+  /** Initiales pour l'avatar (ex : "Martial YAOGO" â†’ "MY"). */
   readonly instructorInitials =
     computed(() =>
       this.instructorName()
@@ -195,13 +195,13 @@ export class FormateurDashboard {
     signal<DashboardCourseItem[]>([]);
 
       // ==========================================================
-  // CONTENUS PUBLIÉS (chapitres/séquences depuis l'API)
+  // CONTENUS PUBLIÃ‰S (chapitres/sÃ©quences depuis l'API)
   // ==========================================================
 
-  /** Contenu de chaque cours, chargé depuis l'API. */
+  /** Contenu de chaque cours, chargÃ© depuis l'API. */
   readonly courseContents = signal<Record<number, CourseContentDto>>({});
 
-  /** Cours ayant du contenu, pour la section « Contenus publiés ». */
+  /** Cours ayant du contenu, pour la section Â« Contenus publiÃ©s Â». */
   readonly publishedContents = computed(() =>
     this.myCourses().flatMap((item) => {
       const id = Number(item.course.courseId ?? item.course.id);
@@ -238,7 +238,7 @@ export class FormateurDashboard {
         .subscribe({
           next: (res) =>
             this.courseContents.update((map) => ({ ...map, [id]: res.data })),
-          error: () => { /* cours sans contenu : ignoré */ },
+          error: () => { /* cours sans contenu : ignorÃ© */ },
         });
     });
   }
@@ -285,29 +285,29 @@ export class FormateurDashboard {
 
   /**
    * ID de la discussion pour laquelle
-   * le formulaire de réponse est ouvert.
+   * le formulaire de rÃ©ponse est ouvert.
    */
   readonly replyingThreadId =
     signal<number | null>(null);
 
 
   /**
-   * ID de la discussion dont la réponse
-   * est actuellement envoyée.
+   * ID de la discussion dont la rÃ©ponse
+   * est actuellement envoyÃ©e.
    */
   readonly replyLoadingId =
     signal<number | null>(null);
 
 
   /**
-   * Message d'erreur concernant une réponse.
+   * Message d'erreur concernant une rÃ©ponse.
    */
   readonly replyError =
     signal<string | null>(null);
 
 
   /**
-   * ID de la discussion concernée par l'erreur.
+   * ID de la discussion concernÃ©e par l'erreur.
    */
   readonly replyErrorForThread =
     signal<number | null>(null);
@@ -315,7 +315,7 @@ export class FormateurDashboard {
 
   /**
    * ID de la discussion actuellement
-   * en cours de résolution.
+   * en cours de rÃ©solution.
    */
   readonly resolvingThreadId =
     signal<number | null>(null);
@@ -429,12 +429,12 @@ export class FormateurDashboard {
 
           this.myCourses.set(items);
 
-          // ✅ LA SEULE LIGNE À AJOUTER ICI
+          // âœ… LA SEULE LIGNE Ã€ AJOUTER ICI
           this.loadCourseContents(items);
 
           this.coursesLoading.set(false);
 
-          console.log('📚 Cours du formateur récupérés :', items);
+          console.log('ðŸ“š Cours du formateur rÃ©cupÃ©rÃ©s :', items);
         },
 
         //
@@ -446,7 +446,7 @@ export class FormateurDashboard {
         error: (err) => {
 
           console.error(
-            '❌ Erreur chargement cours formateur :',
+            'âŒ Erreur chargement cours formateur :',
             err
           );
 
@@ -487,13 +487,13 @@ export class FormateurDashboard {
         next: (res) => {
 
           console.log(
-            '🔥 FORUM FORMATEUR API :',
+            'ðŸ”¥ FORUM FORMATEUR API :',
             res
           );
 
 
           console.log(
-            '🔥 NOMBRE DE DISCUSSIONS :',
+            'ðŸ”¥ NOMBRE DE DISCUSSIONS :',
             res.data?.length ?? 0
           );
 
@@ -511,7 +511,7 @@ export class FormateurDashboard {
         error: (err) => {
 
           console.error(
-            '❌ ERREUR FORUM FORMATEUR :',
+            'âŒ ERREUR FORUM FORMATEUR :',
             err
           );
 
@@ -559,7 +559,7 @@ export class FormateurDashboard {
 
 
   // ==========================================================
-  // OUVRIR LE FORMULAIRE DE RÉPONSE
+  // OUVRIR LE FORMULAIRE DE RÃ‰PONSE
   // ==========================================================
 
   openReply(
@@ -579,7 +579,7 @@ export class FormateurDashboard {
 
 
     /**
-     * Si le formulaire est déjà ouvert,
+     * Si le formulaire est dÃ©jÃ  ouvert,
      * on le ferme.
      */
     if (
@@ -599,7 +599,7 @@ export class FormateurDashboard {
 
 
   // ==========================================================
-  // ANNULER UNE RÉPONSE
+  // ANNULER UNE RÃ‰PONSE
   // ==========================================================
 
   cancelReply(): void {
@@ -615,7 +615,7 @@ export class FormateurDashboard {
 
 
   // ==========================================================
-  // ENVOYER UNE RÉPONSE
+  // ENVOYER UNE RÃ‰PONSE
   // ==========================================================
 
   submitReply(
@@ -628,12 +628,12 @@ export class FormateurDashboard {
 
 
     /**
-     * Protection contre une réponse vide.
+     * Protection contre une rÃ©ponse vide.
      */
     if (!cleanContent) {
 
       this.replyError.set(
-        'Veuillez écrire une réponse avant de publier.'
+        'Veuillez Ã©crire une rÃ©ponse avant de publier.'
       );
 
       this.replyErrorForThread.set(threadId);
@@ -645,7 +645,7 @@ export class FormateurDashboard {
     if (cleanContent.length < 2) {
 
       this.replyError.set(
-        'Votre réponse est trop courte.'
+        'Votre rÃ©ponse est trop courte.'
       );
 
       this.replyErrorForThread.set(threadId);
@@ -662,7 +662,7 @@ export class FormateurDashboard {
 
 
     console.log(
-      '📤 Envoi de la réponse...',
+      'ðŸ“¤ Envoi de la rÃ©ponse...',
       {
         threadId,
         content: cleanContent,
@@ -682,7 +682,7 @@ export class FormateurDashboard {
         next: (res) => {
 
           console.log(
-            '✅ RÉPONSE PUBLIÉE :',
+            'âœ… RÃ‰PONSE PUBLIÃ‰E :',
             res
           );
 
@@ -692,8 +692,8 @@ export class FormateurDashboard {
 
 
           /**
-           * Ajout immédiat de la réponse
-           * dans la discussion actuellement affichée.
+           * Ajout immÃ©diat de la rÃ©ponse
+           * dans la discussion actuellement affichÃ©e.
            */
           this.forumThreads.update(
             (threads) =>
@@ -745,14 +745,14 @@ export class FormateurDashboard {
         error: (err) => {
 
           console.error(
-            '❌ ERREUR PUBLICATION RÉPONSE :',
+            'âŒ ERREUR PUBLICATION RÃ‰PONSE :',
             err
           );
 
 
           this.replyError.set(
             err?.error?.message ??
-            'Impossible de publier votre réponse.'
+            'Impossible de publier votre rÃ©ponse.'
           );
 
 
@@ -772,7 +772,7 @@ export class FormateurDashboard {
 
 
   // ==========================================================
-  // MARQUER UNE DISCUSSION COMME RÉSOLUE
+  // MARQUER UNE DISCUSSION COMME RÃ‰SOLUE
   // ==========================================================
 
   resolveDiscussion(
@@ -783,7 +783,7 @@ export class FormateurDashboard {
 
 
     console.log(
-      '✅ Résolution de la discussion :',
+      'âœ… RÃ©solution de la discussion :',
       threadId
     );
 
@@ -798,7 +798,7 @@ export class FormateurDashboard {
         next: (res) => {
 
           console.log(
-            '✅ DISCUSSION MISE À JOUR :',
+            'âœ… DISCUSSION MISE Ã€ JOUR :',
             res
           );
 
@@ -823,7 +823,7 @@ export class FormateurDashboard {
 
 
           /**
-           * Fermeture éventuelle du formulaire.
+           * Fermeture Ã©ventuelle du formulaire.
            */
           this.replyingThreadId.set(null);
 
@@ -836,7 +836,7 @@ export class FormateurDashboard {
         error: (err) => {
 
           console.error(
-            '❌ ERREUR RÉSOLUTION DISCUSSION :',
+            'âŒ ERREUR RÃ‰SOLUTION DISCUSSION :',
             err
           );
 
@@ -863,7 +863,7 @@ export class FormateurDashboard {
 
 
   // ==========================================================
-  // SEMAINES PUBLIÉES
+  // SEMAINES PUBLIÃ‰ES
   // ==========================================================
 
   readonly allPublishedWeeks =
@@ -1003,7 +1003,7 @@ export class FormateurDashboard {
   // }
 
     // ==========================================================
-  // SOUMISSIONS RÉELLES (API) — devoirs des apprenants
+  // SOUMISSIONS RÃ‰ELLES (API) â€” devoirs des apprenants
   // ==========================================================
 
   readonly realSubmissions =
@@ -1071,7 +1071,7 @@ export class FormateurDashboard {
       grade < 0 ||
       grade > 20
     ) {
-      alert('Note invalide (0 à 20).');
+      alert('Note invalide (0 Ã  20).');
       return;
     }
 
@@ -1236,7 +1236,7 @@ export class FormateurDashboard {
 
 
   // ==========================================================
-  // DURÉE DU PROGRAMME
+  // DURÃ‰E DU PROGRAMME
   // ==========================================================
 
   programLabel(

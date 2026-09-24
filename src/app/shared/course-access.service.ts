@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+﻿import { HttpClient } from '@angular/common/http';
 import { Injectable, inject, signal } from '@angular/core';
 
 export interface CourseAccess {
@@ -31,7 +31,7 @@ export interface MyPlanInfo {
 }
 
 // ============================================================
-// 🏆 ÉVALUATIONS (devoirs notés + quiz de l'apprenant)
+// ðŸ† Ã‰VALUATIONS (devoirs notÃ©s + quiz de l'apprenant)
 // ============================================================
 
 export interface EvaluationItem {
@@ -50,10 +50,10 @@ export interface EvaluationItem {
 export class CourseAccessService {
 
   private readonly http = inject(HttpClient);
-  private readonly apiUrl = 'http://127.0.0.1:8000/api';
+  private readonly apiUrl = 'https://api.convergesas.com/api';
 
   // ============================================================
-  // DROITS D'ACCÈS
+  // DROITS D'ACCÃˆS
   // ============================================================
 
   readonly access = signal<CourseAccess>({
@@ -75,21 +75,21 @@ export class CourseAccessService {
   });
 
   // ============================================================
-  // 🏆 MES ÉVALUATIONS (devoirs notés + quiz)
+  // ðŸ† MES Ã‰VALUATIONS (devoirs notÃ©s + quiz)
   // ============================================================
 
   readonly evaluations = signal<EvaluationItem[]>([]);
   readonly averageGrade = signal<number | null>(null);
 
   // ============================================================
-  // CHARGEMENT GLOBAL (appelé par le player ET l'espace étudiant)
+  // CHARGEMENT GLOBAL (appelÃ© par le player ET l'espace Ã©tudiant)
   // ============================================================
 
   loadAccess(courseSlug: string): void {
     if (!courseSlug) return;
 
     // ----------------------------------------------------------
-    // 1. Droits d'accès
+    // 1. Droits d'accÃ¨s
     // ----------------------------------------------------------
 
     this.http
@@ -115,7 +115,7 @@ export class CourseAccessService {
       });
 
     // ----------------------------------------------------------
-    // 3. ✅ MES ÉVALUATIONS — C'EST ICI QU'IL VAIT !
+    // 3. âœ… MES Ã‰VALUATIONS â€” C'EST ICI QU'IL VAIT !
     //    (notes de devoirs + quiz, moyenne)
     // ----------------------------------------------------------
 
@@ -123,7 +123,7 @@ export class CourseAccessService {
   }
 
   // ============================================================
-  // 🏆 CHARGEMENT DES ÉVALUATIONS
+  // ðŸ† CHARGEMENT DES Ã‰VALUATIONS
   // ============================================================
 
   loadEvaluations(courseSlug: string): void {
@@ -143,7 +143,7 @@ export class CourseAccessService {
   }
 
   // ============================================================
-  // TEST RAPIDE D'UNE FONCTIONNALITÉ
+  // TEST RAPIDE D'UNE FONCTIONNALITÃ‰
   // ============================================================
 
   can(feature: keyof CourseAccess['can']): boolean {

@@ -23,7 +23,7 @@ interface AcademyMetric {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MyAcademie implements AfterViewInit, OnDestroy {
-  readonly eyebrow = 'MY ACADÉMIE · KMAA';
+  readonly eyebrow = 'MY ACADÉMIE ·';
 
   readonly title = 'Apprendre aujourd’hui pour décider mieux demain.';
 

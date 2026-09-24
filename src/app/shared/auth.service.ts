@@ -1,4 +1,4 @@
-import { Injectable, signal } from '@angular/core';
+﻿import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
 
@@ -15,7 +15,7 @@ interface AuthResponse {
   token: string;
 }
 
-const API_URL = 'http://127.0.0.1:8000/api'; // TODO : remplacer par l'URL de production le moment venu
+const API_URL = 'https://api.convergesas.com/api'; // TODO : remplacer par l'URL de production le moment venu
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -55,7 +55,7 @@ export class AuthService {
     if (token) {
       this.http.post(`${API_URL}/auth/logout`, {}).subscribe({
         complete: () => this.clearSession(),
-        error: () => this.clearSession(), // on nettoie côté client même si l'appel échoue
+        error: () => this.clearSession(), // on nettoie cÃ´tÃ© client mÃªme si l'appel Ã©choue
       });
     } else {
       this.clearSession();
@@ -63,7 +63,7 @@ export class AuthService {
   }
 
   // ============================================================
-  // RAFRAÎCHIR LA SESSION (appelé au démarrage de l'app)
+  // RAFRAÃŽCHIR LA SESSION (appelÃ© au dÃ©marrage de l'app)
   // ============================================================
 
   refreshSession(): void {
@@ -76,7 +76,7 @@ export class AuthService {
         localStorage.setItem('kmaa_user', JSON.stringify(res.user));
         this.currentUser.set(res.user);
       },
-      error: () => this.clearSession(), // token invalide ou expiré
+      error: () => this.clearSession(), // token invalide ou expirÃ©
     });
   }
 
@@ -93,7 +93,7 @@ export class AuthService {
   }
 
   // ============================================================
-  // PRIVÉ
+  // PRIVÃ‰
   // ============================================================
 
   private persistSession(res: AuthResponse): void {

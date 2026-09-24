@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+﻿import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs/operators';
@@ -32,7 +32,7 @@ export class EmploiDetail {
 
   private readonly route = inject(ActivatedRoute);
   private readonly http = inject(HttpClient);
-  private readonly apiUrl = 'http://127.0.0.1:8000/api';
+  private readonly apiUrl = 'https://api.convergesas.com/api';
 
   private readonly apiJob = signal<JobDetail | null>(null);
 
@@ -70,72 +70,72 @@ export class EmploiDetail {
               imageAlt: d.imageAlt ?? d.title,
             });
           },
-          error: () => {},   // → fallback sur le tableau statique
+          error: () => {},   // â†’ fallback sur le tableau statique
         });
     });
   }
 
   // ============================================================
-  // FILET DE SÉCURITÉ STATIQUE
+  // FILET DE SÃ‰CURITÃ‰ STATIQUE
   // ============================================================
 
   readonly jobs: JobDetail[] = [
     {
       id: 'j1',
-      title: 'Consultant(e) en contrôle de gestion',
+      title: 'Consultant(e) en contrÃ´le de gestion',
       typeLabel: 'CDI',
       location: 'Ouagadougou',
       department: 'Conseil',
-      excerpt: 'Accompagnez nos clients PME et institutions dans le pilotage de leur performance financière.',
+      excerpt: 'Accompagnez nos clients PME et institutions dans le pilotage de leur performance financiÃ¨re.',
       description: [
-        "Vous intervenez auprès de PME et d'organisations pour structurer le contrôle de gestion, les budgets et les indicateurs de pilotage.",
-        'Vous travaillez en binôme avec les associés conseil et les équipes formation selon les missions.',
+        "Vous intervenez auprÃ¨s de PME et d'organisations pour structurer le contrÃ´le de gestion, les budgets et les indicateurs de pilotage.",
+        'Vous travaillez en binÃ´me avec les associÃ©s conseil et les Ã©quipes formation selon les missions.',
       ],
       missions: [
         'Diagnostiquer les dispositifs de pilotage existants',
         'Construire budgets, forecasts et tableaux de bord',
-        'Former les équipes clientes aux outils mis en place',
-        'Rédiger des livrables clairs et actionnables',
+        'Former les Ã©quipes clientes aux outils mis en place',
+        'RÃ©diger des livrables clairs et actionnables',
       ],
       profile: [
-        'Formation supérieure en finance / gestion',
-        "Expérience en contrôle de gestion ou audit (2 ans min.)",
-        "Maîtrise d'Excel et des outils de reporting",
-        'Aisance relationnelle et pédagogie',
+        'Formation supÃ©rieure en finance / gestion',
+        "ExpÃ©rience en contrÃ´le de gestion ou audit (2 ans min.)",
+        "MaÃ®trise d'Excel et des outils de reporting",
+        'Aisance relationnelle et pÃ©dagogie',
       ],
-      tags: ['Contrôle de gestion', 'Tableaux de bord', 'Client'],
+      tags: ['ContrÃ´le de gestion', 'Tableaux de bord', 'Client'],
       image: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=1200&q=80',
-      imageAlt: 'Consultant contrôle de gestion',
+      imageAlt: 'Consultant contrÃ´le de gestion',
     },
     {
       id: 'j2',
-      title: 'Formateur(trice) comptabilité OHADA',
+      title: 'Formateur(trice) comptabilitÃ© OHADA',
       typeLabel: 'CDI',
       location: 'Ouagadougou / Hybride',
       department: 'Formation',
       excerpt: 'Animez des parcours certifiants et transmettez une expertise terrain aux apprenants KMAA.',
       description: [
-        'Vous concevez et animez des modules de comptabilité générale et analytique adaptés au contexte OHADA.',
+        'Vous concevez et animez des modules de comptabilitÃ© gÃ©nÃ©rale et analytique adaptÃ©s au contexte OHADA.',
       ],
       missions: [
-        'Animer des sessions présentielles et distancielles',
-        'Mettre à jour les supports pédagogiques',
-        "Évaluer les apprenants et les accompagner",
+        'Animer des sessions prÃ©sentielles et distancielles',
+        'Mettre Ã  jour les supports pÃ©dagogiques',
+        "Ã‰valuer les apprenants et les accompagner",
       ],
       profile: [
         'Expertise comptable OHADA solide',
-        "Expérience de formation ou d'animation",
-        'Capacité à vulgariser des notions techniques',
+        "ExpÃ©rience de formation ou d'animation",
+        'CapacitÃ© Ã  vulgariser des notions techniques',
       ],
-      tags: ['Pédagogie', 'OHADA', 'Formation'],
+      tags: ['PÃ©dagogie', 'OHADA', 'Formation'],
       image: 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=1200&q=80',
-      imageAlt: 'Formateur comptabilité',
+      imageAlt: 'Formateur comptabilitÃ©',
     },
-    // j3 à j6 : le fallback liste ne les détaillera pas via l'API-down,
-    // mais dès que l'API tourne, TOUT vient de la DB — c'est le chemin nominal.
+    // j3 Ã  j6 : le fallback liste ne les dÃ©taillera pas via l'API-down,
+    // mais dÃ¨s que l'API tourne, TOUT vient de la DB â€” c'est le chemin nominal.
   ];
 
-  // ✅ UN SEUL `job` : API prioritaire, statique en secours
+  // âœ… UN SEUL `job` : API prioritaire, statique en secours
   readonly job = computed(() =>
     this.apiJob() ??
     this.jobs.find((j) => j.id === this.id()) ??
@@ -163,7 +163,7 @@ export class EmploiDetail {
   }
 
     scrollToApply(): void {
-    // ✅ Ouvre le formulaire PUIS défile vers la carte de candidature
+    // âœ… Ouvre le formulaire PUIS dÃ©file vers la carte de candidature
     this.showApplyForm.set(true);
     this.applyError.set(null);
     requestAnimationFrame(() => {
@@ -209,7 +209,7 @@ export class EmploiDetail {
       .subscribe({
         next: (res) => {
           this.applying.set(false);
-          this.applySuccess.set(res.message ?? 'Candidature envoyée !');
+          this.applySuccess.set(res.message ?? 'Candidature envoyÃ©e !');
         },
         error: (err) => {
           this.applying.set(false);

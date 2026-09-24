@@ -1,4 +1,4 @@
-import {
+﻿import {
   ChangeDetectionStrategy,
   Component,
   inject,
@@ -60,7 +60,7 @@ export class Apprendre {
   private readonly router = inject(Router);
   private readonly liveService = inject(LiveSessionService);
 
-  private readonly apiUrl = 'http://127.0.0.1:8000/api';
+  private readonly apiUrl = 'https://api.convergesas.com/api';
 
   readonly userName = signal(
     this.auth.currentUser()?.name ?? 'Apprenant'
@@ -94,7 +94,7 @@ export class Apprendre {
     return amount.toLocaleString('fr-FR') + ' FCFA';
   }
 
-  /** ▶ Reprendre : ouvre le player directement sur la séquence. */
+  /** â–¶ Reprendre : ouvre le player directement sur la sÃ©quence. */
   openResume(): void {
     const r = this.resume();
     if (!r) return;
@@ -103,7 +103,7 @@ export class Apprendre {
     });
   }
 
-  /** 🔴 Rejoindre le live (le backend vérifie le niveau d'accès). */
+  /** ðŸ”´ Rejoindre le live (le backend vÃ©rifie le niveau d'accÃ¨s). */
   // joinLive(live: LiveInfo): void {
   //   this.liveService.getJoinRoom(
   //     live.courseSlug,
@@ -119,7 +119,7 @@ export class Apprendre {
       window.open(joinUrl, '_blank', 'noopener,noreferrer');
 
       if (password) {
-        alert(`🔐 Mot de passe de la réunion : ${password}`);
+        alert(`ðŸ” Mot de passe de la rÃ©union : ${password}`);
       }
     },
     (msg) => alert(msg),

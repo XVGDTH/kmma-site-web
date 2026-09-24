@@ -1,4 +1,4 @@
-import {
+﻿import {
   ChangeDetectionStrategy,
   Component,
   computed,
@@ -52,7 +52,7 @@ export class StudentSpace {
   readonly notifService = inject(NotificationService);
 
   // ============================================================
-  // INFOS DE L'APPRENANT CONNECTÉ
+  // INFOS DE L'APPRENANT CONNECTÃ‰
   // ============================================================
 
   readonly studentName = computed(
@@ -64,7 +64,7 @@ export class StudentSpace {
   );
 
   // ============================================================
-  // ÉTAT
+  // Ã‰TAT
   // ============================================================
 
   readonly activeTab = signal<Tab>('cours');
@@ -73,7 +73,7 @@ export class StudentSpace {
   readonly payments = signal<PaymentInfo[]>([]);
 
   // ============================================================
-  // 🏠 NAVIGATION VERS LE DASHBOARD
+  // ðŸ  NAVIGATION VERS LE DASHBOARD
   // ============================================================
 
   goToDashboard(): void {
@@ -81,7 +81,7 @@ export class StudentSpace {
   }
 
   // ============================================================
-  // 💳 MA FORMULE + 🏆 ÉVALUATIONS (par cours)
+  // ðŸ’³ MA FORMULE + ðŸ† Ã‰VALUATIONS (par cours)
   // ============================================================
 
   readonly selectedCourseSlug = signal('');
@@ -89,7 +89,7 @@ export class StudentSpace {
 
   selectCourseForPlan(courseSlug: string): void {
     this.selectedCourseSlug.set(courseSlug);
-    this.accessService.loadAccess(courseSlug);   // charge access + myPlan + évaluations
+    this.accessService.loadAccess(courseSlug);   // charge access + myPlan + Ã©valuations
     this.myPlanLoaded.set(true);
   }
 
@@ -109,7 +109,7 @@ export class StudentSpace {
 
   constructor() {
     this.loadEnrollments();
-        // 🔔 Notifications : chargement initial + polling 60 s (badge à jour)
+        // ðŸ”” Notifications : chargement initial + polling 60 s (badge Ã  jour)
     this.notifService.load();
     setInterval(() => this.notifService.load(), 60000);
   }
@@ -121,7 +121,7 @@ export class StudentSpace {
   private loadEnrollments(): void {
     this.http
       .get<{ data: EnrollmentItem[] }>(
-        'http://127.0.0.1:8000/api/me/enrollments'
+        'https://api.convergesas.com/api/me/enrollments'
       )
       .subscribe({
         next: (res) => {
@@ -130,7 +130,7 @@ export class StudentSpace {
         error: (err) => {
           console.error('Erreur chargement des inscriptions :', err);
 
-          // Session expirée ou non connecté → retour au login
+          // Session expirÃ©e ou non connectÃ© â†’ retour au login
           if (err?.status === 401) {
             this.auth.logout();
             this.router.navigate(['/compte/connexion'], {
@@ -145,7 +145,7 @@ export class StudentSpace {
   }
 
   // ============================================================
-  // DÉRIVÉS
+  // DÃ‰RIVÃ‰S
   // ============================================================
 
   readonly inProgress = computed(() =>
@@ -175,7 +175,7 @@ export class StudentSpace {
   generateCertificate(courseId: string): void {
     this.http
       .post<{ data: { downloadUrl: string } }>(
-        `http://127.0.0.1:8000/api/courses/${courseId}/certificate`,
+        `https://api.convergesas.com/api/courses/${courseId}/certificate`,
         {}
       )
       .subscribe({
@@ -183,7 +183,7 @@ export class StudentSpace {
           window.open(res.data.downloadUrl, '_blank');
         },
         error: (err) => {
-          alert(err.error?.message ?? 'Impossible de générer le certificat.');
+          alert(err.error?.message ?? 'Impossible de gÃ©nÃ©rer le certificat.');
         },
       });
   }

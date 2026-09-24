@@ -1,4 +1,4 @@
-import {
+﻿import {
   ChangeDetectionStrategy,
   Component,
   inject,
@@ -47,7 +47,7 @@ export class PaymentMethod {
 
   readonly providers = PAYMENT_PROVIDERS;
 
-  /** Code bon saisi par l’utilisateur */
+  /** Code bon saisi par lâ€™utilisateur */
   voucherCode = '';
 
   formatPrice(amount: number): string {
@@ -77,15 +77,15 @@ export class PaymentMethod {
     this.voucherMessage.set(null);
 
     this.http
-      .post('http://127.0.0.1:8000/api/vouchers/redeem', {
+      .post('https://api.convergesas.com/api/vouchers/redeem', {
         code,
         course_slug: id,
       })
       .subscribe({
         next: () => {
-          // Bon validé → on inscrit l'utilisateur au cours
+          // Bon validÃ© â†’ on inscrit l'utilisateur au cours
           this.http
-            .post('http://127.0.0.1:8000/api/enrollments', {
+            .post('https://api.convergesas.com/api/enrollments', {
               course_slug: id,
             })
             .subscribe({
@@ -97,7 +97,7 @@ export class PaymentMethod {
                 console.error('Erreur inscription :', err);
                 this.voucherMessage.set(
                   err.error?.message ??
-                    'Bon validé mais inscription échouée. Contactez le support.',
+                    'Bon validÃ© mais inscription Ã©chouÃ©e. Contactez le support.',
                 );
               },
             });

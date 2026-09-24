@@ -26,12 +26,12 @@ interface MethodStep {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Method implements AfterViewInit, OnDestroy {
-  readonly eyebrow = 'NOTRE MÉTHODE KMAA';
+  readonly eyebrow = 'NOTRE MÉTHODE';
 
   readonly title = 'Votre projet, notre méthode.';
 
   readonly description =
-    'Chaque accompagnement KMAA commence par une écoute attentive et se poursuit par une démarche structurée, pragmatique et orientée vers des résultats durables.';
+    'Chaque accompagnement commence par une écoute attentive et se poursuit par une démarche structurée, pragmatique et orientée vers des résultats durables.';
 
   readonly steps: readonly MethodStep[] = [
     {

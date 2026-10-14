@@ -1,0 +1,618 @@
+/* ============================================================
+   PAGE DEVIS ENTREPRISE — Couleurs KMAA
+   ============================================================ */
+
+$green-dark: #0e3b32;
+$green-darker: #082621;
+$copper: #b87333;
+$copper-dark: #96551f;
+$copper-light: #e6a869;
+$ink: #1f2a28;
+$grey: #5c6b66;
+$bg-light: #f9f7f4;
+
+@mixin container {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+.devis-page {
+  background: $bg-light;
+  min-height: 100vh;
+  padding: 3rem 0 5rem;
+  &__container { @include container; }
+}
+
+.devis-breadcrumb {
+  display: flex;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: $grey;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+
+  a {
+    color: $grey;
+    text-decoration: none;
+    &:hover { color: $copper; text-decoration: underline; }
+  }
+  .current { color: $ink; font-weight: 600; }
+}
+
+.devis-header {
+  margin-bottom: 3rem;
+  h1 {
+    font-size: clamp(1.75rem, 3vw, 2.5rem);
+    color: $green-dark;
+    font-weight: 800;
+    margin: 0 0 0.5rem;
+  }
+  p { color: $grey; font-size: 1.05rem; margin: 0; }
+}
+
+.devis-layout {
+  display: grid;
+  grid-template-columns: 1fr 420px;
+  gap: 3rem;
+  align-items: start;
+  @media (max-width: 960px) { grid-template-columns: 1fr; }
+}
+
+.devis-form {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.devis-step {
+  background: #fff;
+  border-radius: 16px;
+  padding: 2rem;
+  border: 1px solid rgba(14, 59, 50, 0.06);
+  box-shadow: 0 4px 14px rgba(14, 59, 50, 0.04);
+
+  &__header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+
+    h2 {
+      font-size: 1.2rem;
+      color: $green-dark;
+      font-weight: 700;
+      margin: 0;
+
+      .optional {
+        font-size: 0.85rem;
+        color: $grey;
+        font-weight: 500;
+        font-style: italic;
+      }
+    }
+  }
+
+  &__number {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, $copper 0%, $copper-dark 100%);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+    box-shadow: 0 4px 10px rgba(184, 115, 51, 0.35);
+  }
+}
+
+/* ---------- APERÇU COURS ---------- */
+.course-preview {
+  display: flex;
+  gap: 1.25rem;
+  padding: 1.25rem;
+  background: $bg-light;
+  border-radius: 12px;
+  margin-bottom: 1.5rem;
+
+  img {
+    width: 100px;
+    height: 100px;
+    border-radius: 10px;
+    object-fit: cover;
+    flex-shrink: 0;
+  }
+
+  &__info {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+
+    h3 {
+      font-size: 1rem;
+      color: $ink;
+      font-weight: 700;
+      margin: 0;
+      line-height: 1.4;
+    }
+  }
+
+  &__provider {
+    font-size: 0.75rem;
+    color: $copper;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  &__meta {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 0.25rem;
+    span { font-size: 0.82rem; color: $grey; font-weight: 500; }
+  }
+}
+
+.selected-plan {
+  background: linear-gradient(135deg, rgba(184, 115, 51, 0.06), rgba(184, 115, 51, 0.1));
+  border: 2px solid rgba(184, 115, 51, 0.3);
+  border-radius: 12px;
+  padding: 1.5rem;
+
+  &__badge {
+    display: inline-block;
+    background: $copper;
+    color: #fff;
+    font-size: 0.7rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 0.25rem 0.7rem;
+    border-radius: 50px;
+    margin-bottom: 0.75rem;
+  }
+
+  h3 { font-size: 1.3rem; color: $green-dark; margin: 0 0 0.5rem; font-weight: 800; }
+  p { color: $grey; margin: 0 0 1rem; font-size: 0.92rem; }
+
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+
+    li {
+      padding-left: 1.5rem;
+      position: relative;
+      color: $ink;
+      font-size: 0.9rem;
+      margin-bottom: 0.5rem;
+      &::before {
+        content: '✓';
+        position: absolute;
+        left: 0;
+        color: $copper;
+        font-weight: 800;
+      }
+    }
+  }
+}
+
+/* ---------- TAILLE ÉQUIPE ---------- */
+.team-size {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+
+  &__btn {
+    width: 46px;
+    height: 46px;
+    border-radius: 12px;
+    border: 2px solid rgba(14, 59, 50, 0.12);
+    background: #fff;
+    font-size: 1.5rem;
+    color: $green-dark;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+
+    &:hover {
+      border-color: $copper;
+      color: $copper;
+      background: rgba(184, 115, 51, 0.05);
+    }
+  }
+
+  &__input {
+    width: 100px;
+    padding: 0.75rem 1rem;
+    border: 2px solid rgba(14, 59, 50, 0.12);
+    border-radius: 12px;
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: $green-dark;
+    text-align: center;
+    outline: none;
+
+    &:focus { border-color: $copper; box-shadow: 0 0 0 3px rgba(184, 115, 51, 0.15); }
+  }
+
+  &__label {
+    font-size: 0.95rem;
+    color: $grey;
+    font-weight: 600;
+  }
+
+  &__hint {
+    background: rgba(34, 197, 94, 0.08);
+    border-left: 4px solid #16a34a;
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    font-size: 0.9rem;
+    color: #15803d;
+    margin: 0;
+
+    strong { color: #16a34a; }
+  }
+}
+
+/* ---------- INVITATIONS ---------- */
+.invite-hint {
+  font-size: 0.9rem;
+  color: $grey;
+  margin: 0 0 1rem;
+
+  strong { color: $copper-dark; font-weight: 800; }
+}
+
+.invite-form {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+
+  @media (max-width: 500px) { flex-direction: column; }
+
+  input {
+    flex: 1;
+    padding: 0.9rem 1.25rem;
+    border: 2px solid rgba(14, 59, 50, 0.1);
+    border-radius: 10px;
+    font-size: 0.95rem;
+    outline: none;
+    transition: all 0.2s;
+
+    &:focus { border-color: $copper; box-shadow: 0 0 0 3px rgba(184, 115, 51, 0.15); }
+  }
+
+  button {
+    padding: 0.9rem 1.75rem;
+    background: $green-dark;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.2s;
+
+    &:hover { background: $green-darker; transform: translateY(-2px); }
+  }
+}
+
+.invite-error {
+  color: #dc2626;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin: 0 0 0.75rem;
+}
+
+.member-list {
+  list-style: none;
+  padding: 0;
+  margin: 0.75rem 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.member-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  background: $bg-light;
+  border-radius: 10px;
+
+  &__avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, $copper, $copper-dark);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+  }
+
+  &__email {
+    flex: 1;
+    font-size: 0.9rem;
+    color: $ink;
+    font-weight: 600;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__remove {
+    background: none;
+    border: none;
+    color: #dc2626;
+    cursor: pointer;
+    font-size: 1rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 6px;
+    transition: background 0.2s;
+
+    &:hover { background: rgba(220, 38, 38, 0.1); }
+  }
+}
+
+/* ---------- PROMO ---------- */
+.promo-form {
+  display: flex;
+  gap: 0.75rem;
+  @media (max-width: 500px) { flex-direction: column; }
+
+  input {
+    flex: 1;
+    padding: 0.9rem 1.25rem;
+    border: 2px solid rgba(14, 59, 50, 0.1);
+    border-radius: 10px;
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 600;
+    outline: none;
+
+    &:focus { border-color: $copper; box-shadow: 0 0 0 3px rgba(184, 115, 51, 0.15); }
+    &::placeholder { text-transform: none; letter-spacing: 0; font-weight: 400; }
+  }
+
+  button {
+    padding: 0.9rem 1.75rem;
+    background: $green-dark;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+
+    &:hover { background: $green-darker; transform: translateY(-2px); }
+  }
+}
+
+.promo-error {
+  color: #dc2626;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin: 0.75rem 0 0;
+}
+
+.promo-applied {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  background: rgba(34, 197, 94, 0.08);
+  border: 2px solid rgba(34, 197, 94, 0.3);
+  border-radius: 10px;
+
+  &__info {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+
+    div { display: flex; flex-direction: column; gap: 0.15rem; }
+    strong { color: #15803d; font-size: 0.95rem; font-weight: 800; }
+    span { color: $ink; font-size: 0.85rem; }
+  }
+
+  &__check {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #16a34a;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    flex-shrink: 0;
+  }
+
+  &__remove {
+    background: none;
+    border: 1px solid rgba(220, 38, 38, 0.3);
+    color: #dc2626;
+    padding: 0.4rem 0.9rem;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    &:hover { background: rgba(220, 38, 38, 0.08); }
+  }
+}
+
+/* ---------- RÉCAPITULATIF ---------- */
+.devis-summary {
+  position: sticky;
+  top: 1.5rem;
+
+  @media (max-width: 960px) { position: static; }
+
+  &__card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2rem;
+    border: 1px solid rgba(14, 59, 50, 0.06);
+    box-shadow: 0 12px 32px rgba(14, 59, 50, 0.08);
+
+    h2 {
+      font-size: 1.2rem;
+      color: $green-dark;
+      font-weight: 800;
+      margin: 0 0 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid $bg-light;
+    }
+  }
+}
+
+.summary-lines {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.summary-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.92rem;
+
+  span { color: $grey; }
+  strong { color: $ink; font-weight: 700; }
+
+  &--sub {
+    padding-top: 0.5rem;
+    margin-top: 0.5rem;
+    border-top: 1px dashed rgba(14, 59, 50, 0.1);
+  }
+
+  &--discount {
+    span, strong { color: #16a34a; }
+    strong { font-weight: 800; }
+  }
+
+  &--total {
+    padding-top: 1rem;
+    margin-top: 0.5rem;
+    border-top: 2px solid $bg-light;
+    font-size: 1.1rem;
+
+    span { color: $green-dark; font-weight: 700; }
+    strong { color: $copper-dark; font-size: 1.35rem; font-weight: 800; }
+  }
+}
+
+.btn-continue {
+  width: 100%;
+  padding: 1.1rem 1.5rem;
+  background: linear-gradient(135deg, $copper 0%, $copper-dark 100%);
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  font-size: 1.05rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  box-shadow: 0 6px 20px rgba(184, 115, 51, 0.35);
+  margin-bottom: 0.75rem;
+
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 28px rgba(184, 115, 51, 0.5);
+  }
+}
+
+.btn-cancel {
+  width: 100%;
+  padding: 0.85rem 1.5rem;
+  background: transparent;
+  color: $grey;
+  border: 2px solid rgba(14, 59, 50, 0.12);
+  border-radius: 12px;
+  font-size: 0.92rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+
+  &:hover { border-color: $grey; color: $ink; background: $bg-light; }
+}
+
+.summary-guarantees {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid $bg-light;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.guarantee {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+
+  > span {
+    font-size: 1.3rem;
+    width: 36px;
+    height: 36px;
+    background: rgba(184, 115, 51, 0.08);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  div {
+    display: flex;
+    flex-direction: column;
+    strong { font-size: 0.85rem; color: $ink; font-weight: 700; }
+    small { font-size: 0.75rem; color: $grey; }
+  }
+}
+
+/* ---------- ERREUR ---------- */
+.devis-error {
+  text-align: center;
+  padding: 8rem 2rem;
+  background: $bg-light;
+  min-height: 60vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  h2 { font-size: 2rem; color: $green-dark; margin-bottom: 1rem; }
+  p { font-size: 1.05rem; color: $grey; margin-bottom: 2rem; }
+
+  .btn-primary {
+    background: $copper;
+    color: #fff;
+    padding: 1rem 2rem;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.3s;
+    &:hover { background: $copper-dark; transform: translateY(-3px); }
+  }
+}

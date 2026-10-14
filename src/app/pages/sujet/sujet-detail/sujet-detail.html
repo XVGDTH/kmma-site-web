@@ -1,0 +1,499 @@
+@if (course(); as c) {
+  <!-- HERO SECTION -->
+  <section class="detail-hero" [style.background-image]="'url(' + c.image + ')'">
+    <div class="detail-hero__overlay"></div>
+    <div class="detail-hero__container">
+      <div class="detail-hero__content">
+  <nav class="detail-hero__breadcrumb">
+    <a routerLink="/">Accueil</a>
+    <span>/</span>
+    <a routerLink="/sujets">Catalogue</a>
+    <span>/</span>
+    <span>Certification</span>
+  </nav>
+
+  <span class="detail-hero__badge">{{ c.badge | uppercase }}</span>
+  <h1 class="detail-hero__title">{{ c.title }}</h1>
+  <p class="detail-hero__desc">{{ c.description }}</p>
+
+  <div class="detail-hero__cta">
+    <button class="btn-primary" (click)="goToEnroll()">Rejoignez-nous maintenant {{ c.price | number:'1.0-0' }} FCFA</button>
+  </div>
+
+  <!-- ✅ NOUVEAU BLOC : Formateur déplacé à droite -->
+  <div class="detail-hero__instructor">
+    <div class="instructor-photo-wrapper">
+      <img [src]="c.providerLogo" [alt]="c.provider" class="instructor-photo">
+      <span class="instructor-status" aria-hidden="true"></span>
+    </div>
+    <div class="instructor-details">
+      <span class="instructor-name">Expert YAOGO</span>
+      <span class="instructor-role">Formateur & Consultant</span>
+    </div>
+    <div class="instructor-brand">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+      </svg>
+      <span>KMAA Academy</span>
+    </div>
+  </div>
+</div>
+
+    </div>
+  </section>
+
+  <!-- BARRE D'INFORMATION (Sticky) -->
+  <div class="detail-info-bar">
+    <div class="detail-info-bar__container">
+      <div class="detail-info-bar__item">
+        <span class="label">Dates</span>
+        <span class="value">Commencé le {{ c.startDate }}</span>
+        <a href="#" class="link">Voir plus de dates</a>
+      </div>
+      <div class="detail-info-bar__item">
+        <span class="label">Durée</span>
+        <span class="value">{{ c.duration }}</span>
+      </div>
+      <div class="detail-info-bar__item">
+        <span class="label">Coût</span>
+        <span class="value">{{ c.price | number:'1.0-0' }} FCFA</span>
+      </div>
+      <div class="detail-info-bar__item">
+        <span class="label">Niveau</span>
+        <span class="value">{{ c.level }}</span>
+      </div>
+      <div class="detail-info-bar__item">
+        <span class="label">Langue</span>
+        <span class="value">{{ c.language }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- NAVIGATION PAR ONGLETS -->
+  <nav class="detail-tabs">
+    <div class="detail-tabs__container">
+      <button [class.active]="activeTab() === 'apercu'" (click)="setTab('apercu')">Aperçu</button>
+      <button [class.active]="activeTab() === 'exigences'" (click)="setTab('exigences')">Exigences</button>
+      <button [class.active]="activeTab() === 'programme'" (click)="setTab('programme')">Programme de cours</button>
+      <button [class.active]="activeTab() === 'certificat'" (click)="setTab('certificat')">Ce que tu recevras</button>
+      <button [class.active]="activeTab() === 'dates'" (click)="setTab('dates')">Dates de début</button>
+    </div>
+  </nav>
+
+  <!-- CONTENU DYNAMIQUE -->
+  <main class="detail-content">
+    <div class="detail-content__container">
+      
+      <!-- ========================================== -->
+      <!-- ONGLET APERÇU (Vue globale)                -->
+      <!-- ========================================== -->
+      @if (activeTab() === 'apercu') {
+        
+        <!-- Description -->
+        <section class="section-block">
+          <h2>Apprenez à développer et mettre en œuvre avec succès une solution d'audit</h2>
+          <div class="rich-text" [innerHTML]="c.longDescription"></div>
+        </section>
+
+        <!-- Aperçu Exigences -->
+        <section class="section-block">
+          <h2>Exigences</h2>
+          <div class="two-columns">
+            <div class="col">
+              <h3>Cette certification convient à :</h3>
+              <ul>
+                <li>Toute personne souhaitant devenir plus confiante et compétente dans la conduite et la gestion des risques.</li>
+                <li>Les professionnels de la finance, de la comptabilité et de l'audit.</li>
+                <li>Les managers et chefs de service souhaitant renforcer leur expertise.</li>
+              </ul>
+            </div>
+            <div class="col">
+              <h3>Prérequis recommandés :</h3>
+              <ul>
+                <li>Aucune connaissance préalable n'est requise.</li>
+                <li>Il est recommandé d'avoir une certaine expérience professionnelle.</li>
+                <li>Une bonne maîtrise du français est essentielle.</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <!-- ✅ Aperçu Programme (NOUVELLE STRUCTURE fl-timeline) -->
+        <section class="section-block">
+          <h2>Programme de cours</h2>
+          <p class="subtitle">Que se passe-t-il avant, pendant et après votre certification ?</p>
+
+          <div class="fl-timeline">
+            <!-- PHASE 1 : AVANT -->
+            <div class="fl-phase">
+              <div class="fl-phase__label">
+                <span class="fl-phase__label-text">Avant<br>d'apprendre</span>
+              </div>
+              <div class="fl-phase__marker fl-phase__marker--before"></div>
+              <div class="fl-phase__content">
+                <p>Pour vous préparer, vous pouvez consulter nos ressources gratuites sur les bases de l'audit.</p>
+              </div>
+            </div>
+
+            <!-- PHASE 2 : PARCOURS -->
+            <div class="fl-phase">
+              <div class="fl-phase__label">
+                <span class="fl-phase__label-text">Parcours<br>À partir<br>du {{ c.startDate }}</span>
+              </div>
+              <div class="fl-phase__marker fl-phase__marker--during"></div>
+              <div class="fl-phase__content">
+                <div class="fl-course-card">
+                  <img [src]="c.image" [alt]="c.title" class="fl-course-card__image">
+                  <div class="fl-course-card__info">
+                    <h4>{{ c.title }}</h4>
+                    <p>Développez les compétences et aptitudes nécessaires pour pouvoir diriger avec succès et tirer des bénéfices d'une mise en œuvre.</p>
+                    <span class="fl-course-card__duration">⏱ {{ c.duration }}</span>
+                  </div>
+                </div>
+
+                <button class="fl-toggle-btn" (click)="toggleWeek(-1)">
+                  @if (openWeekIndex() === -1) {
+                    Masquer la répartition hebdomadaire
+                  } @else {
+                    Afficher la répartition hebdomadaire
+                  }
+                  <span class="fl-toggle-btn__chevron" [class.rotated]="openWeekIndex() === -1">▲</span>
+                </button>
+
+                @if (openWeekIndex() === -1) {
+                  <div class="fl-weeks">
+                    @for (module of c.modules; track module.week; let i = $index) {
+                      <div class="fl-week">
+                        <div class="fl-week__header" (click)="toggleWeek(i)">
+                          <div class="fl-week__label">
+                            <span class="fl-week__label-text">Semaine<br>{{ module.week }}</span>
+                          </div>
+                          <div class="fl-week__marker"></div>
+                          <div class="fl-week__content">
+                            <h5 class="fl-week__title">{{ module.title }}</h5>
+                            <span class="fl-week__chevron" [class.rotated]="openWeekIndex() === i">▼</span>
+                          </div>
+                        </div>
+                        @if (openWeekIndex() === i) {
+                          <div class="fl-week__body">
+                            <ul>
+                              @for (topic of module.topics; track topic) {
+                                <li>{{ topic }}</li>
+                              }
+                            </ul>
+                          </div>
+                        }
+                      </div>
+                    }
+                  </div>
+                }
+              </div>
+            </div>
+
+            <!-- PHASE 3 : APRÈS -->
+            <div class="fl-phase">
+              <div class="fl-phase__label">
+                <span class="fl-phase__label-text">Après<br>avoir<br>appris</span>
+              </div>
+              <div class="fl-phase__marker fl-phase__marker--after"></div>
+              <div class="fl-phase__content">
+                <p>À la fin de cette certification, vous soumettrez votre évaluation et vous obtiendrez votre certificat officiel de réussite KMAA.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Aperçu Certificat -->
+        <section class="section-block">
+          <h2>Ce que tu recevras</h2>
+          <div class="certificat-box">
+            <div class="certificat-item">
+              <div class="icon">📜</div>
+              <div>
+                <h4>Une Attestation de Réussite KMAA Academy</h4>
+                <p>Un certificat officiel téléchargeable et imprimable qui atteste de vos compétences.</p>
+              </div>
+            </div>
+            <div class="certificat-item">
+              <div class="icon">🏅</div>
+              <div>
+                <h4>Un Badge de Compétence Numérique</h4>
+                <p>Un badge numérique à partager sur LinkedIn et votre CV pour valoriser votre profil.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Aperçu Dates -->
+        <section class="section-block">
+          <h2>Dates de début</h2>
+          <div class="date-card">
+            <div class="date-icon">📅</div>
+            <div class="date-info">
+              <p>Rejoignez avant le 1er Août 2027 à 00:00</p>
+              <span>Cette certification a débuté le {{ c.startDate }}</span>
+            </div>
+            <!-- <button class="btn-primary">Rejoignez-nous maintenant {{ c.price | number:'1.0-0' }} FCFA</button> -->
+             <button class="btn-primary" (click)="goToEnroll()">Rejoignez-nous maintenant {{ c.price | number:'1.0-0' }} FCFA</button>
+          </div>
+        </section>
+      }
+
+      <!-- ========================================== -->
+      <!-- ONGLET EXIGENCES (Unique)                  -->
+      <!-- ========================================== -->
+      @if (activeTab() === 'exigences') {
+        <section class="section-block">
+          <h2>Êtes-vous éligible à cette certification ?</h2>
+          <div class="two-columns">
+            <div class="col">
+              <h3>Cette certification convient à :</h3>
+              <ul>
+                <li>Toute personne souhaitant devenir plus confiante et compétente dans la conduite et la gestion des risques.</li>
+                <li>Les professionnels de la finance, de la comptabilité et de l'audit.</li>
+                <li>Les managers et chefs de service souhaitant renforcer leur expertise.</li>
+              </ul>
+            </div>
+            <div class="col">
+              <h3>Prérequis recommandés :</h3>
+              <ul>
+                <li>Aucune connaissance préalable n'est requise.</li>
+                <li>Il est recommandé d'avoir une certaine expérience professionnelle.</li>
+                <li>Une bonne maîtrise du français est essentielle.</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+      }
+
+      <!-- ========================================== -->
+      <!-- ONGLET PROGRAMME (Unique)                  -->
+      <!-- ========================================== -->
+      @if (activeTab() === 'programme') {
+        <section class="section-programme">
+          <h2>Programme de cours</h2>
+          <p class="subtitle">Que se passe-t-il avant, pendant et après votre certification ?</p>
+
+          <div class="fl-timeline">
+            <div class="fl-phase">
+              <div class="fl-phase__label">
+                <span class="fl-phase__label-text">Avant<br>d'apprendre</span>
+              </div>
+              <div class="fl-phase__marker fl-phase__marker--before"></div>
+              <div class="fl-phase__content">
+                <p>Pour vous préparer, vous pouvez consulter nos ressources gratuites sur les bases de l'audit.</p>
+              </div>
+            </div>
+
+            <div class="fl-phase">
+              <div class="fl-phase__label">
+                <span class="fl-phase__label-text">Parcours<br>À partir<br>du {{ c.startDate }}</span>
+              </div>
+              <div class="fl-phase__marker fl-phase__marker--during"></div>
+              <div class="fl-phase__content">
+                <div class="fl-course-card">
+                  <img [src]="c.image" [alt]="c.title" class="fl-course-card__image">
+                  <div class="fl-course-card__info">
+                    <h4>{{ c.title }}</h4>
+                    <p>Développez les compétences et aptitudes nécessaires pour pouvoir diriger avec succès et tirer des bénéfices d'une mise en œuvre.</p>
+                    <span class="fl-course-card__duration">⏱ {{ c.duration }}</span>
+                  </div>
+                </div>
+
+                <button class="fl-toggle-btn" (click)="toggleWeek(-1)">
+                  @if (openWeekIndex() === -1) {
+                    Masquer la répartition hebdomadaire
+                  } @else {
+                    Afficher la répartition hebdomadaire
+                  }
+                  <span class="fl-toggle-btn__chevron" [class.rotated]="openWeekIndex() === -1">▲</span>
+                </button>
+
+                @if (openWeekIndex() === -1) {
+                  <div class="fl-weeks">
+                    @for (module of c.modules; track module.week; let i = $index) {
+                      <div class="fl-week">
+                        <div class="fl-week__header" (click)="toggleWeek(i)">
+                          <div class="fl-week__label">
+                            <span class="fl-week__label-text">Semaine<br>{{ module.week }}</span>
+                          </div>
+                          <div class="fl-week__marker"></div>
+                          <div class="fl-week__content">
+                            <h5 class="fl-week__title">{{ module.title }}</h5>
+                            <span class="fl-week__chevron" [class.rotated]="openWeekIndex() === i">▼</span>
+                          </div>
+                        </div>
+                        @if (openWeekIndex() === i) {
+                          <div class="fl-week__body">
+                            <ul>
+                              @for (topic of module.topics; track topic) {
+                                <li>{{ topic }}</li>
+                              }
+                            </ul>
+                          </div>
+                        }
+                      </div>
+                    }
+                  </div>
+                }
+              </div>
+            </div>
+
+            <div class="fl-phase">
+              <div class="fl-phase__label">
+                <span class="fl-phase__label-text">Après<br>avoir<br>appris</span>
+              </div>
+              <div class="fl-phase__marker fl-phase__marker--after"></div>
+              <div class="fl-phase__content">
+                <p>À la fin de cette certification, vous soumettrez votre évaluation et vous obtiendrez votre certificat officiel de réussite KMAA.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+      }
+
+      <!-- ========================================== -->
+      <!-- ONGLET CERTIFICAT (Unique)                 -->
+      <!-- ========================================== -->
+      @if (activeTab() === 'certificat') {
+        <section class="section-block">
+          <h2>Ce que tu recevras</h2>
+          <div class="certificat-box">
+            <div class="certificat-item">
+              <div class="icon">📜</div>
+              <div>
+                <h4>Une Attestation de Réussite KMAA Academy</h4>
+                <p>Un certificat officiel téléchargeable et imprimable qui atteste de vos compétences.</p>
+              </div>
+            </div>
+            <div class="certificat-item">
+              <div class="icon">🏅</div>
+              <div>
+                <h4>Un Badge de Compétence Numérique</h4>
+                <p>Un badge numérique à partager sur LinkedIn et votre CV pour valoriser votre profil.</p>
+              </div>
+            </div>
+            <div class="certificat-item">
+              <div class="icon">💼</div>
+              <div>
+                <h4>Une Préparation au Marché du Travail</h4>
+                <p>Des conseils pour réussir vos entretiens et mettre en pratique vos nouvelles compétences.</p>
+              </div>
+            </div>
+          </div>
+          <div class="what-is-micro">
+            <h3>Qu'est-ce qu'une certification professionnelle ?</h3>
+            <p>Les certifications sont conçues pour vous qualifier dans des secteurs en forte croissance, sans l'engagement en temps ni en coûts d'un diplôme complet. Elles sont idéales pour une montée en compétences rapide.</p>
+            <div class="process-flow">
+              <div class="step"><span class="icon">💻</span><p>Apprenez en ligne avec des instructeurs experts</p></div>
+              <div class="plus">+</div>
+              <div class="step"><span class="icon">📝</span><p>Évaluation complète basée sur des projets</p></div>
+              <div class="plus">+</div>
+              <div class="step"><span class="icon">🏆</span><p>Obtenez une certification professionnelle</p></div>
+              <div class="plus">=</div>
+              <div class="step"><span class="icon">🚀</span><p>Avancez dans votre carrière</p></div>
+            </div>
+          </div>
+        </section>
+      }
+
+      <!-- ========================================== -->
+      <!-- ONGLET DATES (Unique)                      -->
+      <!-- ========================================== -->
+      @if (activeTab() === 'dates') {
+        <section class="section-block">
+          <h2>Quand aimeriez-vous commencer ?</h2>
+          <p>Si cette certification n'est pas disponible à la demande, nous visons à exécuter nos sessions tous les quelques mois.</p>
+          <div class="date-card">
+            <div class="date-icon">📅</div>
+            <div class="date-info">
+              <p>Rejoignez avant le 1er Août 2027 à 00:00</p>
+              <span>Cette certification a débuté le {{ c.startDate }}</span>
+            </div>
+            <!-- <button class="btn-primary">Rejoignez-nous maintenant {{ c.price | number:'1.0-0' }} FCFA</button> -->
+             <button class="btn-primary" (click)="goToEnroll()">Rejoignez-nous maintenant {{ c.price | number:'1.0-0' }} FCFA</button>
+          </div>
+        </section>
+      }
+
+      <!-- FAQ SECTION -->
+      <section class="section-faq">
+        <h2>FAQ</h2>
+        <div class="faq-list">
+          @for (faq of faqs; track faq.question; let i = $index) {
+            <div class="faq-item" [class.open]="openFaqIndex() === i">
+              <button class="faq-question" (click)="toggleFaq(i)">
+                <span>{{ faq.question }}</span>
+                <span class="chevron">▼</span>
+              </button>
+              @if (openFaqIndex() === i) {
+                <div class="faq-answer">
+                  <p>{{ faq.answer }}</p>
+                </div>
+              }
+            </div>
+          }
+        </div>
+        <p class="faq-footer">
+          Vous voulez en savoir plus ? Lisez la <a href="#">FAQ</a> ou <a routerLink="/contact">Contactez-nous</a>.
+        </p>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- BANDEAU DE LIENS -->
+<!-- ✅ NOUVELLE SECTION : 8 Actualités -->
+<section class="sujet-latest">
+  <div class="sujet-latest__container">
+    <div class="sujet-latest__header">
+      <div>
+        <h2>À la une cette semaine</h2>
+        <p>Les dernières actualités et analyses de nos experts pour rester à jour.</p>
+      </div>
+      <a routerLink="/actualites" class="sujet-latest__all">Voir toutes les actualités →</a>
+    </div>
+
+    <div class="sujet-latest__grid">
+      @for (article of latestNews; track article.title) {
+        <article class="sujet-latest-card">
+          <div class="sujet-latest-card__image">
+            <img [src]="article.image" [alt]="article.imageAlt" loading="lazy" />
+            <span class="sujet-latest-card__category">{{ article.category }}</span>
+          </div>
+          <div class="sujet-latest-card__body">
+            <span class="sujet-latest-card__date">📅 {{ article.date }}</span>
+            <h3>{{ article.title }}</h3>
+            <a routerLink="/actualites" class="sujet-latest-card__link">
+              Lire l'article
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M5 12h14M13 6l6 6-6 6" />
+              </svg>
+            </a>
+          </div>
+        </article>
+      }
+    </div>
+  </div>
+</section>
+
+  <!-- NEWSLETTER -->
+  <section class="sujet-newsletter">
+    <div class="sujet-newsletter__container">
+      <div class="sujet-newsletter__content">
+          <h2>Rejoignez KMAA Academy <em>aujourd'hui</em></h2>
+          <p>Inscrivez-vous pour recevoir des recommandations de cours personnalisées et des offres directement dans votre boîte mail.</p>
+          <form class="sujet-newsletter__form">
+              <input type="email" placeholder="Votre adresse email professionnelle" required>
+              <button type="submit">Inscrivez-vous dès maintenant</button>
+          </form>
+      </div>
+    </div>
+  </section>
+} @else {
+  <div class="error-container">
+    <h2>Cours introuvable</h2>
+    <p>Le cours que vous recherchez n'existe pas ou a été supprimé.</p>
+    <a routerLink="/sujets" class="btn-primary">Retour au catalogue</a>
+  </div>
+}

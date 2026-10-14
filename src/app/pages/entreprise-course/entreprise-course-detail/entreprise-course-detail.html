@@ -1,0 +1,351 @@
+@if (course(); as c) {
+  <!-- HERO SECTION -->
+  <section class="ent-detail-hero" [style.background-image]="'url(' + c.image + ')'">
+    <div class="ent-detail-hero__overlay"></div>
+    <div class="ent-detail-hero__container">
+      <div class="ent-detail-hero__content">
+        <nav class="ent-detail-hero__breadcrumb">
+          <a routerLink="/">Accueil</a>
+          <span>/</span>
+          <a routerLink="/entreprises/formations">Entreprises</a>
+          <span>/</span>
+          <span>Détail de la formation</span>
+        </nav>
+
+        <span class="ent-detail-hero__badge">{{ c.badge | uppercase }}</span>
+        <span class="ent-detail-hero__mode">
+          @if (c.mode === 'En ligne') { 💻 }
+          @if (c.mode === 'Présentiel') { 🏢 }
+          @if (c.mode === 'Mixte') { 🔄 }
+          {{ c.mode | uppercase }}
+        </span>
+        <h1 class="ent-detail-hero__title">{{ c.title }}</h1>
+        <p class="ent-detail-hero__desc">{{ c.description }}</p>
+
+        <div class="ent-detail-hero__cta">
+          <!-- ✅ APRÈS -->
+<a href="#formules" class="btn-primary" (click)="scrollToFormules(); $event.preventDefault()">
+  Voir les formules d'abonnement
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M5 12h14M13 6l6 6-6 6" />
+  </svg>
+</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BARRE D'INFORMATION (Sticky) -->
+  <div class="ent-detail-info-bar">
+    <div class="ent-detail-info-bar__container">
+      <div class="ent-detail-info-bar__item">
+        <span class="label">Dates</span>
+        <span class="value">Commencé le {{ c.startDate }}</span>
+      </div>
+      <div class="ent-detail-info-bar__item">
+        <span class="label">Durée</span>
+        <span class="value">{{ c.duration }}</span>
+      </div>
+      <div class="ent-detail-info-bar__item">
+        <span class="label">Rythme</span>
+        <span class="value">{{ c.hoursPerWeek }}</span>
+      </div>
+      <div class="ent-detail-info-bar__item">
+        <span class="label">Niveau</span>
+        <span class="value">{{ c.level }}</span>
+      </div>
+      <div class="ent-detail-info-bar__item">
+        <span class="label">Langue</span>
+        <span class="value">{{ c.language }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- NAVIGATION PAR ONGLETS -->
+  <nav class="ent-detail-tabs">
+    <div class="ent-detail-tabs__container">
+      <button [class.active]="activeTab() === 'apercu'" (click)="setTab('apercu')">Aperçu</button>
+      <button [class.active]="activeTab() === 'programme'" (click)="setTab('programme')">Programme</button>
+      <button [class.active]="activeTab() === 'formules'" (click)="setTab('formules')">Formules & Tarifs</button>
+      <button [class.active]="activeTab() === 'exigences'" (click)="setTab('exigences')">Exigences</button>
+    </div>
+  </nav>
+
+  <!-- CONTENU DYNAMIQUE -->
+  <main class="ent-detail-content">
+    <div class="ent-detail-content__container">
+
+      <!-- ========================================== -->
+      <!-- ONGLET APERÇU                              -->
+      <!-- ========================================== -->
+      @if (activeTab() === 'apercu') {
+        <section class="section-block">
+          <h2>Présentation de la formation</h2>
+          <div class="rich-text" [innerHTML]="c.longDescription"></div>
+        </section>
+
+        <section class="section-block">
+          <h2>Pourquoi choisir cette formation ?</h2>
+          <div class="info-cards">
+            <div class="info-card">
+              <h3>🎯 Contenu sur mesure</h3>
+              <p>Adapté aux réalités de votre entreprise et de votre secteur d'activité.</p>
+            </div>
+            <div class="info-card">
+              <h3>👥 Formation en équipe</h3>
+              <p>Vos collaborateurs apprennent ensemble et partagent les mêmes références.</p>
+            </div>
+            <div class="info-card">
+              <h3>📊 Suivi de progression</h3>
+              <p>Tableau de bord dédié pour suivre la progression de chaque apprenant.</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="section-block">
+          <h2>Programme de cours</h2>
+          <p class="subtitle">Découvrez les modules qui composent cette formation.</p>
+
+          <div class="ent-timeline">
+            <div class="ent-timeline__phase">
+              <div class="ent-timeline__marker ent-timeline__marker--during"></div>
+              <div class="ent-timeline__content">
+                <div class="ent-course-card">
+                  <img [src]="c.image" [alt]="c.title" class="ent-course-card__image">
+                  <div class="ent-course-card__info">
+                    <h4>{{ c.title }}</h4>
+                    <p>Développez les compétences clés pour votre organisation.</p>
+                    <span class="ent-course-card__duration">⏱ {{ c.duration }}</span>
+                  </div>
+                </div>
+
+                <button class="ent-toggle-btn" (click)="toggleWeek(-1)">
+                  @if (openWeekIndex() === -1) {
+                    Masquer la répartition hebdomadaire
+                  } @else {
+                    Afficher la répartition hebdomadaire
+                  }
+                  <span class="ent-toggle-btn__chevron" [class.rotated]="openWeekIndex() === -1">▲</span>
+                </button>
+
+                @if (openWeekIndex() === -1) {
+                  <div class="ent-weeks">
+                    @for (module of c.modules; track module.week; let i = $index) {
+                      <div class="ent-week">
+                        <div class="ent-week__header" (click)="toggleWeek(i)">
+                          <span class="ent-week__number">Semaine {{ module.week }}</span>
+                          <h5 class="ent-week__title">{{ module.title }}</h5>
+                          <span class="ent-week__chevron" [class.rotated]="openWeekIndex() === i">▼</span>
+                        </div>
+                        @if (openWeekIndex() === i) {
+                          <div class="ent-week__body">
+                            <ul>
+                              @for (topic of module.topics; track topic) {
+                                <li>{{ topic }}</li>
+                              }
+                            </ul>
+                          </div>
+                        }
+                      </div>
+                    }
+                  </div>
+                }
+              </div>
+            </div>
+          </div>
+        </section>
+      }
+
+      <!-- ========================================== -->
+      <!-- ONGLET PROGRAMME                           -->
+      <!-- ========================================== -->
+      @if (activeTab() === 'programme') {
+        <section class="section-block">
+          <h2>Programme détaillé</h2>
+          <p class="subtitle">Découvrez le contenu de chaque semaine.</p>
+
+          <div class="ent-weeks">
+            @for (module of c.modules; track module.week; let i = $index) {
+              <div class="ent-week">
+                <div class="ent-week__header" (click)="toggleWeek(i)">
+                  <span class="ent-week__number">Semaine {{ module.week }}</span>
+                  <h5 class="ent-week__title">{{ module.title }}</h5>
+                  <span class="ent-week__chevron" [class.rotated]="openWeekIndex() === i">▼</span>
+                </div>
+                @if (openWeekIndex() === i) {
+                  <div class="ent-week__body">
+                    <ul>
+                      @for (topic of module.topics; track topic) {
+                        <li>{{ topic }}</li>
+                      }
+                    </ul>
+                  </div>
+                }
+              </div>
+            }
+          </div>
+        </section>
+      }
+
+      <!-- ========================================== -->
+      <!-- ONGLET FORMULES & TARIFS                   -->
+      <!-- ========================================== -->
+      @if (activeTab() === 'formules') {
+        <section class="section-block" id="formules">
+          <h2>Choisissez votre formule d'abonnement</h2>
+          <p class="subtitle">Tarifs par apprenant. Plus vous formez de personnes, plus le tarif est avantageux.</p>
+
+          <div class="pricing-grid">
+            <!-- @for (plan of c.pricingPlans; track plan.id) { -->
+             @for (plan of pricingPlans(); track plan.id) {
+              <article
+                class="pricing-card"
+                [class.pricing-card--popular]="plan.popular"
+                [class.pricing-card--selected]="selectedPlan() === plan.id"
+                (click)="selectPlan(plan.id)"
+              >
+                @if (plan.popular) {
+                  <span class="pricing-card__ribbon">Le plus choisi</span>
+                }
+                <h3 class="pricing-card__name">{{ plan.name }}</h3>
+                <p class="pricing-card__price">
+                  {{ plan.price | number:'1.0-0' }}
+                  <span>FCFA / apprenant</span>
+                </p>
+                <p class="pricing-card__desc">{{ plan.description }}</p>
+                <ul class="pricing-card__features">
+                  @for (feature of plan.features; track feature) {
+                    <li>
+                      <span class="check">✓</span>
+                      {{ feature }}
+                    </li>
+                  }
+                </ul>
+                <button
+                  type="button"
+                  class="pricing-card__cta"
+                  [class.pricing-card__cta--primary]="plan.popular"
+                  (click)="selectPlan(plan.id); $event.stopPropagation()"
+                >
+                  @if (selectedPlan() === plan.id) {
+                    ✓ Formule sélectionnée
+                  } @else {
+                    Choisir cette formule
+                  }
+                </button>
+              </article>
+            }
+          </div>
+
+          <!-- Calculateur de taille d'équipe -->
+          <div class="team-calculator">
+            <h3>Combien de personnes souhaitez-vous former ?</h3>
+            <div class="team-calculator__input">
+              <button type="button" (click)="setTeamSize(teamSize() - 1)">−</button>
+              <input
+                type="number"
+                [value]="teamSize()"
+                (input)="setTeamSize(+$any($event.target).value)"
+                min="1"
+                max="100"
+              >
+              <button type="button" (click)="setTeamSize(teamSize() + 1)">+</button>
+              <span class="team-calculator__label">apprenant(s)</span>
+            </div>
+          </div>
+
+          <!-- Bouton de validation -->
+          @if (selectedPlan()) {
+            <div class="checkout-panel">
+              <div class="checkout-panel__summary">
+                <p><strong>Formule sélectionnée :</strong> {{ selectedPlan() | uppercase }}</p>
+                <p><strong>Nombre d'apprenants :</strong> {{ teamSize() }}</p>
+              </div>
+              <button type="button" class="checkout-panel__cta" (click)="goToCheckout()">
+                Continuer vers le devis
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M5 12h14M13 6l6 6-6 6" />
+                </svg>
+              </button>
+            </div>
+          }
+
+          <p class="custom-quote-note">
+            Besoin d'une solution sur mesure ?
+            <a (click)="requestCustomQuote()" style="cursor:pointer">Demandez un devis personnalisé →</a>
+          </p>
+        </section>
+      }
+
+      <!-- ========================================== -->
+      <!-- ONGLET EXIGENCES                           -->
+      <!-- ========================================== -->
+      @if (activeTab() === 'exigences') {
+        <section class="section-block">
+          <h2>À qui s'adresse cette formation ?</h2>
+          <div class="two-columns">
+            <div class="col">
+              <h3>Profils concernés :</h3>
+              <ul>
+                <li>Directeurs financiers et contrôleurs de gestion</li>
+                <li>Auditeurs internes et externes</li>
+                <li>Comptables et experts-comptables</li>
+                <li>Managers et chefs de service</li>
+              </ul>
+            </div>
+            <div class="col">
+              <h3>Prérequis :</h3>
+              <ul>
+                <li>Bonne maîtrise du français</li>
+                <li>Connaissances de base en gestion</li>
+                <li>Accès à un ordinateur et à internet</li>
+                <li>Aucun diplôme spécifique requis</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+      }
+
+      <!-- FAQ -->
+      <section class="section-faq">
+        <h2>FAQ Entreprises</h2>
+        <div class="faq-list">
+          @for (faq of faqs; track faq.question; let i = $index) {
+            <div class="faq-item" [class.open]="openFaqIndex() === i">
+              <button class="faq-question" (click)="toggleFaq(i)">
+                <span>{{ faq.question }}</span>
+                <span class="chevron">▼</span>
+              </button>
+              @if (openFaqIndex() === i) {
+                <div class="faq-answer">
+                  <p>{{ faq.answer }}</p>
+                </div>
+              }
+            </div>
+          }
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- CTA FINAL -->
+  <section class="ent-cta-final">
+    <div class="ent-cta-final__container">
+      <h2>Besoin d'un accompagnement personnalisé ?</h2>
+      <p>Nos experts conçoivent des programmes sur mesure adaptés à votre secteur et à vos enjeux.</p>
+      <a routerLink="/contact" class="ent-cta-final__btn">
+        Contacter un conseiller
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M5 12h14M13 6l6 6-6 6" />
+        </svg>
+      </a>
+    </div>
+  </section>
+} @else {
+  <div class="error-container">
+    <h2>Formation introuvable</h2>
+    <p>La formation que vous recherchez n'existe pas ou a été supprimée.</p>
+    <a routerLink="/entreprises/formations" class="btn-primary">Retour au catalogue entreprises</a>
+  </div>
+}

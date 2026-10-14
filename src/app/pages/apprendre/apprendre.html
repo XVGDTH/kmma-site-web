@@ -1,176 +1,415 @@
 <div class="learn">
 
-  <!-- ============ BIENVENUE ============ -->
-  <header class="learn__header">
-    <div>
-      <span class="learn__eyebrow">MON TABLEAU DE BORD</span>
-      <h1>Bonjour, {{ userName() }} 👋</h1>
-      <p>
-        @if (stats().coursesCount > 0) {
-          Vous avez {{ stats().coursesCount }} cours en cours
-          @if (stats().completedCount > 0) {
-            et {{ stats().completedCount }} terminé(s).
-          }
-        } @else {
-          Votre parcours d'apprentissage commence ici.
+  <!-- ====================================================== -->
+  <!-- EN-TÊTE PROFESSIONNEL                                  -->
+  <!-- ====================================================== -->
+  <header class="learn-header">
+    <div class="learn-header__left">
+      <span class="learn-header__eyebrow">ESPACE D'APPRENTISSAGE</span>
+      <h1>Bonjour, {{ userName() }}</h1>
+      <p class="learn-header__meta">
+        {{ stats.ongoingCourses() }} formation{{ stats.ongoingCourses() > 1 ? 's' : '' }} en cours
+        @if (stats.completedCourses() > 0) {
+          · {{ stats.completedCourses() }} terminée{{ stats.completedCourses() > 1 ? 's' : '' }}
+        }
+        @if (stats.certificatesEarned() > 0) {
+          · {{ stats.certificatesEarned() }} certification{{ stats.certificatesEarned() > 1 ? 's' : '' }}
         }
       </p>
     </div>
 
-    <a routerLink="/compte/espace" class="learn__space-link">
-      Mon espace complet →
+    <a routerLink="/compte/espace" class="learn-header__link">
+      Mon dossier complet
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <path d="M5 12h14M13 6l6 6-6 6" />
+      </svg>
     </a>
   </header>
 
+  <!-- ====================================================== -->
+  <!-- BANDEAU DE STATISTIQUES PRO                            -->
+  <!-- ====================================================== -->
+  <section class="stats-bar">
+
+    <div class="stat-item">
+      <div class="stat-item__icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <circle cx="12" cy="12" r="9" />
+          <path d="M12 7v5l3 3" />
+        </svg>
+      </div>
+      <div class="stat-item__body">
+        <span class="stat-item__value">{{ stats.formatHours(stats.totalHours()) }}</span>
+        <span class="stat-item__label">Formation cumulée</span>
+      </div>
+    </div>
+
+    <div class="stat-item">
+      <div class="stat-item__icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <rect x="3" y="4" width="18" height="18" rx="2" />
+          <path d="M16 2v4M8 2v4M3 10h18" />
+        </svg>
+      </div>
+      <div class="stat-item__body">
+        <span class="stat-item__value">{{ stats.daysActiveThisMonth() }} j</span>
+        <span class="stat-item__label">Jours actifs (mois)</span>
+      </div>
+    </div>
+
+    <div class="stat-item">
+      <div class="stat-item__icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+          <polyline points="22 4 12 14.01 9 11.01" />
+        </svg>
+      </div>
+      <div class="stat-item__body">
+        <span class="stat-item__value">{{ stats.completedCourses() }}</span>
+        <span class="stat-item__label">Formations terminées</span>
+      </div>
+    </div>
+
+    <div class="stat-item">
+      <div class="stat-item__icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <circle cx="12" cy="8" r="6" />
+          <path d="M9 14l-2 7 5-3 5 3-2-7" />
+        </svg>
+      </div>
+      <div class="stat-item__body">
+        <span class="stat-item__value">{{ stats.certificatesEarned() }}</span>
+        <span class="stat-item__label">Certifications obtenues</span>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ====================================================== -->
+  <!-- ONGLETS PROFESSIONNELS                                 -->
+  <!-- ====================================================== -->
+  <nav class="learn-tabs" role="tablist">
+    <button
+      type="button"
+      class="learn-tab"
+      [class.learn-tab--active]="activeTab() === 'overview'"
+      (click)="setTab('overview')"
+    >
+      Vue d'ensemble
+    </button>
+    <button
+      type="button"
+      class="learn-tab"
+      [class.learn-tab--active]="activeTab() === 'progress'"
+      (click)="setTab('progress')"
+    >
+      Ma progression
+    </button>
+    <button
+      type="button"
+      class="learn-tab"
+      [class.learn-tab--active]="activeTab() === 'objectives'"
+      (click)="setTab('objectives')"
+    >
+      Objectifs
+    </button>
+    <button
+      type="button"
+      class="learn-tab"
+      [class.learn-tab--active]="activeTab() === 'journal'"
+      (click)="setTab('journal')"
+    >
+      Journal d'apprentissage
+    </button>
+  </nav>
+
   @if (loading()) {
-
-    <p class="learn__loading">Chargement de votre tableau de bord…</p>
-
+    <p class="learn-loading">Chargement…</p>
   } @else {
 
-    <!-- ============ ▶ REPRENDRE ============ -->
-    @if (resume(); as r) {
+    <!-- ====================================================== -->
+    <!-- ONGLET 1 : VUE D'ENSEMBLE                              -->
+    <!-- ====================================================== -->
+    @if (activeTab() === 'overview') {
 
-      <section class="resume-card" (click)="openResume()" role="button" tabindex="0">
-
-        <div class="resume-card__image">
-          <img [src]="r.courseImage" [alt]="r.courseTitle" />
-        </div>
-
-        <div class="resume-card__body">
-
-          <span class="resume-card__kicker">▶ REPRENDRE OÙ VOUS ÉTIEZ</span>
-
-          <h2>{{ r.courseTitle }}</h2>
-
-          <p class="resume-card__sequence">
-            <small>{{ r.chapterTitle }}</small>
-            {{ r.sequenceTitle }}
-          </p>
-
-          <div class="resume-card__progress">
-            <div class="resume-card__bar">
-              <div [style.width.%]="r.progressPercent"></div>
-            </div>
-            <span>{{ r.progressPercent }}%</span>
+      <!-- Reprendre -->
+      @if (resume(); as r) {
+        <section class="resume-card" (click)="openResume()" role="button" tabindex="0">
+          <div class="resume-card__image">
+            <img [src]="r.courseImage" [alt]="r.courseTitle" />
           </div>
-
-        </div>
-
-        <div class="resume-card__cta">
-          Continuer <span>→</span>
-        </div>
-
-      </section>
-
-    }
-
-    <!-- ============ 🔴 SÉANCE EN DIRECT ============ -->
-    @if (liveNow().length > 0) {
-
-      <section class="learn-live">
-
-        <span class="learn-live__pulse"></span>
-
-        <div class="learn-live__text">
-          <strong>SÉANCE EN DIRECT MAINTENANT</strong>
-          <p>{{ liveNow()[0].courseTitle }}</p>
-        </div>
-
-        <button
-          type="button"
-          class="learn-live__join"
-          (click)="joinLive(liveNow()[0])"
-        >
-          🔴 Rejoindre maintenant
-        </button>
-
-      </section>
-
-    }
-
-    <!-- ============ 📊 VOS COURS ============ -->
-    <section class="learn-section">
-      <h2>📊 Vos cours en cours</h2>
-
-      @if (courses().length > 0) {
-
-        <div class="learn-courses">
-
-          @for (course of courses(); track course.slug) {
-
-            <a
-              class="learn-course"
-              [routerLink]="['/apprentissage', course.slug]"
-            >
-              <div class="learn-course__image">
-                <img [src]="course.image" [alt]="course.title" loading="lazy" />
+          <div class="resume-card__body">
+            <span class="resume-card__kicker">REPRENDRE LA FORMATION</span>
+            <h2>{{ r.courseTitle }}</h2>
+            <p class="resume-card__sequence">{{ r.chapterTitle }} · {{ r.sequenceTitle }}</p>
+            <div class="resume-card__progress">
+              <div class="resume-card__bar">
+                <div [style.width.%]="r.progressPercent"></div>
               </div>
-
-              <div class="learn-course__body">
-                <span class="learn-course__category">{{ course.category }}</span>
-                <h3>{{ course.title }}</h3>
-
-                <div class="learn-course__bar">
-                  <div [style.width.%]="course.progressPercent"></div>
-                </div>
-
-                <div class="learn-course__meta">
-                  <span>{{ course.progressPercent }}%</span>
-                  <span class="learn-course__plan">
-                    {{ planLabel(course.accessLevel) }}
-                  </span>
-                </div>
-
-                <small>Dernier accès : {{ course.lastAccessedAt }}</small>
-              </div>
-            </a>
-
-          }
-
-        </div>
-
-      } @else {
-
-        <div class="learn-empty">
-          <p>Vous n'êtes inscrit à aucun cours pour le moment.</p>
-          <a routerLink="/academy" class="btn btn-gold">Explorer les formations</a>
-        </div>
-
+              <span>{{ r.progressPercent }}% complété</span>
+            </div>
+          </div>
+          <div class="resume-card__cta">
+            Continuer
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M5 12h14M13 6l6 6-6 6" />
+            </svg>
+          </div>
+        </section>
       }
-    </section>
 
-    <!-- ============ 🏆 À RENDRE ============ -->
-    @if (deadlines().length > 0) {
+      <!-- Formation en direct -->
+      @if (liveNow().length > 0) {
+        <section class="live-banner">
+          <div class="live-banner__dot"></div>
+          <div class="live-banner__text">
+            <strong>Session en direct</strong>
+            <p>{{ liveNow()[0].courseTitle }}</p>
+          </div>
+          <button type="button" class="live-banner__btn" (click)="joinLive(liveNow()[0])">
+            Rejoindre la session
+          </button>
+        </section>
+      }
+
+      <!-- Formations en cours -->
+      <section class="learn-section">
+        <div class="learn-section__header">
+          <h2>Mes formations en cours</h2>
+          <span class="learn-section__count">{{ courses().length }}</span>
+        </div>
+
+        @if (courses().length > 0) {
+          <div class="courses-grid">
+            @for (course of courses(); track course.slug) {
+              <a class="course-card" [routerLink]="['/apprentissage', course.slug]">
+                <div class="course-card__image">
+                  <img [src]="course.image" [alt]="course.title" loading="lazy" />
+                </div>
+                <div class="course-card__body">
+                  <span class="course-card__category">{{ course.category }}</span>
+                  <h3>{{ course.title }}</h3>
+                  <div class="course-card__progress">
+                    <div class="course-card__bar">
+                      <div [style.width.%]="course.progressPercent"></div>
+                    </div>
+                    <div class="course-card__meta">
+                      <span>{{ course.progressPercent }}%</span>
+                      <span class="course-card__plan">{{ planLabel(course.accessLevel) }}</span>
+                    </div>
+                  </div>
+                  <small>Dernier accès : {{ course.lastAccessedAt }}</small>
+                </div>
+              </a>
+            }
+          </div>
+        } @else {
+          <div class="learn-empty">
+            <p>Vous n'êtes inscrit à aucune formation pour le moment.</p>
+            <a routerLink="/academy" class="btn-primary">Découvrir le catalogue</a>
+          </div>
+        }
+      </section>
+
+    }
+
+    <!-- ====================================================== -->
+    <!-- ONGLET 2 : PROGRESSION                                 -->
+    <!-- ====================================================== -->
+    @if (activeTab() === 'progress') {
+
+      <!-- Objectif du mois -->
+      <section class="learn-section">
+        <h2>Objectif du mois</h2>
+        <div class="goal-card">
+          <div class="goal-card__header">
+            <div>
+              <span class="goal-card__value">{{ stats.formatHours(stats.hoursThisMonth()) }}</span>
+              <span class="goal-card__label">
+                sur {{ stats.monthlyGoalHours() }}h d'objectif mensuel
+              </span>
+            </div>
+            <span class="goal-card__percent">{{ stats.monthlyProgressPercent() }}%</span>
+          </div>
+          <div class="goal-card__bar">
+            <div class="goal-card__fill" [style.width.%]="stats.monthlyProgressPercent()"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Activité de la semaine -->
+      <section class="learn-section">
+        <h2>Activité de la semaine</h2>
+        <div class="chart-card">
+          <div class="chart">
+            @for (day of stats.weeklyActivity(); track day.day) {
+              <div class="chart__column">
+                <div class="chart__bar-wrapper">
+                  @if (day.minutes > 0) {
+                    <span class="chart__value">{{ day.minutes }}m</span>
+                  }
+                  <div class="chart__bar" [style.height]="barHeight(day.minutes)"></div>
+                </div>
+                <span class="chart__label">{{ day.day }}</span>
+              </div>
+            }
+          </div>
+        </div>
+      </section>
+
+      <!-- Compétences -->
+      <section class="learn-section">
+        <h2>Compétences développées</h2>
+        <div class="competencies-list">
+          @for (comp of stats.competencies(); track comp.id) {
+            <div class="competency-item">
+              <div class="competency-item__header">
+                <span class="competency-item__label">{{ comp.label }}</span>
+                <span class="competency-item__hours">
+                  {{ stats.formatHours(comp.hours) }} / {{ stats.formatHours(comp.target) }}
+                </span>
+              </div>
+              <div class="competency-item__bar">
+                <div
+                  class="competency-item__fill"
+                  [style.width.%]="competencyPercent(comp.hours, comp.target)"
+                ></div>
+              </div>
+            </div>
+          }
+        </div>
+      </section>
+
+      <!-- Historique mensuel -->
+      <section class="learn-section">
+        <h2>Activité mensuelle</h2>
+        <div class="monthly-table">
+          <div class="monthly-table__header">
+            <span>Mois</span>
+            <span>Jours actifs</span>
+            <span>Heures</span>
+          </div>
+          @for (row of stats.state().monthlyActivity; track row.month) {
+            <div class="monthly-table__row">
+              <span>{{ row.month }}</span>
+              <span>{{ row.daysActive }} j</span>
+              <span>{{ row.hours }} h</span>
+            </div>
+          }
+        </div>
+      </section>
+
+    }
+
+    <!-- ====================================================== -->
+    <!-- ONGLET 3 : OBJECTIFS                                   -->
+    <!-- ====================================================== -->
+    @if (activeTab() === 'objectives') {
 
       <section class="learn-section">
-        <h2>🏆 À rendre prochainement</h2>
+        <div class="learn-section__header">
+          <h2>Mes objectifs personnels</h2>
+          <span class="learn-section__count">{{ stats.objectives().length }}</span>
+        </div>
+
+        @if (stats.objectives().length > 0) {
+          <div class="objectives-list">
+            @for (obj of stats.objectives(); track obj.id) {
+              <div class="objective-card" [class.objective-card--done]="obj.completed">
+                <div class="objective-card__header">
+                  <div>
+                    <h3>{{ obj.label }}</h3>
+                    <p>{{ obj.description }}</p>
+                  </div>
+                  @if (obj.completed) {
+                    <span class="objective-card__badge objective-card__badge--done">Atteint</span>
+                  } @else {
+                    <span class="objective-card__badge">
+                      Échéance : {{ stats.formatDate(obj.deadline) }}
+                    </span>
+                  }
+                </div>
+
+                <div class="objective-card__progress">
+                  <div class="objective-card__bar">
+                    <div
+                      class="objective-card__fill"
+                      [style.width.%]="objectivePercent(obj.currentHours, obj.targetHours)"
+                    ></div>
+                  </div>
+                  <span class="objective-card__percent">
+                    {{ stats.formatHours(obj.currentHours) }} / {{ stats.formatHours(obj.targetHours) }}
+                  </span>
+                </div>
+              </div>
+            }
+          </div>
+        } @else {
+          <div class="learn-empty">
+            <p>Aucun objectif défini pour le moment.</p>
+          </div>
+        }
+      </section>
+
+    }
+
+    <!-- ====================================================== -->
+    <!-- ONGLET 4 : JOURNAL D'APPRENTISSAGE                     -->
+    <!-- ====================================================== -->
+    @if (activeTab() === 'journal') {
+
+      <section class="learn-section">
+        <h2>Journal d'apprentissage</h2>
         <p class="learn-section__hint">
-          Ces devoirs attendent votre soumission (formule Standard requise).
+          Historique de vos activités de formation récentes.
         </p>
 
-        <div class="learn-deadlines">
-
-          @for (d of deadlines(); track d.sequenceId) {
-
-            <a
-              class="learn-deadline"
-              [routerLink]="['/apprentissage', d.courseSlug]"
-            >
-              <span class="learn-deadline__icon">
-                {{ d.kind === 'tp' ? '🛠' : '📝' }}
-              </span>
-
-              <div class="learn-deadline__body">
-                <strong>{{ d.title }}</strong>
-                <small>{{ d.courseTitle }}</small>
+        <div class="journal-list">
+          @for (entry of stats.recentJournal(); track entry.id) {
+            <div class="journal-item">
+              <div class="journal-item__icon">
+                @switch (entry.type) {
+                  @case ('lecture')   {
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                      <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+                      <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+                    </svg>
+                  }
+                  @case ('quiz')      {
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                      <circle cx="12" cy="12" r="9" />
+                      <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3M12 17h.01" />
+                    </svg>
+                  }
+                  @case ('exercice')  {
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                      <polyline points="14 2 14 8 20 8" />
+                    </svg>
+                  }
+                  @case ('projet')    {
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                      <polyline points="22 4 12 14.01 9 11.01" />
+                    </svg>
+                  }
+                }
               </div>
-
-              <span class="learn-deadline__kind">{{ d.kind | uppercase }}</span>
-            </a>
-
+              <div class="journal-item__body">
+                <strong>{{ entry.activity }}</strong>
+                <span>{{ entry.course }}</span>
+                <small>{{ stats.formatRelative(entry.date) }} · {{ entry.durationMinutes }} min</small>
+              </div>
+              <span class="journal-item__type">
+                @switch (entry.type) {
+                  @case ('lecture')  { Lecture }
+                  @case ('quiz')     { Quiz }
+                  @case ('exercice') { Exercice }
+                  @case ('projet')   { Projet }
+                }
+              </span>
+            </div>
           }
-
         </div>
       </section>
 

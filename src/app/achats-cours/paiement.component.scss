@@ -1,0 +1,687 @@
+/* ============================================================
+   PAGE PAIEMENT — Achats de cours KMAA
+   ============================================================ */
+
+$green-dark: #0e3b32;
+$green-darker: #082621;
+$copper: #b87333;
+$copper-dark: #96551f;
+$copper-light: #e6a869;
+$ink: #1f2a28;
+$grey: #5c6b66;
+$bg-light: #f9f7f4;
+
+@mixin container {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+/* ---------- PAGE ---------- */
+.achat-page {
+  background: $bg-light;
+  min-height: 100vh;
+  padding: 3rem 0 5rem;
+
+  &__container { @include container; }
+}
+
+/* ---------- FIL D'ARIANE ---------- */
+.achat-breadcrumb {
+  display: flex;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: $grey;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+
+  a {
+    color: $grey;
+    text-decoration: none;
+    transition: color 0.2s;
+
+    &:hover { color: $copper; text-decoration: underline; }
+  }
+
+  .current { color: $ink; font-weight: 600; }
+}
+
+/* ---------- EN-TÊTE ---------- */
+.achat-header {
+  margin-bottom: 3rem;
+
+  h1 {
+    font-size: clamp(1.75rem, 3vw, 2.5rem);
+    color: $green-dark;
+    font-weight: 800;
+    margin: 0 0 0.5rem;
+    line-height: 1.2;
+  }
+
+  p { color: $grey; font-size: 1.05rem; margin: 0; }
+}
+
+/* ---------- LAYOUT ---------- */
+.achat-layout {
+  display: grid;
+  grid-template-columns: 1fr 400px;
+  gap: 3rem;
+  align-items: start;
+
+  @media (max-width: 960px) {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+}
+
+/* ---------- FORMULAIRE ---------- */
+.achat-form {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.achat-step {
+  background: #fff;
+  border-radius: 16px;
+  padding: 2rem;
+  border: 1px solid rgba(14, 59, 50, 0.06);
+  box-shadow: 0 4px 14px rgba(14, 59, 50, 0.04);
+
+  &__header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+
+    h2 {
+      font-size: 1.2rem;
+      color: $green-dark;
+      font-weight: 700;
+      margin: 0;
+
+      .optional {
+        font-size: 0.85rem;
+        color: $grey;
+        font-weight: 500;
+        font-style: italic;
+      }
+    }
+  }
+
+  &__number {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, $copper 0%, $copper-dark 100%);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+    box-shadow: 0 4px 10px rgba(184, 115, 51, 0.35);
+  }
+}
+
+/* ---------- MOYENS DE PAIEMENT ---------- */
+.payment-methods {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+
+  @media (max-width: 600px) { grid-template-columns: 1fr; }
+}
+
+.payment-method {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  background: #fff;
+  border: 2px solid rgba(14, 59, 50, 0.1);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1);
+  text-align: left;
+  position: relative;
+
+  &:hover {
+    border-color: rgba(184, 115, 51, 0.5);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(14, 59, 50, 0.08);
+  }
+
+  &--active {
+    border-color: $copper;
+    background: rgba(184, 115, 51, 0.04);
+    box-shadow: 0 0 0 3px rgba(184, 115, 51, 0.15), 0 8px 20px rgba(184, 115, 51, 0.12);
+
+    .payment-method__check {
+      background: $copper;
+      border-color: $copper;
+
+      &::after {
+        content: '';
+        position: absolute;
+        top: 3px; left: 6px;
+        width: 5px; height: 9px;
+        border: solid #fff;
+        border-width: 0 2px 2px 0;
+        transform: rotate(45deg);
+      }
+    }
+  }
+
+  &__logo {
+    width: 48px;
+    height: 48px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+
+    svg { width: 28px; height: 28px; }
+
+    &--orange { background: linear-gradient(135deg, #ff7900 0%, #e65c00 100%); color: #fff; }
+    &--moov { background: linear-gradient(135deg, #0072bc 0%, #004f8a 100%); color: #fff; }
+    &--telecel { background: linear-gradient(135deg, #e30613 0%, #a30410 100%); color: #fff; }
+    &--card { background: linear-gradient(135deg, $green-dark 0%, $green-darker 100%); color: #fff; }
+  }
+
+  &__info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+
+    strong {
+      font-size: 0.98rem;
+      color: $ink;
+      font-weight: 700;
+    }
+
+    span {
+      font-size: 0.82rem;
+      color: $grey;
+    }
+  }
+
+  &__check {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: 2px solid rgba(14, 59, 50, 0.2);
+    flex-shrink: 0;
+    position: relative;
+    transition: all 0.2s;
+  }
+}
+
+/* ---------- CHAMP TÉLÉPHONE ---------- */
+.payment-phone {
+  margin-top: 1.5rem;
+  padding: 1.25rem;
+  background: rgba(184, 115, 51, 0.06);
+  border-radius: 10px;
+  border-left: 4px solid $copper;
+
+  label {
+    display: block;
+    font-weight: 700;
+    color: $green-dark;
+    font-size: 0.9rem;
+    margin-bottom: 0.6rem;
+  }
+
+  &__input {
+    display: flex;
+    align-items: center;
+    background: #fff;
+    border: 2px solid rgba(14, 59, 50, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: border-color 0.2s;
+
+    &:focus-within {
+      border-color: $copper;
+      box-shadow: 0 0 0 3px rgba(184, 115, 51, 0.15);
+    }
+
+    .prefix {
+      padding: 0.9rem 1rem;
+      background: $bg-light;
+      color: $ink;
+      font-weight: 700;
+      font-size: 0.95rem;
+      border-right: 1px solid rgba(14, 59, 50, 0.08);
+    }
+
+    input {
+      flex: 1;
+      border: none;
+      outline: none;
+      padding: 0.9rem 1rem;
+      font-size: 1rem;
+      color: $ink;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      background: transparent;
+
+      &::placeholder { color: rgba(92, 107, 102, 0.5); font-weight: 400; letter-spacing: 0; }
+    }
+  }
+
+  small {
+    display: block;
+    margin-top: 0.6rem;
+    font-size: 0.82rem;
+    color: $grey;
+    font-style: italic;
+  }
+}
+
+/* ---------- NOTICE CARTE ---------- */
+.payment-card-notice {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+  margin-top: 1.5rem;
+  padding: 1rem 1.25rem;
+  background: rgba(14, 59, 50, 0.05);
+  border-radius: 10px;
+
+  svg { color: $green-dark; flex-shrink: 0; margin-top: 2px; }
+  p { margin: 0; color: $ink; font-size: 0.9rem; line-height: 1.5; }
+}
+
+/* ---------- PROMO ---------- */
+.promo-form {
+  display: flex;
+  gap: 0.75rem;
+
+  @media (max-width: 500px) { flex-direction: column; }
+
+  input {
+    flex: 1;
+    padding: 0.9rem 1.25rem;
+    border: 2px solid rgba(14, 59, 50, 0.1);
+    border-radius: 10px;
+    font-size: 1rem;
+    outline: none;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 600;
+    color: $ink;
+    transition: all 0.2s;
+
+    &:focus {
+      border-color: $copper;
+      box-shadow: 0 0 0 3px rgba(184, 115, 51, 0.15);
+    }
+
+    &::placeholder { text-transform: none; letter-spacing: 0; font-weight: 400; color: rgba(92, 107, 102, 0.6); }
+  }
+
+  button {
+    padding: 0.9rem 1.75rem;
+    background: $green-dark;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.25s;
+    white-space: nowrap;
+
+    &:hover {
+      background: $green-darker;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(14, 59, 50, 0.25);
+    }
+  }
+}
+
+.promo-error {
+  margin: 0.75rem 0 0;
+  color: #dc2626;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.promo-applied {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  background: rgba(34, 197, 94, 0.08);
+  border: 2px solid rgba(34, 197, 94, 0.3);
+  border-radius: 10px;
+
+  @media (max-width: 500px) { flex-direction: column; align-items: stretch; }
+
+  &__info {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+
+    svg { color: #16a34a; flex-shrink: 0; }
+
+    div {
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+
+      strong {
+        color: #15803d;
+        font-size: 0.95rem;
+        font-weight: 800;
+        letter-spacing: 0.05em;
+      }
+
+      span { color: $ink; font-size: 0.85rem; }
+    }
+  }
+
+  .promo-remove {
+    background: none;
+    border: 1px solid rgba(220, 38, 38, 0.3);
+    color: #dc2626;
+    padding: 0.4rem 0.9rem;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+
+    &:hover { background: rgba(220, 38, 38, 0.08); }
+  }
+}
+
+/* ---------- CONDITIONS ---------- */
+.terms-checkbox {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  cursor: pointer;
+  padding: 1rem;
+  border-radius: 10px;
+  transition: background 0.2s;
+
+  &:hover { background: rgba(184, 115, 51, 0.04); }
+
+  input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  &__box {
+    width: 22px;
+    height: 22px;
+    border: 2px solid rgba(14, 59, 50, 0.2);
+    border-radius: 6px;
+    flex-shrink: 0;
+    position: relative;
+    transition: all 0.2s;
+    margin-top: 2px;
+  }
+
+  &.checked &__box {
+    background: $copper;
+    border-color: $copper;
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: 2px; left: 6px;
+      width: 5px; height: 10px;
+      border: solid #fff;
+      border-width: 0 2px 2px 0;
+      transform: rotate(45deg);
+    }
+  }
+
+  &__text {
+    font-size: 0.92rem;
+    color: $ink;
+    line-height: 1.6;
+
+    a {
+      color: $copper;
+      font-weight: 700;
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.2s;
+
+      &:hover { border-bottom-color: $copper; }
+    }
+  }
+}
+
+/* ---------- RÉCAPITULATIF ---------- */
+.achat-summary {
+  position: sticky;
+  top: 1.5rem;
+
+  @media (max-width: 960px) { position: static; }
+
+  &__card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2rem;
+    border: 1px solid rgba(14, 59, 50, 0.06);
+    box-shadow: 0 12px 32px rgba(14, 59, 50, 0.08);
+
+    h2 {
+      font-size: 1.2rem;
+      color: $green-dark;
+      font-weight: 800;
+      margin: 0 0 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid $bg-light;
+    }
+  }
+}
+
+/* Carte du cours dans le résumé */
+.summary-course {
+  display: flex;
+  gap: 1rem;
+  padding-bottom: 1.5rem;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid $bg-light;
+
+  img {
+    width: 80px;
+    height: 80px;
+    border-radius: 10px;
+    object-fit: cover;
+    flex-shrink: 0;
+  }
+
+  &__info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    min-width: 0;
+
+    h3 {
+      font-size: 0.95rem;
+      color: $ink;
+      font-weight: 700;
+      margin: 0;
+      line-height: 1.4;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+  }
+
+  &__provider {
+    font-size: 0.75rem;
+    color: $copper;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  &__duration {
+    font-size: 0.82rem;
+    color: $grey;
+    font-weight: 500;
+  }
+}
+
+/* Lignes du résumé */
+.summary-lines {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.summary-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.95rem;
+
+  span { color: $grey; }
+
+  strong { color: $ink; font-weight: 700; }
+
+  &--discount {
+    span, strong { color: #16a34a; }
+    strong { font-weight: 800; }
+  }
+
+  &--total {
+    padding-top: 1rem;
+    margin-top: 0.5rem;
+    border-top: 2px solid $bg-light;
+    font-size: 1.1rem;
+
+    span { color: $green-dark; font-weight: 700; }
+    strong { color: $copper-dark; font-size: 1.3rem; font-weight: 800; }
+  }
+}
+
+/* Bouton payer */
+.btn-pay {
+  width: 100%;
+  padding: 1.1rem 1.5rem;
+  background: linear-gradient(135deg, $copper 0%, $copper-dark 100%);
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  font-size: 1.05rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  box-shadow: 0 6px 20px rgba(184, 115, 51, 0.35);
+  margin-bottom: 0.75rem;
+
+  &:hover:not(:disabled) {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 28px rgba(184, 115, 51, 0.5);
+  }
+
+  &:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+    box-shadow: none;
+    background: linear-gradient(135deg, $grey 0%, #4a5753 100%);
+  }
+
+  .spinner {
+    width: 18px;
+    height: 18px;
+    border: 2.5px solid rgba(255, 255, 255, 0.35);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Bouton annuler */
+.btn-cancel {
+  width: 100%;
+  padding: 0.85rem 1.5rem;
+  background: transparent;
+  color: $grey;
+  border: 2px solid rgba(14, 59, 50, 0.12);
+  border-radius: 12px;
+  font-size: 0.92rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+
+  &:hover {
+    border-color: $grey;
+    color: $ink;
+    background: $bg-light;
+  }
+}
+
+/* Mention sécurité */
+.summary-secure {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid $bg-light;
+  color: $grey;
+  font-size: 0.82rem;
+  font-weight: 600;
+
+  svg { color: #16a34a; }
+}
+
+/* ---------- ERREUR ---------- */
+.achat-error {
+  text-align: center;
+  padding: 8rem 2rem;
+  background: $bg-light;
+  min-height: 60vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  h2 { font-size: 2.5rem; color: $green-dark; margin-bottom: 1rem; }
+  p { font-size: 1.1rem; color: $grey; margin-bottom: 2rem; }
+
+  .btn-primary {
+    background: $copper;
+    color: #fff;
+    padding: 1rem 2rem;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.3s;
+
+    &:hover {
+      background: $copper-dark;
+      transform: translateY(-3px);
+      box-shadow: 0 10px 20px rgba(184, 115, 51, 0.4);
+    }
+  }
+}

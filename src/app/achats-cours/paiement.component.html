@@ -1,0 +1,278 @@
+@if (course(); as c) {
+  <section class="achat-page">
+    <div class="achat-page__container">
+
+      <!-- ============================================ -->
+      <!-- EN-TÊTE / FIL D'ARIANE                       -->
+      <!-- ============================================ -->
+      <nav class="achat-breadcrumb" aria-label="Fil d'ariane">
+        <a routerLink="/">Accueil</a>
+        <span>/</span>
+        <a routerLink="/sujets">Catalogue</a>
+        <span>/</span>
+        <a [routerLink]="['/sujets/cours', c.id]">{{ c.title }}</a>
+        <span>/</span>
+        <span class="current">Paiement</span>
+      </nav>
+
+      <header class="achat-header">
+        <h1>Finalisez votre inscription</h1>
+        <p>Plus qu'une étape avant de commencer votre formation.</p>
+      </header>
+
+      <div class="achat-layout">
+
+        <!-- ============================================ -->
+        <!-- COLONNE GAUCHE : FORMULAIRE DE PAIEMENT      -->
+        <!-- ============================================ -->
+        <div class="achat-form">
+
+          <!-- ÉTAPE 1 : Moyen de paiement -->
+          <section class="achat-step">
+            <div class="achat-step__header">
+              <span class="achat-step__number">1</span>
+              <h2>Choisissez votre moyen de paiement</h2>
+            </div>
+
+            <div class="payment-methods">
+              <!-- Orange Money -->
+              <button
+                type="button"
+                class="payment-method"
+                [class.payment-method--active]="selectedMethod() === 'orange'"
+                (click)="selectMethod('orange')"
+              >
+                <div class="payment-method__logo payment-method__logo--orange">
+                  <svg viewBox="0 0 24 24" fill="currentColor" width="28" height="28">
+                    <rect x="3" y="3" width="18" height="18" rx="3" />
+                    <text x="12" y="16" text-anchor="middle" font-size="8" font-weight="bold" fill="#fff">OM</text>
+                  </svg>
+                </div>
+                <div class="payment-method__info">
+                  <strong>Orange Money</strong>
+                  <span>Paiement mobile sécurisé</span>
+                </div>
+                <span class="payment-method__check" aria-hidden="true"></span>
+              </button>
+
+              <!-- Moov Money -->
+              <button
+                type="button"
+                class="payment-method"
+                [class.payment-method--active]="selectedMethod() === 'moov'"
+                (click)="selectMethod('moov')"
+              >
+                <div class="payment-method__logo payment-method__logo--moov">
+                  <svg viewBox="0 0 24 24" fill="currentColor" width="28" height="28">
+                    <rect x="3" y="3" width="18" height="18" rx="3" />
+                    <text x="12" y="16" text-anchor="middle" font-size="7" font-weight="bold" fill="#fff">MOOV</text>
+                  </svg>
+                </div>
+                <div class="payment-method__info">
+                  <strong>Moov Money</strong>
+                  <span>Paiement mobile sécurisé</span>
+                </div>
+                <span class="payment-method__check" aria-hidden="true"></span>
+              </button>
+
+              <!-- Telecel Money -->
+              <button
+                type="button"
+                class="payment-method"
+                [class.payment-method--active]="selectedMethod() === 'telecel'"
+                (click)="selectMethod('telecel')"
+              >
+                <div class="payment-method__logo payment-method__logo--telecel">
+                  <svg viewBox="0 0 24 24" fill="currentColor" width="28" height="28">
+                    <rect x="3" y="3" width="18" height="18" rx="3" />
+                    <text x="12" y="16" text-anchor="middle" font-size="6" font-weight="bold" fill="#fff">TELECEL</text>
+                  </svg>
+                </div>
+                <div class="payment-method__info">
+                  <strong>Telecel Money</strong>
+                  <span>Paiement mobile sécurisé</span>
+                </div>
+                <span class="payment-method__check" aria-hidden="true"></span>
+              </button>
+
+              <!-- Carte bancaire -->
+              <button
+                type="button"
+                class="payment-method"
+                [class.payment-method--active]="selectedMethod() === 'card'"
+                (click)="selectMethod('card')"
+              >
+                <div class="payment-method__logo payment-method__logo--card">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="28" height="28">
+                    <rect x="2" y="5" width="20" height="14" rx="2" />
+                    <path d="M2 10h20" />
+                  </svg>
+                </div>
+                <div class="payment-method__info">
+                  <strong>Carte bancaire</strong>
+                  <span>Visa, Mastercard</span>
+                </div>
+                <span class="payment-method__check" aria-hidden="true"></span>
+              </button>
+            </div>
+
+            <!-- Champ téléphone pour mobile money -->
+            @if (selectedMethod() && selectedMethod() !== 'card') {
+              <div class="payment-phone">
+                <label for="phone">Numéro {{ selectedMethod() === 'orange' ? 'Orange' : selectedMethod() === 'moov' ? 'Moov' : 'Telecel' }}</label>
+                <div class="payment-phone__input">
+                  <span class="prefix">+226</span>
+                  <input
+                    id="phone"
+                    type="tel"
+                    placeholder="70 12 34 56"
+                    [value]="phoneNumber()"
+                    (input)="formatPhone($event)"
+                    maxlength="11"
+                  />
+                </div>
+                <small>Un code de confirmation vous sera envoyé par SMS.</small>
+              </div>
+            }
+
+            <!-- Message carte bancaire -->
+            @if (selectedMethod() === 'card') {
+              <div class="payment-card-notice">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10" />
+                  <path d="M12 16v-4M12 8h.01" />
+                </svg>
+                <p>Vous serez redirigé vers une page sécurisée pour saisir vos informations bancaires.</p>
+              </div>
+            }
+          </section>
+
+          <!-- ÉTAPE 2 : Bon de réduction -->
+          <section class="achat-step">
+            <div class="achat-step__header">
+              <span class="achat-step__number">2</span>
+              <h2>Bon de réduction <span class="optional">(optionnel)</span></h2>
+            </div>
+
+            @if (!appliedPromo()) {
+              <div class="promo-form">
+                <input
+                  type="text"
+                  placeholder="Entrez votre code promo"
+                  [value]="promoInput()"
+                  (input)="promoInput.set($any($event.target).value)"
+                  (keyup.enter)="applyPromo()"
+                />
+                <button type="button" (click)="applyPromo()">Appliquer</button>
+              </div>
+              @if (promoError()) {
+                <p class="promo-error">{{ promoError() }}</p>
+              }
+            } @else {
+              <div class="promo-applied">
+                <div class="promo-applied__info">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M20 6L9 17l-5-5" />
+                  </svg>
+                  <div>
+                    <strong>{{ appliedPromo()!.code }}</strong>
+                    <span>{{ appliedPromo()!.label }}</span>
+                  </div>
+                </div>
+                <button type="button" class="promo-remove" (click)="removePromo()">Retirer</button>
+              </div>
+            }
+          </section>
+
+          <!-- ÉTAPE 3 : Conditions -->
+          <section class="achat-step">
+            <div class="achat-step__header">
+              <span class="achat-step__number">3</span>
+              <h2>Conditions générales</h2>
+            </div>
+
+            <label class="terms-checkbox" [class.checked]="termsAccepted()">
+              <input type="checkbox" [checked]="termsAccepted()" (change)="toggleTerms()" />
+              <span class="terms-checkbox__box"></span>
+              <span class="terms-checkbox__text">
+                J'accepte les <a routerLink="/conditions" target="_blank">conditions générales de vente</a>
+                et la <a routerLink="/confidentialite" target="_blank">politique de confidentialité</a> de KMAA Academy.
+              </span>
+            </label>
+          </section>
+
+        </div>
+
+        <!-- ============================================ -->
+        <!-- COLONNE DROITE : RÉCAPITULATIF               -->
+        <!-- ============================================ -->
+        <aside class="achat-summary">
+          <div class="achat-summary__card">
+            <h2>Récapitulatif</h2>
+
+            <div class="summary-course">
+              <img [src]="c.image" [alt]="c.imageAlt" loading="lazy" />
+              <div class="summary-course__info">
+                <span class="summary-course__provider">{{ c.provider }}</span>
+                <h3>{{ c.title }}</h3>
+                <span class="summary-course__duration">⏱ {{ c.duration }}</span>
+              </div>
+            </div>
+
+            <div class="summary-lines">
+              <div class="summary-line">
+                <span>Sous-total</span>
+                <strong>{{ subtotal() | number:'1.0-0' }} FCFA</strong>
+              </div>
+
+              @if (discountAmount() > 0) {
+                <div class="summary-line summary-line--discount">
+                  <span>Réduction ({{ appliedPromo()!.code }})</span>
+                  <strong>-{{ discountAmount() | number:'1.0-0' }} FCFA</strong>
+                </div>
+              }
+
+              <div class="summary-line summary-line--total">
+                <span>Total à payer</span>
+                <strong>{{ total() | number:'1.0-0' }} FCFA</strong>
+              </div>
+            </div>
+
+            <button
+              type="button"
+              class="btn-pay"
+              [disabled]="!canPay() || isProcessing()"
+              (click)="confirmPayment()"
+            >
+              @if (isProcessing()) {
+                <span class="spinner"></span>
+                Traitement en cours...
+              } @else {
+                Payer {{ total() | number:'1.0-0' }} FCFA
+              }
+            </button>
+
+            <button type="button" class="btn-cancel" (click)="cancel()">
+              Annuler
+            </button>
+
+            <div class="summary-secure">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="11" width="18" height="11" rx="2" />
+                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+              </svg>
+              <span>Paiement 100% sécurisé</span>
+            </div>
+          </div>
+        </aside>
+
+      </div>
+    </div>
+  </section>
+} @else {
+  <div class="achat-error">
+    <h2>Cours introuvable</h2>
+    <p>Le cours que vous souhaitez acheter n'existe pas ou a été supprimé.</p>
+    <a routerLink="/sujets" class="btn-primary">Retour au catalogue</a>
+  </div>
+}

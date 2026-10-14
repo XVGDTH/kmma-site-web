@@ -6,14 +6,14 @@
 
   <div class="login__overlay" aria-hidden="true"></div>
 
-  <!-- Arcs décoratifs animés -->
+  <!-- Arcs décoratifs animés (couleur cuivre) -->
   <div class="login__arc login__arc--top" aria-hidden="true">
     <svg viewBox="0 0 600 600">
       <defs>
         <linearGradient id="arcGradTop" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stop-color="#e0b03c" stop-opacity="0" />
-          <stop offset="50%" stop-color="#e0b03c" stop-opacity="0.8" />
-          <stop offset="100%" stop-color="#e0b03c" stop-opacity="0" />
+          <stop offset="0%" stop-color="#b87333" stop-opacity="0" />
+          <stop offset="50%" stop-color="#e6a869" stop-opacity="0.9" />
+          <stop offset="100%" stop-color="#b87333" stop-opacity="0" />
         </linearGradient>
       </defs>
       <circle cx="300" cy="300" r="150" fill="none" stroke="url(#arcGradTop)" stroke-width="4" stroke-linecap="round" stroke-dasharray="450 500" />
@@ -26,9 +26,9 @@
     <svg viewBox="0 0 500 500">
       <defs>
         <linearGradient id="arcGradBottom" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stop-color="#e0b03c" stop-opacity="0" />
-          <stop offset="50%" stop-color="#e0b03c" stop-opacity="0.7" />
-          <stop offset="100%" stop-color="#e0b03c" stop-opacity="0" />
+          <stop offset="0%" stop-color="#b87333" stop-opacity="0" />
+          <stop offset="50%" stop-color="#e6a869" stop-opacity="0.8" />
+          <stop offset="100%" stop-color="#b87333" stop-opacity="0" />
         </linearGradient>
       </defs>
       <circle cx="250" cy="250" r="120" fill="none" stroke="url(#arcGradBottom)" stroke-width="4" stroke-linecap="round" stroke-dasharray="380 420" />
@@ -59,12 +59,11 @@
       </div>
 
       <!-- ============================================================ -->
-      <!-- ÉTAT 1 : COMPTE BLOQUÉ — on remplace le formulaire          -->
+      <!-- ÉTAT 1 : COMPTE BLOQUÉ                                       -->
       <!-- ============================================================ -->
       @if (lockedMessage()) {
 
         <div class="login__locked">
-
           <div class="login__locked-icon">
             <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
               <rect x="4" y="11" width="16" height="9" rx="2" />
@@ -86,31 +85,30 @@
 
           <div class="login__locked-divider"></div>
 
-          <p class="login__locked-help">
-            Besoin d'un accès immédiat ?
-          </p>
+          <p class="login__locked-help">Besoin d'un accès immédiat ?</p>
 
           <a href="mailto:contact@kmaa-ac.com?subject=Demande%20de%20d%C3%A9blocage%20de%20compte"
              class="login__locked-btn login__locked-btn--primary">
             📧 Contacter l'administration
           </a>
 
-          <a routerLink="/"
-             class="login__locked-btn login__locked-btn--ghost">
+          <a routerLink="/" class="login__locked-btn login__locked-btn--ghost">
             ← Retour à l'accueil
           </a>
-
         </div>
 
       } @else {
 
         <!-- ============================================================ -->
-        <!-- ÉTAT 2 : FORMULAIRE NORMAL                                  -->
+        <!-- ÉTAT 2 : FORMULAIRE NORMAL                                   -->
         <!-- ============================================================ -->
-
         <form class="login__form" (ngSubmit)="handleLogin()" novalidate>
+
+          <!-- Email -->
           <label class="login__label" for="email">Adresse email :</label>
-          <div class="login__field" [class.login__field--focused]="emailFocused()" [class.login__field--error]="emailError()">
+          <div class="login__field"
+               [class.login__field--focused]="emailFocused()"
+               [class.login__field--error]="emailError()">
             <svg class="login__field-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
               <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
               <polyline points="22,6 12,13 2,6"/>
@@ -130,8 +128,11 @@
             <span class="login__error-text">{{ emailError() }}</span>
           }
 
+          <!-- Mot de passe -->
           <label class="login__label login__label--spaced" for="password">Mot de passe :</label>
-          <div class="login__field" [class.login__field--focused]="passwordFocused()" [class.login__field--error]="passwordError()">
+          <div class="login__field"
+               [class.login__field--focused]="passwordFocused()"
+               [class.login__field--error]="passwordError()">
             <svg class="login__field-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
               <rect x="4" y="10" width="16" height="10" rx="2" />
               <path d="M8 10V7a4 4 0 0 1 8 0v3" />
@@ -168,12 +169,14 @@
             <span class="login__error-text">{{ passwordError() }}</span>
           }
 
+          <!-- Se souvenir de moi -->
           <label class="login__remember">
             <input type="checkbox" name="remember" [(ngModel)]="rememberMe" />
             <span class="login__remember-box" aria-hidden="true"></span>
             Se souvenir de moi
           </label>
 
+          <!-- Bouton connexion -->
           <button type="submit" class="login__submit" [disabled]="isLoading">
             @if (isLoading) {
               <span class="login__spinner" aria-hidden="true"></span>
@@ -182,6 +185,7 @@
             }
           </button>
 
+          <!-- Message d'erreur -->
           @if (errorMessage()) {
             <div class="login__alert">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -201,7 +205,6 @@
         <a routerLink="/compte/mot-de-passe-oublie" class="login__forgot">
           Mot de passe oublié ? <span>Cliquez ici</span>
         </a>
-
       }
 
     </div>

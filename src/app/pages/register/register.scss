@@ -1,11 +1,19 @@
-@use 'styles/colors';
-@use 'styles/typography';
+/* ============================================================
+   PAGE REGISTER — Couleurs KMAA (Cuivre & Vert)
+   Aligné sur login.scss
+   ============================================================ */
+
+$green-dark: #0e3b32;
+$green-darker: #082621;
+$copper: #b87333;
+$copper-dark: #96551f;
+$copper-light: #e6a869;
 
 .register {
   position: relative;
   min-height: 100vh;
   overflow: hidden;
-  background: var(--navy-950, #050c22);
+  background: $green-darker;
   display: flex;
 }
 
@@ -24,9 +32,9 @@
   z-index: 1;
   background: radial-gradient(
     circle at center,
-    rgba(5, 12, 34, 0.75) 0%,
-    rgba(5, 12, 34, 0.88) 55%,
-    rgba(5, 12, 34, 0.95) 100%
+    rgba(8, 38, 33, 0.75) 0%,
+    rgba(8, 38, 33, 0.9) 55%,
+    rgba(8, 38, 33, 0.97) 100%
   );
 }
 
@@ -36,12 +44,9 @@
   width: 600px;
   height: 600px;
   pointer-events: none;
-  filter: drop-shadow(0 0 24px rgba(224, 176, 60, 0.25));
+  filter: drop-shadow(0 0 24px rgba(184, 115, 51, 0.3));
 
-  svg {
-    width: 100%;
-    height: 100%;
-  }
+  svg { width: 100%; height: 100%; }
 
   &--top {
     top: -180px;
@@ -60,7 +65,7 @@
 
 @keyframes arc-rotate-r {
   from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  to   { transform: rotate(360deg); }
 }
 
 .register__content {
@@ -81,10 +86,10 @@
 
 @keyframes register-fade-in {
   from { opacity: 0; transform: translateY(12px); }
-  to { opacity: 1; transform: translateY(0); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
-// --- Titre ---
+/* ---------- TITRE ---------- */
 .register__title {
   text-align: center;
   margin-bottom: 28px;
@@ -97,15 +102,15 @@
   width: 72px;
   height: 72px;
   border-radius: 50%;
-  background: radial-gradient(circle, var(--navy-900), var(--navy-950, #050c22));
-  color: var(--gold-300);
-  border: 2px solid rgba(224, 176, 60, 0.5);
-  box-shadow: 0 0 20px rgba(224, 176, 60, 0.25);
+  background: radial-gradient(circle, $green-dark, $green-darker);
+  color: $copper-light;
+  border: 2px solid rgba(184, 115, 51, 0.6);
+  box-shadow: 0 0 20px rgba(184, 115, 51, 0.3);
   margin-bottom: 16px;
 }
 
 .register__title h1 {
-  color: var(--gold-300);
+  color: $copper-light;
   font-family: var(--font-display);
   font-size: 1.5rem;
   font-weight: 900;
@@ -124,34 +129,34 @@
   width: 40px;
   height: 1.5px;
 
-  &--left { background: linear-gradient(90deg, transparent, var(--navy-900)); }
-  &--right { background: linear-gradient(90deg, var(--navy-900), transparent); }
+  &--left  { background: linear-gradient(90deg, transparent, rgba(184, 115, 51, 0.6)); }
+  &--right { background: linear-gradient(90deg, rgba(184, 115, 51, 0.6), transparent); }
 }
 
 .register__divider-mid {
   width: 100px;
   height: 2.5px;
   border-radius: 2px;
-  background: var(--gradient-gold);
-  box-shadow: 0 0 10px rgba(224, 176, 60, 0.55);
+  background: linear-gradient(90deg, $copper, $copper-light, $copper);
+  box-shadow: 0 0 10px rgba(184, 115, 51, 0.6);
 }
 
-// --- Boîte formulaire ---
+/* ---------- FORMULAIRE ---------- */
 .register__form {
   display: flex;
   flex-direction: column;
   padding: 28px;
   border-radius: 20px;
-  background: rgba(15, 20, 40, 0.85);
-  border: 1.2px solid rgba(224, 176, 60, 0.15);
+  background: rgba(14, 59, 50, 0.85);
+  border: 1.2px solid rgba(184, 115, 51, 0.25);
   box-shadow:
-    0 22px 30px rgba(5, 12, 34, 0.55),
-    0 0 30px rgba(31, 61, 140, 0.22);
+    0 22px 30px rgba(8, 38, 33, 0.6),
+    0 0 30px rgba(184, 115, 51, 0.12);
   backdrop-filter: blur(6px);
 }
 
 .register__label {
-  color: rgba(255, 255, 255, 0.8);
+  color: rgba(255, 255, 255, 0.85);
   font-size: 0.85rem;
   font-weight: 500;
   margin-bottom: 7px;
@@ -165,24 +170,24 @@
   gap: 10px;
   padding: 12px 14px;
   border-radius: 10px;
-  background: rgba(5, 8, 20, 0.85);
-  border: 1.5px solid rgba(224, 176, 60, 0.45);
+  background: rgba(8, 38, 33, 0.7);
+  border: 1.5px solid rgba(184, 115, 51, 0.4);
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
-  color: var(--gold-300);
+  color: $copper-light;
 
   input {
     flex: 1;
     background: transparent;
     border: none;
     outline: none;
-    color: var(--white);
+    color: #fff;
     font-size: 0.92rem;
 
-    &::placeholder { color: rgba(255, 255, 255, 0.28); }
+    &::placeholder { color: rgba(255, 255, 255, 0.3); }
   }
 
   &--focused {
-    border-color: var(--gold-300);
+    border-color: $copper-light;
     animation: field-glow-pulse-r 1.4s ease-in-out infinite alternate;
   }
 
@@ -197,13 +202,13 @@
 }
 
 @keyframes field-glow-pulse-r {
-  from { box-shadow: 0 0 0 3px rgba(224, 176, 60, 0.14), 0 0 18px rgba(224, 176, 60, 0.16); }
-  to { box-shadow: 0 0 0 3px rgba(224, 176, 60, 0.26), 0 0 30px rgba(224, 176, 60, 0.32); }
+  from { box-shadow: 0 0 0 3px rgba(184, 115, 51, 0.15), 0 0 18px rgba(184, 115, 51, 0.18); }
+  to   { box-shadow: 0 0 0 3px rgba(184, 115, 51, 0.3), 0 0 30px rgba(184, 115, 51, 0.35); }
 }
 
 .register__field-icon {
   flex-shrink: 0;
-  opacity: 0.85;
+  opacity: 0.9;
 }
 
 .register__field-toggle {
@@ -211,11 +216,11 @@
   background: none;
   border: none;
   padding: 0;
-  color: rgba(224, 176, 60, 0.7);
+  color: rgba(230, 168, 105, 0.8);
   cursor: pointer;
   display: flex;
 
-  &:hover { color: var(--gold-300); }
+  &:hover { color: $copper-light; }
 }
 
 .register__error-text {
@@ -224,13 +229,13 @@
   color: #e5544a;
 }
 
-// --- Conditions ---
+/* ---------- CONDITIONS ---------- */
 .register__remember {
   display: flex;
   align-items: flex-start;
   gap: 8px;
   margin-top: 18px;
-  color: rgba(255, 255, 255, 0.65);
+  color: rgba(255, 255, 255, 0.7);
   font-size: 0.82rem;
   line-height: 1.4;
   cursor: pointer;
@@ -247,7 +252,7 @@
   width: 20px;
   height: 20px;
   border-radius: 4px;
-  border: 1.5px solid rgba(224, 176, 60, 0.55);
+  border: 1.5px solid rgba(184, 115, 51, 0.55);
   flex-shrink: 0;
   margin-top: 1px;
   position: relative;
@@ -255,8 +260,8 @@
 }
 
 .register__remember input:checked + .register__remember-box {
-  background: var(--gold-300);
-  border-color: var(--gold-300);
+  background: $copper;
+  border-color: $copper;
 
   &::after {
     content: '';
@@ -265,31 +270,36 @@
     top: 2px;
     width: 5px;
     height: 10px;
-    border: solid var(--navy-950, #050c22);
+    border: solid #fff;
     border-width: 0 2px 2px 0;
     transform: rotate(45deg);
   }
 }
 
-// --- Bouton créer compte ---
+/* ---------- BOUTON ---------- */
 .register__submit {
   margin-top: 22px;
   height: 52px;
   border: none;
   border-radius: 10px;
-  background: linear-gradient(90deg, var(--gold-300), #e0b03c, #d99a2b);
-  color: var(--navy-950, #050c22);
+  background: linear-gradient(90deg, $copper-dark, $copper, $copper-light);
+  color: #fff;
   font-size: 1rem;
   font-weight: 900;
   letter-spacing: 0.06em;
   cursor: pointer;
-  box-shadow: 0 4px 20px rgba(224, 176, 60, 0.5);
-  transition: transform 0.12s ease;
+  box-shadow: 0 4px 20px rgba(184, 115, 51, 0.5);
+  transition: transform 0.12s ease, box-shadow 0.2s ease;
   display: flex;
   align-items: center;
   justify-content: center;
 
-  &:active { transform: scale(0.96); }
+  &:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 26px rgba(184, 115, 51, 0.6);
+  }
+
+  &:active { transform: scale(0.97); }
   &:disabled { opacity: 0.75; cursor: wait; }
 }
 
@@ -297,8 +307,8 @@
   width: 22px;
   height: 22px;
   border-radius: 50%;
-  border: 2.5px solid rgba(5, 12, 34, 0.25);
-  border-top-color: var(--navy-950, #050c22);
+  border: 2.5px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #fff;
   animation: spin-r 0.7s linear infinite;
 }
 
@@ -306,7 +316,7 @@
   to { transform: rotate(360deg); }
 }
 
-// --- Alerte erreur ---
+/* ---------- ALERTE ---------- */
 .register__alert {
   display: flex;
   align-items: center;
@@ -314,13 +324,13 @@
   margin-top: 12px;
   padding: 8px 12px;
   border-radius: 8px;
-  background: rgba(229, 84, 74, 0.1);
+  background: rgba(229, 84, 74, 0.12);
   border: 1px solid rgba(229, 84, 74, 0.4);
-  color: #e5544a;
+  color: #f87171;
   font-size: 0.78rem;
 }
 
-// --- Lien vers connexion ---
+/* ---------- LIEN CONNEXION ---------- */
 .register__login-btn {
   margin-top: 12px;
   height: 52px;
@@ -328,20 +338,21 @@
   align-items: center;
   justify-content: center;
   border-radius: 10px;
-  border: 1.5px solid rgba(224, 176, 60, 0.5);
-  color: var(--gold-300);
+  border: 1.5px solid rgba(184, 115, 51, 0.55);
+  color: $copper-light;
   font-size: 1rem;
   font-weight: 700;
   letter-spacing: 0.04em;
   text-decoration: none;
-  transition: background 0.2s ease;
+  transition: background 0.2s ease, transform 0.15s ease;
 
-  &:hover { background: rgba(224, 176, 60, 0.08); }
+  &:hover {
+    background: rgba(184, 115, 51, 0.12);
+    transform: translateY(-2px);
+  }
 }
 
-// --- Responsive ---
+/* ---------- RESPONSIVE ---------- */
 @media (max-width: 480px) {
-  .register__arc {
-    display: none;
-  }
+  .register__arc { display: none; }
 }

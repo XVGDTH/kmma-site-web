@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/cor
 import { Router, RouterLink } from '@angular/router';
 import { NotificationService } from '../../shared/notification.service';
 
+
 type TopicIcon = 'affaires' | 'comptabilite' | 'sante' | 'tech' | 'audit' | 'langues';
 
 type SubjectIcon =
@@ -10,6 +11,51 @@ type SubjectIcon =
   | 'langues' | 'rh' | 'audit' | 'communication' | 'entrepreneuriat'
   | 'developpement-durable' | 'ingenierie' | 'design';
 
+  // ============================================================
+// 🆕 SECTION « LA FORMATION KMAA » — présentiel & distanciel
+// ============================================================
+// ============================================================
+// 🆕 SECTION « LA FORMATION KMAA » — présentiel & distanciel
+// ============================================================
+type TrainingStatIcon = 'modules' | 'satisfaction' | 'modes';
+
+interface TrainingStat {
+  value: string;
+  label: string;
+  icon: TrainingStatIcon;
+}
+
+interface TrainingFormat {
+  mode: 'presentiel' | 'distanciel';
+  title: string;
+  tagline: string;
+  description: string;
+  image: string;
+  imageAlt: string;
+  highlights: string[];
+  ctaCoursesLabel: string;
+  ctaCoursesRoute: string;
+}
+
+interface TrainingSubscription {
+  name: string;
+  price: string;
+  period?: string;
+  description: string;
+  popular: boolean;
+  features: string[];
+  ctaLabel: string;
+  ctaRoute: string;
+}
+
+interface TrainingVoucher {
+  badge: string;
+  discount: string;
+  title: string;
+  description: string;
+  condition: string;
+  reference: string;
+}
 interface Subject {
   label: string;
   icon: SubjectIcon;
@@ -145,7 +191,7 @@ goToMySpace(): void {
         {
           title: 'Fondamentaux du management d\'entreprise',
           excerpt: 'Les bases pour organiser, planifier et piloter une équipe ou une structure.',
-          badge: 'Programme certifiant',
+          badge: 'Programme complet',
           image: 'gestion_affaires.png',
           imageAlt: 'Fondamentaux du management d\'entreprise',
           route: '/mes-cours/affaires/fondamentaux-management',
@@ -372,6 +418,162 @@ goToMySpace(): void {
   { label: 'Design et créativité', icon: 'design', route: '/mes-cours/design' },
 ];
 
+  // ============================================================
+  // 🆕 DONNÉES — La formation KMAA (présentiel & distanciel)
+  // ============================================================
+readonly trainingStatIcons: Record<TrainingStatIcon, string> = {
+  modules: 'M12 6.5C10.5 5 8.5 4 6 4H3v14h3c2.5 0 4.5 1 6 2.5 M12 6.5C13.5 5 15.5 4 18 4h3v14h-3c-2.5 0-4.5 1-6 2.5V6.5Z',
+  satisfaction: 'M12 2l2.9 5.9 6.5.9-4.7 4.6 1.1 6.5L12 16.9 6.2 19.9l1.1-6.5L2.6 8.8l6.5-.9L12 2Z',
+  modes: 'M2 4h20v12H2z M8 20h8 M12 16v4',
+};
+
+readonly trainingStats: TrainingStat[] = [
+  {
+    value: '18+',
+    label: 'Modules et parcours conçus par des formateurs experts, issus du terrain professionnel.',
+    icon: 'modules',
+  },
+  {
+    value: '95%',
+    label: 'De satisfaction chez nos apprenants : des cours concrets, orientés pratique et résultats.',
+    icon: 'satisfaction',
+  },
+  {
+    value: '2',
+    label: 'Modes de formation au choix : rejoignez-nous dans nos locaux ou formez-vous depuis chez vous.',
+    icon: 'modes',
+  },
+];
+
+readonly trainingFormats: TrainingFormat[] = [
+  {
+    mode: 'presentiel',
+    title: 'Formation en présentiel',
+    tagline: "L'énergie du collectif, dans nos locaux",
+    description:
+      "Des séances en salle encadrées par nos formateurs : échanges directs, ateliers pratiques, mises en situation et networking avec d'autres professionnels.",
+    image: 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&w=1200&q=80',
+    imageAlt: 'Séance de formation en présentiel à l\'académie KMAA',
+    highlights: [
+      'Salles équipées à Ouagadougou et Bobo-Dioulasso',
+      'Ateliers pratiques et études de cas réels',
+      'Échanges directs avec les formateurs',
+      'Networking entre apprenants et entreprises',
+    ],
+    ctaCoursesLabel: 'Voir nos cours en présentiel',
+    ctaCoursesRoute: '/entreprises/formations',   // ✅ MODIFIÉ
+  },
+  {
+    mode: 'distanciel',
+    title: 'Formation à distance',
+    tagline: 'La flexibilité du 100 % en ligne',
+    description:
+      "Apprenez où que vous soyez, à votre rythme : classes virtuelles en direct, replays disponibles 24h/24, exercices corrigés et suivi personnalisé par nos équipes pédagogiques.",
+    image: 'https://images.unsplash.com/photo-1585829365295-ab7cd400c167?auto=format&fit=crop&w=1200&q=80',
+    imageAlt: 'Apprenante suivant une formation KMAA à distance sur son ordinateur',
+    highlights: [
+      'Classes virtuelles en direct + replays à la demande',
+      'Contenus accessibles sur mobile et ordinateur',
+      'Exercices corrigés et quiz de progression',
+      'Assistance pédagogique du lundi au samedi',
+    ],
+    ctaCoursesLabel: 'Voir nos cours en ligne',
+    ctaCoursesRoute: '/entreprises/formations',   // ✅ MODIFIÉ
+  },
+];
+
+readonly trainingSubscriptions: TrainingSubscription[] = [
+  {
+    name: 'Pack 10 personnes',
+    price: 'Sur devis',
+    period: 'pour 10 apprenants',
+    description: 'Idéal pour les petites équipes ou les groupes constitués qui démarrent.',
+    popular: false,
+    features: [
+      'Accès à tous les modules, présentiel et distanciel',
+      'Sessions intra-entreprise (dans vos locaux ou les nôtres)',
+      'Suivi de progression groupé',
+      'Attestation de formation pour chaque participant',
+    ],
+    ctaLabel: 'Demander un devis',
+    ctaRoute: '/contact',
+  },
+  {
+    name: 'Pack 20 personnes',
+    price: 'Sur devis',
+    period: 'pour 20 apprenants',
+    description: 'Le format privilégié par les PME et institutions en pleine croissance.',
+    popular: true,
+    features: [
+      'Tous les modules + parcours sur mesure',
+      'Sessions en présentiel ET à distance',
+      'Reporting RH détaillé + suivi pédagogique',
+      'Réductions volume applicables',
+      'Certificat de réussite pour chaque apprenant',
+    ],
+    ctaLabel: 'Choisir le Pack 20',
+    ctaRoute: '/contact',
+  },
+  {
+    name: 'Sur devis',
+    price: 'Sur mesure',
+    period: '+ de 20 apprenants',
+    description: 'Pour les grandes organisations : programme entièrement personnalisé.',
+    popular: false,
+    features: [
+      'Programme construit main dans la main',
+      'Sessions illimitées selon vos besoins',
+      'Interlocuteur dédié + accompagnement premium',
+      'Reporting avancé pour votre direction',
+      'Réductions volume maximales',
+    ],
+    ctaLabel: 'Contacter un conseiller',
+    ctaRoute: '/contact',
+  },
+];
+
+readonly trainingVouchers: TrainingVoucher[] = [
+  {
+    badge: '10+',
+    discount: '-10%',
+    title: 'À partir de 10 personnes',
+    description: 'Inscrivez 10 apprenants au même programme et bénéficiez de 10 % de réduction.',
+    condition: 'Groupes constitués',
+    reference: 'OFFRE-GROUPE-10',
+  },
+  {
+    badge: '20+',
+    discount: '-18%',
+    title: 'À partir de 20 personnes',
+    description: 'Formez une équipe de 20 personnes ou plus et économisez 18 % sur l\'ensemble.',
+    condition: 'PME & institutions',
+    reference: 'OFFRE-GROUPE-20',
+  },
+  {
+    badge: '20+',
+    discount: '-25%',
+    title: 'Plus de 20 personnes',
+    description: 'Pour les grands déploiements : bénéficiez de notre meilleur tarif volume.',
+    condition: 'Grands comptes',
+    reference: 'OFFRE-VOLUME-25',
+  },
+];
+
+
+  // ============================================================
+  // 🎟️ Copie de la référence d'une offre groupe
+  // ============================================================
+  readonly copiedReference = signal<string | null>(null);
+
+  copyVoucherReference(reference: string): void {
+    if (typeof navigator !== 'undefined' && navigator.clipboard) {
+      navigator.clipboard.writeText(reference).then(() => {
+        this.copiedReference.set(reference);
+        setTimeout(() => this.copiedReference.set(null), 2500);
+      });
+    }
+  }
+
   // --- Formules d'accompagnement --------------------------------------------
   readonly pricingPlans: PricingPlan[] = [
     {
@@ -423,7 +625,7 @@ goToMySpace(): void {
   // --- Bandeaux de mise en avant ---------------------------------------------
   readonly accessibilityBanner: HighlightBanner = {
     eyebrow: 'Accessibilité',
-    title: 'Une formation accessible, en français et dans vos langues locales',
+    title: 'Une formation accessible en français pour vous',
     text: 'Nous adaptons nos supports pédagogiques pour qu\'ils restent clairs et accessibles, quel que soit votre niveau de départ ou votre langue de confort.',
     ctaLabel: 'En savoir plus',
     ctaRoute: '/a-propos',
@@ -433,7 +635,7 @@ goToMySpace(): void {
 
   readonly careerBanner: HighlightBanner = {
     eyebrow: 'Carrière',
-    title: 'Boostez votre carrière avec nos parcours certifiants',
+    title: 'Boostez votre carrière avec nos formations conçues sur mesure ',
     text: 'Développez des compétences recherchées par les employeurs grâce à des formations pratiques, dispensées par des experts du terrain.',
     ctaLabel: 'Explorer les formations',
     ctaRoute: '/academy',
@@ -445,7 +647,7 @@ goToMySpace(): void {
     {
       title: 'Stratégie et pilotage financier',
       excerpt: 'Développez une vision stratégique de la gestion financière de votre organisation.',
-      badge: 'Programme certifiant',
+      badge: 'Programme complet',
       image: 'pilotages_financiers.png',
       imageAlt: 'Stratégie et pilotage financier',
       route: '/formations/strategie-financiere',
@@ -461,15 +663,15 @@ goToMySpace(): void {
     {
       title: 'Transformation digitale des PME',
       excerpt: 'Intégrez les outils numériques essentiels à la croissance de votre entreprise.',
-      badge: 'Parcours court',
+      badge: 'Bootcamp',
       image: 'transformation_digitale.png',
       imageAlt: 'Transformation digitale des PME',
       route: '/formations/transformation-digitale',
     },
     {
-      title: 'Certification en droit des affaires',
+      title: 'Droit des affaires',
       excerpt: 'Sécurisez juridiquement vos activités et vos contrats commerciaux.',
-      badge: 'Programme certifiant',
+      badge: 'Attestation de formation',
       image: 'droits_affaires.png',
       imageAlt: 'Certification en droit des affaires',
       route: '/formations/droit-affaires',
@@ -479,35 +681,35 @@ goToMySpace(): void {
   // --- Poussez vos compétences plus loin (diplômes) --------------------------
   readonly diplomaCourses: MiniCourse[] = [
     {
-      title: 'Diplôme en gestion comptable et financière',
+      title: 'Attestation en gestion comptable et financière',
       excerpt: 'Un programme complet pour maîtriser la comptabilité générale, analytique et la finance d\'entreprise.',
-      badge: 'Programme certifiant',
+      badge: 'Formation complète',
       image: 'comptable.png',
-      imageAlt: 'Diplôme en gestion comptable et financière',
+      imageAlt: 'Attestation en gestion comptable et financière',
       route: '/formations/diplome-comptabilite',
     },
     {
-      title: 'Diplôme en audit et contrôle de gestion',
+      title: 'Attestation en audit et contrôle de gestion',
       excerpt: 'Devenez expert des méthodes d\'audit interne et de pilotage de la performance.',
-      badge: 'Programme certifiant',
+      badge: 'Formation complète',
       image: 'gestion.png',
-      imageAlt: 'Diplôme en audit et contrôle de gestion',
+      imageAlt: 'Attestation en audit et contrôle de gestion',
       route: '/formations/diplome-audit',
     },
     {
-      title: 'Diplôme en gestion administrative et RH',
+      title: 'Attestation en gestion administrative et RH',
       excerpt: 'Structurez la gestion administrative et les ressources humaines de toute organisation.',
-      badge: 'Programme certifiant',
+      badge: 'Formation complète',
       image: 'rh.png',
-      imageAlt: 'Diplôme en gestion administrative et RH',
+      imageAlt: 'Attestation en gestion administrative et RH',
       route: '/formations/diplome-gestion',
     },
     {
-      title: 'Diplôme en accompagnement pédagogique',
+      title: 'Attestation en accompagnement pédagogique',
       excerpt: 'Formez-vous aux méthodes de coaching et de mentorat professionnel.',
-      badge: 'Programme certifiant',
+      badge: 'Formation complète',
       image: 'pedagogie.png',
-      imageAlt: 'Diplôme en accompagnement pédagogique',
+      imageAlt: 'Attestation en accompagnement pédagogique',
       route: '/formations/diplome-accompagnement',
     },
   ];

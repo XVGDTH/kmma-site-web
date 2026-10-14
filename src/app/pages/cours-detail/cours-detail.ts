@@ -105,7 +105,7 @@ export class CoursDetail {
     if (c.isFree) {
       // Cours gratuit â†’ on tente l'inscription puis on redirige vers la connexion
       this.http
-        .post('https://api.convergesas.com/api/enrollments', {
+        .post('http://127.0.0.1:8000/api/enrollments', {
           course_slug: courseKey,
         })
         .subscribe({

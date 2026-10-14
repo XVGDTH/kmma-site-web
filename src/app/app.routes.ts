@@ -1,4 +1,4 @@
-import { provideRouter, Routes, withInMemoryScrolling } from '@angular/router';
+import { Routes } from '@angular/router';
 import { Home } from './pages/home/home';
 import { MyAcademy } from './pages/page_academie/my-academy';
 import { CoursDetail } from './pages/cours-detail/cours-detail';
@@ -8,7 +8,6 @@ import { CoursePlayer } from './pages/course-player/course-player';
 import { LiveSession } from './pages/live-session/live-session';
 import { LiveSessionHost } from './pages/formateur/live-session-host/live-session-host';
 import { FormateurDashboard } from './pages/formateur/dashboard/formateur-dashboard';
-import { ApplicationConfig } from '@angular/core';
 import { Contact } from './pages/contact/contact';
 import { PaymentOtp } from './pages/payment-otp/payment-otp';
 import { PaymentMethod } from './pages/payment-method/payment-method';
@@ -52,20 +51,20 @@ export const routes: Routes = [
   {
     path: 'compte/espace',
     component: StudentSpace,
-    canActivate: [authGuard, studentGuard],   // ✅ UNE SEULE déclaration, protégée
+    canActivate: [authGuard, studentGuard],
   },
 
   {
     path: 'apprentissage/:id',
     component: CoursePlayer,
-    canActivate: [authGuard],                 // ✅ UNE SEULE déclaration, protégée
+    canActivate: [authGuard],
     title: 'Mon apprentissage — KMAA',
   },
 
   {
     path: 'apprentissage/:id/direct',
     component: LiveSession,
-    canActivate: [authGuard],                 // ✅ aussi protégé
+    canActivate: [authGuard],
   },
 
   // ============================================================
@@ -74,23 +73,23 @@ export const routes: Routes = [
   {
     path: 'formateur/tableau-de-bord',
     component: FormateurDashboard,
-    canActivate: [authGuard, staffGuard],     // ✅
+    canActivate: [authGuard, staffGuard],
   },
   {
     path: 'formateur/cours/:id/direct',
     component: LiveSessionHost,
-    canActivate: [authGuard, staffGuard],     // ✅
+    canActivate: [authGuard, staffGuard],
   },
   {
     path: 'formateur/importer-cours/:courseId',
     component: ImporterCours,
-    canActivate: [authGuard, staffGuard],     // ✅ (était totalement ouvert !)
+    canActivate: [authGuard, staffGuard],
     title: 'Importer un cours — KMAA',
   },
   {
     path: 'formateur/nouveau-cours',
     component: CreerCours,
-    canActivate: [authGuard, staffGuard],     // ✅ (était totalement ouvert !)
+    canActivate: [authGuard, staffGuard],
   },
 
   // ============================================================
@@ -159,57 +158,157 @@ export const routes: Routes = [
       import('./pages/fiscal-simulator/fiscal-simulator').then((m) => m.FiscalSimulator),
   },
 
+  // Newsletter
+  { path: 'newsletter', component: Newsletter, title: 'KMAA Brief — Newsletter' },
 
-  // routes vers le newsletter
-{ path: 'newsletter', component: Newsletter, title: 'KMAA Brief — Newsletter' },
+  // ============================================================
+  // TABLEAU DE BORD APPRENANT (protégé)
+  // ============================================================
+  {
+    path: 'apprendre',
+    component: Apprendre,
+    canActivate: [authGuard, studentGuard],
+    title: 'Mon tableau de bord — KMAA',
+  },
+
+  // Syllabus (HEC Paris)
+  {
+    path: 'formations/:slug/syllabus',
+    loadComponent: () =>
+      import('./pages/syllabus/syllabus').then((m) => m.Syllabus),
+  },
+
+  // ============================================================
+  // FORMATIONS PRÉSENTIELLES (formateur)
+  // ============================================================
+  {
+    path: 'formateur/formations-presentielles',
+    loadComponent: () =>
+      import('./pages/formateur/formations-presentielles/formations-presentielles')
+        .then(m => m.FormationsPresentielles),
+    canActivate: [authGuard, staffGuard],
+    title: 'Formations présentielles — KMAA',
+  },
+  {
+    path: 'formateur/formations-presentielles/:id/participants',
+    loadComponent: () =>
+      import('./pages/formateur/formations-presentielles/participants/participants')
+        .then(m => m.ParticipantsPage),
+    canActivate: [authGuard, staffGuard],
+    title: 'Participants — KMAA',
+  },
+
+  // ============================================================
+  // CATALOGUE / SUJETS
+  // ============================================================
+  {
+    path: 'sujets',
+    loadComponent: () =>
+      import('./pages/sujet/sujet').then((m) => m.Sujet),
+  },
+  {
+    path: 'sujets/cours/:id',
+    loadComponent: () =>
+      import('./pages/sujet/sujet-detail/sujet-detail').then((m) => m.SujetDetail),
+    title: 'Détail du cours — KMAA Academy',
+  },
+
+  // ============================================================
+  // ENTREPRISES
+  // ============================================================
+  {
+    path: 'entreprises/formations',
+    loadComponent: () =>
+      import('./pages/entreprise-course/entreprise-course').then((m) => m.EntrepriseCourse),
+    title: 'Formations pour Entreprises — KMAA Academy',
+  },
+  {
+    path: 'entreprises/formation/:id',
+    loadComponent: () =>
+      import('./pages/entreprise-course/entreprise-course-detail/entreprise-course-detail')
+        .then((m) => m.EntrepriseCourseDetail),
+    title: 'Détail de la formation — KMAA Entreprises',
+  },
+
+  // ============================================================
+  // ✅ PARCOURS D'ACHAT (nouveau — simulation paiement)
+  // ============================================================
+  {
+    path: 'achats-cours/paiement/:id',
+    loadComponent: () =>
+      import('./achats-cours/paiement.component').then(m => m.PaiementComponent),
+    title: 'Paiement — KMAA Academy',
+  },
+  {
+    path: 'achats-cours/confirmation/:id',
+    loadComponent: () =>
+      import('./achats-cours/confirmation-paiement.component').then(
+        m => m.ConfirmationPaiementComponent
+      ),
+    title: 'Confirmation de paiement — KMAA Academy',
+  },
 
 
-// ESPACE APPRENANT (protégé) :
+
+
+
+
+  // ============================================================
+// ACHATS ENTREPRISE (abonnements)
+// ============================================================
+
+// ============================================================
+// ACHATS ENTREPRISE (abonnements)
+// ============================================================
 {
-  path: 'apprendre',
-  component: Apprendre,
-  canActivate: [authGuard, studentGuard],
-  title: 'Mon tableau de bord — KMAA',
-},
-
-// modele presentation et visualisation hec paris
-
-{
-  path: 'formations/:slug/syllabus',
+  path: 'achats-entreprise/devis',
   loadComponent: () =>
-    import('./pages/syllabus/syllabus').then((m) => m.Syllabus),
+    import('./achats-entreprise/devis-entreprise.component')
+      .then(m => m.DevisEntrepriseComponent),
+  canActivate: [authGuard],
+  title: 'Devis Entreprise — KMAA',
 },
-
-
-// routes pour les certificats et attestations provisoires
 {
-  path: 'formateur/formations-presentielles',
+  path: 'achats-entreprise/paiement',
   loadComponent: () =>
-    import('./pages/formateur/formations-presentielles/formations-presentielles')
-      .then(m => m.FormationsPresentielles),
-  canActivate: [authGuard, staffGuard],
-  title: 'Formations présentielles — KMAA',
+    import('./achats-entreprise/paiement-entreprise.component')
+      .then(m => m.PaiementEntrepriseComponent),
+  canActivate: [authGuard],
+  title: 'Paiement Entreprise — KMAA',
+},
+{
+  path: 'achats-entreprise/confirmation',
+  loadComponent: () =>
+    import('./achats-entreprise/confirmation-entreprise.component')
+      .then(m => m.ConfirmationEntrepriseComponent),
+  canActivate: [authGuard],
+  title: 'Confirmation — KMAA',
+},
+{
+  path: 'achats-entreprise/licences',
+  loadComponent: () =>
+    import('./achats-entreprise/licences-entreprise.component')
+      .then(m => m.LicencesEntrepriseComponent),
+  canActivate: [authGuard],
+  title: 'Mes licences — KMAA',
 },
 
+
+
+// nouvelles routes pour la page commandes et vues d"ensembles des commandes clients via plateforme
+
 {
-  path: 'formateur/formations-presentielles/:id/participants',
+  path: 'compte/mes-commandes',
   loadComponent: () =>
-    import('./pages/formateur/formations-presentielles/participants/participants')
-      .then(m => m.ParticipantsPage),
-  canActivate: [authGuard, staffGuard],
-  title: 'Participants — KMAA',
+    import('./pages/compte/mes-commandes/mes-commandes')
+      .then(m => m.MesCommandes),
+  canActivate: [authGuard],
+  title: 'Mes commandes — KMAA',
 },
+
 
   // ============================================================
   // FALLBACK
   // ============================================================
   { path: '**', redirectTo: '' },
 ];
-
-provideRouter(
-  routes,
-  withInMemoryScrolling({
-    anchorScrolling: 'enabled',
-    scrollPositionRestoration: 'enabled',
-  }),
-);

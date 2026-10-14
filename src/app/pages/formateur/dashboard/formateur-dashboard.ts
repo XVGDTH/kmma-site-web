@@ -30,11 +30,11 @@ import { AuthService } from '../../../shared/auth.service';
 // API
 // ============================================================
 
-const API_URL = 'https://api.convergesas.com/api';
+const API_URL = 'http://127.0.0.1:8000/api';
 
 // reception des devoirs  soumis par les apprenants
 
-const LARAVEL_URL = 'https://api.convergesas.com';
+const LARAVEL_URL = 'http://127.0.0.1:8000';
 
 interface ApiSubmission {
   id: string;

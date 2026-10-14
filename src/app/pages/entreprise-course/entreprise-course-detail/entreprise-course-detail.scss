@@ -1,0 +1,561 @@
+/* ============================================================
+   PAGE ENTREPRISE-COURSE-DETAIL — Design Premium KMAA
+   ============================================================ */
+
+$green-dark: #0e3b32;
+$green-darker: #082621;
+$copper: #b87333;
+$copper-dark: #96551f;
+$copper-light: #e6a869;
+$ink: #1f2a28;
+$grey: #5c6b66;
+$bg-light: #f9f7f4;
+
+@mixin container {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+/* ---------- HERO ---------- */
+.ent-detail-hero {
+  position: relative;
+  background-size: cover;
+  background-position: center;
+  min-height: 650px;
+  display: flex;
+  align-items: center;
+  color: #fff;
+  padding-top: 120px;
+
+  &__overlay {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: linear-gradient(90deg, rgba(14, 59, 50, 0.95) 0%, rgba(14, 59, 50, 0.75) 50%, rgba(14, 59, 50, 0.4) 100%);
+    z-index: 1;
+  }
+
+  &__container { @include container; position: relative; z-index: 2; width: 100%; }
+  &__content { max-width: 800px; padding: 3rem 0; }
+
+  &__breadcrumb {
+    display: flex; gap: 0.5rem; font-size: 0.85rem; color: rgba(255, 255, 255, 0.7); margin-bottom: 1.5rem;
+    a { color: rgba(255, 255, 255, 0.7); text-decoration: none; }
+    a:hover { color: $copper-light; text-decoration: underline; }
+  }
+
+  &__badge {
+    display: inline-block; padding: 0.25rem 0.75rem; background: $copper; color: #fff;
+    font-size: 0.75rem; font-weight: 700; text-transform: uppercase; border-radius: 4px; margin-right: 0.5rem;
+  }
+
+  &__mode {
+    display: inline-block; padding: 0.25rem 0.75rem; background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(8px); color: #fff;
+    font-size: 0.75rem; font-weight: 700; text-transform: uppercase; border-radius: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+  }
+
+  &__title { font-size: clamp(2rem, 4vw, 3rem); font-weight: 800; line-height: 1.2; margin: 1rem 0; }
+  &__desc { font-size: 1.1rem; line-height: 1.6; color: rgba(255, 255, 255, 0.9); margin-bottom: 2rem; }
+
+  &__cta {
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      background: $copper; color: #fff; border: none; padding: 1rem 2rem; border-radius: 8px;
+      font-size: 1.1rem; font-weight: 700; cursor: pointer; transition: all 0.3s; text-decoration: none;
+
+      &:hover { background: $copper-dark; transform: translateY(-3px); box-shadow: 0 10px 20px rgba(184, 115, 51, 0.4); }
+    }
+  }
+}
+
+/* ---------- BARRE D'INFO ---------- */
+.ent-detail-info-bar {
+  background: #fff; border-bottom: 1px solid rgba(14, 59, 50, 0.1); box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  position: sticky; top: 0; z-index: 100;
+
+  &__container { @include container; display: flex; justify-content: space-around; padding: 1.5rem 0; flex-wrap: wrap; gap: 1rem; }
+
+  &__item {
+    display: flex; flex-direction: column; text-align: center; font-size: 0.9rem;
+
+    .label { font-weight: 700; color: $grey; text-transform: uppercase; font-size: 0.75rem; margin-bottom: 0.25rem; }
+    .value { color: $ink; font-weight: 600; }
+  }
+}
+
+/* ---------- ONGLETS ---------- */
+.ent-detail-tabs {
+  background: #fff; border-bottom: 1px solid #eee;
+
+  &__container { @include container; display: flex; gap: 2rem; overflow-x: auto; padding: 0; }
+
+  button {
+    background: none; border: none; padding: 1.5rem 0; font-size: 1rem; font-weight: 600;
+    color: $grey; cursor: pointer; border-bottom: 3px solid transparent; transition: all 0.2s; white-space: nowrap;
+
+    &:hover { color: $copper; }
+    &.active { color: $copper; border-bottom-color: $copper; }
+  }
+}
+
+/* ---------- CONTENU ---------- */
+.ent-detail-content {
+  padding: 4rem 0; background: #fff;
+
+  &__container { @include container; max-width: 1100px; }
+
+  h2 { font-size: 2rem; color: $green-dark; margin-bottom: 1.5rem; font-weight: 800; }
+
+  .rich-text {
+    font-size: 1.1rem; line-height: 1.8; color: $ink; margin-bottom: 3rem;
+    p { margin-bottom: 1.5rem; }
+  }
+}
+
+.section-block {
+  margin-bottom: 4rem; padding-bottom: 2rem; border-bottom: 1px solid #f0f0f0;
+  &:last-child { border-bottom: none; }
+}
+
+/* --- Cartes d'info --- */
+.info-cards {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;
+
+  .info-card {
+    background: $bg-light; padding: 1.75rem; border-radius: 12px;
+    border-left: 4px solid $copper; transition: transform 0.3s;
+
+    &:hover { transform: translateY(-5px); }
+    h3 { margin-top: 0; font-size: 1.1rem; color: $green-dark; }
+    p { color: $grey; line-height: 1.6; margin: 0; }
+  }
+}
+
+/* --- Timeline --- */
+.ent-timeline {
+  position: relative;
+  padding-left: 2rem;
+  border-left: 3px solid rgba(184, 115, 51, 0.3);
+
+  &__phase { position: relative; margin-bottom: 2rem; }
+
+  &__marker {
+    position: absolute; left: -2.7rem; top: 0;
+    width: 1.5rem; height: 1.5rem; border-radius: 50%;
+    border: 4px solid #fff; box-shadow: 0 0 0 3px $copper;
+    &--during { background: $copper; }
+  }
+}
+
+.ent-course-card {
+  display: flex; gap: 1.5rem; background: $bg-light; padding: 1.25rem;
+  border-radius: 8px; margin-bottom: 1.5rem;
+
+  &__image { width: 200px; height: 130px; object-fit: cover; border-radius: 6px; flex-shrink: 0; }
+
+  &__info {
+    flex: 1; display: flex; flex-direction: column; justify-content: center;
+    h4 { margin: 0 0 0.5rem; color: $green-dark; font-size: 1.15rem; font-weight: 700; }
+    p { font-size: 0.95rem; color: $grey; margin-bottom: 0.75rem; }
+    .ent-course-card__duration { font-size: 0.85rem; color: $copper; font-weight: 700; }
+  }
+}
+
+.ent-toggle-btn {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  background: none; border: none; color: $copper;
+  font-size: 1rem; font-weight: 600; cursor: pointer; padding: 0.5rem 0;
+  margin-bottom: 1.5rem; transition: color 0.2s;
+
+  &:hover { text-decoration: underline; }
+
+  &__chevron {
+    font-size: 0.7rem; transition: transform 0.3s;
+    &.rotated { transform: rotate(180deg); }
+  }
+}
+
+.ent-weeks { display: flex; flex-direction: column; gap: 0.75rem; margin-top: 1rem; }
+
+.ent-week {
+  background: #fff; border: 1px solid rgba(14, 59, 50, 0.08);
+  border-radius: 10px; overflow: hidden; transition: all 0.3s;
+
+  &:hover { box-shadow: 0 4px 12px rgba(14, 59, 50, 0.08); }
+  &.open, &__header:hover { border-color: $copper; }
+
+  &__header {
+    display: flex; align-items: center; gap: 1rem;
+    padding: 1.25rem 1.5rem; cursor: pointer;
+    background: $bg-light; transition: background 0.2s;
+
+    &:hover { background: #f0ebe3; }
+  }
+
+  &__number {
+    font-weight: 700; color: $copper; font-size: 0.85rem;
+    white-space: nowrap; padding: 0.25rem 0.6rem;
+    background: rgba(184, 115, 51, 0.1); border-radius: 4px;
+  }
+
+  &__title { flex: 1; margin: 0; font-size: 1rem; color: $green-dark; font-weight: 600; }
+
+  &__chevron { color: $copper; font-size: 0.8rem; transition: transform 0.3s; }
+  &.open &__chevron { transform: rotate(180deg); }
+
+  &__body {
+    padding: 1.25rem 1.5rem; background: #fff;
+    border-top: 1px solid #f0f0f0;
+
+    ul {
+      list-style: none; padding: 0; margin: 0;
+      li {
+        position: relative; padding-left: 1.5rem; margin-bottom: 0.6rem;
+        color: $grey; line-height: 1.6;
+        &::before { content: '•'; position: absolute; left: 0; color: $copper; font-weight: bold; font-size: 1.2rem; }
+        &:last-child { margin-bottom: 0; }
+      }
+    }
+  }
+}
+
+/* ============================================ */
+/* FORMULES & TARIFS                             */
+/* ============================================ */
+.pricing-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+}
+
+.pricing-card {
+  position: relative;
+  background: #fff;
+  border: 2px solid rgba(14, 59, 50, 0.1);
+  border-radius: 16px;
+  padding: 2rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+  transition: all 0.3s;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(14, 59, 50, 0.1);
+    border-color: rgba(184, 115, 51, 0.4);
+  }
+
+  &--popular {
+    border-color: $copper;
+    background: linear-gradient(180deg, #fff 0%, #fdf6ec 100%);
+    box-shadow: 0 10px 30px rgba(184, 115, 51, 0.15);
+  }
+
+  &--selected {
+    border-color: $copper;
+    box-shadow: 0 0 0 3px rgba(184, 115, 51, 0.2), 0 15px 30px rgba(184, 115, 51, 0.2);
+  }
+
+  &__ribbon {
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: $copper;
+    color: #fff;
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 0.35rem 0.9rem;
+    border-radius: 50px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+    box-shadow: 0 4px 10px rgba(184, 115, 51, 0.4);
+  }
+
+  &__name {
+    font-size: 1.25rem;
+    color: $green-dark;
+    margin: 0 0 1rem;
+    font-weight: 700;
+  }
+
+  &__price {
+    font-size: 2rem;
+    color: $copper;
+    font-weight: 800;
+    margin: 0 0 0.5rem;
+    line-height: 1;
+
+    span {
+      font-size: 0.85rem;
+      color: $grey;
+      font-weight: 500;
+      display: block;
+      margin-top: 0.35rem;
+    }
+  }
+
+  &__desc {
+    font-size: 0.9rem;
+    color: $grey;
+    margin: 0 0 1.5rem;
+    line-height: 1.5;
+  }
+
+  &__features {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 2rem;
+    flex: 1;
+
+    li {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+      font-size: 0.85rem;
+      color: $ink;
+      margin-bottom: 0.75rem;
+      line-height: 1.5;
+
+      .check {
+        color: $copper;
+        font-weight: bold;
+        flex-shrink: 0;
+      }
+    }
+  }
+
+  &__cta {
+    width: 100%;
+    padding: 0.9rem 1rem;
+    border: 2px solid $copper;
+    background: transparent;
+    color: $copper;
+    font-weight: 700;
+    font-size: 0.9rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s;
+
+    &:hover {
+      background: $copper;
+      color: #fff;
+    }
+
+    &--primary {
+      background: $copper;
+      color: #fff;
+
+      &:hover { background: $copper-dark; }
+    }
+  }
+}
+
+/* --- Calculateur de taille d'équipe --- */
+.team-calculator {
+  background: $bg-light;
+  padding: 2rem;
+  border-radius: 12px;
+  text-align: center;
+  margin-bottom: 2rem;
+
+  h3 {
+    font-size: 1.15rem;
+    color: $green-dark;
+    margin: 0 0 1.5rem;
+    font-weight: 700;
+  }
+
+  &__input {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    background: #fff;
+    padding: 0.5rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(14, 59, 50, 0.08);
+
+    button {
+      width: 44px;
+      height: 44px;
+      border-radius: 8px;
+      border: none;
+      background: $green-dark;
+      color: #fff;
+      font-size: 1.5rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+
+      &:hover { background: $copper; }
+    }
+
+    input {
+      width: 70px;
+      text-align: center;
+      border: none;
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: $green-dark;
+      outline: none;
+
+      &::-webkit-outer-spin-button,
+      &::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+    }
+
+    .team-calculator__label {
+      font-size: 0.9rem;
+      color: $grey;
+      font-weight: 600;
+      padding-right: 0.75rem;
+    }
+  }
+}
+
+/* --- Checkout panel --- */
+.checkout-panel {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1.5rem;
+  background: linear-gradient(135deg, $green-dark 0%, $green-darker 100%);
+  color: #fff;
+  padding: 1.75rem 2rem;
+  border-radius: 12px;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+
+  &__summary {
+    p { margin: 0 0 0.35rem; font-size: 0.95rem; }
+    p:last-child { margin-bottom: 0; }
+    strong { color: $copper-light; }
+  }
+
+  &__cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem 2rem;
+    background: $copper;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s;
+
+    svg { transition: transform 0.3s; }
+
+    &:hover {
+      background: $copper-dark;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(184, 115, 51, 0.4);
+
+      svg { transform: translateX(4px); }
+    }
+  }
+}
+
+.custom-quote-note {
+  text-align: center;
+  color: $grey;
+  font-size: 0.95rem;
+
+  a {
+    color: $copper;
+    font-weight: 700;
+    text-decoration: none;
+    &:hover { text-decoration: underline; }
+  }
+}
+
+/* --- Two columns --- */
+.two-columns {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 3rem;
+  @media (max-width: 768px) { grid-template-columns: 1fr; gap: 1.5rem; }
+
+  h3 { font-size: 1.2rem; color: $copper; margin-bottom: 1rem; }
+  ul {
+    list-style: none; padding: 0;
+    li {
+      position: relative; padding-left: 1.5rem; margin-bottom: 0.75rem;
+      line-height: 1.6; color: $ink;
+      &::before { content: '✓'; position: absolute; left: 0; color: $copper; font-weight: bold; }
+    }
+  }
+}
+
+/* --- FAQ --- */
+.section-faq { margin-top: 5rem; border-top: 1px solid #eee; padding-top: 3rem; h2 { text-align: center; margin-bottom: 2rem; } }
+.faq-list { max-width: 800px; margin: 0 auto; }
+
+.faq-item {
+  border-bottom: 1px solid #eee; margin-bottom: 0.5rem;
+  &.open {
+    .faq-question .chevron { transform: rotate(180deg); }
+    .faq-answer { display: block; }
+  }
+}
+
+.faq-question {
+  width: 100%; background: none; border: none; display: flex; justify-content: space-between;
+  align-items: center; padding: 1.5rem 0; font-size: 1.05rem; font-weight: 600; color: $ink;
+  cursor: pointer; text-align: left; transition: color 0.2s;
+
+  &:hover { color: $copper; }
+  .chevron { color: $copper; font-size: 0.8rem; transition: transform 0.3s; }
+}
+
+.faq-answer { display: none; padding-bottom: 1.5rem; p { margin: 0; color: $grey; line-height: 1.7; } }
+
+/* --- CTA Final --- */
+.ent-cta-final {
+  background: linear-gradient(135deg, $copper 0%, $copper-dark 100%);
+  padding: 4rem 0;
+  color: #fff;
+
+  &__container { @include container; max-width: 700px; text-align: center; }
+
+  h2 { font-size: 2rem; font-weight: 800; margin: 0 0 1rem; }
+  p { font-size: 1.1rem; line-height: 1.6; color: rgba(255, 255, 255, 0.9); margin: 0 0 2rem; }
+
+  &__btn {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    padding: 1rem 2.5rem; background: #fff; color: $copper-dark;
+    font-weight: 800; font-size: 1rem; text-decoration: none;
+    border-radius: 50px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s;
+
+    svg { transition: transform 0.3s; }
+
+    &:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
+      svg { transform: translateX(4px); }
+    }
+  }
+}
+
+/* --- Erreur --- */
+.error-container {
+  text-align: center; padding: 8rem 2rem; background: $bg-light; min-height: 60vh;
+  display: flex; flex-direction: column; justify-content: center; align-items: center;
+
+  h2 { font-size: 2.5rem; color: $green-dark; margin-bottom: 1rem; }
+  p { font-size: 1.1rem; color: $grey; margin-bottom: 2rem; }
+
+  .btn-primary {
+    background: $copper; color: #fff; padding: 1rem 2rem; border-radius: 8px;
+    font-size: 1rem; font-weight: 700; text-decoration: none; transition: all 0.3s;
+
+    &:hover { background: $copper-dark; transform: translateY(-3px); box-shadow: 0 10px 20px rgba(184, 115, 51, 0.4); }
+  }
+}

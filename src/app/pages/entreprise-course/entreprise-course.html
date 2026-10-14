@@ -1,0 +1,191 @@
+<!-- HERO SECTION -->
+<section class="ent-hero">
+  <div class="ent-hero__container">
+    <nav class="ent-hero__breadcrumb">
+      <a routerLink="/">Accueil</a>
+      <span>/</span>
+      <a routerLink="/entreprises">Entreprises</a>
+      <span>/</span>
+      <span>Formations</span>
+    </nav>
+
+    <h1 class="ent-hero__title">Formations pour Entreprises</h1>
+    <p class="ent-hero__subtitle">
+      Développez les compétences de vos équipes avec nos formations sur mesure. 
+      En ligne, en présentiel ou en mode mixte, adaptées aux besoins de votre entreprise.
+    </p>
+
+    <!-- Statistiques -->
+    <div class="ent-hero__stats">
+      <div class="ent-hero__stat">
+        <span class="ent-hero__stat-number">12+</span>
+        <span class="ent-hero__stat-label">Formations</span>
+      </div>
+      <div class="ent-hero__stat">
+        <span class="ent-hero__stat-number">3</span>
+        <span class="ent-hero__stat-label">Modes d'apprentissage</span>
+      </div>
+      <div class="ent-hero__stat">
+        <span class="ent-hero__stat-number">100%</span>
+        <span class="ent-hero__stat-label">Sur mesure</span>
+      </div>
+    </div>
+
+    <h2 class="ent-hero__filter-title">Filtrer par domaine d'expertise</h2>
+
+    <div class="ent-hero__pills">
+      <button
+        type="button"
+        class="ent-pill"
+        [class.ent-pill--active]="activeSubject() === 'tous'"
+        (click)="setSubject('tous')"
+      >
+        Tous les domaines
+      </button>
+
+      @for (subject of subjects; track subject) {
+        <button
+          type="button"
+          class="ent-pill"
+          [class.ent-pill--active]="activeSubject() === subject"
+          (click)="setSubject(subject)"
+        >
+          {{ subject }}
+        </button>
+      }
+    </div>
+  </div>
+</section>
+
+<!-- LISTE DES FORMATIONS -->
+<section class="ent-courses">
+  <div class="ent-courses__container">
+    <div class="ent-courses__header">
+      <h2 class="ent-courses__title">Nos formations pour entreprises</h2>
+      <span class="ent-courses__count">{{ totalFiltered() }} formations</span>
+    </div>
+
+    <p class="ent-courses__intro">
+      Chaque formation est conçue pour être immédiatement applicable en entreprise. 
+      Choisissez le format qui convient à vos équipes.
+    </p>
+
+    @if (visibleCourses().length === 0) {
+      <p class="ent-courses__empty">
+        Aucune formation n'est disponible pour ce domaine pour le moment.
+      </p>
+    } @else {
+      <div class="ent-courses__grid">
+        @for (course of visibleCourses(); track course.id) {
+          <article class="ent-course-card">
+            <div class="ent-course-card__image">
+              <img [src]="course.image" [alt]="course.imageAlt" loading="lazy" />
+              <!-- ✅ Badge du mode de formation -->
+              <span
+                class="ent-course-card__mode"
+                [class.ent-course-card__mode--online]="course.mode === 'En ligne'"
+                [class.ent-course-card__mode--onsite]="course.mode === 'Présentiel'"
+                [class.ent-course-card__mode--hybrid]="course.mode === 'Mixte'"
+              >
+                @if (course.mode === 'En ligne') { 💻 }
+                @if (course.mode === 'Présentiel') { 🏢 }
+                @if (course.mode === 'Mixte') { 🔄 }
+                {{ course.mode | uppercase }}
+              </span>
+            </div>
+
+            <div class="ent-course-card__body">
+              <p class="ent-course-card__provider">{{ course.provider }}</p>
+
+              <h3 class="ent-course-card__title">{{ course.title }}</h3>
+
+              <p class="ent-course-card__desc">{{ course.description }}</p>
+
+              <ul class="ent-course-card__meta">
+                <li>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M6 2h12M6 22h12M8 2v4l4 5 4-5V2M8 22v-4l4-5 4 5v4" />
+                  </svg>
+                  {{ course.duration }}
+                </li>
+                <li>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="9" />
+                    <path d="M12 7v5l3 3" />
+                  </svg>
+                  {{ course.hoursPerWeek }}
+                </li>
+                <!-- <li>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                  </svg>
+                  {{ course.price | number:'1.0-0' }} FCFA
+                </li> -->
+                <!-- ✅ À AJOUTER -->
+<li>
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+  </svg>
+  {{ course.modulesCount }} module{{ course.modulesCount > 1 ? 's' : '' }}
+</li>
+              </ul>
+
+              <!-- ✅ Bouton "Choisir cette formation" -->
+              <a
+                class="ent-course-card__cta"
+                [routerLink]="['/entreprises/formation', course.id]"
+              >
+                Choisir cette formation
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M5 12h14M13 6l6 6-6 6" />
+                </svg>
+              </a>
+            </div>
+          </article>
+        }
+      </div>
+
+      @if (hasMore()) {
+        <div class="ent-courses__more">
+          <button type="button" (click)="showMore()">
+            Afficher plus de formations
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m6 9 6 6 6-6" />
+            </svg>
+          </button>
+        </div>
+      }
+    }
+  </div>
+</section>
+
+<!-- CTA ENTREPRISE -->
+<section class="ent-cta">
+  <div class="ent-cta__container">
+    <div class="ent-cta__content">
+      <h2>Besoin d'une formation sur mesure ?</h2>
+      <p>Nos experts conçoivent des programmes personnalisés adaptés aux enjeux spécifiques de votre entreprise.</p>
+      <a routerLink="/contact" class="ent-cta__btn">
+        Demander un devis
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M5 12h14M13 6l6 6-6 6" />
+        </svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- NEWSLETTER -->
+<section class="sujet-newsletter">
+  <div class="sujet-newsletter__container">
+    <div class="sujet-newsletter__content">
+      <h2>Rejoignez KMAA Entreprises <em>aujourd'hui</em></h2>
+      <p>Inscrivez-vous pour recevoir nos offres de formations dédiées aux entreprises.</p>
+      <form class="sujet-newsletter__form">
+        <input type="email" placeholder="Votre adresse email professionnelle" required>
+        <button type="submit">Inscrivez-vous</button>
+      </form>
+    </div>
+  </div>
+</section>

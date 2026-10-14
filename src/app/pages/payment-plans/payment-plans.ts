@@ -29,7 +29,7 @@ export class PaymentPlans {
   private readonly checkout = inject(CheckoutService);
   private readonly coursesApi = inject(CoursesApiService);
   private readonly http = inject(HttpClient);
-  private readonly apiUrl = 'https://api.convergesas.com/api';
+  private readonly apiUrl = 'http://127.0.0.1:8000/api';
 
   readonly courseId = toSignal(
     this.route.paramMap.pipe(map((p) => p.get('id') ?? '')),

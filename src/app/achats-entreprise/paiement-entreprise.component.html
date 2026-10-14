@@ -1,0 +1,280 @@
+@if (course(); as c) {
+  <section class="achat-ent-page">
+    <div class="achat-ent-page__container">
+
+      <nav class="achat-ent-breadcrumb">
+        <a routerLink="/">Accueil</a>
+        <span>/</span>
+        <a routerLink="/entreprises/formations">Entreprises</a>
+        <span>/</span>
+        <span class="current">Paiement</span>
+      </nav>
+
+      <header class="achat-ent-header">
+        <h1>Finalisez votre commande entreprise</h1>
+        <p>Récapitulatif et informations de facturation.</p>
+      </header>
+
+      <div class="achat-ent-layout">
+
+        <div class="achat-ent-form">
+
+          <!-- ÉTAPE 1 : Infos entreprise -->
+          <section class="achat-ent-step">
+            <div class="achat-ent-step__header">
+              <span class="achat-ent-step__number">1</span>
+              <h2>Informations de facturation</h2>
+            </div>
+
+            <div class="field-group">
+              <label>Raison sociale / Nom de l'entreprise *</label>
+              <input
+                type="text"
+                placeholder="KMAA SARL"
+                [value]="companyName()"
+                (input)="onCompanyNameInput($event)"
+              />
+            </div>
+
+            <div class="field-group">
+              <label>Adresse complète</label>
+              <input
+                type="text"
+                placeholder="Ouagadougou, Burkina Faso"
+                [value]="companyAddress()"
+                (input)="onCompanyAddressInput($event)"
+              />
+            </div>
+
+            <div class="field-group">
+              <label>IFU / RIB</label>
+              <input
+                type="text"
+                placeholder="Numéro d'identification fiscale"
+                [value]="companyTaxId()"
+                (input)="onCompanyTaxIdInput($event)"
+              />
+            </div>
+          </section>
+
+          <!-- ÉTAPE 2 : Moyen de paiement -->
+          <section class="achat-ent-step">
+            <div class="achat-ent-step__header">
+              <span class="achat-ent-step__number">2</span>
+              <h2>Mode de paiement</h2>
+            </div>
+
+            <div class="payment-methods">
+              <!-- Virement bancaire -->
+              <button
+                type="button"
+                class="payment-method"
+                [class.payment-method--active]="selectedMethod() === 'virement'"
+                (click)="selectMethod('virement')"
+              >
+                <div class="payment-method__logo payment-method__logo--bank">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="28" height="28">
+                    <path d="M3 21h18M3 10h18M5 6l7-3 7 3M4 10v11M20 10v11M8 14v3M12 14v3M16 14v3"/>
+                  </svg>
+                </div>
+                <div class="payment-method__info">
+                  <strong>Virement bancaire</strong>
+                  <span>Recommandé pour les entreprises</span>
+                </div>
+                <span class="payment-method__check"></span>
+              </button>
+
+              <!-- Orange Money -->
+              <button
+                type="button"
+                class="payment-method"
+                [class.payment-method--active]="selectedMethod() === 'orange'"
+                (click)="selectMethod('orange')"
+              >
+                <div class="payment-method__logo payment-method__logo--orange">
+                  <span>OM</span>
+                </div>
+                <div class="payment-method__info">
+                  <strong>Orange Money</strong>
+                  <span>Paiement mobile</span>
+                </div>
+                <span class="payment-method__check"></span>
+              </button>
+
+              <!-- Moov Money -->
+              <button
+                type="button"
+                class="payment-method"
+                [class.payment-method--active]="selectedMethod() === 'moov'"
+                (click)="selectMethod('moov')"
+              >
+                <div class="payment-method__logo payment-method__logo--moov">
+                  <span>MOOV</span>
+                </div>
+                <div class="payment-method__info">
+                  <strong>Moov Money</strong>
+                  <span>Paiement mobile</span>
+                </div>
+                <span class="payment-method__check"></span>
+              </button>
+
+              <!-- Telecel Money -->
+              <button
+                type="button"
+                class="payment-method"
+                [class.payment-method--active]="selectedMethod() === 'telecel'"
+                (click)="selectMethod('telecel')"
+              >
+                <div class="payment-method__logo payment-method__logo--telecel">
+                  <span>TELECEL</span>
+                </div>
+                <div class="payment-method__info">
+                  <strong>Telecel Money</strong>
+                  <span>Paiement mobile</span>
+                </div>
+                <span class="payment-method__check"></span>
+              </button>
+
+              <!-- Carte -->
+              <button
+                type="button"
+                class="payment-method"
+                [class.payment-method--active]="selectedMethod() === 'card'"
+                (click)="selectMethod('card')"
+              >
+                <div class="payment-method__logo payment-method__logo--card">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="28" height="28">
+                    <rect x="2" y="5" width="20" height="14" rx="2"/>
+                    <path d="M2 10h20"/>
+                  </svg>
+                </div>
+                <div class="payment-method__info">
+                  <strong>Carte bancaire</strong>
+                  <span>Visa, Mastercard</span>
+                </div>
+                <span class="payment-method__check"></span>
+              </button>
+            </div>
+
+            @if (selectedMethod() && selectedMethod() !== 'virement' && selectedMethod() !== 'card') {
+              <div class="payment-phone">
+                <label>Numéro {{ selectedMethod() === 'orange' ? 'Orange' : selectedMethod() === 'moov' ? 'Moov' : 'Telecel' }}</label>
+                <div class="payment-phone__input">
+                  <span class="prefix">+226</span>
+                  <input
+                    type="tel"
+                    placeholder="70 12 34 56"
+                    [value]="phoneNumber()"
+                    (input)="formatPhone($event)"
+                    maxlength="11"
+                  />
+                </div>
+              </div>
+            }
+
+            @if (selectedMethod() === 'virement') {
+              <div class="bank-notice">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"/>
+                  <path d="M12 16v-4M12 8h.01"/>
+                </svg>
+                <p>Les coordonnées bancaires vous seront envoyées par email avec la facture. Votre accès sera activé dès réception du virement.</p>
+              </div>
+            }
+          </section>
+
+          <!-- ÉTAPE 3 : Conditions -->
+          <section class="achat-ent-step">
+            <div class="achat-ent-step__header">
+              <span class="achat-ent-step__number">3</span>
+              <h2>Validation</h2>
+            </div>
+
+            <label class="terms-checkbox" [class.checked]="termsAccepted()">
+              <input type="checkbox" [checked]="termsAccepted()" (change)="toggleTerms()" />
+              <span class="terms-checkbox__box"></span>
+              <span class="terms-checkbox__text">
+                J'accepte les <a routerLink="/conditions" target="_blank">conditions générales de vente</a>
+                et je confirme que l'entreprise est habilitée à effectuer cet achat.
+              </span>
+            </label>
+          </section>
+
+        </div>
+
+        <!-- RÉCAPITULATIF -->
+        <aside class="achat-ent-summary">
+          <div class="achat-ent-summary__card">
+            <h2>Récapitulatif</h2>
+
+            <div class="summary-course">
+              <img [src]="c.image" [alt]="c.title" loading="lazy" />
+              <div class="summary-course__info">
+                <span class="summary-course__provider">{{ c.provider }}</span>
+                <h3>{{ c.title }}</h3>
+                <span class="summary-course__meta">{{ plan()?.name }} — {{ teamSize() }} apprenant(s)</span>
+              </div>
+            </div>
+
+            <div class="summary-lines">
+              <div class="summary-line">
+                <span>Sous-total</span>
+                <strong>{{ formatPrice(subtotal()) }}</strong>
+              </div>
+
+              @if (discount() > 0) {
+                <div class="summary-line summary-line--discount">
+                  <span>Réduction {{ promoCode() ? '(' + promoCode() + ')' : '' }}</span>
+                  <strong>-{{ formatPrice(discount()) }}</strong>
+                </div>
+              }
+
+              <div class="summary-line">
+                <span>Total HT</span>
+                <strong>{{ formatPrice(totalHT()) }}</strong>
+              </div>
+              <div class="summary-line">
+                <span>TVA (18%)</span>
+                <strong>{{ formatPrice(tva()) }}</strong>
+              </div>
+              <div class="summary-line summary-line--total">
+                <span>Total TTC</span>
+                <strong>{{ formatPrice(totalTTC()) }}</strong>
+              </div>
+            </div>
+
+            <button
+              type="button"
+              class="btn-pay"
+              [disabled]="!canPay() || isProcessing()"
+              (click)="confirmPayment()"
+            >
+              @if (isProcessing()) {
+                <span class="spinner"></span>
+                Traitement...
+              } @else {
+                Confirmer et payer {{ formatPrice(totalTTC()) }}
+              }
+            </button>
+
+            <button type="button" class="btn-cancel" (click)="cancel()">Annuler</button>
+
+            <div class="summary-secure">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="11" width="18" height="11" rx="2"/>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+              </svg>
+              <span>Transaction sécurisée — Facture sous 24h</span>
+            </div>
+          </div>
+        </aside>
+
+      </div>
+    </div>
+  </section>
+} @else {
+  <div class="achat-ent-error">
+    <h2>Commande introuvable</h2>
+    <a routerLink="/entreprises/formations" class="btn-primary">Retour au catalogue</a>
+  </div>
+}

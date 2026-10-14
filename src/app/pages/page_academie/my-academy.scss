@@ -965,3 +965,888 @@
   from { transform: scale(0); }
   to   { transform: scale(1); }
 }
+
+
+
+
+/* ============================================================
+   Ligne d'actions en bas de la card
+   ============================================================ */
+.academy-panel__actions {
+  grid-column: 1 / -1; /* si .academy-panel est en display: grid */
+  /* ⚠️ Si .academy-panel est en display: flex, remplacez la ligne
+     ci-dessus par :  flex-basis: 100%;  (avec flex-wrap: wrap) */
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* « Découvrir » à gauche, « Explorer » à droite */
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 0.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(184, 115, 51, 0.18); /* séparateur cuivre léger (optionnel) */
+}
+
+/* ===== Bouton « Explorer tous les cours » — cuivre ===== */
+.academy-panel__cta--all {
+  margin-left: auto; /* pousse le bouton vers la droite */
+
+  background: linear-gradient(135deg, #cf9250 0%, #b87333 55%, #96551f 100%);
+  color: #fff;
+  border: 1px solid rgba(150, 85, 31, 0.45);
+  box-shadow: 0 6px 16px rgba(184, 115, 51, 0.32);
+  transition: background 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
+
+  &:hover {
+    background: linear-gradient(135deg, #dca76a 0%, #c07f3c 55%, #a35c24 100%);
+    box-shadow: 0 10px 22px rgba(184, 115, 51, 0.42);
+    transform: translateY(-2px);
+  }
+
+  &:active {
+    transform: translateY(0);
+    box-shadow: 0 4px 10px rgba(184, 115, 51, 0.3);
+  }
+}
+
+/* Mobile : les deux boutons se superposent en pleine largeur */
+@media (max-width: 640px) {
+  .academy-panel__actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .academy-panel__cta--all {
+    margin-left: 0;
+  }
+}
+
+
+
+// ============================================================
+// 🆕 SECTION FORMATION KMAA — Présentiel & Distanciel
+// Design unique : fond or vibrant, cartes inclinées,
+// abonnements en cartes et bons de réduction façon tickets.
+// ============================================================
+
+// ============================================================
+// 🆕 SECTION FORMATION KMAA — Design premium (navy + or + violet)
+// ============================================================
+
+.academy-training {
+  --training-navy: #0a1330;
+  --training-navy-light: #131c46;
+  --training-violet: #4c2a85;
+  --training-gold: #d4a24a;
+  --gradient-navy-gold: linear-gradient(135deg, #0a1330 0%, #131c46 45%, #d4a24a 100%);
+  --gradient-gold-soft: linear-gradient(135deg, #f5d68a 0%, #d4a24a 55%, #b8873a 100%);
+
+  position: relative;
+  overflow: hidden;
+  scroll-margin-top: 96px;
+  background:
+    radial-gradient(circle at 12% 8%, rgba(76, 42, 133, 0.35) 0, transparent 45%),
+    radial-gradient(circle at 88% 92%, rgba(212, 162, 74, 0.18) 0, transparent 45%),
+    linear-gradient(160deg, #060a1c 0%, #0a1330 55%, #131c46 100%);
+  padding: clamp(4rem, 8vw, 7rem) 1.5rem clamp(4rem, 8vw, 6.5rem);
+  color: #fff;
+
+  // Cercles décoratifs
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+    filter: blur(2px);
+  }
+
+  &::before {
+    width: 420px;
+    height: 420px;
+    top: -140px;
+    right: -120px;
+    background: radial-gradient(circle, rgba(212, 162, 74, 0.22), transparent 70%);
+  }
+
+  &::after {
+    width: 340px;
+    height: 340px;
+    bottom: -120px;
+    left: -100px;
+    background: radial-gradient(circle, rgba(76, 42, 133, 0.35), transparent 70%);
+  }
+}
+
+.academy-training__container {
+  position: relative;
+  z-index: 1;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+// --- En-tête ---------------------------------------------------------------
+.academy-training__header {
+  max-width: 780px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.academy-training__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 20px;
+  border-radius: 999px;
+  background: rgba(212, 162, 74, 0.12);
+  border: 1px solid rgba(212, 162, 74, 0.45);
+  color: var(--training-gold);
+  font-weight: 700;
+  font-size: 0.76rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  backdrop-filter: blur(6px);
+}
+
+.academy-training__title {
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  margin: 20px 0 14px;
+}
+
+.academy-training__underline {
+  display: block;
+  width: 76px;
+  height: 4px;
+  border-radius: 4px;
+  background: var(--gradient-gold-soft);
+  margin: 0 auto 22px;
+  box-shadow: 0 0 20px rgba(212, 162, 74, 0.55);
+}
+
+.academy-training__lead {
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 1.05rem;
+  line-height: 1.7;
+  margin: 0;
+}
+
+// --- Statistiques ----------------------------------------------------------
+.academy-training__stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(1.25rem, 2.5vw, 2rem);
+  align-items: start;
+  margin-top: clamp(3rem, 6vw, 4.5rem);
+}
+
+.training-stat {
+  position: relative;
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 22px;
+  padding: clamp(1.6rem, 2.5vw, 2.4rem);
+  backdrop-filter: blur(10px);
+  box-shadow:
+    0 24px 48px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1),
+              box-shadow 0.35s ease,
+              border-color 0.35s ease;
+
+  &:nth-child(1) { transform: rotate(-2deg) translateY(14px); }
+  &:nth-child(2) { transform: translateY(-14px); }
+  &:nth-child(3) { transform: rotate(2deg) translateY(18px); }
+
+  &:hover {
+    transform: rotate(0) translateY(-10px) scale(1.02);
+    border-color: rgba(212, 162, 74, 0.55);
+    box-shadow:
+      0 34px 70px rgba(0, 0, 0, 0.45),
+      0 0 0 1px rgba(212, 162, 74, 0.25),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+
+    .training-stat__icon {
+      transform: rotate(-8deg) scale(1.1);
+      box-shadow: 0 0 30px rgba(212, 162, 74, 0.55);
+    }
+  }
+}
+
+.training-stat__icon {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  width: 52px;
+  height: 52px;
+  border-radius: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--gradient-gold-soft);
+  color: #0a1330;
+  box-shadow: 0 10px 24px rgba(212, 162, 74, 0.35);
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
+}
+
+.training-stat__value {
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: clamp(2.6rem, 4.5vw, 3.6rem);
+  font-weight: 800;
+  line-height: 1;
+  margin: 0 0 12px;
+  padding-right: 64px;
+  background: linear-gradient(135deg, #fff 0%, #f5d68a 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.training-stat__label {
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 0.92rem;
+  line-height: 1.6;
+  margin: 0;
+}
+
+// --- Modes de formation -----------------------------------------------------
+.academy-training__modes {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(1.5rem, 3vw, 2.5rem);
+  margin-top: clamp(3.5rem, 7vw, 5.5rem);
+}
+
+.training-mode {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  border-radius: 26px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
+  transition: transform 0.35s ease, box-shadow 0.35s ease, border-color 0.35s ease;
+
+  &:hover {
+    transform: translateY(-8px);
+    border-color: rgba(212, 162, 74, 0.45);
+    box-shadow:
+      0 40px 80px rgba(0, 0, 0, 0.5),
+      0 0 0 1px rgba(212, 162, 74, 0.3);
+
+    .training-mode__media img {
+      transform: scale(1.06);
+    }
+  }
+
+  &--presentiel {
+    background: linear-gradient(165deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+  }
+
+  &--distanciel {
+    background: linear-gradient(165deg, rgba(76, 42, 133, 0.45), rgba(10, 19, 48, 0.9));
+  }
+}
+
+.training-mode__media {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, transparent 40%, rgba(6, 10, 28, 0.9) 100%);
+    pointer-events: none;
+  }
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+}
+
+.training-mode__tag {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: 999px;
+  background: rgba(6, 10, 28, 0.85);
+  border: 1px solid rgba(212, 162, 74, 0.4);
+  color: var(--training-gold);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  backdrop-filter: blur(8px);
+}
+
+.training-mode__body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: clamp(1.5rem, 3vw, 2.2rem);
+  color: #fff;
+}
+
+.training-mode__title {
+  font-family: var(--font-display);
+  font-size: clamp(1.35rem, 2.2vw, 1.75rem);
+  font-weight: 800;
+  margin: 0 0 6px;
+  color: #fff;
+}
+
+.training-mode__tagline {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--training-gold);
+  margin: 0 0 14px;
+}
+
+.training-mode__description {
+  font-size: 0.96rem;
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.75);
+  margin: 0 0 20px;
+}
+
+.training-mode__highlights {
+  list-style: none;
+  margin: 0 0 24px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    color: rgba(255, 255, 255, 0.85);
+
+    span {
+      flex-shrink: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 20px;
+      height: 20px;
+      margin-top: 1px;
+      border-radius: 50%;
+      background: rgba(212, 162, 74, 0.2);
+      color: var(--training-gold);
+      font-size: 0.7rem;
+      font-weight: 800;
+    }
+  }
+}
+
+.training-mode__actions {
+  margin-top: auto;
+  padding-top: 8px;
+}
+
+.training-mode__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 13px 26px;
+  border-radius: 999px;
+  background: var(--gradient-gold-soft);
+  color: #0a1330;
+  font-weight: 800;
+  font-size: 0.9rem;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 30px rgba(212, 162, 74, 0.45);
+  }
+}
+
+// --- Formules groupe --------------------------------------------------------
+.academy-training__subscriptions {
+  margin-top: clamp(4rem, 8vw, 6rem);
+  text-align: center;
+}
+
+.academy-training__subtitle {
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 2.8vw, 2.2rem);
+  font-weight: 800;
+  margin: 0 0 10px;
+
+  &--light { color: #fff; }
+}
+
+.academy-training__subtitle-lead {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 1rem;
+  margin: 0 0 clamp(2rem, 4vw, 2.8rem);
+}
+
+.academy-training__plans {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 22px;
+  text-align: left;
+  align-items: stretch;
+}
+
+.training-plan {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(165deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 22px;
+  padding: 28px 24px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.35);
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+
+  &:hover {
+    transform: translateY(-6px);
+    border-color: rgba(212, 162, 74, 0.4);
+    box-shadow: 0 32px 60px rgba(0, 0, 0, 0.45);
+  }
+
+  &--popular {
+    background:
+      linear-gradient(165deg, rgba(212, 162, 74, 0.18), rgba(76, 42, 133, 0.35)),
+      linear-gradient(165deg, #131c46, #0a1330);
+    border: 1.5px solid rgba(212, 162, 74, 0.6);
+    transform: translateY(-12px);
+    box-shadow:
+      0 34px 70px rgba(0, 0, 0, 0.5),
+      0 0 0 1px rgba(212, 162, 74, 0.3);
+
+    &:hover { transform: translateY(-16px); }
+  }
+}
+
+.training-plan__ribbon {
+  position: absolute;
+  top: -14px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 6px 18px;
+  border-radius: 999px;
+  background: var(--gradient-gold-soft);
+  color: #0a1330;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  box-shadow: 0 8px 22px rgba(212, 162, 74, 0.5);
+}
+
+.training-plan__name {
+  color: #fff;
+  font-size: 1.15rem;
+  font-weight: 800;
+  margin: 0 0 12px;
+}
+
+.training-plan__price {
+  color: var(--training-gold);
+  font-family: var(--font-display);
+  font-size: 1.7rem;
+  font-weight: 800;
+  margin: 0 0 6px;
+  line-height: 1.1;
+
+  span {
+    display: block;
+    font-family: var(--font-body, inherit);
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.6);
+    margin-top: 4px;
+  }
+}
+
+.training-plan__description {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.88rem;
+  line-height: 1.6;
+  margin: 0 0 20px;
+}
+
+.training-plan__cta {
+  display: block;
+  text-align: center;
+  padding: 12px 18px;
+  border-radius: 999px;
+  background: var(--gradient-gold-soft);
+  color: #0a1330;
+  font-weight: 800;
+  font-size: 0.88rem;
+  margin-bottom: 22px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 26px rgba(212, 162, 74, 0.45);
+  }
+}
+
+.training-plan--popular .training-plan__cta {
+  background: #fff;
+  color: #0a1330;
+}
+
+.training-plan__features {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  li {
+    display: flex;
+    align-items: flex-start;
+    gap: 9px;
+    font-size: 0.86rem;
+    line-height: 1.5;
+    color: rgba(255, 255, 255, 0.85);
+
+    span { color: var(--training-gold); font-weight: 800; }
+  }
+}
+
+.academy-training__plans-note {
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 0.82rem;
+  margin: clamp(1.5rem, 3vw, 2rem) 0 0;
+}
+
+// --- Bons de réduction (tickets perforés) ------------------------------------
+.academy-training__vouchers-panel {
+  margin-top: clamp(3.5rem, 7vw, 5rem);
+  background:
+    radial-gradient(circle at 85% 15%, rgba(212, 162, 74, 0.18), transparent 55%),
+    linear-gradient(165deg, #060a1c 0%, #0a1330 100%);
+  border: 1px solid rgba(212, 162, 74, 0.25);
+  border-radius: 30px;
+  padding: clamp(2.5rem, 5vw, 3.5rem);
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
+}
+
+.academy-training__vouchers-head {
+  max-width: 600px;
+  margin: 0 auto clamp(2rem, 4vw, 2.8rem);
+  text-align: center;
+}
+
+.academy-training__vouchers-lead {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.98rem;
+  margin: 0;
+}
+
+.academy-training__vouchers {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 22px;
+}
+
+.training-voucher {
+  --ticket-cut: 128px;
+
+  position: relative;
+  display: grid;
+  grid-template-columns: var(--ticket-cut) 1fr;
+  background: #fff;
+  border-radius: 18px;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    left: calc(var(--ticket-cut) - 11px);
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: #0a1330;
+    z-index: 2;
+  }
+
+  &::before { top: -11px; }
+  &::after { bottom: -11px; }
+
+  &:hover {
+    transform: translateY(-6px) rotate(-0.5deg);
+    box-shadow: 0 24px 48px rgba(0, 0, 0, 0.35);
+  }
+}
+
+.training-voucher__discount {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 20px 10px;
+  background: var(--gradient-gold-soft);
+  border-right: 2px dashed rgba(10, 19, 48, 0.25);
+  text-align: center;
+  color: #0a1330;
+}
+
+.training-voucher__badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: #0a1330;
+  color: var(--training-gold);
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+}
+
+.training-voucher__amount {
+  font-family: var(--font-display);
+  font-size: 1.9rem;
+  font-weight: 800;
+  color: #0a1330;
+  line-height: 1;
+}
+
+.training-voucher__barcode {
+  width: 60px;
+  height: 20px;
+  border-radius: 2px;
+  opacity: 0.55;
+  background: repeating-linear-gradient(
+    90deg,
+    #0a1330 0 2px,
+    transparent 2px 4px,
+    #0a1330 4px 5px,
+    transparent 5px 8px
+  );
+}
+
+.training-voucher__condition {
+  font-size: 0.62rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: rgba(10, 19, 48, 0.7);
+}
+
+.training-voucher__details {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 18px 20px;
+
+  h4 {
+    margin: 0;
+    color: #0a1330;
+    font-size: 1rem;
+    font-weight: 800;
+  }
+
+  p {
+    margin: 0;
+    color: #4a5568;
+    font-size: 0.84rem;
+    line-height: 1.55;
+  }
+}
+
+.training-voucher__copy {
+  margin-top: auto;
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border: 1.5px dashed #0a1330;
+  border-radius: 10px;
+  background: transparent;
+  color: #0a1330;
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+
+  strong { letter-spacing: 0.06em; }
+
+  &:hover {
+    background: #0a1330;
+    color: var(--training-gold);
+    border-color: #0a1330;
+  }
+
+  &.is-copied {
+    border-style: solid;
+    background: var(--gradient-gold-soft);
+    color: #0a1330;
+    border-color: transparent;
+  }
+}
+
+// --- CTA entreprises ---------------------------------------------------------
+.academy-training__cta-panel {
+  margin-top: clamp(3rem, 6vw, 4.5rem);
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+  gap: clamp(1.5rem, 3vw, 2.5rem);
+  align-items: center;
+  background:
+    radial-gradient(circle at 90% 10%, rgba(212, 162, 74, 0.15), transparent 55%),
+    linear-gradient(165deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
+  border: 1px solid rgba(212, 162, 74, 0.25);
+  border-radius: 26px;
+  padding: clamp(1.75rem, 4vw, 2.8rem);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 26px 52px rgba(0, 0, 0, 0.35);
+}
+
+.academy-training__cta-eyebrow {
+  display: inline-block;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: rgba(212, 162, 74, 0.15);
+  border: 1px solid rgba(212, 162, 74, 0.4);
+  color: var(--training-gold);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 14px;
+}
+
+.academy-training__cta-text {
+  h3 {
+    color: #fff;
+    font-family: var(--font-display);
+    font-size: clamp(1.4rem, 2.4vw, 1.9rem);
+    font-weight: 800;
+    margin: 0 0 12px;
+  }
+
+  p {
+    color: rgba(255, 255, 255, 0.72);
+    font-size: 0.98rem;
+    line-height: 1.65;
+    margin: 0;
+  }
+}
+
+.academy-training__cta-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.academy-training__cta-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 28px;
+  border-radius: 999px;
+  background: var(--gradient-gold-soft);
+  color: #0a1330;
+  font-weight: 800;
+  font-size: 0.92rem;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 30px rgba(212, 162, 74, 0.45);
+  }
+
+  &--ghost {
+    background: transparent;
+    border: 1.5px solid rgba(255, 255, 255, 0.35);
+    color: #fff;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(212, 162, 74, 0.6);
+      box-shadow: none;
+    }
+  }
+}
+
+// --- Accessibilité clavier ---------------------------------------------------
+.training-mode__cta,
+.training-plan__cta,
+.academy-training__cta-btn,
+.training-voucher__copy {
+  &:focus-visible {
+    outline: 3px solid var(--training-gold);
+    outline-offset: 3px;
+  }
+}
+
+// --- Responsive --------------------------------------------------------------
+@media (max-width: 900px) {
+  .academy-training__stats {
+    grid-template-columns: 1fr;
+    max-width: 520px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .training-stat {
+    &:nth-child(1) { transform: rotate(-1deg); }
+    &:nth-child(2) { transform: rotate(1deg); }
+    &:nth-child(3) { transform: rotate(-0.5deg); }
+  }
+
+  .academy-training__modes,
+  .academy-training__plans,
+  .academy-training__vouchers,
+  .academy-training__cta-panel {
+    grid-template-columns: 1fr;
+  }
+
+  .academy-training__plans {
+    max-width: 480px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .training-plan--popular {
+    transform: none;
+    &:hover { transform: translateY(-6px); }
+  }
+}
+
+@media (max-width: 620px) {
+  .training-voucher {
+    --ticket-cut: 100px;
+  }
+
+  .academy-training__cta-actions {
+    flex-direction: column;
+  }
+}

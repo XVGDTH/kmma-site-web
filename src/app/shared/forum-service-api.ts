@@ -7,7 +7,7 @@ import {
   ForumReply
 } from '../data/forum';
 
-const API_URL = 'https://api.convergesas.com/api';
+const API_URL = 'http://127.0.0.1:8000/api';
 
 @Injectable({
   providedIn: 'root'

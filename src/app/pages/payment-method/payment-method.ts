@@ -77,7 +77,7 @@ export class PaymentMethod {
     this.voucherMessage.set(null);
 
     this.http
-      .post('https://api.convergesas.com/api/vouchers/redeem', {
+      .post('http://127.0.0.1:8000/api/vouchers/redeem', {
         code,
         course_slug: id,
       })
@@ -85,7 +85,7 @@ export class PaymentMethod {
         next: () => {
           // Bon validÃ© â†’ on inscrit l'utilisateur au cours
           this.http
-            .post('https://api.convergesas.com/api/enrollments', {
+            .post('http://127.0.0.1:8000/api/enrollments', {
               course_slug: id,
             })
             .subscribe({

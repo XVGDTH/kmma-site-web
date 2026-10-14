@@ -1,0 +1,1109 @@
+/* ============================================================
+   PAGE SUJET-DÉTAIL — Design Premium KMAA
+   ============================================================ */
+
+$green-dark: #0e3b32;
+$green-darker: #082621;
+$copper: #b87333;
+$copper-dark: #96551f;
+$copper-light: #e6a869;
+$ink: #1f2a28;
+$grey: #5c6b66;
+$bg-light: #f9f7f4;
+
+@mixin container {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+/* ---------- HERO ---------- */
+
+// .detail-hero {
+//   position: relative;
+//   background-size: cover;
+//   background-position: center;
+//   min-height: 550px;
+//   display: flex;
+//   align-items: center;
+//   color: #fff;
+//   padding-top: 120px;
+
+//   &__overlay {
+//     position: absolute;
+//     top: 0; left: 0; width: 100%; height: 100%;
+//     background: linear-gradient(90deg, rgba(14, 59, 50, 0.95) 0%, rgba(14, 59, 50, 0.7) 50%, rgba(14, 59, 50, 0.3) 100%);
+//     z-index: 1;
+//   }
+
+//   &__container { @include container; position: relative; z-index: 2; width: 100%; }
+
+//   &__content { max-width: 700px; padding: 3rem 0; }
+
+//   &__breadcrumb {
+//     display: flex; gap: 0.5rem; font-size: 0.85rem; color: rgba(255, 255, 255, 0.7); margin-bottom: 1.5rem;
+//     a { color: rgba(255, 255, 255, 0.7); text-decoration: none; }
+//     a:hover { color: $copper-light; text-decoration: underline; }
+//   }
+
+//   &__badge {
+//     display: inline-block; padding: 0.25rem 0.75rem; background: $copper; color: #fff;
+//     font-size: 0.75rem; font-weight: 700; text-transform: uppercase; border-radius: 4px; margin-bottom: 1rem;
+//   }
+
+//   &__title { font-size: clamp(2rem, 4vw, 3rem); font-weight: 800; line-height: 1.2; margin: 0 0 1rem; }
+
+//   &__desc { font-size: 1.1rem; line-height: 1.6; color: rgba(255, 255, 255, 0.9); margin-bottom: 2rem; }
+
+//   &__provider {
+//     display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem; font-size: 0.9rem;
+
+//     /* ✅ Logo agrandi */
+//     .provider-logo {
+//       width: 60px;
+//       height: 60px;
+//       border-radius: 50%;
+//       object-fit: cover;
+//       border: 3px solid $copper;
+//       background: #fff;
+//       box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+//     }
+
+//     .provider-name { font-weight: 700; color: $copper-light; font-size: 1rem; }
+//   }
+
+//   &__cta {
+//     .btn-primary {
+//       background: $copper; color: #fff; border: none; padding: 1rem 2rem; border-radius: 8px;
+//       font-size: 1.1rem; font-weight: 700; cursor: pointer; transition: all 0.3s;
+
+//       &:hover { background: $copper-dark; transform: translateY(-3px); box-shadow: 0 10px 20px rgba(184, 115, 51, 0.4); }
+//     }
+//   }
+// }
+// //
+// //
+// //
+
+/* ---------- HERO ---------- */
+.detail-hero {
+  position: relative;
+  background-size: cover;
+  background-position: center;
+  min-height: 650px;
+  display: flex;
+  align-items: center;
+  color: #fff;
+  padding-top: 120px;
+
+  &__overlay {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: linear-gradient(90deg, rgba(14, 59, 50, 0.95) 0%, rgba(14, 59, 50, 0.75) 50%, rgba(14, 59, 50, 0.4) 100%);
+    z-index: 1;
+  }
+
+  &__container { 
+    @include container; 
+    position: relative; 
+    z-index: 2; 
+    width: 100%; 
+  }
+
+  &__content { 
+    max-width: 700px; 
+    padding: 3rem 0; 
+    position: relative;
+  }
+
+  &__breadcrumb {
+    display: flex; gap: 0.5rem; font-size: 0.85rem; color: rgba(255, 255, 255, 0.7); margin-bottom: 1.5rem;
+    a { color: rgba(255, 255, 255, 0.7); text-decoration: none; }
+    a:hover { color: $copper-light; text-decoration: underline; }
+  }
+
+  &__badge {
+    display: inline-block; padding: 0.25rem 0.75rem; background: $copper; color: #fff;
+    font-size: 0.75rem; font-weight: 700; text-transform: uppercase; border-radius: 4px; margin-bottom: 1rem;
+  }
+
+  &__title { font-size: clamp(2rem, 4vw, 3rem); font-weight: 800; line-height: 1.2; margin: 0 0 1rem; }
+
+  &__desc { font-size: 1.1rem; line-height: 1.6; color: rgba(255, 255, 255, 0.9); margin-bottom: 2rem; }
+
+  &__cta {
+    margin-bottom: 2rem;
+    .btn-primary {
+      background: $copper; color: #fff; border: none; padding: 1rem 2rem; border-radius: 8px;
+      font-size: 1.1rem; font-weight: 700; cursor: pointer; transition: all 0.3s;
+
+      &:hover { background: $copper-dark; transform: translateY(-3px); box-shadow: 0 10px 20px rgba(184, 115, 51, 0.4); }
+    }
+  }
+
+  /* ============================================ */
+  /* ✅ NOUVEAU BLOC : Formateur à droite          */
+  /* ============================================ */
+  &__instructor {
+    position: absolute;
+    right: -650px;
+    top: 70%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    padding: 2rem 1.5rem;
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 20px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    min-width: 220px;
+
+    /* Responsive : sur mobile, on remet en dessous */
+    @media (max-width: 1200px) {
+      position: static;
+      transform: none;
+      margin-top: 2rem;
+      flex-direction: row;
+      min-width: auto;
+      padding: 1rem 1.25rem;
+    }
+  }
+
+  .instructor-photo-wrapper {
+    position: relative;
+    width: 110px;
+    height: 110px;
+    flex-shrink: 0;
+
+    @media (max-width: 1200px) {
+      width: 70px;
+      height: 70px;
+    }
+  }
+
+  .instructor-photo {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid $copper;
+    box-shadow: 0 0 0 4px rgba(184, 115, 51, 0.25), 0 8px 20px rgba(0, 0, 0, 0.3);
+    background: #fff;
+  }
+
+  .instructor-status {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    width: 18px;
+    height: 18px;
+    background: #22c55e;
+    border: 3px solid #fff;
+    border-radius: 50%;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    
+    @media (max-width: 1200px) {
+      width: 14px;
+      height: 14px;
+      bottom: 4px;
+      right: 4px;
+    }
+  }
+
+  .instructor-details {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0.25rem;
+
+    @media (max-width: 1200px) {
+      align-items: flex-start;
+      text-align: left;
+    }
+  }
+
+  .instructor-name {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: #fff;
+    letter-spacing: 0.02em;
+    line-height: 1.2;
+
+    @media (max-width: 1200px) {
+      font-size: 1rem;
+    }
+  }
+
+  .instructor-role {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.7);
+    font-weight: 500;
+    font-style: italic;
+  }
+
+  /* Badge "KMAA Academy" unique */
+  .instructor-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 1.2rem;
+    background: linear-gradient(135deg, $copper 0%, $copper-dark 100%);
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    border-radius: 50px;
+    box-shadow: 0 4px 12px rgba(184, 115, 51, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+
+    svg {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+    }
+
+    /* Effet de brillance */
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+      transition: left 0.5s ease;
+    }
+
+    &:hover::before {
+      left: 100%;
+    }
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(184, 115, 51, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    }
+  }
+}
+
+/* ---------- BARRE D'INFO ---------- */
+.detail-info-bar {
+  background: #fff; border-bottom: 1px solid rgba(14, 59, 50, 0.1); box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  position: sticky; top: 0; z-index: 100;
+
+  &__container { @include container; display: flex; justify-content: space-around; padding: 1.5rem 0; flex-wrap: wrap; gap: 1rem; }
+
+  &__item {
+    display: flex; flex-direction: column; text-align: center; font-size: 0.9rem;
+
+    .label { font-weight: 700; color: $grey; text-transform: uppercase; font-size: 0.75rem; margin-bottom: 0.25rem; }
+    .value { color: $ink; font-weight: 600; }
+    .link { color: $copper; font-size: 0.8rem; text-decoration: none; margin-top: 0.25rem; &:hover { text-decoration: underline; } }
+  }
+}
+
+/* ---------- ONGLETS ---------- */
+.detail-tabs {
+  background: #fff; border-bottom: 1px solid #eee;
+
+  &__container { @include container; display: flex; gap: 2rem; overflow-x: auto; padding: 0; }
+
+  button {
+    background: none; border: none; padding: 1.5rem 0; font-size: 1rem; font-weight: 600;
+    color: $grey; cursor: pointer; border-bottom: 3px solid transparent; transition: all 0.2s; white-space: nowrap;
+
+    &:hover { color: $copper; }
+    &.active { color: $copper; border-bottom-color: $copper; }
+  }
+}
+
+/* ---------- CONTENU PRINCIPAL ---------- */
+.detail-content {
+  padding: 4rem 0; background: #fff;
+
+  &__container { @include container; max-width: 900px; }
+
+  h2 { font-size: 2rem; color: $green-dark; margin-bottom: 1.5rem; font-weight: 800; }
+  h3 { font-size: 1.4rem; color: $green-dark; margin: 2rem 0 1rem; font-weight: 700; }
+
+  .rich-text {
+    font-size: 1.1rem; line-height: 1.8; color: $ink; margin-bottom: 3rem;
+    p { margin-bottom: 1.5rem; }
+  }
+}
+
+.section-block {
+  margin-bottom: 4rem; padding-bottom: 2rem; border-bottom: 1px solid #f0f0f0;
+  &:last-child { border-bottom: none; }
+}
+
+/* --- Exigences --- */
+.two-columns {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; margin-top: 2rem;
+  @media (max-width: 768px) { grid-template-columns: 1fr; gap: 1.5rem; }
+
+  h3 { font-size: 1.2rem; color: $copper; margin-bottom: 1rem; }
+  ul {
+    list-style: none; padding: 0;
+    li {
+      position: relative; padding-left: 1.5rem; margin-bottom: 0.75rem; line-height: 1.6; color: $ink;
+      &::before { content: '✓'; position: absolute; left: 0; color: $copper; font-weight: bold; }
+    }
+  }
+}
+
+/* ============================================ */
+/* PROGRAMME DÉTAILLÉ (Style FutureLearn)        */
+/* ============================================ */
+// .section-programme {
+//   h2 { font-size: 2rem; color: $green-dark; margin-bottom: 0.5rem; }
+//   .subtitle { color: $grey; margin-bottom: 3rem; }
+// }
+
+// .programme-timeline {
+//   position: relative;
+//   padding-left: 3rem;
+//   border-left: 3px solid rgba(184, 115, 51, 0.3);
+// }
+
+// .programme-phase {
+//   position: relative;
+//   margin-bottom: 4rem;
+//   &:last-child { margin-bottom: 0; }
+
+//   &__marker {
+//     position: absolute;
+//     left: -3.7rem;
+//     width: 1.5rem;
+//     height: 1.5rem;
+//     border-radius: 50%;
+//     border: 4px solid #fff;
+//     box-shadow: 0 0 0 3px $copper;
+//     z-index: 2;
+
+//     &--before { background: $copper-light; }
+//     &--during { background: $copper; }
+//     &--after { background: $green-dark; }
+//   }
+
+//   &__content {
+//     .programme-phase__label {
+//       display: block; font-size: 0.85rem; font-weight: 700; text-transform: uppercase;
+//       color: $copper; margin-bottom: 0.75rem; letter-spacing: 0.5px;
+//     }
+
+//     p { color: $grey; line-height: 1.7; margin: 0 0 1.5rem; }
+//   }
+// }
+
+// /* --- Carte du cours principal --- */
+// .programme-course-card {
+//   display: flex;
+//   gap: 1.5rem;
+//   background: $bg-light;
+//   padding: 1.5rem;
+//   border-radius: 12px;
+//   margin-bottom: 2rem;
+//   border-left: 4px solid $copper;
+
+//   &__image {
+//     width: 180px;
+//     height: 120px;
+//     object-fit: cover;
+//     border-radius: 8px;
+//     flex-shrink: 0;
+//   }
+
+//   &__info {
+//     flex: 1;
+//     h4 { margin: 0 0 0.5rem; color: $green-dark; font-size: 1.2rem; }
+//     p { font-size: 0.95rem; color: $grey; margin-bottom: 0.75rem; line-height: 1.5; }
+//     .duration { font-size: 0.85rem; color: $copper; font-weight: 700; }
+//   }
+// }
+
+// /* --- Bouton Analyse Hebdomadaire --- */
+// .btn-toggle-weeks {
+//   display: flex;
+//   align-items: center;
+//   justify-content: space-between;
+//   width: 100%;
+//   background: #fff;
+//   border: 2px solid $copper;
+//   color: $copper;
+//   padding: 1rem 1.5rem;
+//   border-radius: 8px;
+//   font-size: 1rem;
+//   font-weight: 700;
+//   cursor: pointer;
+//   transition: all 0.3s;
+//   margin-bottom: 1rem;
+
+//   &:hover {
+//     background: rgba(184, 115, 51, 0.05);
+//     transform: translateY(-2px);
+//     box-shadow: 0 4px 12px rgba(184, 115, 51, 0.2);
+//   }
+
+//   .chevron {
+//     font-size: 0.8rem;
+//     transition: transform 0.3s;
+//     &.rotated { transform: rotate(180deg); }
+//   }
+// }
+
+// /* --- Liste des semaines --- */
+// .weeks-list {
+//   display: flex;
+//   flex-direction: column;
+//   gap: 1rem;
+//   margin-top: 1.5rem;
+// }
+
+// .week-item {
+//   background: #fff;
+//   border: 1px solid rgba(14, 59, 50, 0.1);
+//   border-radius: 10px;
+//   overflow: hidden;
+//   transition: all 0.3s;
+
+//   &:hover { box-shadow: 0 4px 12px rgba(14, 59, 50, 0.08); }
+
+//   &.open {
+//     border-color: $copper;
+//     box-shadow: 0 4px 16px rgba(184, 115, 51, 0.15);
+//   }
+
+//   &__header {
+//     display: flex;
+//     align-items: center;
+//     gap: 1rem;
+//     padding: 1.25rem 1.5rem;
+//     cursor: pointer;
+//     background: $bg-light;
+//     transition: background 0.2s;
+
+//     &:hover { background: #f0ebe3; }
+//   }
+
+//   &__marker {
+//     width: 12px;
+//     height: 12px;
+//     border-radius: 50%;
+//     background: $copper;
+//     flex-shrink: 0;
+//     box-shadow: 0 0 0 3px rgba(184, 115, 51, 0.2);
+//   }
+
+//   &__number {
+//     font-weight: 700;
+//     color: $copper;
+//     font-size: 0.9rem;
+//     white-space: nowrap;
+//   }
+
+//   &__title {
+//     flex: 1;
+//     margin: 0;
+//     font-size: 1.05rem;
+//     color: $green-dark;
+//     font-weight: 600;
+//   }
+
+//   &__chevron {
+//     color: $copper;
+//     font-size: 0.8rem;
+//     transition: transform 0.3s;
+//   }
+
+//   &.open &__chevron { transform: rotate(180deg); }
+
+//   &__body {
+//     padding: 1.5rem;
+//     background: #fff;
+//     border-top: 1px solid #f0f0f0;
+
+//     ul {
+//       list-style: none;
+//       padding: 0;
+//       margin: 0;
+
+//       li {
+//         position: relative;
+//         padding-left: 1.5rem;
+//         margin-bottom: 0.75rem;
+//         color: $grey;
+//         line-height: 1.6;
+
+//         &::before {
+//           content: '•';
+//           position: absolute;
+//           left: 0;
+//           color: $copper;
+//           font-weight: bold;
+//           font-size: 1.2rem;
+//         }
+
+//         &:last-child { margin-bottom: 0; }
+//       }
+//     }
+//   }
+// }
+// //
+// //
+// //
+
+
+/* ============================================ */
+/* PROGRAMME DÉTAILLÉ (Style Fidèle FutureLearn) */
+/* ============================================ */
+.section-programme {
+  h2 { font-size: 2rem; color: $green-dark; margin-bottom: 0.5rem; }
+  .subtitle { color: $grey; margin-bottom: 3rem; font-size: 1.05rem; }
+}
+
+/* --- Timeline principale --- */
+.fl-timeline {
+  position: relative;
+  padding-left: 0;
+}
+
+/* --- Chaque phase (Avant / Parcours / Après) --- */
+.fl-phase {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 3rem;
+  padding-left: 160px; /* Espace pour le label à gauche */
+  min-height: 80px;
+
+  &:last-child { margin-bottom: 0; }
+
+  /* Label vertical à gauche */
+  &__label {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 130px;
+    text-align: right;
+    padding-right: 20px;
+    
+    &-text {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: $ink;
+      line-height: 1.4;
+      display: block;
+    }
+  }
+
+  /* Marqueur (point coloré sur la ligne) */
+  &__marker {
+    position: absolute;
+    left: 145px;
+    top: 0;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    z-index: 2;
+    transform: translateX(-50%);
+
+    &--before { background: #3b82f6; box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15); }
+    &--during { background: #ec4899; box-shadow: 0 0 0 4px rgba(236, 72, 153, 0.15); }
+    &--after { background: #eab308; box-shadow: 0 0 0 4px rgba(234, 179, 8, 0.15); }
+  }
+
+  /* Contenu à droite */
+  &__content {
+    flex: 1;
+    padding-left: 20px;
+    
+    p {
+      color: $grey;
+      line-height: 1.7;
+      margin: 0;
+      font-size: 1rem;
+    }
+  }
+}
+
+/* --- Ligne verticale continue derrière les marqueurs --- */
+.fl-timeline::before {
+  content: '';
+  position: absolute;
+  left: 145px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: linear-gradient(to bottom, #3b82f6 0%, #ec4899 50%, #eab308 100%);
+  transform: translateX(-50%);
+  z-index: 0;
+}
+
+/* --- Carte du cours principal --- */
+.fl-course-card {
+  display: flex;
+  gap: 1.5rem;
+  background: #f9f7f4;
+  padding: 1.25rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+
+  &__image {
+    width: 200px;
+    height: 130px;
+    object-fit: cover;
+    border-radius: 6px;
+    flex-shrink: 0;
+  }
+
+  &__info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    h4 {
+      margin: 0 0 0.5rem;
+      color: $green-dark;
+      font-size: 1.15rem;
+      font-weight: 700;
+      line-height: 1.4;
+    }
+
+    p {
+      font-size: 0.95rem;
+      color: $grey;
+      margin-bottom: 0.75rem;
+      line-height: 1.6;
+    }
+
+    .fl-course-card__duration {
+      font-size: 0.85rem;
+      color: $copper;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+  }
+}
+
+/* --- Bouton Toggle --- */
+.fl-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: none;
+  border: none;
+  color: #ec4899;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0.5rem 0;
+  margin-bottom: 1.5rem;
+  transition: color 0.2s;
+
+  &:hover {
+    color: darken(#ec4899, 10%);
+    text-decoration: underline;
+  }
+
+  &__chevron {
+    font-size: 0.7rem;
+    transition: transform 0.3s;
+    
+    &.rotated {
+      transform: rotate(180deg);
+    }
+  }
+}
+
+/* --- Liste des semaines --- */
+.fl-weeks {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin-top: 1rem;
+}
+
+.fl-week {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  padding-left: 160px;
+  min-height: 60px;
+  margin-bottom: 1rem;
+
+  /* Label "Semaine X" à gauche */
+  &__label {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 130px;
+    text-align: right;
+    padding-right: 20px;
+    
+    &-text {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: $ink;
+      line-height: 1.4;
+      display: block;
+    }
+  }
+
+  /* Petit marqueur */
+  &__marker {
+    position: absolute;
+    left: 145px;
+    top: 8px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #fff;
+    border: 2px solid #ec4899;
+    transform: translateX(-50%);
+    z-index: 2;
+  }
+
+  /* Contenu (Titre + chevron) */
+  &__content {
+    flex: 1;
+    padding-left: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #f9f7f4;
+    padding: 1rem 1.25rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.2s;
+
+    &:hover { background: #f0ebe3; }
+  }
+
+  &__title {
+    margin: 0;
+    font-size: 1rem;
+    color: $green-dark;
+    font-weight: 600;
+    line-height: 1.4;
+  }
+
+  &__chevron {
+    color: #ec4899;
+    font-size: 0.8rem;
+    transition: transform 0.3s;
+    margin-left: 1rem;
+    flex-shrink: 0;
+
+    &.rotated { transform: rotate(180deg); }
+  }
+
+  /* Corps de la semaine (dépliable) */
+  &__body {
+    margin-left: 180px;
+    margin-top: 0.5rem;
+    padding: 1rem 1.25rem;
+    background: #fff;
+    border-left: 3px solid #ec4899;
+    border-radius: 0 6px 6px 0;
+
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+
+      li {
+        position: relative;
+        padding-left: 1.25rem;
+        margin-bottom: 0.6rem;
+        color: $grey;
+        line-height: 1.6;
+        font-size: 0.95rem;
+
+        &::before {
+          content: '•';
+          position: absolute;
+          left: 0;
+          color: #ec4899;
+          font-weight: bold;
+          font-size: 1.1rem;
+        }
+
+        &:last-child { margin-bottom: 0; }
+      }
+    }
+  }
+}
+/* --- Certificat --- */
+.certificat-box { display: flex; flex-direction: column; gap: 2rem; margin-bottom: 3rem; }
+
+.certificat-item {
+  display: flex; gap: 1.5rem; align-items: flex-start;
+
+  .icon {
+    font-size: 2rem; background: rgba(184, 115, 51, 0.1); width: 60px; height: 60px;
+    display: flex; align-items: center; justify-content: center; border-radius: 50%; color: $copper;
+  }
+
+  h4 { margin: 0 0 0.5rem; color: $green-dark; font-size: 1.2rem; }
+  p { margin: 0; color: $grey; line-height: 1.6; }
+}
+
+.what-is-micro {
+  background: $bg-light; padding: 2rem; border-radius: 12px; margin-top: 2rem;
+  h3 { margin-top: 0; }
+  p { color: $grey; margin-bottom: 2rem; }
+}
+
+.process-flow {
+  display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap;
+
+  .step {
+    flex: 1; min-width: 120px; text-align: center;
+    .icon { font-size: 2rem; display: block; margin-bottom: 0.5rem; }
+    p { font-size: 0.85rem; font-weight: 600; color: $ink; margin: 0; }
+  }
+
+  .plus { font-size: 1.5rem; color: $copper; font-weight: bold; }
+}
+
+/* --- Dates --- */
+.date-card {
+  display: flex; align-items: center; gap: 1.5rem; background: #fff;
+  border: 2px solid rgba(184, 115, 51, 0.3); padding: 1.5rem; border-radius: 12px; margin-top: 2rem;
+
+  .date-icon { font-size: 2rem; }
+  .date-info {
+    flex: 1;
+    p { margin: 0 0 0.25rem; font-weight: 700; color: $ink; }
+    span { font-size: 0.9rem; color: $grey; }
+  }
+}
+
+/* --- FAQ --- */
+.section-faq { margin-top: 5rem; border-top: 1px solid #eee; padding-top: 3rem; h2 { text-align: center; margin-bottom: 2rem; } }
+.faq-list { max-width: 800px; margin: 0 auto; }
+
+.faq-item {
+  border-bottom: 1px solid #eee; margin-bottom: 0.5rem;
+  &.open {
+    .faq-question .chevron { transform: rotate(180deg); }
+    .faq-answer { display: block; }
+  }
+}
+
+.faq-question {
+  width: 100%; background: none; border: none; display: flex; justify-content: space-between;
+  align-items: center; padding: 1.5rem 0; font-size: 1.1rem; font-weight: 600; color: $ink;
+  cursor: pointer; text-align: left; transition: color 0.2s;
+
+  &:hover { color: $copper; }
+  .chevron { color: $copper; font-size: 0.8rem; transition: transform 0.3s; }
+}
+
+.faq-answer { display: none; padding-bottom: 1.5rem; p { margin: 0; color: $grey; line-height: 1.7; } }
+.faq-footer {
+  text-align: center; margin-top: 2rem; color: $grey;
+  a { color: $copper; font-weight: 700; text-decoration: none; &:hover { text-decoration: underline; } }
+}
+
+/* ---------- BANDEAU DE LIENS ---------- */
+/* ---------- DERNIÈRES ACTUALITÉS (8 cartes) ---------- */
+.sujet-latest {
+  padding: 5rem 0;
+  background: linear-gradient(180deg, #fff 0%, $bg-light 100%);
+  border-top: 1px solid rgba(14, 59, 50, 0.08);
+
+  &__container { @include container; }
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 2rem;
+    margin-bottom: 3rem;
+    flex-wrap: wrap;
+
+    h2 {
+      font-size: 2rem;
+      color: $green-dark;
+      margin: 0 0 0.5rem;
+      font-weight: 800;
+    }
+
+    p {
+      color: $grey;
+      margin: 0;
+      font-size: 1rem;
+      max-width: 500px;
+    }
+
+    .sujet-latest__all {
+      color: $copper;
+      font-weight: 700;
+      text-decoration: none;
+      font-size: 0.95rem;
+      white-space: nowrap;
+      transition: all 0.2s;
+
+      &:hover {
+        color: $copper-dark;
+        text-decoration: underline;
+      }
+    }
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 1.75rem;
+  }
+}
+
+.sujet-latest-card {
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(14, 59, 50, 0.06);
+  box-shadow: 0 4px 12px rgba(14, 59, 50, 0.04);
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  display: flex;
+  flex-direction: column;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(14, 59, 50, 0.15);
+  }
+
+  &__image {
+    aspect-ratio: 16 / 10;
+    position: relative;
+    overflow: hidden;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.5s ease;
+    }
+
+    .sujet-latest-card__category {
+      position: absolute;
+      top: 1rem;
+      left: 1rem;
+      background: $copper;
+      color: #fff;
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 0.3rem 0.7rem;
+      border-radius: 50px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      box-shadow: 0 4px 10px rgba(184, 115, 51, 0.4);
+    }
+  }
+
+  &:hover &__image img { transform: scale(1.08); }
+
+  &__body {
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+
+  &__date {
+    font-size: 0.78rem;
+    color: $grey;
+    margin-bottom: 0.6rem;
+    display: block;
+    font-weight: 500;
+  }
+
+  h3 {
+    font-size: 1rem;
+    line-height: 1.45;
+    color: $ink;
+    margin: 0 0 1rem;
+    font-weight: 700;
+    flex: 1;
+  }
+
+  &__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: $copper;
+    font-size: 0.88rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.2s;
+    margin-top: auto;
+
+    svg {
+      transition: transform 0.3s;
+    }
+
+    &:hover {
+      color: $copper-dark;
+
+      svg {
+        transform: translateX(4px);
+      }
+    }
+  }
+}
+
+/* ---------- NEWSLETTER ---------- */
+.sujet-newsletter {
+    background: $green-dark; padding: 4rem 0; color: #fff;
+    &__container { @include container; }
+    &__content { max-width: 800px; margin: 0 auto; text-align: center; }
+
+    h2 { font-size: 2rem; margin: 0 0 1rem; font-weight: 300; em { font-style: italic; font-weight: 700; color: $copper-light; } }
+    p { font-size: 1rem; color: rgba(255,255,255,0.8); margin-bottom: 2rem; }
+
+    &__form {
+        display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;
+
+        input {
+            flex: 1; min-width: 300px; padding: 1rem 1.5rem; border-radius: 50px; border: none;
+            font-size: 1rem; outline: none;
+            &:focus { box-shadow: 0 0 0 3px rgba(184, 115, 51, 0.5); }
+        }
+
+        button {
+            padding: 1rem 2rem; border-radius: 50px; background: $copper; color: #fff; border: none;
+            font-weight: 700; font-size: 1rem; cursor: pointer; transition: all 0.3s;
+
+            &:hover { background: $copper-light; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(184, 115, 51, 0.4); }
+        }
+    }
+}
+
+/* ---------- ERREUR ---------- */
+.error-container {
+  text-align: center; padding: 8rem 2rem; background: $bg-light; min-height: 60vh;
+  display: flex; flex-direction: column; justify-content: center; align-items: center;
+
+  h2 { font-size: 2.5rem; color: $green-dark; margin-bottom: 1rem; }
+  p { font-size: 1.1rem; color: $grey; margin-bottom: 2rem; }
+
+  .btn-primary {
+    background: $copper; color: #fff; padding: 1rem 2rem; border-radius: 8px;
+    font-size: 1rem; font-weight: 700; text-decoration: none; transition: all 0.3s;
+
+    &:hover { background: $copper-dark; transform: translateY(-3px); box-shadow: 0 10px 20px rgba(184, 115, 51, 0.4); }
+  }
+}

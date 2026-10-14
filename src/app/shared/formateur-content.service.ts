@@ -2,8 +2,8 @@
 // import { Injectable, inject, signal } from '@angular/core';
 // import { Observable } from 'rxjs';
 
-// export const API_URL = 'https://api.convergesas.com/api';
-// export const LARAVEL_URL = 'https://api.convergesas.com';
+// export const API_URL = 'http://127.0.0.1:8000/api';
+// export const LARAVEL_URL = 'http://127.0.0.1:8000';
 
 // // ============================================================
 // // TYPES
@@ -498,8 +498,8 @@ import { Observable } from 'rxjs';
 // CONFIGURATION
 // ============================================================
 
-export const API_URL     = 'https://api.convergesas.com/api';
-export const LARAVEL_URL = 'https://api.convergesas.com';
+export const API_URL     = 'http://127.0.0.1:8000/api';
+export const LARAVEL_URL = 'http://127.0.0.1:8000';
 
 // ============================================================
 // TYPES

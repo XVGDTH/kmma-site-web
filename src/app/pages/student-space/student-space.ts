@@ -5,12 +5,11 @@
   inject,
   signal,
 } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { Router, RouterLink } from '@angular/router';
-import { AuthService } from '../../shared/auth.service';
-import { CourseAccessService } from '../../shared/course-access.service';
-import { DecimalPipe } from '@angular/common'; 
-import { NotificationService } from '../../shared/notification.service';
+import { DecimalPipe } from '@angular/common';
+
+// ✅ Service local (simulation, aucune API)
+import { EnrollmentService } from '../../shared/enrollment.service';
 
 type Tab = 'cours' | 'certificats' | 'paiements' | 'maformule' | 'evaluations' | 'profil';
 
@@ -22,12 +21,19 @@ interface EnrollmentItem {
   certificateIssued: boolean;
   courseTitle?: string;
   courseCategory?: string;
+  courseImage?: string;
 }
 
 interface PaymentInfo {
   planName: string;
   amount: number;
   courseId?: string;
+}
+
+interface UserInfo {
+  name: string;
+  email: string;
+  role: string;
 }
 
 @Component({
@@ -40,63 +46,110 @@ interface PaymentInfo {
 })
 export class StudentSpace {
 
-  private readonly http = inject(HttpClient);
-  private readonly auth = inject(AuthService);
   private readonly router = inject(Router);
+  private readonly enrollmentService = inject(EnrollmentService);
 
   // ============================================================
-  // SERVICES
+  // INFOS DE L'APPRENANT (depuis localStorage)
   // ============================================================
+  private readonly user = signal<UserInfo | null>(this.readUser());
 
-  readonly accessService = inject(CourseAccessService);
-  readonly notifService = inject(NotificationService);
-
-  // ============================================================
-  // INFOS DE L'APPRENANT CONNECTÃ‰
-  // ============================================================
-
-  readonly studentName = computed(
-    () => this.auth.currentUser()?.name ?? 'Apprenant'
-  );
-
-  readonly studentEmail = computed(
-    () => this.auth.currentUser()?.email ?? ''
-  );
+  readonly studentName = computed(() => this.user()?.name ?? 'Apprenant');
+  readonly studentEmail = computed(() => this.user()?.email ?? '');
 
   // ============================================================
-  // Ã‰TAT
+  // ÉTAT
   // ============================================================
-
   readonly activeTab = signal<Tab>('cours');
 
-  readonly enrollments = signal<EnrollmentItem[]>([]);
-  readonly payments = signal<PaymentInfo[]>([]);
+  // ============================================================
+  // INSCRIPTIONS (depuis EnrollmentService)
+  // ============================================================
+  readonly enrollments = computed<EnrollmentItem[]>(() =>
+    this.enrollmentService.enrollments().map((e) => ({
+      courseId: String(e.courseId),
+      courseTitle: e.title,
+      courseCategory: e.subject,
+      courseImage: e.image,
+      progressPercent: e.progressPercent,
+      enrolledAt: this.formatDate(e.enrolledAt),
+      lastAccessedAt: this.formatDate(e.lastAccessedAt),
+      certificateIssued: e.certificateIssued,
+    }))
+  );
 
   // ============================================================
-  // ðŸ  NAVIGATION VERS LE DASHBOARD
+  // PAIEMENTS (simulation : 1 paiement par inscription)
   // ============================================================
-
-  goToDashboard(): void {
-    this.router.navigate(['/apprendre']);
-  }
+  readonly payments = computed<PaymentInfo[]>(() =>
+    this.enrollmentService.enrollments().map((e) => ({
+      planName: e.title,
+      amount: 0, // À remplacer plus tard par le vrai montant
+      courseId: String(e.courseId),
+    }))
+  );
 
   // ============================================================
-  // ðŸ’³ MA FORMULE + ðŸ† Ã‰VALUATIONS (par cours)
+  // DÉRIVÉS
   // ============================================================
+  readonly inProgress = computed(() =>
+    this.enrollments().filter((e) => e.progressPercent < 100)
+  );
 
+  readonly completed = computed(() =>
+    this.enrollments().filter((e) => e.progressPercent === 100)
+  );
+
+  // ============================================================
+  // MA FORMULE + ÉVALUATIONS (simulation locale)
+  // ============================================================
   readonly selectedCourseSlug = signal('');
   readonly myPlanLoaded = signal(false);
 
   selectCourseForPlan(courseSlug: string): void {
     this.selectedCourseSlug.set(courseSlug);
-    this.accessService.loadAccess(courseSlug);   // charge access + myPlan + Ã©valuations
     this.myPlanLoaded.set(true);
   }
 
-  // ============================================================
-  // MENU UTILISATEUR (dropdown sur l'avatar)
-  // ============================================================
+  // Simulation d'une formule pour l'affichage
+  readonly myPlan = computed(() => ({
+    planName: 'Standard',
+    level: 2,
+    allPlans: [
+      {
+        id: 'basic',
+        name: 'Basique',
+        price: 0,
+        isCurrent: false,
+        badge: null,
+        features: ['Accès aux vidéos', 'Quiz de validation'],
+      },
+      {
+        id: 'standard',
+        name: 'Standard',
+        price: 25000,
+        isCurrent: true,
+        badge: 'Recommandé',
+        features: ['Accès aux vidéos', 'Quiz de validation', 'Correction des devoirs', 'Séances live'],
+      },
+      {
+        id: 'premium',
+        name: 'Premium',
+        price: 75000,
+        isCurrent: false,
+        badge: null,
+        features: ['Tout Standard', 'Coaching individuel', 'Certificat accéléré'],
+      },
+    ],
+  }));
 
+  // Simulation des évaluations (vide pour l'instant)
+  readonly evaluations = signal<any[]>([]);
+  readonly averageGrade = computed(() => null);
+
+  // ============================================================
+  // MENU UTILISATEUR
+  // ============================================================
   readonly userMenuOpen = signal(false);
 
   toggleUserMenu(): void {
@@ -107,90 +160,82 @@ export class StudentSpace {
     this.userMenuOpen.set(false);
   }
 
+  // ============================================================
+  // NOTIFICATIONS (simulation)
+  // ============================================================
+  readonly notifService = {
+    unreadCount: () => 0,
+    load: () => {},
+  };
+
+  // ============================================================
+  // CONSTRUCTEUR
+  // ============================================================
   constructor() {
-    this.loadEnrollments();
-        // ðŸ”” Notifications : chargement initial + polling 60 s (badge Ã  jour)
-    this.notifService.load();
-    setInterval(() => this.notifService.load(), 60000);
+    this.enrollmentService.reload();
   }
 
   // ============================================================
-  // CHARGEMENT DES INSCRIPTIONS
+  // HELPERS
   // ============================================================
+  private readUser(): UserInfo | null {
+    try {
+      const raw = localStorage.getItem('kmaa_user');
+      return raw ? JSON.parse(raw) : null;
+    } catch {
+      return null;
+    }
+  }
 
-  private loadEnrollments(): void {
-    this.http
-      .get<{ data: EnrollmentItem[] }>(
-        'https://api.convergesas.com/api/me/enrollments'
-      )
-      .subscribe({
-        next: (res) => {
-          this.enrollments.set(res.data ?? []);
-        },
-        error: (err) => {
-          console.error('Erreur chargement des inscriptions :', err);
-
-          // Session expirÃ©e ou non connectÃ© â†’ retour au login
-          if (err?.status === 401) {
-            this.auth.logout();
-            this.router.navigate(['/compte/connexion'], {
-              queryParams: { redirect: '/compte/espace' },
-            });
-            return;
-          }
-
-          this.enrollments.set([]);
-        },
+  private formatDate(iso: string): string {
+    try {
+      return new Date(iso).toLocaleDateString('fr-FR', {
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric',
       });
+    } catch {
+      return iso;
+    }
   }
 
   // ============================================================
-  // DÃ‰RIVÃ‰S
+  // NAVIGATION
   // ============================================================
-
-  readonly inProgress = computed(() =>
-    this.enrollments().filter((e) => e.progressPercent < 100)
-  );
-
-  readonly completed = computed(() =>
-    this.enrollments().filter((e) => e.progressPercent === 100)
-  );
-
-  // ============================================================
-  // ACTIONS
-  // ============================================================
-
-  formatPrice(amount: number): string {
-    return amount.toLocaleString('fr-FR') + ' FCFA';
+  goToDashboard(): void {
+    this.router.navigate(['/apprendre']);
   }
 
   setTab(tab: Tab): void {
     this.activeTab.set(tab);
   }
 
+  formatPrice(amount: number): string {
+    return amount.toLocaleString('fr-FR') + ' FCFA';
+  }
+
   paymentForCourse(courseId: string): PaymentInfo | undefined {
     return this.payments().find((p) => p.courseId === courseId);
   }
 
+  // ============================================================
+  // CERTIFICAT (simulation)
+  // ============================================================
   generateCertificate(courseId: string): void {
-    this.http
-      .post<{ data: { downloadUrl: string } }>(
-        `https://api.convergesas.com/api/courses/${courseId}/certificate`,
-        {}
-      )
-      .subscribe({
-        next: (res) => {
-          window.open(res.data.downloadUrl, '_blank');
-        },
-        error: (err) => {
-          alert(err.error?.message ?? 'Impossible de gÃ©nÃ©rer le certificat.');
-        },
-      });
+    alert(
+      `🎉 Simulation : le certificat du cours #${courseId} serait téléchargé ici.\n` +
+      `Plus tard, un appel API sera branché pour générer le vrai PDF.`
+    );
   }
 
+  // ============================================================
+  // DÉCONNEXION
+  // ============================================================
   logout(): void {
     this.userMenuOpen.set(false);
-    this.auth.logout();
+    try {
+      localStorage.removeItem('kmaa_user');
+    } catch { /* ignore */ }
     this.router.navigate(['/compte/connexion']);
   }
 }

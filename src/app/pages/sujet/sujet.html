@@ -1,0 +1,266 @@
+<!-- HERO + PILLS DE SUJETS -->
+<section class="sujet-hero">
+  <div class="sujet-hero__container">
+    <nav class="sujet-hero__breadcrumb" aria-label="Fil d'ariane">
+      <a routerLink="/">Accueil</a>
+      <span>/</span>
+      <a routerLink="/academy">KMAA Academy</a>
+      <span>/</span>
+      <span>Catalogue</span>
+    </nav>
+
+    <h1 class="sujet-hero__title">Développez votre expertise.</h1>
+    <p class="sujet-hero__subtitle">
+      Audit, conseil, expertise comptable, finance, technologie ou langues : 
+      propulsez votre carrière avec nos certifications conçues par des experts du terrain.
+    </p>
+
+    <h2 class="sujet-hero__pill-title">Explorez nos domaines</h2>
+
+    <div class="sujet-hero__pills">
+      <button
+        type="button"
+        class="sujet-pill"
+        [class.sujet-pill--active]="activeSubject() === 'tous'"
+        (click)="setSubject('tous')"
+      >
+        Tous les cours
+      </button>
+
+      @for (subject of subjects; track subject) {
+        <button
+          type="button"
+          class="sujet-pill"
+          [class.sujet-pill--active]="activeSubject() === subject"
+          (click)="setSubject(subject)"
+        >
+          {{ subject }}
+        </button>
+      }
+    </div>
+  </div>
+</section>
+
+<!-- LISTE DES COURS -->
+<section class="sujet-courses">
+  <div class="sujet-courses__container">
+    <div class="sujet-courses__header">
+      <h2 class="sujet-courses__title">Cours Certifiants</h2>
+      <span class="sujet-courses__count">{{ totalFiltered() }} résultats</span>
+    </div>
+
+    <p class="sujet-courses__intro">
+      Apprenez à votre rythme. Chaque cours est conçu pour vous apporter des compétences 
+      immédiatement applicables en entreprise.
+    </p>
+
+    @if (visibleCourses().length === 0) {
+      <p class="sujet-courses__empty">
+        Aucun cours n'est disponible pour ce sujet pour le moment.
+        Revenez bientôt : notre catalogue s'enrichit régulièrement !
+      </p>
+    } @else {
+      <div class="sujet-courses__grid">
+        @for (course of visibleCourses(); track course.id) {
+          <article class="sujet-course-card">
+            <div class="sujet-course-card__image">
+              <img [src]="course.image" [alt]="course.imageAlt" loading="lazy" />
+            </div>
+
+            <div class="sujet-course-card__body">
+              <p class="sujet-course-card__provider">{{ course.provider }}</p>
+
+              @if (course.badge) {
+                <span
+                  class="sujet-course-card__badge"
+                  [class.sujet-course-card__badge--popular]="course.badge === 'Best-seller'"
+                >
+                  {{ course.badge | uppercase }}
+                </span>
+              }
+
+              <!-- ✅ LIEN CORRIGÉ : /sujets/cours/ au lieu de /cours/ -->
+              <h3 class="sujet-course-card__title">
+                <a [routerLink]="['/sujets/cours', course.id]">{{ course.title }}</a>
+              </h3>
+
+              <ul class="sujet-course-card__meta">
+                <li>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M6 2h12M6 22h12M8 2v4l4 5 4-5V2M8 22v-4l4-5 4 5v4" />
+                  </svg>
+                  {{ course.duration }}
+                </li>
+                <li>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="9" />
+                    <path d="M12 7v5l3 3" />
+                  </svg>
+                  {{ course.weeklyHours }}
+                </li>
+              </ul>
+
+              <!-- ✅ LIEN CORRIGÉ : /sujets/cours/ au lieu de /cours/ -->
+              <a class="sujet-course-card__more" [routerLink]="['/sujets/cours', course.id]">
+                Voir plus
+              </a>
+            </div>
+          </article>
+        }
+      </div>
+
+      @if (hasMore()) {
+        <div class="sujet-courses__more">
+          <button type="button" (click)="showMore()">
+            Afficher plus de cours
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m6 9 6 6 6-6" />
+            </svg>
+          </button>
+        </div>
+      }
+    }
+  </div>
+</section>
+
+<!-- PARCOURS EXPERTS -->
+<section class="sujet-tracks">
+  <div class="sujet-tracks__container">
+    <div class="sujet-tracks__header">
+      <h2>Parcours Experts</h2>
+      <span>{{ expertTracks.length }} parcours certifiants</span>
+    </div>
+    <p class="sujet-tracks__intro">
+      Une série de formations spécialisées pour maîtriser un domaine de A à Z et obtenir une certification reconnue.
+    </p>
+
+    <div class="sujet-tracks__grid">
+      @for (track of expertTracks; track track.title) {
+        <article class="sujet-track-card">
+          <div class="sujet-track-card__image">
+            <img [src]="track.image" [alt]="track.imageAlt" loading="lazy" />
+          </div>
+          <div class="sujet-track-card__body">
+            <h3>{{ track.title }}</h3>
+            <p>{{ track.description }}</p>
+            <ul class="sujet-track-card__meta">
+              <li>{{ track.coursesCount }} cours</li>
+              <li>{{ track.duration }}</li>
+            </ul>
+            <a class="sujet-track-card__link" routerLink="/parcours">Voir le programme</a>
+          </div>
+        </article>
+      }
+    </div>
+  </div>
+</section>
+
+<!-- MICRO-ACCREDITATIONS -->
+<section class="sujet-micro">
+  <div class="sujet-micro__container">
+    <div class="sujet-micro__header">
+      <h2>Micro-accréditations</h2>
+      <span>{{ microCredentials.length }} certificats courts</span>
+    </div>
+    <p class="sujet-micro__intro">
+      Nos micro-certifications sont conçues pour vous qualifier rapidement dans des secteurs en forte croissance, 
+      sans l'engagement d'un cursus long.
+    </p>
+
+    <div class="sujet-micro__grid">
+      @for (micro of microCredentials; track micro.title) {
+        <article class="sujet-micro-card">
+          <div class="sujet-micro-card__image">
+            <img [src]="micro.image" [alt]="micro.imageAlt" loading="lazy" />
+          </div>
+          <div class="sujet-micro-card__body">
+            <h3>{{ micro.title }}</h3>
+            <p>{{ micro.description }}</p>
+            <ul class="sujet-micro-card__meta">
+              <li>{{ micro.duration }}</li>
+              <li>{{ micro.level }}</li>
+            </ul>
+            <div class="sujet-micro-card__footer">
+                <a class="sujet-micro-card__more" routerLink="/micro-certifications">Voir plus</a>
+            </div>
+          </div>
+        </article>
+      }
+    </div>
+  </div>
+</section>
+
+<!-- ACTUALITÉS & CONSEILS -->
+<section class="sujet-news">
+  <div class="sujet-news__container">
+    <div class="sujet-news__header">
+        <h2>Actualités & Conseils Métiers</h2>
+        <a routerLink="/blog" class="sujet-news__all">Voir tout le blog</a>
+    </div>
+    
+    <div class="sujet-news__grid">
+      @for (article of newsArticles; track article.title) {
+        <article class="sujet-news-card">
+          <div class="sujet-news-card__image">
+            <img [src]="article.image" [alt]="article.imageAlt" loading="lazy" />
+            <span class="sujet-news-card__category">{{ article.category }}</span>
+          </div>
+          <div class="sujet-news-card__body">
+            <span class="date">{{ article.date }}</span>
+            <h3>{{ article.title }}</h3>
+            <a routerLink="/blog/article" class="read-more">Lire l'article &rarr;</a>
+          </div>
+        </article>
+      }
+    </div>
+  </div>
+</section>
+
+<!-- BANDEAU DE LIENS (Style FutureLearn / KMAA) -->
+<!-- ✅ NOUVELLE SECTION : Dernières actualités (5 cartes) -->
+<section class="sujet-latest">
+  <div class="sujet-latest__container">
+    <div class="sujet-latest__header">
+      <div>
+        <h2>À la une cette semaine</h2>
+        <p>Les dernières actualités et analyses de nos experts pour rester à jour.</p>
+      </div>
+      <a routerLink="/actualites" class="sujet-latest__all">Voir toutes les actualités →</a>
+    </div>
+
+    <div class="sujet-latest__grid">
+      @for (article of latestNews; track article.title) {
+        <article class="sujet-latest-card">
+          <div class="sujet-latest-card__image">
+            <img [src]="article.image" [alt]="article.imageAlt" loading="lazy" />
+            <span class="sujet-latest-card__category">{{ article.category }}</span>
+          </div>
+          <div class="sujet-latest-card__body">
+            <span class="sujet-latest-card__date"> {{ article.date }}</span>
+            <h3>{{ article.title }}</h3>
+            <a routerLink="/actualites" class="sujet-latest-card__link">
+              Lire l'article
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M5 12h14M13 6l6 6-6 6" />
+              </svg>
+            </a>
+          </div>
+        </article>
+      }
+    </div>
+  </div>
+</section>
+
+<!-- NEWSLETTER (Inspiré de la capture d'écran) -->
+<section class="sujet-newsletter">
+  <div class="sujet-newsletter__container">
+    <div class="sujet-newsletter__content">
+        <h2>Rejoignez KMAA Academy <em>aujourd'hui</em></h2>
+        <p>Inscrivez-vous pour recevoir des recommandations de cours personnalisées et des offres directement dans votre boîte mail.</p>
+        <form class="sujet-newsletter__form">
+            <input type="email" placeholder="Votre adresse email professionnelle" required>
+            <button type="submit">Inscrivez-vous dès maintenant</button>
+        </form>
+    </div>
+  </div>
+</section>

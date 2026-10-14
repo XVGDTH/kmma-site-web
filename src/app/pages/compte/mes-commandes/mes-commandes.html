@@ -1,0 +1,378 @@
+<section class="orders-page">
+  <div class="orders-page__container">
+
+    <!-- ====================================================== -->
+    <!-- EN-TÊTE                                                -->
+    <!-- ====================================================== -->
+    <header class="orders-header">
+      <div>
+        <span class="orders-header__eyebrow">MON COMPTE</span>
+        <h1>Mes commandes</h1>
+        <p>Retrouvez l'historique de vos achats et téléchargez vos factures.</p>
+      </div>
+      <a routerLink="/compte/espace" class="orders-header__link">
+        ← Mon espace
+      </a>
+    </header>
+
+    <!-- ====================================================== -->
+    <!-- STATISTIQUES                                           -->
+    <!-- ====================================================== -->
+    <section class="orders-stats">
+      <div class="stat-card">
+        <div class="stat-card__icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+            <polyline points="14 2 14 8 20 8" />
+          </svg>
+        </div>
+        <div class="stat-card__body">
+          <span class="stat-card__value">{{ stats().totalOrders }}</span>
+          <span class="stat-card__label">Commandes totales</span>
+        </div>
+      </div>
+
+      <!-- <div class="stat-card">
+        <div class="stat-card__icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+          </svg>
+        </div>
+        <div class="stat-card__body">
+          <span class="stat-card__value">{{ formatPrice(stats().totalSpent) }}</span>
+          <span class="stat-card__label">Total investi</span>
+        </div>
+      </div> -->
+      <div class="stat-card">
+  <div class="stat-card__icon">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <text x="12" y="17" text-anchor="middle" font-size="14" font-weight="800" fill="currentColor" stroke="none">F</text>
+      <path d="M4 21h16" opacity="0.5" />
+    </svg>
+  </div>
+  <div class="stat-card__body">
+    <span class="stat-card__value">{{ formatPrice(stats().totalSpent) }}</span>
+    <span class="stat-card__label">Total investi</span>
+  </div>
+</div>
+
+      <div class="stat-card">
+        <div class="stat-card__icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+          </svg>
+        </div>
+        <div class="stat-card__body">
+          <span class="stat-card__value">{{ stats().courseOrders }}</span>
+          <span class="stat-card__label">Cours individuels</span>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-card__icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+            <circle cx="9" cy="7" r="4" />
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>
+          </svg>
+        </div>
+        <div class="stat-card__body">
+          <span class="stat-card__value">{{ stats().enterpriseOrders }}</span>
+          <span class="stat-card__label">Abonnements entreprise</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================== -->
+    <!-- BARRE DE RECHERCHE + FILTRES                           -->
+    <!-- ====================================================== -->
+    <div class="orders-toolbar">
+
+      <!-- Recherche -->
+      <div class="search-box">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8" />
+          <line x1="21" y1="21" x2="16.65" y2="16.65" />
+        </svg>
+        <input
+          type="text"
+          placeholder="Rechercher par cours, référence, facture..."
+          [value]="searchQuery()"
+          (input)="onSearchInput($event)"
+        />
+        @if (searchQuery()) {
+          <button type="button" class="search-box__clear" (click)="clearSearch()">✕</button>
+        }
+      </div>
+
+      <!-- Filtres -->
+      <div class="filter-tabs">
+        <button
+          type="button"
+          class="filter-tab"
+          [class.filter-tab--active]="activeFilter() === 'all'"
+          (click)="setFilter('all')"
+        >
+          Toutes ({{ stats().totalOrders }})
+        </button>
+        <button
+          type="button"
+          class="filter-tab"
+          [class.filter-tab--active]="activeFilter() === 'course'"
+          (click)="setFilter('course')"
+        >
+          Cours ({{ stats().courseOrders }})
+        </button>
+        <button
+          type="button"
+          class="filter-tab"
+          [class.filter-tab--active]="activeFilter() === 'enterprise'"
+          (click)="setFilter('enterprise')"
+        >
+          Entreprises ({{ stats().enterpriseOrders }})
+        </button>
+      </div>
+
+    </div>
+
+    <!-- ====================================================== -->
+    <!-- LISTE DES COMMANDES                                    -->
+    <!-- ====================================================== -->
+    @if (filteredOrders().length === 0) {
+      <div class="orders-empty">
+        <div class="orders-empty__icon">📄</div>
+        <h2>Aucune commande trouvée</h2>
+        <p>
+          @if (searchQuery() || activeFilter() !== 'all') {
+            Essayez de modifier vos filtres ou votre recherche.
+          } @else {
+            Vous n'avez pas encore passé de commande.
+          }
+        </p>
+        <a routerLink="/academy" class="orders-empty__btn">
+          Découvrir le catalogue
+        </a>
+      </div>
+    } @else {
+      <div class="orders-list">
+        @for (order of filteredOrders(); track order.id) {
+          <article class="order-card" (click)="openOrder(order)">
+
+            <!-- Type badge -->
+            <div class="order-card__type-badge" [class.order-card__type-badge--ent]="order.type === 'enterprise'">
+              @if (order.type === 'course') {
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+                  <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+                </svg>
+                Cours
+              } @else {
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                  <circle cx="9" cy="7" r="4" />
+                </svg>
+                Entreprise
+              }
+            </div>
+
+            <!-- Image cours -->
+            <div class="order-card__image">
+              <img [src]="order.courseImage" [alt]="order.courseTitle" loading="lazy" />
+            </div>
+
+            <!-- Corps -->
+            <div class="order-card__body">
+              <div class="order-card__header">
+                <span class="order-card__reference">{{ order.reference }}</span>
+                <span
+                  class="order-card__status"
+                  [class.order-card__status--paid]="order.status === 'paid'"
+                  [class.order-card__status--pending]="order.status === 'pending'"
+                >
+                  {{ statusLabel(order.status) }}
+                </span>
+              </div>
+
+              <h3>{{ order.courseTitle }}</h3>
+
+              <div class="order-card__meta">
+                <span>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="4" width="18" height="18" rx="2" />
+                    <path d="M16 2v4M8 2v4M3 10h18" />
+                  </svg>
+                  {{ formatDate(order.createdAt) }}
+                </span>
+                <span>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="2" y="5" width="20" height="14" rx="2"/>
+                    <path d="M2 10h20"/>
+                  </svg>
+                  {{ order.paymentMethodLabel }}
+                </span>
+                @if (order.seatsTotal) {
+                  <span>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                      <circle cx="9" cy="7" r="4" />
+                    </svg>
+                    {{ order.seatsTotal }} apprenant(s)
+                  </span>
+                }
+              </div>
+            </div>
+
+            <!-- Montant + actions -->
+            <div class="order-card__right">
+              <div class="order-card__amount">
+                {{ formatPrice(order.total) }}
+              </div>
+              <div class="order-card__actions">
+                <button
+                  type="button"
+                  class="order-card__btn order-card__btn--primary"
+                  (click)="downloadInvoice(order, $event)"
+                  title="Télécharger la facture"
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                    <polyline points="7 10 12 15 17 10" />
+                    <line x1="12" y1="15" x2="12" y2="3" />
+                  </svg>
+                  Facture
+                </button>
+                <button
+                  type="button"
+                  class="order-card__btn"
+                  (click)="openOrder(order); $event.stopPropagation()"
+                  title="Voir les détails"
+                >
+                  Détails
+                </button>
+              </div>
+            </div>
+
+          </article>
+        }
+      </div>
+    }
+
+  </div>
+</section>
+
+<!-- ====================================================== -->
+<!-- MODAL DÉTAILS                                          -->
+<!-- ====================================================== -->
+@if (selectedOrder(); as order) {
+  <div class="order-modal" (click)="closeOrder()">
+    <div class="order-modal__content" (click)="$event.stopPropagation()">
+
+      <!-- Header -->
+      <header class="order-modal__header">
+        <div>
+          <span class="order-modal__eyebrow">{{ orderTypeLabel(order.type) }}</span>
+          <h2>Commande {{ order.reference }}</h2>
+        </div>
+        <button type="button" class="order-modal__close" (click)="closeOrder()">✕</button>
+      </header>
+
+      <!-- Statut -->
+      <div class="order-modal__status-bar">
+        <span
+          class="order-modal__status"
+          [class.order-modal__status--paid]="order.status === 'paid'"
+        >
+          {{ statusLabel(order.status) }}
+        </span>
+        <span class="order-modal__date">
+          Passée le {{ formatDateTime(order.createdAt) }}
+        </span>
+      </div>
+
+      <!-- Cours -->
+      <div class="order-modal__course">
+        <img [src]="order.courseImage" [alt]="order.courseTitle" />
+        <div>
+          <span class="order-modal__provider">{{ order.courseProvider }}</span>
+          <h3>{{ order.courseTitle }}</h3>
+          @if (order.planName) {
+            <p class="order-modal__plan">
+              Formule <strong>{{ order.planName }}</strong>
+              @if (order.seatsTotal) {
+                · {{ order.seatsTotal }} apprenant(s)
+              }
+            </p>
+          }
+        </div>
+      </div>
+
+
+      <!-- Informations -->
+      <div class="order-modal__grid">
+        <div class="info-block">
+          <h4>Facturation</h4>
+          @if (order.companyName) {
+            <p><strong>{{ order.companyName }}</strong></p>
+          }
+          <p>{{ order.customerName }}</p>
+          <p>{{ order.customerEmail }}</p>
+          @if (order.companyAddress) {
+            <p>{{ order.companyAddress }}</p>
+          }
+          @if (order.companyTaxId) {
+            <p>N° IFU : {{ order.companyTaxId }}</p>
+          }
+        </div>
+
+        <div class="info-block">
+          <h4>Paiement</h4>
+          <p><strong>Mode :</strong> {{ order.paymentMethodLabel }}</p>
+          <p><strong>Transaction :</strong> {{ order.transactionId }}</p>
+          @if (order.paidAt) {
+            <p><strong>Payée le :</strong> {{ formatDateTime(order.paidAt) }}</p>
+          }
+          <p><strong>N° facture :</strong> {{ order.invoiceNumber }}</p>
+        </div>
+      </div>
+
+      <!-- Détail financier -->
+      <div class="order-modal__totals">
+        <div class="total-line">
+          <span>Sous-total</span>
+          <strong>{{ formatPrice(order.subtotal) }}</strong>
+        </div>
+        @if (order.discount > 0) {
+          <div class="total-line total-line--discount">
+            <span>Réduction{{ order.promoCode ? ' (' + order.promoCode + ')' : '' }}</span>
+            <strong>-{{ formatPrice(order.discount) }}</strong>
+          </div>
+        }
+        <div class="total-line">
+          <span>TVA (18%)</span>
+          <strong>{{ formatPrice(order.tva) }}</strong>
+        </div>
+        <div class="total-line total-line--total">
+          <span>Total TTC</span>
+          <strong>{{ formatPrice(order.total) }}</strong>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="order-modal__actions">
+        <button type="button" class="btn-download" (click)="downloadInvoice(order)">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+            <polyline points="7 10 12 15 17 10" />
+            <line x1="12" y1="15" x2="12" y2="3" />
+          </svg>
+          Télécharger la facture
+        </button>
+        <button type="button" class="btn-close" (click)="closeOrder()">
+          Fermer
+        </button>
+      </div>
+
+    </div>
+  </div>
+}

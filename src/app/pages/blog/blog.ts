@@ -75,7 +75,7 @@ interface BlogTool {
 export class Blog {
 
   private readonly http = inject(HttpClient);
-  private readonly apiUrl = 'https://api.convergesas.com/api';
+  private readonly apiUrl = 'http://127.0.0.1:8000/api';
 
   readonly apiLoaded = signal(false);
 

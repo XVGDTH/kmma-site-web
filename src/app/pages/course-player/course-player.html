@@ -109,7 +109,8 @@
     </header> -->
 
 
-    <header class="player__topbar player__topbar--hec">
+    <header class="player__topbar player__topbar--hec"
+      [style.backgroundImage]="c.image ? 'linear-gradient(120deg, rgba(13,27,62,0.93), rgba(13,27,62,0.72)), url(' + c.image + ')' : null">
   <a [routerLink]="['/cours', c.id]" class="player__breadcrumb">‹ Sommaire</a>
 
   <div class="player__topbar-title">
@@ -120,28 +121,26 @@
     }
   </div>
 
-  <div class="player__stats" title="Statistiques en temps réel">
-    <div class="player__stat">
-      <span class="player__stat-dot player__stat-dot--live"></span>
-      {{ stats().currentlyOnline }} en ligne
-    </div>
-    <div class="player__stat">{{ stats().videoViewers }} regardent une vidéo</div>
-    <div class="player__stat">{{ stats().totalEnrolled }} inscrits</div>
-  </div>
 </header>
 
 <nav class="player__tabbar" role="tablist">
   <button type="button" role="tab" [class.active]="activeTab() === 'cours'" (click)="setTab('cours')">Cours</button>
   <button type="button" role="tab" [class.active]="activeTab() === 'discussion'" (click)="setTab('discussion')">Discussion</button>
   <button type="button" role="tab" [class.active]="activeTab() === 'progression'" (click)="setTab('progression')">Progression</button>
+  <button type="button" role="tab" [class.active]="activeTab() === 'manuels'" (click)="setTab('manuels')">Manuels</button>
+  <button type="button" role="tab" [class.active]="activeTab() === 'reglements'" (click)="setTab('reglements')">Règlements</button>
+  <button type="button" role="tab" [class.active]="activeTab() === 'calendrier'" (click)="setTab('calendrier')">Calendrier</button>
   <button type="button" role="tab" [class.active]="activeTab() === 'evaluations'" (click)="setTab('evaluations')">Évaluations</button>
   <button type="button" role="tab" [class.active]="activeTab() === 'formule'" (click)="setTab('formule')">Ma formule</button>
   <button type="button" role="tab" [class.active]="activeTab() === 'live'" (click)="setTab('live')">
     Séances en direct
     @if (liveSession().isLive) { <span class="player__tabbar-dot"></span> }
   </button>
+  <!-- 🆕 NOUVEAU : Onglet Replays -->
+  <button type="button" role="tab" [class.active]="activeTab() === 'replays'" (click)="setTab('replays')">
+     Replays
+  </button>
 </nav>
-
 
     <!-- ========================================================= -->
     <!-- CORPS -->
@@ -155,37 +154,25 @@
       <!-- SIDEBAR -->
       <!-- ======================================================= -->
 
-      <aside class="player__sidebar">
-
+            <aside class="player__sidebar" [class.player__sidebar--closed]="!isSidebarOpen()">
 
         <!-- ===================================================== -->
-        <!-- PROGRESSION -->
+        <!-- BOUTON HAMBURGER (toujours visible) -->
         <!-- ===================================================== -->
 
-        <div class="player__progress">
-
-          <div class="player__progress-header">
-
-            <span>
-              Votre progression
-            </span>
-
-            <strong>
-              {{ progressPercent }}%
-            </strong>
-
-          </div>
-
-          <div class="player__progress-bar">
-
-            <div
-              class="player__progress-fill"
-              [style.width.%]="progressPercent"
-            ></div>
-
-          </div>
-
+        <div class="player__sidebar-toggle">
+          <button type="button" (click)="toggleSidebar()" aria-label="Toggle sidebar">
+            ☰
+          </button>
         </div>
+
+        <!-- ===================================================== -->
+        <!-- CONTENU DE LA SIDEBAR (masqué quand fermée) -->
+        <!-- ===================================================== -->
+
+        @if (isSidebarOpen()) {
+        
+
 
 
         <!-- ===================================================== -->
@@ -240,6 +227,12 @@
         <!-- PROGRAMME -->
         <!-- ===================================================== -->
 
+        <!-- //
+        //
+        // programme sous forme de hec paris
+        //
+        //
+        // -->
         <nav
           class="player__curriculum"
           aria-label="Programme du cours"
@@ -606,38 +599,22 @@
         @for (seq of chapter.sequences; track seq.id) {
           <button
             type="button"
-            class="seq-item"
+            class="seq-item seq-item--text-only"
             [class.seq-item--active]="activeSequenceId() === seq.id"
             [class.seq-item--done]="seq.completed"
-            [class.seq-item--locked]="!isSequenceUnlocked(seq.id)"
-            [disabled]="!isSequenceUnlocked(seq.id)"
+            [class.seq-item--locked]="seq.type === 'quiz' && !isSequenceUnlocked(seq.id)"
+            [disabled]="seq.type === 'quiz' && !isSequenceUnlocked(seq.id)"
             (click)="selectSequence(seq.id)"
           >
-            <span class="seq-item__icon" [attr.data-type]="seq.type">
-              @switch (seq.type) {
-                @case ('video')    { <span class="seq-icon-circle seq-icon-circle--video">▶</span> }
-                @case ('document') { <span class="seq-icon-circle seq-icon-circle--document">📄</span> }
-                @case ('quiz')     { <span class="seq-icon-circle seq-icon-circle--quiz">🎯</span> }
-                @case ('devoir')   { <span class="seq-icon-circle seq-icon-circle--devoir">📝</span> }
-                @case ('tp')       { <span class="seq-icon-circle seq-icon-circle--tp">🛠</span> }
-                @case ('td')       { <span class="seq-icon-circle seq-icon-circle--td">📚</span> }
-                @case ('cas_pratique') { <span class="seq-icon-circle seq-icon-circle--devoir">📝</span> }
-                @default           { <span class="seq-icon-circle">📄</span> }
-              }
-            </span>
+            <span class="seq-item__label">{{ cleanSequenceTitle(seq.title) }}</span>
 
-            <span class="seq-item__label">{{ seq.title }}</span>
-
-            @if (seq.duration) {
-              <span class="seq-item__meta">{{ seq.duration }}</span>
-            }
-
-            @if (seq.completed) {
-              <span class="seq-item__check">✓</span>
+            @if (seq.type === 'quiz' && !isSequenceUnlocked(seq.id)) {
+              <span class="seq-item__lock"> </span>
             }
           </button>
         }
 
+        <!-- 🆕 Quiz de fin de module (s'il existe) -->
         <!-- 🆕 Quiz de fin de module (s'il existe) -->
         @if (chapter.moduleQuiz; as mq) {
           <button
@@ -645,13 +622,18 @@
             class="seq-item seq-item--module-quiz"
             [class.seq-item--active]="activeSequenceId() === mq.id"
             [class.seq-item--done]="mq.completed"
+            [class.seq-item--locked]="!isSequenceUnlocked(mq.id)"
+            [disabled]="!isSequenceUnlocked(mq.id)"
             (click)="selectSequence(mq.id)"
           >
             <span class="seq-item__icon">🎓</span>
             <span class="seq-item__label">{{ mq.title }}</span>
-            <span class="seq-item__meta">🔒 Quiz module</span>
+            <span class="seq-item__meta">Quiz module</span>
             @if (mq.completed) {
               <span class="seq-item__check">✓</span>
+            }
+            @if (!isSequenceUnlocked(mq.id)) {
+              <span class="seq-item__lock"> </span>
             }
           </button>
         }
@@ -683,10 +665,15 @@
     <button
       type="button"
       class="week-block__header"
+      [class.week-block--locked]="!isSequenceUnlocked(exam.id)"
+      [disabled]="!isSequenceUnlocked(exam.id)"
       (click)="selectSequence(exam.id)"
     >
       <span class="week-block__title">
-        🏆 {{ exam.title }}
+         {{ exam.title }}
+        @if (!isSequenceUnlocked(exam.id)) {
+          <span class="seq-item__lock"> </span>
+        }
       </span>
 
       <span class="week-block__progress">
@@ -696,7 +683,8 @@
 
   </div>
 }
-      
+
+        } <!-- Fin du @if (isSidebarOpen()) -->
 
       </aside>
 
@@ -835,7 +823,7 @@
 
             }
 
-            // modele coursera presentation
+            <!-- // modele coursera presentation -->
 
             @if (a.gradingCriteria?.length) {
   <div class="player__grading">
@@ -989,6 +977,21 @@
 
         @else if (activeSequence; as seq) {
 
+          <!-- //
+          // div pour la presentation hec du cours facon hec paris.
+          // -->
+          <div class="content-panel__head">
+  <button type="button" class="content-panel__bookmark" (click)="toggleBookmark(seq.id)">
+    <span>{{ bookmarkedIds().has(seq.id) ? '★' : '☆' }}</span>
+    Ajouter cette page aux favoris
+  </button>
+  <div class="content-panel__arrows">
+    <button type="button" aria-label="Section précédente">←</button>
+    <button type="button" aria-label="Section suivante">→</button>
+  </div>
+</div>
+
+
 
           @switch (seq.type) {
 
@@ -999,10 +1002,18 @@
 
             @case ('video') {
 
-              <h2 class="player__section-title">
+              <!-- <h2 class="player__section-title">
                 {{ seq.title }}
               </h2>
 
+
+              <div class="player__video-wrapper"> -->
+
+                              <h2 class="player__section-title">
+                {{ seq.title }}
+              </h2>
+
+              <div class="video-layout">
 
               <div class="player__video-wrapper">
 
@@ -1073,7 +1084,7 @@
 
                 @else {
 
-                  <div class="player__video-placeholder">
+                  <!-- <div class="player__video-placeholder">
 
                     <span>
                       Aucune vidéo disponible pour cette séquence.
@@ -1085,6 +1096,48 @@
 
               </div>
 
+
+              <button
+                type="button"
+                class="player__done-btn"
+                (click)="markSequenceDone()"
+              >
+                Marquer comme terminé
+              </button>
+
+            } -->
+                                <div class="player__video-placeholder">
+
+                    <span>
+                      Aucune vidéo disponible pour cette séquence.
+                    </span>
+
+                  </div>
+
+                }
+
+              </div>
+
+              <aside class="video-nav-panel" aria-label="Navigation de la séquence">
+                <h3 class="video-nav-panel__title">Dans cette section</h3>
+                <ul class="video-nav-panel__list">
+                  @for (sib of activeChapterSequences(); track sib.id) {
+                    <li>
+                      <button type="button" class="video-nav-panel__link"
+                        [class.video-nav-panel__link--active]="sib.id === seq.id"
+                        (click)="selectSequence(sib.id)">
+                        <span class="video-nav-panel__icon">{{ typeIconFor(sib.type) }}</span>
+                        <span>{{ cleanSequenceTitle(sib.title) }}</span>
+                        @if (sib.completed) {
+                          <span class="video-nav-panel__check">✓</span>
+                        }
+                      </button>
+                    </li>
+                  }
+                </ul>
+              </aside>
+
+              </div>
 
               <button
                 type="button"
@@ -1895,6 +1948,30 @@
           }
 
 
+          <!-- // presentation des sections à l'imagge de hec paris
+          //
+          //
+          // -->
+          <div class="feedback-box">
+  @if (!feedbackSent()) {
+    <h4>Veuillez nous donner votre avis sur cette section</h4>
+    <textarea rows="3" [value]="feedbackText()"
+      (input)="feedbackText.set($any($event.target).value)"></textarea>
+    <p class="feedback-box__label">Veuillez évaluer votre expérience globale avec cette section.</p>
+    <div class="feedback-box__emojis">
+      @for (r of [1,2,3,4,5]; track r) {
+        <button type="button" [class.selected]="feedbackRating() === r" (click)="setFeedbackRating(r)">
+          {{ ['😞','🙁','😐','🙂','😄'][r-1] }}
+        </button>
+      }
+    </div>
+    <button type="button" class="feedback-box__submit" (click)="submitFeedback()">Submit Feedback</button>
+  } @else {
+    <p class="feedback-box__thanks">Merci pour votre retour !</p>
+  }
+</div>
+
+
         }
 
 
@@ -2351,6 +2428,97 @@
       </div>
     }
 
+
+
+<!-- ===================================================== -->
+<!-- 🆕 ONGLET REPLAYS — Séances live passées -->
+<!-- ===================================================== -->
+@if (activeTab() === 'replays') {
+  <div class="player__tab-panel">
+    <div class="replays-page">
+
+      <!-- En-tête -->
+      <header class="replays-page__head">
+        <div>
+          <span class="replays-page__eyebrow">BIBLIOTHÈQUE VIDÉO</span>
+          <h2>Séances en direct — Replays</h2>
+          <p>Revoyez toutes les sessions live passées, à votre rythme.</p>
+        </div>
+        <span class="replays-page__count">{{ mockLiveReplays.length }} replays</span>
+      </header>
+
+      <!-- Grille -->
+      <div class="replays-grid">
+        @for (replay of mockLiveReplays; track replay.id) {
+          <article class="replay-card">
+
+            <!-- Vignette -->
+            <div class="replay-card__thumbnail">
+              <img [src]="replay.thumbnail" [alt]="replay.title" loading="lazy" />
+              <div class="replay-card__overlay">
+                <button type="button" class="replay-card__play" (click)="playReplay(replay)">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M8 5v14l11-7z"/>
+                  </svg>
+                </button>
+              </div>
+              <span class="replay-card__duration">{{ replay.duration }}</span>
+              @if (replay.isNew) {
+                <span class="replay-card__new">Nouveau</span>
+              }
+            </div>
+
+            <!-- Body -->
+            <div class="replay-card__body">
+              <span class="replay-card__date">📅 {{ replay.date }}</span>
+              <h3 class="replay-card__title">{{ replay.title }}</h3>
+              <p class="replay-card__desc">{{ replay.description }}</p>
+
+              <div class="replay-card__meta">
+                <span class="replay-card__instructor">👤 {{ replay.instructor }}</span>
+                <span class="replay-card__views">👁 {{ replay.views }} vues</span>
+              </div>
+
+              <!-- Ressources attachées -->
+              @if (replay.resources.length > 0) {
+                <div class="replay-card__resources">
+                  <span class="replay-card__resources-label">Ressources :</span>
+                  @for (res of replay.resources; track res.label) {
+                    <a href="#" class="replay-card__resource" [attr.download]="res.label">
+                      📎 {{ res.label }}
+                    </a>
+                  }
+                </div>
+              }
+
+              <!-- Actions -->
+              <div class="replay-card__actions">
+                <button type="button" class="replay-card__btn replay-card__btn--primary" (click)="playReplay(replay)">
+                  ▶ Regarder
+                </button>
+                <button type="button" class="replay-card__btn replay-card__btn--ghost" (click)="downloadReplay(replay)">
+                  ⬇ Télécharger
+                </button>
+              </div>
+            </div>
+
+          </article>
+        } @empty {
+          <div class="replays-empty">
+            <span class="replays-empty__icon">🎬</span>
+            <p>Aucun replay disponible pour le moment.</p>
+            <small>Les replays apparaîtront ici après chaque session en direct.</small>
+          </div>
+        }
+      </div>
+
+    </div>
+  </div>
+}
+
+
+
+
     @if (activeTab() === 'live') {
       <div class="player__tab-panel">
         <!-- 🔽 colle ici tout le contenu que tu vas couper à l'étape 4bis -->
@@ -2433,6 +2601,536 @@
         </div>
       </div>
     }
+
+        <!-- ===================================================== -->
+    <!-- 🆕 ONGLET MANUELS -->
+    <!-- ===================================================== -->
+    <!-- @if (activeTab() === 'manuels') {
+      <div class="player__tab-panel">
+        <div class="player__manuals">
+          <h2 class="player__manuals-title">📚 Manuels du cours</h2>
+          <p class="player__manuals-desc">
+            Retrouvez ici tous les manuels officiels, supports PDF et ressources
+            complémentaires pour approfondir votre apprentissage.
+          </p>
+
+          <div class="player__manuals-grid">
+            <div class="manual-card">
+              <div class="manual-card__icon">📘</div>
+              <h3 class="manual-card__title">Manuel principal — Français</h3>
+              <p class="manual-card__desc">
+                Support officiel du cours en français, couvrant l'ensemble du programme.
+              </p>
+              <a href="#" class="manual-card__btn" target="_blank">⬇ Télécharger le PDF</a>
+            </div>
+
+            <div class="manual-card">
+              <div class="manual-card__icon">📗</div>
+              <h3 class="manual-card__title">Manuel principal — Anglais</h3>
+              <p class="manual-card__desc">
+                English version of the official course material.
+              </p>
+              <a href="#" class="manual-card__btn" target="_blank">⬇ Download PDF</a>
+            </div>
+
+            <div class="manual-card">
+              <div class="manual-card__icon">📙</div>
+              <h3 class="manual-card__title">Cas pratiques & exercices</h3>
+              <p class="manual-card__desc">
+                Recueil d'exercices et cas pratiques pour s'entraîner.
+              </p>
+              <a href="#" class="manual-card__btn" target="_blank">⬇ Télécharger le PDF</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    } -->
+
+    @if (activeTab() === 'manuels') {
+  <div class="player__tab-panel">
+    <div class="manuals-page">
+
+      <!-- En-tête -->
+      <header class="manuals-page__head">
+        <div>
+          <span class="manuals-page__eyebrow">RESSOURCES PÉDAGOGIQUES</span>
+          <h2>Manuels du cours</h2>
+          <p>Retrouvez ici tous les supports officiels, manuels PDF et ressources complémentaires pour approfondir votre apprentissage.</p>
+        </div>
+        <span class="manuals-page__count">{{ mockManuals.length }} documents</span>
+      </header>
+
+      <!-- Grille des manuels -->
+      <div class="manuals-grid">
+        @for (manual of mockManuals; track manual.id) {
+          <article class="manual-item">
+            <div class="manual-item__icon" [attr.data-type]="manual.type">
+              @switch (manual.type) {
+                @case ('pdf')  { 📕 }
+                @case ('doc')  { 📘 }
+                @case ('xls')  { 📗 }
+                @case ('zip')  { 📦 }
+                @default        { 📄 }
+              }
+            </div>
+
+            <div class="manual-item__body">
+              <span class="manual-item__category">{{ manual.category }}</span>
+              <h3 class="manual-item__title">{{ manual.title }}</h3>
+              <p class="manual-item__desc">{{ manual.description }}</p>
+
+              <ul class="manual-item__meta">
+                <li>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="4" width="18" height="18" rx="2"/>
+                    <path d="M16 2v4M8 2v4M3 10h18"/>
+                  </svg>
+                  {{ manual.updatedAt }}
+                </li>
+                <li>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="7 10 12 15 17 10"/>
+                    <line x1="12" y1="15" x2="12" y2="3"/>
+                  </svg>
+                  {{ manual.size }}
+                </li>
+                <li>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8Z"/>
+                    <circle cx="12" cy="12" r="3"/>
+                  </svg>
+                  {{ manual.pages }} pages
+                </li>
+              </ul>
+            </div>
+
+            <div class="manual-item__actions">
+              <button type="button" class="manual-item__btn manual-item__btn--preview" (click)="previewManual(manual)" title="Aperçu">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8Z"/>
+                  <circle cx="12" cy="12" r="3"/>
+                </svg>
+              </button>
+              <button type="button" class="manual-item__btn manual-item__btn--download" (click)="downloadManual(manual)">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                  <polyline points="7 10 12 15 17 10"/>
+                  <line x1="12" y1="15" x2="12" y2="3"/>
+                </svg>
+                Télécharger
+              </button>
+            </div>
+          </article>
+        } @empty {
+          <div class="manuals-empty">
+            <span class="manuals-empty__icon">📚</span>
+            <p>Aucun manuel disponible pour ce cours.</p>
+          </div>
+        }
+      </div>
+
+    </div>
+  </div>
+}
+
+    <!-- ===================================================== -->
+    <!-- 🆕 ONGLET RÈGLEMENTS -->
+    <!-- ===================================================== -->
+    <!-- @if (activeTab() === 'reglements') {
+      <div class="player__tab-panel">
+        <div class="player__rules">
+          <h2 class="player__rules-title">📋 Règlements et conditions</h2>
+          <p class="player__rules-desc">
+            Veuillez prendre connaissance des règles applicables à ce cours.
+          </p>
+
+          <div class="rule-section">
+            <h3 class="rule-section__title">1. Assiduité et participation</h3>
+            <p class="rule-section__text">
+              L'apprenant s'engage à suivre régulièrement les séquences du cours
+              et à participer activement aux activités proposées.
+            </p>
+          </div>
+
+          <div class="rule-section">
+            <h3 class="rule-section__title">2. Évaluations et notation</h3>
+            <p class="rule-section__text">
+              Les quiz, devoirs et examens finaux sont notés selon le barème
+              indiqué. Un score minimum de 70% est requis pour valider un module.
+            </p>
+          </div>
+
+          <div class="rule-section">
+            <h3 class="rule-section__title">3. Plagiat et intégrité académique</h3>
+            <p class="rule-section__text">
+              Tout travail rendu doit être personnel. Le plagiat entraîne
+              l'annulation de la note et peut conduire à l'exclusion du cours.
+            </p>
+          </div>
+
+          <div class="rule-section">
+            <h3 class="rule-section__title">4. Certificat</h3>
+            <p class="rule-section__text">
+              Le certificat est délivré uniquement après avoir complété 100%
+              du cours et validé l'ensemble des évaluations obligatoires.
+            </p>
+          </div>
+
+          <div class="rule-section">
+            <h3 class="rule-section__title">5. Confidentialité</h3>
+            <p class="rule-section__text">
+              Les contenus pédagogiques sont protégés par le droit d'auteur.
+              Toute diffusion non autorisée est strictement interdite.
+            </p>
+          </div>
+        </div>
+      </div>
+    } -->
+
+    @if (activeTab() === 'reglements') {
+  <div class="player__tab-panel">
+    <div class="rules-page">
+
+      <!-- En-tête -->
+      <header class="rules-page__head">
+        <span class="rules-page__eyebrow">RÈGLEMENT INTÉRIEUR</span>
+        <h2>Règles et conditions</h2>
+        <p>
+          Ce règlement s'applique à l'ensemble des apprenants inscrits à cette formation.
+          En vous inscrivant, vous vous engagez à respecter ces règles.
+        </p>
+      </header>
+
+      <!-- Sommaire rapide -->
+      <nav class="rules-toc">
+        <a href="#rule-1" class="rules-toc__item">
+          <span class="rules-toc__num">01</span>
+          <span>Assiduité et participation</span>
+        </a>
+        <a href="#rule-2" class="rules-toc__item">
+          <span class="rules-toc__num">02</span>
+          <span>Évaluations et notation</span>
+        </a>
+        <a href="#rule-3" class="rules-toc__item">
+          <span class="rules-toc__num">03</span>
+          <span>Intégrité académique</span>
+        </a>
+        <a href="#rule-4" class="rules-toc__item">
+          <span class="rules-toc__num">04</span>
+          <span>Certification</span>
+        </a>
+        <a href="#rule-5" class="rules-toc__item">
+          <span class="rules-toc__num">05</span>
+          <span>Confidentialité</span>
+        </a>
+      </nav>
+
+      <!-- Liste des règles -->
+      <div class="rules-list">
+
+        <article class="rule-card" id="rule-1">
+          <div class="rule-card__icon">📅</div>
+          <div class="rule-card__body">
+            <div class="rule-card__header">
+              <h3>Assiduité et participation</h3>
+              <span class="rule-card__badge">Obligatoire</span>
+            </div>
+            <p>
+              L'apprenant s'engage à suivre régulièrement les séquences du cours
+              et à participer activement aux activités proposées. Une progression
+              régulière est recommandée pour maximiser l'apprentissage.
+            </p>
+            <ul class="rule-card__points">
+              <li>Consacrer au minimum 3h par semaine à la formation</li>
+              <li>Participer aux sessions en direct quand elles sont programmées</li>
+              <li>Poser des questions sur le forum en cas de difficulté</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="rule-card" id="rule-2">
+          <div class="rule-card__icon">📊</div>
+          <div class="rule-card__body">
+            <div class="rule-card__header">
+              <h3>Évaluations et notation</h3>
+              <span class="rule-card__badge">Requis 70%</span>
+            </div>
+            <p>
+              Les quiz, devoirs et examens finaux sont notés selon le barème indiqué.
+              Un score minimum de 70% est requis pour valider un module et progresser
+              vers le suivant.
+            </p>
+            <ul class="rule-card__points">
+              <li>Les quiz peuvent être retentés jusqu'à 3 fois</li>
+              <li>Les devoirs notés sont corrigés par le formateur sous 5 jours</li>
+              <li>Un feedback personnalisé est fourni pour chaque devoir</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="rule-card" id="rule-3">
+          <div class="rule-card__icon">⚖️</div>
+          <div class="rule-card__body">
+            <div class="rule-card__header">
+              <h3>Plagiat et intégrité académique</h3>
+              <span class="rule-card__badge rule-card__badge--danger">Sanction</span>
+            </div>
+            <p>
+              Tout travail rendu doit être personnel. Le plagiat entraîne
+              l'annulation de la note et peut conduire à l'exclusion du cours
+              sans remboursement.
+            </p>
+            <ul class="rule-card__points">
+              <li>Citation obligatoire des sources utilisées</li>
+              <li>Détection automatique de plagiat sur les devoirs</li>
+              <li>3 avertissements avant exclusion définitive</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="rule-card" id="rule-4">
+          <div class="rule-card__icon">🎓</div>
+          <div class="rule-card__body">
+            <div class="rule-card__header">
+              <h3>Certification</h3>
+              <span class="rule-card__badge rule-card__badge--success">Objectif</span>
+            </div>
+            <p>
+              Le certificat est délivré uniquement après avoir complété 100%
+              du cours et validé l'ensemble des évaluations obligatoires.
+            </p>
+            <ul class="rule-card__points">
+              <li>Certificat numérique avec QR code de vérification</li>
+              <li>Partageable sur LinkedIn en 1 clic</li>
+              <li>Téléchargeable au format PDF</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="rule-card" id="rule-5">
+          <div class="rule-card__icon">🔒</div>
+          <div class="rule-card__body">
+            <div class="rule-card__header">
+              <h3>Confidentialité et droits d'auteur</h3>
+              <span class="rule-card__badge">Important</span>
+            </div>
+            <p>
+              Les contenus pédagogiques sont protégés par le droit d'auteur.
+              Toute diffusion, revente ou partage non autorisé est strictement
+              interdit et peut faire l'objet de poursuites.
+            </p>
+            <ul class="rule-card__points">
+              <li>Usage strictement personnel des supports</li>
+              <li>Interdiction de capturer et diffuser les vidéos</li>
+              <li>Sanctions civiles et pénales en cas de violation</li>
+            </ul>
+          </div>
+        </article>
+
+      </div>
+
+      <!-- Pied de page -->
+      <footer class="rules-footer">
+        <p>
+          📧 Une question sur le règlement ?
+          <a routerLink="/contact">Contactez l'administration</a>
+        </p>
+      </footer>
+
+    </div>
+  </div>
+}
+
+    <!-- ===================================================== -->
+    <!-- 🆕 ONGLET CALENDRIER -->
+    <!-- ===================================================== -->
+    <!-- @if (activeTab() === 'calendrier') {
+      <div class="player__tab-panel">
+        <div class="player__calendar">
+          <h2 class="player__calendar-title">📅 Calendrier du cours</h2>
+          <p class="player__calendar-desc">
+            Retrouvez ici toutes les dates importantes : sessions en direct,
+            remises de devoirs, examens et événements du cours.
+          </p>
+
+          <div class="calendar-timeline">
+            <div class="calendar-event calendar-event--live">
+              <div class="calendar-event__date">
+                <span class="calendar-event__day">15</span>
+                <span class="calendar-event__month">Jan</span>
+              </div>
+              <div class="calendar-event__body">
+                <span class="calendar-event__badge">🔴 En direct</span>
+                <h3 class="calendar-event__title">Séance live — Introduction</h3>
+                <p class="calendar-event__text">
+                  Première session en direct avec le formateur pour lancer le cours.
+                </p>
+                <span class="calendar-event__time">⏰ 18h00 — 20h00</span>
+              </div>
+            </div>
+
+            <div class="calendar-event calendar-event--devoir">
+              <div class="calendar-event__date">
+                <span class="calendar-event__day">22</span>
+                <span class="calendar-event__month">Jan</span>
+              </div>
+              <div class="calendar-event__body">
+                <span class="calendar-event__badge">📝 Devoir</span>
+                <h3 class="calendar-event__title">Remise du devoir n°1</h3>
+                <p class="calendar-event__text">
+                  Date limite pour rendre le premier devoir noté.
+                </p>
+                <span class="calendar-event__time">⏰ Avant 23h59</span>
+              </div>
+            </div>
+
+            <div class="calendar-event calendar-event--quiz">
+              <div class="calendar-event__date">
+                <span class="calendar-event__day">05</span>
+                <span class="calendar-event__month">Fév</span>
+              </div>
+              <div class="calendar-event__body">
+                <span class="calendar-event__badge">🎯 Quiz</span>
+                <h3 class="calendar-event__title">Quiz de validation Module 1</h3>
+                <p class="calendar-event__text">
+                  Quiz obligatoire pour valider le premier module du cours.
+                </p>
+                <span class="calendar-event__time">⏰ Disponible 24h</span>
+              </div>
+            </div>
+
+            <div class="calendar-event calendar-event--exam">
+              <div class="calendar-event__date">
+                <span class="calendar-event__day">28</span>
+                <span class="calendar-event__month">Fév</span>
+              </div>
+              <div class="calendar-event__body">
+                <span class="calendar-event__badge">🏆 Examen</span>
+                <h3 class="calendar-event__title">Examen final</h3>
+                <p class="calendar-event__text">
+                  Évaluation finale du cours. Score minimum requis : 70%.
+                </p>
+                <span class="calendar-event__time">⏰ 9h00 — 12h00</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    } -->
+
+    @if (activeTab() === 'calendrier') {
+  <div class="player__tab-panel">
+    <div class="calendar-page">
+
+      <!-- En-tête -->
+      <header class="calendar-page__head">
+        <div>
+          <span class="calendar-page__eyebrow">PLANNING DU COURS</span>
+          <h2>Calendrier</h2>
+          <p>Toutes les dates clés : sessions live, remises de devoirs, quiz et examen final.</p>
+        </div>
+      </header>
+
+      <!-- Filtres -->
+      <div class="calendar-filters">
+        <button type="button" class="calendar-filter"
+          [class.calendar-filter--active]="calFilter() === 'all'"
+          (click)="setCalFilter('all')">
+          Tout
+        </button>
+        <button type="button" class="calendar-filter"
+          [class.calendar-filter--active]="calFilter() === 'live'"
+          (click)="setCalFilter('live')">
+          🔴 Live
+        </button>
+        <button type="button" class="calendar-filter"
+          [class.calendar-filter--active]="calFilter() === 'devoir'"
+          (click)="setCalFilter('devoir')">
+          📝 Devoirs
+        </button>
+        <button type="button" class="calendar-filter"
+          [class.calendar-filter--active]="calFilter() === 'quiz'"
+          (click)="setCalFilter('quiz')">
+          🎯 Quiz
+        </button>
+        <button type="button" class="calendar-filter"
+          [class.calendar-filter--active]="calFilter() === 'exam'"
+          (click)="setCalFilter('exam')">
+          🏆 Examens
+        </button>
+      </div>
+
+      <!-- Timeline -->
+      <div class="calendar-timeline">
+        @for (event of filteredCalendarEvents(); track event.id) {
+          <div class="cal-event" [attr.data-type]="event.type" [class.cal-event--past]="event.status === 'past'">
+
+            <!-- Date -->
+            <div class="cal-event__date">
+              <span class="cal-event__day">{{ event.day }}</span>
+              <span class="cal-event__month">{{ event.month }}</span>
+            </div>
+
+            <!-- Connecteur -->
+            <div class="cal-event__line"></div>
+
+            <!-- Contenu -->
+            <div class="cal-event__body">
+              <div class="cal-event__head">
+                <span class="cal-event__badge" [attr.data-type]="event.type">
+                  @switch (event.type) {
+                    @case ('live')    { 🔴 En direct }
+                    @case ('devoir')  { 📝 Devoir }
+                    @case ('quiz')    { 🎯 Quiz }
+                    @case ('exam')    { 🏆 Examen }
+                  }
+                </span>
+                @if (event.status === 'past') {
+                  <span class="cal-event__status cal-event__status--past">Terminé</span>
+                } @else if (event.status === 'today') {
+                  <span class="cal-event__status cal-event__status--today">Aujourd'hui</span>
+                } @else {
+                  <span class="cal-event__status cal-event__status--upcoming">À venir</span>
+                }
+              </div>
+
+              <h3 class="cal-event__title">{{ event.title }}</h3>
+              <p class="cal-event__desc">{{ event.description }}</p>
+
+              <div class="cal-event__meta">
+                <span class="cal-event__time">⏰ {{ event.time }}</span>
+                @if (event.duration) {
+                  <span class="cal-event__duration">⏱ {{ event.duration }}</span>
+                }
+                @if (event.instructor) {
+                  <span class="cal-event__instructor">👤 {{ event.instructor }}</span>
+                }
+              </div>
+
+              @if (event.status === 'today' || event.status === 'upcoming') {
+                <div class="cal-event__actions">
+                  @if (event.type === 'live') {
+                    <button type="button" class="cal-event__btn cal-event__btn--primary">
+                      Rejoindre la session
+                    </button>
+                  }
+                  <button type="button" class="cal-event__btn cal-event__btn--ghost">
+                    📅 Ajouter à mon agenda
+                  </button>
+                </div>
+              }
+            </div>
+
+          </div>
+        } @empty {
+          <p class="calendar-empty">Aucun événement pour ce filtre.</p>
+        }
+      </div>
+
+    </div>
+  </div>
+}
 
   </div>
 

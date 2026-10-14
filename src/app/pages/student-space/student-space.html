@@ -4,7 +4,7 @@
   <!-- EN-TÊTE -->
   <!-- ====================================================== -->
 
-  <header class="student-space__header">
+  <!-- <header class="student-space__header">
     <div class="student-space__avatar">
       {{ studentName().charAt(0) }}
     </div>
@@ -14,15 +14,13 @@
       <h1>Bonjour, {{ studentName() }}</h1>
     </div>
 
-    <!-- // bouton dashboard -->
-     <button
+    <button
       type="button"
       class="student-space__logout"
       (click)="goToDashboard()"
     >
       🏠 Mon tableau de bord
     </button>
-
 
     <button
       type="button"
@@ -31,7 +29,41 @@
     >
       Déconnexion
     </button>
-  </header>
+  </header>-->
+
+  <header class="student-space__header">
+  <div class="student-space__avatar">
+    {{ studentName().charAt(0) }}
+  </div>
+
+  <div class="student-space__header-info">
+    <span class="student-space__eyebrow">Mon espace</span>
+    <h1>Bonjour, {{ studentName() }}</h1>
+  </div>
+
+  <a
+    routerLink="/compte/mes-commandes"
+    class="student-space__logout"
+  >
+    📄 Mes commandes
+  </a>
+
+  <button
+    type="button"
+    class="student-space__logout"
+    (click)="goToDashboard()"
+  >
+    🏠 Mon tableau de bord
+  </button>
+
+  <button
+    type="button"
+    class="student-space__logout"
+    (click)="logout()"
+  >
+    Déconnexion
+  </button>
+</header>
 
 
   <!-- ====================================================== -->
@@ -71,16 +103,7 @@
     >
       💳 Ma formule
     </button>
-    <!-- // bouton mes evaluations  -->
-        <!-- <button
-      type="button"
-      class="student-space__tab"
-      [class.student-space__tab--active]="activeTab() === 'evaluations'"
-      (click)="setTab('evaluations')"
-    >
-      🏆 Évaluations
-    </button> -->
-        <button
+    <button
       type="button"
       class="student-space__tab"
       [class.student-space__tab--active]="activeTab() === 'evaluations'"
@@ -88,10 +111,7 @@
     >
       🏆 Évaluations
 
-      <!-- @if (accessService.unreadCount() > 0) {
-        <span class="student-space__tab-badge">{{ accessService.unreadCount() }}</span>
-      } -->
-              @if (notifService.unreadCount() > 0) {
+      @if (notifService.unreadCount() > 0) {
         <span class="student-space__tab-badge">{{ notifService.unreadCount() }}</span>
       }
     </button>
@@ -103,6 +123,8 @@
     >
       Profil
     </button>
+<!-- nouvelle boutin pour les commandes afin que l"user puisse voir ses achats et ses statiques -->
+
   </nav>
 
 
@@ -122,16 +144,13 @@
           >
             <div class="course-tile__image">
               <div class="course-tile__placeholder">
-                {{ item.courseId.charAt(0).toUpperCase() }}
+                {{ item.courseTitle?.charAt(0).toUpperCase() ?? 'C' }}
               </div>
             </div>
 
             <div class="course-tile__body">
-              <span class="course-tile__category">
-                {{ item.courseId }}
-              </span>
-
-              <h3>{{ item.courseId }}</h3>
+              <span class="course-tile__category">{{ item.courseCategory }}</span>
+              <h3>{{ item.courseTitle }}</h3>
 
               <div class="course-tile__progress-bar">
                 <div
@@ -185,7 +204,7 @@
               </svg>
             </div>
 
-            <h3>{{ item.courseId }}</h3>
+            <h3>{{ item.courseTitle }}</h3>
             <p>Terminé le {{ item.enrolledAt }}</p>
 
             <button
@@ -246,7 +265,6 @@
     <section class="student-space__section">
       <h2>Ma formule par cours</h2>
 
-      <!-- Sélecteur de cours (l'accès est par cours) -->
       <div class="plan-courses">
         @for (item of enrollments(); track item.courseId) {
           <button
@@ -255,7 +273,7 @@
             [class.active]="selectedCourseSlug() === item.courseId"
             (click)="selectCourseForPlan(item.courseId)"
           >
-            📚 {{ item.courseId }}
+            📚 {{ item.courseTitle }}
           </button>
         } @empty {
           <p class="student-space__empty">
@@ -265,29 +283,27 @@
       </div>
 
       @if (myPlanLoaded() && selectedCourseSlug()) {
-
         <div class="my-plan-panel">
 
           <div class="my-plan-panel__head">
             <div>
               <span class="my-plan-panel__label">MA FORMULE ACTUELLE</span>
-              <h2>{{ accessService.myPlan().planName }}</h2>
+              <h2>{{ myPlan().planName }}</h2>
             </div>
             <span class="my-plan-level">
-              Niveau {{ accessService.myPlan().level }}
+              Niveau {{ myPlan().level }}
             </span>
           </div>
 
-          @if (accessService.myPlan().level === 0) {
+          @if (myPlan().level === 0) {
             <p class="my-plan-panel__empty">
               Vous n'avez pas encore de formule pour ce cours.
               Choisissez celle qui vous convient ci-dessous. 👇
             </p>
           }
 
-          <!-- Comparatif des formules -->
           <div class="my-plan-compare">
-            @for (plan of accessService.myPlan().allPlans; track plan.id) {
+            @for (plan of myPlan().allPlans; track plan.id) {
               <div
                 class="my-plan-compare__card"
                 [class.current]="plan.isCurrent"
@@ -310,7 +326,7 @@
 
                 @if (!plan.isCurrent) {
                   <a
-                    [routerLink]="['/paiement', selectedCourseSlug()]"
+                    [routerLink]="['/achats-cours/paiement', selectedCourseSlug()]"
                     class="my-plan-compare__upgrade"
                   >
                     Passer à {{ plan.name }} →
@@ -325,14 +341,12 @@
           </div>
 
         </div>
-
       }
     </section>
   }
 
 
-        <!-- 🏆 MES ÉVALUATIONS (pour le cours sélectionné) -->
-        <!-- ====================================================== -->
+  <!-- ====================================================== -->
   <!-- 🏆 MES ÉVALUATIONS -->
   <!-- ====================================================== -->
 
@@ -340,7 +354,6 @@
     <section class="student-space__section">
       <h2>Mes évaluations</h2>
 
-      <!-- Sélecteur de cours -->
       <div class="plan-courses">
         @for (item of enrollments(); track item.courseId) {
           <button
@@ -349,7 +362,7 @@
             [class.active]="selectedCourseSlug() === item.courseId"
             (click)="selectCourseForPlan(item.courseId)"
           >
-            📚 {{ item.courseId }}
+            📚 {{ item.courseTitle }}
           </button>
         } @empty {
           <p class="student-space__empty">
@@ -359,13 +372,12 @@
       </div>
 
       @if (selectedCourseSlug()) {
-
-        @if (accessService.evaluations().length > 0) {
+        @if (evaluations().length > 0) {
 
           <div class="eval-section__head">
             <h3>📊 Notes et retours de ton formateur</h3>
 
-            @if (accessService.averageGrade(); as avg) {
+            @if (averageGrade(); as avg) {
               <span class="eval-section__avg">
                 Moyenne : {{ avg | number:'1.1-1' }}/20
               </span>
@@ -373,14 +385,12 @@
           </div>
 
           <div class="eval-section__list">
-            @for (evalItem of accessService.evaluations(); track evalItem.id) {
-
+            @for (evalItem of evaluations(); track evalItem.id) {
               <div
                 class="eval-card"
                 [class.eval-card--ok]="evalItem.status === 'corrige' || evalItem.status === 'reussi'"
                 [class.eval-card--wait]="evalItem.status === 'soumis'"
               >
-
                 <span class="eval-card__icon">
                   {{ evalItem.type === 'quiz' ? '🎯' : '📝' }}
                 </span>
@@ -394,9 +404,7 @@
                         Note : {{ evalItem.grade }}/20
                       </span>
                     } @else if (evalItem.status === 'retourne') {
-                      <span class="eval-card__pending">
-                        ↩ À refaire
-                      </span>
+                      <span class="eval-card__pending">↩ À refaire</span>
                     } @else {
                       <span class="eval-card__pending">
                         ⏳ En attente de correction
@@ -419,9 +427,7 @@
                 >
                   Ouvrir →
                 </a>
-
               </div>
-
             }
           </div>
 
@@ -431,10 +437,10 @@
             Soumets un devoir (formule Standard+) pour démarrer.
           </p>
         }
-
       }
     </section>
   }
+
 
   <!-- ====================================================== -->
   <!-- PROFIL -->

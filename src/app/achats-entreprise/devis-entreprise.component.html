@@ -1,0 +1,255 @@
+@if (course(); as c) {
+  <section class="devis-page">
+    <div class="devis-page__container">
+
+      <!-- FIL D'ARIANE -->
+      <nav class="devis-breadcrumb">
+        <a routerLink="/">Accueil</a>
+        <span>/</span>
+        <a routerLink="/entreprises/formations">Entreprises</a>
+        <span>/</span>
+        <a [routerLink]="['/entreprises/formation', c.id]">{{ c.title }}</a>
+        <span>/</span>
+        <span class="current">Devis</span>
+      </nav>
+
+      <header class="devis-header">
+        <h1>Configurez votre formation d'équipe</h1>
+        <p>Récapitulatif de votre commande et invitation des membres.</p>
+      </header>
+
+      <div class="devis-layout">
+
+        <!-- ============================================ -->
+        <!-- COLONNE GAUCHE : CONFIGURATION              -->
+        <!-- ============================================ -->
+        <div class="devis-form">
+
+          <!-- ÉTAPE 1 : Récapitulatif cours -->
+          <section class="devis-step">
+            <div class="devis-step__header">
+              <span class="devis-step__number">1</span>
+              <h2>Formation sélectionnée</h2>
+            </div>
+
+            <div class="course-preview">
+              <img [src]="c.image" [alt]="c.title" loading="lazy" />
+              <div class="course-preview__info">
+                <span class="course-preview__provider">{{ c.provider }}</span>
+                <h3>{{ c.title }}</h3>
+                <div class="course-preview__meta">
+                  <span>⏱ {{ c.duration }}</span>
+                  <span>📍 {{ c.mode }}</span>
+                </div>
+              </div>
+            </div>
+
+            @if (selectedPlan(); as plan) {
+              <div class="selected-plan">
+                <div class="selected-plan__badge">Formule sélectionnée</div>
+                <h3>{{ plan.name }}</h3>
+                <p>{{ plan.description }}</p>
+                <ul>
+                  @for (f of plan.features; track f) {
+                    <li>✓ {{ f }}</li>
+                  }
+                </ul>
+              </div>
+            }
+          </section>
+
+          <!-- ÉTAPE 2 : Taille de l'équipe -->
+          <section class="devis-step">
+            <div class="devis-step__header">
+              <span class="devis-step__number">2</span>
+              <h2>Nombre d'apprenants</h2>
+            </div>
+
+            <div class="team-size">
+              <button type="button" class="team-size__btn" (click)="decrementTeam()">−</button>
+              <input
+                type="number"
+                class="team-size__input"
+                [value]="teamSize()"
+                (input)="setTeamSize(+$any($event.target).value)"
+                min="1"
+                max="100"
+              />
+              <button type="button" class="team-size__btn" (click)="incrementTeam()">+</button>
+              <span class="team-size__label">apprenant(s)</span>
+            </div>
+
+            @if (teamSize() >= 5) {
+              <p class="team-size__hint">
+                💡 <strong>-15% automatique</strong> appliqué pour les équipes de 5+.
+              </p>
+            }
+          </section>
+
+          <!-- ÉTAPE 3 : Inviter les membres -->
+          <section class="devis-step">
+            <div class="devis-step__header">
+              <span class="devis-step__number">3</span>
+              <h2>Inviter vos collaborateurs <span class="optional">(optionnel)</span></h2>
+            </div>
+
+            <p class="invite-hint">
+              Vous pourrez aussi les inviter plus tard depuis votre espace entreprise.
+              Il vous reste <strong>{{ teamSize() - members().length - 1 }}</strong> place(s).
+            </p>
+
+            <div class="invite-form">
+              <input
+                type="email"
+                placeholder="email@entreprise.com"
+                [value]="newMemberEmail()"
+                (input)="onMemberInput($event)"
+                (keyup.enter)="addMember()"
+              />
+              <button type="button" (click)="addMember()">Inviter</button>
+            </div>
+
+            @if (memberError()) {
+              <p class="invite-error">{{ memberError() }}</p>
+            }
+
+            @if (members().length > 0) {
+              <ul class="member-list">
+                @for (email of members(); track email) {
+                  <li class="member-item">
+                    <span class="member-item__avatar">{{ email.charAt(0).toUpperCase() }}</span>
+                    <span class="member-item__email">{{ email }}</span>
+                    <button type="button" class="member-item__remove" (click)="removeMember(email)">
+                      ✕
+                    </button>
+                  </li>
+                }
+              </ul>
+            }
+          </section>
+
+          <!-- ÉTAPE 4 : Code promo -->
+          <section class="devis-step">
+            <div class="devis-step__header">
+              <span class="devis-step__number">4</span>
+              <h2>Code promo <span class="optional">(optionnel)</span></h2>
+            </div>
+
+            @if (!appliedPromo()) {
+              <div class="promo-form">
+                <input
+                  type="text"
+                  placeholder="Entrez votre code"
+                  [value]="promoInput()"
+                  (input)="promoInput.set($any($event.target).value)"
+                  (keyup.enter)="applyPromo()"
+                />
+                <button type="button" (click)="applyPromo()">Appliquer</button>
+              </div>
+              @if (promoError()) {
+                <p class="promo-error">{{ promoError() }}</p>
+              }
+            } @else {
+              <div class="promo-applied">
+                <div class="promo-applied__info">
+                  <span class="promo-applied__check">✓</span>
+                  <div>
+                    <strong>{{ appliedPromo()!.code }}</strong>
+                    <span>{{ appliedPromo()!.label }}</span>
+                  </div>
+                </div>
+                <button type="button" class="promo-applied__remove" (click)="removePromo()">
+                  Retirer
+                </button>
+              </div>
+            }
+          </section>
+
+        </div>
+
+        <!-- ============================================ -->
+        <!-- COLONNE DROITE : RÉCAPITULATIF              -->
+        <!-- ============================================ -->
+        <aside class="devis-summary">
+          <div class="devis-summary__card">
+            <h2>Récapitulatif du devis</h2>
+
+            <div class="summary-lines">
+              <div class="summary-line">
+                <span>Formule</span>
+                <strong>{{ selectedPlan()?.name }}</strong>
+              </div>
+              <div class="summary-line">
+                <span>Apprenants</span>
+                <strong>{{ teamSize() }}</strong>
+              </div>
+              <div class="summary-line">
+                <span>Prix / apprenant</span>
+                <strong>{{ formatPrice(selectedPlan()?.pricePerSeat ?? 0) }}</strong>
+              </div>
+
+              <div class="summary-line summary-line--sub">
+                <span>Sous-total</span>
+                <strong>{{ formatPrice(subtotal()) }}</strong>
+              </div>
+
+              @if (discountAmount() > 0) {
+                <div class="summary-line summary-line--discount">
+                  <span>Réduction ({{ appliedPromo()!.code }})</span>
+                  <strong>-{{ formatPrice(discountAmount()) }}</strong>
+                </div>
+              }
+
+              <div class="summary-line">
+                <span>Total HT</span>
+                <strong>{{ formatPrice(totalHT()) }}</strong>
+              </div>
+              <div class="summary-line">
+                <span>TVA (18%)</span>
+                <strong>{{ formatPrice(tva()) }}</strong>
+              </div>
+
+              <div class="summary-line summary-line--total">
+                <span>Total TTC</span>
+                <strong>{{ formatPrice(totalTTC()) }}</strong>
+              </div>
+            </div>
+
+            <button type="button" class="btn-continue" (click)="continueToPayment()">
+              Continuer vers le paiement
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path d="M5 12h14M13 6l6 6-6 6" />
+              </svg>
+            </button>
+
+            <button type="button" class="btn-cancel" (click)="cancel()">Annuler</button>
+
+            <div class="summary-guarantees">
+              <div class="guarantee">
+                <span>🔒</span>
+                <div>
+                  <strong>Paiement sécurisé</strong>
+                  <small>Transactions cryptées</small>
+                </div>
+              </div>
+              <div class="guarantee">
+                <span>📄</span>
+                <div>
+                  <strong>Facture officielle</strong>
+                  <small>Envoyée sous 24h</small>
+                </div>
+              </div>
+            </div>
+          </div>
+        </aside>
+
+      </div>
+    </div>
+  </section>
+} @else {
+  <div class="devis-error">
+    <h2>Formation introuvable</h2>
+    <p>Veuillez retourner au catalogue.</p>
+    <a routerLink="/entreprises/formations" class="btn-primary">Retour au catalogue</a>
+  </div>
+}

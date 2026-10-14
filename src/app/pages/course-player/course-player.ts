@@ -44,11 +44,6 @@ import { CourseContentService } from '../../shared/course-content.service';
 
 import { VideoStorageService } from '../../shared/video-storage.service';
 
-// import type {
-//   CourseWeek,
-//   UploadedVideoMeta,
-//   WeekAssignment,
-// } from '../../data/Course builder.model ';
 
 import { CoursesApiService } from '../../shared/courses-api.service';
 import { HttpClient } from '@angular/common/http';
@@ -71,17 +66,7 @@ import { computeWeekDuration } from '../../data/Course builder.model '; // ðŸ�
 // TYPE DU COURS RETOURNÃ‰ PAR L'API
 // ============================================================
 
-// type CourseFromApi = {
-//   id: string | number;
 
-//   instructor?: string;
-
-//   instructorRole?: string;
-
-//   chapters?: CourseChapter[];
-
-//   [key: string]: unknown;
-// };
 
 type CourseFromApi = {
   id: string | number;
@@ -168,7 +153,7 @@ export class CoursePlayer {
   // ============================================================
 
   private readonly apiBaseUrl =
-    'https://api.convergesas.com';
+    'http://127.0.0.1:8000';
 
 
   // ============================================================
@@ -191,50 +176,197 @@ export class CoursePlayer {
 
 
   // ============================================================
-  // COURS CHARGÃ‰ DEPUIS LARAVEL
+  // COURS CHARGÃ‰ DEPUIS LARAVEL a recommenter pour activer afin d'initialiser le cours depuis l'API Laravel
   // ============================================================
 
-  readonly courseDetail = toSignal(
-    this.route.paramMap.pipe(
+  // readonly courseDetail = toSignal(
+  //   this.route.paramMap.pipe(
 
-      map(
-        (params): string =>
-          params.get('id') ??
-          params.get('courseId') ??
-          ''
-      ),
+  //     map(
+  //       (params): string =>
+  //         params.get('id') ??
+  //         params.get('courseId') ??
+  //         ''
+  //     ),
 
-      switchMap(
-        (id: string) => {
+  //     switchMap(
+  //       (id: string) => {
 
-          if (!id) {
-            return of(null);
-          }
+  //         if (!id) {
+  //           return of(null);
+  //         }
 
-          return this.coursesApi
-            .getCourseDetail(id)
-            .pipe(
+  //         return this.coursesApi
+  //           .getCourseDetail(id)
+  //           .pipe(
 
-              catchError((error) => {
+  //             catchError((error) => {
 
-                console.error(
-                  'Erreur lors du chargement du cours depuis Laravel :',
-                  error
-                );
+  //               console.error(
+  //                 'Erreur lors du chargement du cours depuis Laravel :',
+  //                 error
+  //               );
 
-                return of(null);
-              })
+  //               return of(null);
+  //             })
 
-            );
-        }
-      )
+  //           );
+  //       }
+  //     )
 
-    ),
+  //   ),
 
-    {
-      initialValue: null,
-    }
-  );
+  //   {
+  //     initialValue: null,
+  //   }
+  // );
+
+  // ============================================================
+// ✅ SIMULATION : cours chargé en local (sans API)
+// Pour rebrancher l'API plus tard :
+//   - décommente le bloc au-dessus avec Ctrl+/
+//   - supprime ce bloc simulé
+// ============================================================
+readonly courseDetail = toSignal(
+  this.route.paramMap.pipe(
+    map((params): string => params.get('id') ?? params.get('courseId') ?? ''),
+    switchMap((id: string) => {
+      if (!id) return of(null);
+      return of(this.buildMockCourse(id));
+    })
+  ),
+  { initialValue: null }
+);
+
+// ✅ Cours simulé pour tester le parcours sans backend
+private buildMockCourse(id: string): any {
+  return {
+    id,
+    title: 'Fondamentaux de l\'audit interne et gestion des risques',
+    description: 'Maîtrisez les techniques d\'audit interne pour identifier, évaluer et gérer les risques.',
+    category: 'Audit & Contrôle',
+    subject: 'Audit & Contrôle',
+    level: 'Intermédiaire',
+    durationFull: '6 semaines',
+    diploma: 'Certificat KMAA',
+    instructor: 'Expert YAOGO',
+    instructorRole: 'Formateur & Consultant',
+    image: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=1600&q=80',
+
+    modules: [
+      {
+        id: 1,
+        title: 'Introduction à l\'audit interne',
+        description: 'Découvrez les fondamentaux du métier.',
+        position: 0,
+        chapters: [
+          {
+            id: 'ch-1-1',
+            title: 'Rôle et mission de l\'auditeur',
+            weekNumber: 1,
+            position: 0,
+            sequences: [
+              {
+                id: 'seq-1-1-1',
+                title: 'Bienvenue dans le cours',
+                type: 'video',
+                duration: '8 min',
+                videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+                position: 0,
+                completed: false,
+              },
+              {
+                id: 'seq-1-1-2',
+                title: 'Le cadre légal au Burkina Faso',
+                type: 'document',
+                duration: '15 min',
+                documentUrl: null,
+                position: 1,
+                completed: false,
+              },
+              {
+                id: 'seq-1-1-3',
+                title: 'Quiz : les bases',
+                type: 'quiz',
+                duration: '5 min',
+                position: 2,
+                completed: false,
+                passingScore: 70,
+                quizQuestions: [
+                  {
+                    id: 1,
+                    type: 'qcm',
+                    question: 'Quel est le rôle principal de l\'audit interne ?',
+                    options: [
+                      'Contrôler les employés',
+                      'Évaluer et améliorer les processus de gestion des risques',
+                      'Remplacer la direction',
+                      'Gérer la comptabilité',
+                    ],
+                    correctIndex: 1,
+                  },
+                  {
+                    id: 2,
+                    type: 'qcm',
+                    question: 'Que signifie IIA ?',
+                    options: [
+                      'Institut International de l\'Audit',
+                      'Institute of Internal Auditors',
+                      'International Internal Association',
+                      'Aucune de ces réponses',
+                    ],
+                    correctIndex: 1,
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+        moduleQuiz: null,
+      },
+      {
+        id: 2,
+        title: 'Techniques d\'audit',
+        description: 'Maîtrisez les outils du métier.',
+        position: 1,
+        chapters: [
+          {
+            id: 'ch-2-1',
+            title: 'Entretiens et questionnaires',
+            weekNumber: 2,
+            position: 0,
+            sequences: [
+              {
+                id: 'seq-2-1-1',
+                title: 'Conduire un entretien d\'audit',
+                type: 'video',
+                duration: '12 min',
+                videoUrl: null,
+                position: 0,
+                completed: false,
+              },
+              {
+                id: 'seq-2-1-2',
+                title: 'Devoir : analyse de cas',
+                type: 'devoir',
+                duration: '30 min',
+                documentUrl: null,
+                instructions: 'Analysez le cas présenté et rédigez un rapport de 2 pages.',
+                position: 1,
+                completed: false,
+              },
+            ],
+          },
+        ],
+        moduleQuiz: null,
+      },
+    ],
+    finalExam: null,
+  };
+}
+
+
+// fin de parcours de la partie simulée
 
 
   // ============================================================
@@ -251,108 +383,6 @@ export class CoursePlayer {
   // ============================================================
   // CURRICULUM
   // ============================================================
-
-  // readonly curriculum =
-  //   computed<CourseCurriculum>(() => {
-
-  //     const course =
-  //       this.courseDetail() as CourseFromApi | null;
-
-  //     const chapters =
-  //       course?.chapters;
-
-
-  //     // ----------------------------------------------------------
-  //     // CURRICULUM LARAVEL
-  //     // ----------------------------------------------------------
-
-  //     if (
-  //       course &&
-  //       Array.isArray(chapters) &&
-  //       chapters.length > 0
-  //     ) {
-
-  //       return {
-
-  //         courseId:
-  //           String(course.id),
-
-  //         instructor:
-  //           course.instructor ??
-  //           'Ã‰quipe pÃ©dagogique KMAA',
-
-  //         instructorRole:
-  //           course.instructorRole ??
-  //           'Formateurs experts du domaine',
-
-  //         chapters:
-  //           chapters.map(
-  //             (chapter: CourseChapter) => ({
-
-  //               id:
-  //                 String(chapter.id),
-
-  //               title:
-  //                 chapter.title,
-
-  //               position:
-  //                 chapter.position,
-
-  //               sequences:
-  //                 (chapter.sequences ?? [])
-  //                   .map(
-  //                     (sequence: CourseSequence) => ({
-
-  //                       id:
-  //                         String(sequence.id),
-
-  //                       title:
-  //                         sequence.title,
-
-  //                       type:
-  //                         sequence.type,
-
-  //                       duration:
-  //                         sequence.duration,
-
-  //                       videoUrl:
-  //                         sequence.videoUrl,
-
-  //                       documentUrl:
-  //                         sequence.documentUrl,
-
-  //                       quizQuestions:
-  //                         sequence.quizQuestions,
-
-  //                       instructions:
-  //                         sequence.instructions,
-
-  //                       completed:
-  //                         sequence.completed ?? false,
-
-  //                       position:
-  //                         sequence.position,
-
-  //                     })
-  //                   ),
-
-  //             })
-  //           ),
-
-  //       };
-  //     }
-
-
-  //     // ----------------------------------------------------------
-  //     // FALLBACK CURRICULUM STATIQUE
-  //     // ----------------------------------------------------------
-
-  //     return (
-  //       CURRICULA[this.courseId()] ??
-  //       fallbackCurriculum(this.courseId())
-  //     );
-
-  //   });
 
 
   readonly curriculum =
@@ -622,6 +652,38 @@ readonly modulesCount = computed(() => {
 
 
 
+    // ============================================================
+// 🆕 PANNEAU DE NAVIGATION À CÔTÉ DE LA VIDÉO (façon HEC)
+// ============================================================
+
+/** Trouve le chapitre qui contient une séquence donnée. */
+private findChapterForSequence(sequenceId: string): CourseChapter | undefined {
+  for (const chapter of this.curriculum().chapters) {
+    if (chapter.sequences.some((s) => String(s.id) === String(sequenceId))) {
+      return chapter;
+    }
+  }
+  return undefined;
+}
+
+/** Les autres séquences du même chapitre que la séquence active — pour le panneau latéral. */
+readonly activeChapterSequences = computed<CourseSequence[]>(() => {
+  const id = this.activeSequenceId();
+  if (!id) return [];
+  const chapter = this.findChapterForSequence(id);
+  return chapter?.sequences ?? [];
+});
+
+/** Icône courte selon le type de séquence, pour le panneau de navigation. */
+typeIconFor(type: string): string {
+  const map: Record<string, string> = {
+    video: '🎬', document: '📄', quiz: '❓', devoir: '📝', tp: '🛠️', td: '✍️',
+  };
+  return map[type] ?? '📄';
+}
+
+
+
     // nouveau design pour le style hec paris
 
     // nouveau design pour le style hec paris
@@ -630,11 +692,248 @@ readonly modulesCount = computed(() => {
 // 🆕 ONGLETS HORIZONTAUX (façon HEC : Cours / Discussion / Progression...)
 // ============================================================
 
-readonly activeTab =
-  signal<'cours' | 'discussion' | 'progression' | 'evaluations' | 'formule' | 'live'>('cours');
 
-setTab(tab: 'cours' | 'discussion' | 'progression' | 'evaluations' | 'formule' | 'live'): void {
+
+// ============================================================
+// 🆕 ONGLETS (mis à jour avec 'replays')
+// ============================================================
+readonly activeTab = signal<
+  'cours' | 'discussion' | 'progression' | 'evaluations' | 'calendrier'
+  | 'formule' | 'live' | 'manuels' | 'reglements' | 'replays'
+>('cours');
+
+setTab(tab:
+  'cours' | 'discussion' | 'progression' | 'evaluations' | 'calendrier'
+  | 'formule' | 'live' | 'manuels' | 'reglements' | 'replays'
+): void {
   this.activeTab.set(tab);
+}
+
+// ============================================================
+// 🆕 DONNÉES SIMULÉES — Manuels
+// ============================================================
+readonly mockManuals = [
+  {
+    id: 'm1',
+    title: 'Manuel principal — Français',
+    description: 'Support officiel du cours couvrant l\'ensemble du programme.',
+    category: 'Cours principal',
+    type: 'pdf' as 'pdf' | 'doc' | 'xls' | 'zip',
+    updatedAt: '12 Oct 2026',
+    size: '4,2 Mo',
+    pages: 186,
+  },
+  {
+    id: 'm2',
+    title: 'Manuel principal — English version',
+    description: 'English version of the official course material.',
+    category: 'Cours principal',
+    type: 'pdf' as 'pdf' | 'doc' | 'xls' | 'zip',
+    updatedAt: '12 Oct 2026',
+    size: '4,1 Mo',
+    pages: 186,
+  },
+  {
+    id: 'm3',
+    title: 'Cas pratiques & exercices',
+    description: 'Recueil d\'exercices progressifs pour s\'entraîner.',
+    category: 'Exercices',
+    type: 'pdf' as 'pdf' | 'doc' | 'xls' | 'zip',
+    updatedAt: '08 Oct 2026',
+    size: '2,8 Mo',
+    pages: 92,
+  },
+  {
+    id: 'm4',
+    title: 'Modèles Excel — Tableaux d\'analyse',
+    description: 'Templates prêts à l\'emploi pour vos missions.',
+    category: 'Outils',
+    type: 'xls' as 'pdf' | 'doc' | 'xls' | 'zip',
+    updatedAt: '05 Oct 2026',
+    size: '1,5 Mo',
+    pages: 0,
+  },
+  {
+    id: 'm5',
+    title: 'Fiches de synthèse',
+    description: 'Résumés des points clés pour réviser rapidement.',
+    category: 'Révision',
+    type: 'pdf' as 'pdf' | 'doc' | 'xls' | 'zip',
+    updatedAt: '01 Oct 2026',
+    size: '890 Ko',
+    pages: 24,
+  },
+  {
+    id: 'm6',
+    title: 'Pack ressources complémentaires',
+    description: 'Articles, normes et textes de référence.',
+    category: 'Ressources',
+    type: 'zip' as 'pdf' | 'doc' | 'xls' | 'zip',
+    updatedAt: '28 Sep 2026',
+    size: '12,3 Mo',
+    pages: 0,
+  },
+];
+
+previewManual(manual: any): void {
+  alert(`📖 Aperçu du manuel : ${manual.title}\n\n` +
+    `(En attente de connexion.)`);
+}
+
+downloadManual(manual: any): void {
+  alert(`⬇ Téléchargeme : ${manual.title}\n\n` +
+    `(En attente de connexion.)`);
+}
+
+// ============================================================
+// 🆕 DONNÉES SIMULÉES — Calendrier
+// ============================================================
+readonly calFilter = signal<'all' | 'live' | 'devoir' | 'quiz' | 'exam'>('all');
+
+setCalFilter(filter: 'all' | 'live' | 'devoir' | 'quiz' | 'exam'): void {
+  this.calFilter.set(filter);
+}
+
+readonly mockCalendarEvents = [
+  {
+    id: 'ev1',
+    type: 'live' as const,
+    day: '15',
+    month: 'Jan',
+    title: 'Séance live — Introduction',
+    description: 'Première session en direct avec le formateur pour lancer le cours.',
+    time: '18h00 — 20h00',
+    duration: '2h',
+    instructor: 'Expert YAOGO',
+    status: 'past' as const,
+  },
+  {
+    id: 'ev2',
+    type: 'devoir' as const,
+    day: '22',
+    month: 'Jan',
+    title: 'Remise du devoir n°1',
+    description: 'Date limite pour rendre le premier devoir noté.',
+    time: 'Avant 23h59',
+    duration: null,
+    instructor: null,
+    status: 'today' as const,
+  },
+  {
+    id: 'ev3',
+    type: 'quiz' as const,
+    day: '05',
+    month: 'Fév',
+    title: 'Quiz de validation Module 1',
+    description: 'Quiz obligatoire pour valider le premier module du cours.',
+    time: 'Disponible 24h',
+    duration: '20 min',
+    instructor: null,
+    status: 'upcoming' as const,
+  },
+  {
+    id: 'ev4',
+    type: 'live' as const,
+    day: '12',
+    month: 'Fév',
+    title: 'Séance live — Cas pratiques',
+    description: 'Analyse de cas réels avec le formateur.',
+    time: '18h00 — 19h30',
+    duration: '1h30',
+    instructor: 'Expert YAOGO',
+    status: 'upcoming' as const,
+  },
+  {
+    id: 'ev5',
+    type: 'exam' as const,
+    day: '28',
+    month: 'Fév',
+    title: 'Examen final',
+    description: 'Évaluation finale du cours. Score minimum requis : 70%.',
+    time: '9h00 — 12h00',
+    duration: '3h',
+    instructor: null,
+    status: 'upcoming' as const,
+  },
+];
+
+readonly filteredCalendarEvents = computed(() => {
+  const filter = this.calFilter();
+  if (filter === 'all') return this.mockCalendarEvents;
+  return this.mockCalendarEvents.filter((e) => e.type === filter);
+});
+
+// ============================================================
+// 🆕 DONNÉES SIMULÉES — Replays
+// ============================================================
+readonly mockLiveReplays = [
+  {
+    id: 'r1',
+    title: 'Séance d\'introduction — Présentation du cours',
+    description: 'Vue d\'ensemble du programme, des objectifs et de la méthode pédagogique.',
+    date: '10 Jan 2026',
+    duration: '1h 48min',
+    instructor: 'Expert YAOGO',
+    views: 234,
+    isNew: false,
+    thumbnail: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=800&q=60',
+    resources: [
+      { label: 'Slides de présentation' },
+      { label: 'Programme détaillé' },
+    ],
+  },
+  {
+    id: 'r2',
+    title: 'Cas pratique — Analyse d\'un audit interne',
+    description: 'Étude de cas complète menée en direct avec les apprenants.',
+    date: '24 Jan 2026',
+    duration: '2h 12min',
+    instructor: 'Expert YAOGO',
+    views: 187,
+    isNew: true,
+    thumbnail: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=800&q=60',
+    resources: [
+      { label: 'Étude de cas PDF' },
+      { label: 'Corrigé détaillé' },
+    ],
+  },
+  {
+    id: 'r3',
+    title: 'Masterclass — Les normes IIA en pratique',
+    description: 'Approfondissement des normes internationales d\'audit interne.',
+    date: '07 Fév 2026',
+    duration: '1h 30min',
+    instructor: 'Expert YAOGO',
+    views: 156,
+    isNew: true,
+    thumbnail: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=800&q=60',
+    resources: [
+      { label: 'Slides masterclass' },
+    ],
+  },
+  {
+    id: 'r4',
+    title: 'Q&A — Session de questions/réponses',
+    description: 'Réponses aux questions les plus posées par les apprenants.',
+    date: '21 Fév 2026',
+    duration: '45min',
+    instructor: 'Expert YAOGO',
+    views: 98,
+    isNew: false,
+    thumbnail: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=800&q=60',
+    resources: [],
+  },
+];
+
+playReplay(replay: any): void {
+  alert(`▶ Lecture du replay : ${replay.title}\n\n` +
+    `(En attente de connexion.)`
+  );
+}
+
+downloadReplay(replay: any): void {
+  alert(`⬇ Téléchargement : ${replay.title}\n\n` +
+    `(En attente de la connexion.)`);
 }
 
 // ============================================================
@@ -659,7 +958,21 @@ isNodeExpanded(nodeId: string): boolean {
 // 🆕 FAVORIS (bookmark d'une séquence)
 // ============================================================
 
-readonly bookmarkedIds = signal<Set<string>>(new Set());
+  // ============================================================
+  // 🆕 SIDEBAR RÉTRACTABLE (façon HEC)
+  // ============================================================
+
+  readonly isSidebarOpen = signal<boolean>(true);
+
+  toggleSidebar(): void {
+    this.isSidebarOpen.update((open) => !open);
+  }
+
+  // ============================================================
+  // 🆕 FAVORIS (bookmark d'une séquence)
+  // ============================================================
+
+  readonly bookmarkedIds = signal<Set<string>>(new Set());
 
 toggleBookmark(sequenceId: string): void {
   this.bookmarkedIds.update((current) => {
@@ -685,17 +998,21 @@ submitFeedback(): void {
   const seq = this.activeSequence;
   if (!seq) return;
 
-  this.http.post(`${this.apiBaseUrl}/api/sequences/${seq.id}/feedback`, {
-    comment: this.feedbackText(),
-    rating: this.feedbackRating(),
-  }).subscribe({
-    next: () => {
-      this.feedbackSent.set(true);
-      this.feedbackText.set('');
-      this.feedbackRating.set(null);
-    },
-    error: () => alert("Impossible d'envoyer votre avis pour le moment."),
-  });
+  // this.http.post(`${this.apiBaseUrl}/api/sequences/${seq.id}/feedback`, {
+  //   comment: this.feedbackText(),
+  //   rating: this.feedbackRating(),
+  // }).subscribe({
+  //   next: () => {
+  //     this.feedbackSent.set(true);
+  //     this.feedbackText.set('');
+  //     this.feedbackRating.set(null);
+  //   },
+  //   error: () => alert("Impossible d'envoyer votre avis pour le moment."),
+  // });
+
+   this.feedbackSent.set(true);
+  this.feedbackText.set('');
+  this.feedbackRating.set(null);
 }
 
 
@@ -759,8 +1076,8 @@ submitFeedback(): void {
           loadedCourseId =
           courseId;
 
-        this.loadProgress();
-        this.accessService.loadAccess(courseId);   // âœ… droits d'accÃ¨s
+        // this.loadProgress();
+        // this.accessService.loadAccess(courseId);   // âœ… droits d'accÃ¨s
 
       }
 
@@ -771,29 +1088,29 @@ submitFeedback(): void {
     // 2. SÃ‰ANCE EN DIRECT : Ã©tat initial (âœ… effect de PREMIER niveau)
     // ----------------------------------------------------------
 
-    effect(() => {
+    // effect(() => {
 
-      const id = this.courseId();
+    //   const id = this.courseId();
 
-      if (id) {
-        this.liveService.refreshFromServer(id);
-      }
+    //   if (id) {
+    //     this.liveService.refreshFromServer(id);
+    //   }
 
-    });
+    // });
 
     // ----------------------------------------------------------
     // 3. POLLING toutes les 15 s (âœ… HORS effect : une seule fois)
     // ----------------------------------------------------------
 
-    setInterval(() => {
+    // setInterval(() => {
 
-      const id = this.courseId();
+    //   const id = this.courseId();
 
-      if (id) {
-        this.liveService.refreshFromServer(id);
-      }
+    //   if (id) {
+    //     this.liveService.refreshFromServer(id);
+    //   }
 
-    }, 15000);
+    // }, 15000);
 
 
     // ----------------------------------------------------------
@@ -1120,6 +1437,16 @@ submitFeedback(): void {
 
   }
 
+    /**
+   * Nettoie le titre d'une séquence pour n'afficher que le texte utile.
+   * Ex: "sequence 1: Veuillez suivre cette videos" → "Veuillez suivre cette videos"
+   */
+  cleanSequenceTitle(title: string): string {
+    if (!title) return '';
+    // Retire le préfixe "sequence X:" / "séquence X :" (insensible à la casse)
+    return title.replace(/^\s*s[ée]quence\s*\d+\s*[:\-–]\s*/i, '').trim();
+  }
+
 
     // ============================================================
   // modele de cours comme hec paris
@@ -1383,7 +1710,7 @@ resolveMediaUrl(
   // sequences-documents/fichier.pdf
   //
   // devient :
-  // https://api.convergesas.com/storage/sequences-documents/fichier.pdf
+  // http://127.0.0.1:8000/storage/sequences-documents/fichier.pdf
   // ----------------------------------------------------------
 
   const path =
@@ -1831,32 +2158,32 @@ private loadProgress(): void {
     return;
   }
 
-  this.http
-    .get<{ data: { progressPercent: number } }>(
-      `${this.apiBaseUrl}/api/courses/${courseId}/enrollment-progress`
-    )
-    .subscribe({
+  // this.http
+  //   .get<{ data: { progressPercent: number } }>(
+  //     `${this.apiBaseUrl}/api/courses/${courseId}/enrollment-progress`
+  //   )
+  //   .subscribe({
 
-      next: (res) => {
+  //     next: (res) => {
 
-        this.serverProgress.set(
-          Number(
-            res.data?.progressPercent ?? 0
-          )
-        );
+  //       this.serverProgress.set(
+  //         Number(
+  //           res.data?.progressPercent ?? 0
+  //         )
+  //       );
 
-      },
+  //     },
 
-      error: (error) => {
+  //     error: (error) => {
 
-        console.error(
-          'Erreur lors du chargement de la progression :',
-          error
-        );
+  //       console.error(
+  //         'Erreur lors du chargement de la progression :',
+  //         error
+  //       );
 
-      },
+  //     },
 
-    });
+  //   });
 
 }
 
@@ -1998,58 +2325,51 @@ private loadProgress(): void {
     return Object.keys(this.laravelQuizAnswers()).length;
   }
     /** Une sÃ©quence est dÃ©verrouillÃ©e si toutes les PRÃ‰CÃ‰DENTES sont complÃ©tÃ©es. */
+  /** 
+   * Une séquence est déverrouillée :
+   * - TOUJOURS pour les vidéos, documents, devoirs, TP, TD
+   * - UNIQUEMENT si le quiz précédent est réussi, pour les quiz
+   */
   isSequenceUnlocked(sequenceId: string): boolean {
     const chapters = this.curriculum().chapters;
+
+    // On cherche la séquence cible
+    for (const chapter of chapters) {
+      for (const seq of chapter.sequences) {
+        if (String(seq.id) === String(sequenceId)) {
+          // Si c'est un quiz, on vérifie que la séquence PRÉCÉDENTE est complétée
+          if (seq.type === 'quiz') {
+            return this.isPreviousSequenceCompleted(sequenceId);
+          }
+          // Pour tous les autres types, on autorise toujours
+          return true;
+        }
+      }
+    }
+    return true; // Par défaut, on autorise (sécurité)
+  }
+
+  /** Vérifie si la séquence précédant `sequenceId` est complétée. */
+  private isPreviousSequenceCompleted(sequenceId: string): boolean {
+    const chapters = this.curriculum().chapters;
+    let previousSeq: CourseSequence | null = null;
 
     for (const chapter of chapters) {
       for (const seq of chapter.sequences) {
         if (String(seq.id) === String(sequenceId)) {
-          return true;   // on est arrivÃ© Ã  la cible â†’ tout est ok
+          // Si on a trouvé la cible, on regarde la précédente
+          if (previousSeq === null) {
+            return true; // C'est la première séquence, pas de blocage
+          }
+          return previousSeq.completed === true;
         }
-        if (!seq.completed) {
-          return false;  // une sÃ©quence antÃ©rieure non complÃ©tÃ©e (quiz ratÃ© inclus) bloque
-        }
+        previousSeq = seq;
       }
     }
-    return false;
+    return true;
   }
 
   /** Valide et calcule le score instantanÃ©ment. */
-
-  //   submitLaravelQuiz(): void {
-  //   const seq = this.activeSequence;
-  //   if (!seq?.quizQuestions?.length) return;
-
-  //   // VÃ©rifie que chaque question a une rÃ©ponse
-  //   if (this.laravelAnsweredCount() < seq.quizQuestions.length) {
-  //     return;
-  //   }
-
-  //   this.laravelQuizSubmitting.set(true);
-
-  //   // âœ… Envoie les rÃ©ponses BRUTES â†’ le backend corrige et note
-  //   this.http
-  //     .post<{ data: { scorePercent: number; passed: boolean; threshold: number } }>(
-  //       `${this.apiBaseUrl}/api/sequences/${seq.id}/complete`,
-  //       { answers: this.laravelQuizAnswers() }
-  //     )
-  //     .subscribe({
-  //       next: (res) => {
-  //         this.laravelQuizSubmitting.set(false);
-  //         this.laravelQuizSubmitted.set(true);
-  //         this.laravelQuizScore.set({
-  //           score: res.data.scorePercent,
-  //           total: 100,
-  //         });
-  //         this.laravelQuizPassed.set(res.data.passed);
-  //         this.loadProgress();   // la progression n'avance que si passed
-  //       },
-  //       error: (err) => {
-  //         this.laravelQuizSubmitting.set(false);
-  //         alert(err?.error?.message ?? 'Erreur lors de la validation du quiz.');
-  //       },
-  //     });
-  // }
 
     submitLaravelQuiz(): void {
     const seq = this.activeSequence;
@@ -2063,27 +2383,27 @@ private loadProgress(): void {
     this.laravelQuizSubmitting.set(true);
 
     // âœ… Envoie les rÃ©ponses BRUTES â†’ le backend corrige et note
-    this.http
-      .post<{ data: { scorePercent: number; passed: boolean; threshold: number } }>(
-        `${this.apiBaseUrl}/api/sequences/${seq.id}/complete`,
-        { answers: this.laravelQuizAnswers() }
-      )
-      .subscribe({
-        next: (res) => {
-          this.laravelQuizSubmitting.set(false);
-          this.laravelQuizSubmitted.set(true);
-          this.laravelQuizPassed.set(res.data.passed);
-          this.laravelQuizScore.set({
-            score: res.data.scorePercent,
-            total: 100,
-          });
-          this.loadProgress();   // la progression n'avance que si passed
-        },
-        error: (err) => {
-          this.laravelQuizSubmitting.set(false);
-          alert(err?.error?.message ?? 'Erreur lors de la validation du quiz.');
-        },
-      });
+    // this.http
+    //   .post<{ data: { scorePercent: number; passed: boolean; threshold: number } }>(
+    //     `${this.apiBaseUrl}/api/sequences/${seq.id}/complete`,
+    //     { answers: this.laravelQuizAnswers() }
+    //   )
+    //   .subscribe({
+    //     next: (res) => {
+    //       this.laravelQuizSubmitting.set(false);
+    //       this.laravelQuizSubmitted.set(true);
+    //       this.laravelQuizPassed.set(res.data.passed);
+    //       this.laravelQuizScore.set({
+    //         score: res.data.scorePercent,
+    //         total: 100,
+    //       });
+    //       this.loadProgress();   // la progression n'avance que si passed
+    //     },
+    //     error: (err) => {
+    //       this.laravelQuizSubmitting.set(false);
+    //       alert(err?.error?.message ?? 'Erreur lors de la validation du quiz.');
+    //     },
+    //   });
   }
 
   /** Refaire le quiz. */
@@ -2110,13 +2430,7 @@ private loadProgress(): void {
   // REJOINDRE LA SÃ‰ANCE EN DIRECT (gated : formule Standard+)
   // ============================================================
 
-  // joinLive(): void {
-  //   this.liveService.getJoinRoom(
-  //     this.courseId(),
-  //     (roomName) => window.open(`https://meet.jit.si/${roomName}`, '_blank'),
-  //     (msg) => alert(msg),   // ex : "incluses dÃ¨s la formule Standard" si Basique
-  //   );
-  // }
+
 
   joinLive(): void {
   this.liveService.getJoinUrl(
@@ -2161,50 +2475,55 @@ markSequenceDone(): void {
     return;
   }
 
-  this.http
-    .post<{ data?: unknown }>(
-      `${this.apiBaseUrl}/api/sequences/${sequenceId}/complete`,
-      {}
-    )
-    .subscribe({
+  // this.http
+  //   .post<{ data?: unknown }>(
+  //     `${this.apiBaseUrl}/api/sequences/${sequenceId}/complete`,
+  //     {}
+  //   )
+  //   .subscribe({
 
-      next: () => {
+  //     next: () => {
 
-        /*
-         * Mise Ã  jour visuelle immÃ©diate.
-         */
-        sequence.completed = true;
+  //       /*
+  //        * Mise Ã  jour visuelle immÃ©diate.
+  //        */
+  //       sequence.completed = true;
 
-        /*
-         * On force le recalcul de l'interface.
-         */
-        this.progressTick.update(
-          value => value + 1
-        );
+  //       /*
+  //        * On force le recalcul de l'interface.
+  //        */
+  //       this.progressTick.update(
+  //         value => value + 1
+  //       );
 
-        /*
-         * On recharge la progression rÃ©elle
-         * depuis Laravel.
-         */
-        this.loadProgress();
+  //       /*
+  //        * On recharge la progression rÃ©elle
+  //        * depuis Laravel.
+  //        */
+  //       this.loadProgress();
 
-      },
+  //     },
 
-      error: (error) => {
+  //     error: (error) => {
 
-        console.error(
-          'Erreur lors de la validation de la sÃ©quence :',
-          error
-        );
+  //       console.error(
+  //         'Erreur lors de la validation de la sÃ©quence :',
+  //         error
+  //       );
 
-        alert(
-          error?.error?.message ??
-          'Impossible de valider cette sÃ©quence.'
-        );
+  //       alert(
+  //         error?.error?.message ??
+  //         'Impossible de valider cette sÃ©quence.'
+  //       );
 
-      },
+  //     },
 
-    });
+  //   });
+
+  sequence.completed = true;
+  this.progressTick.update((v) => v + 1);
+  this.serverProgress.update((p) => Math.min(p + 10, 100));
+
 
 }
 
@@ -2239,14 +2558,14 @@ markSequenceDone(): void {
     this.submissionFile.set(null);
     this.submissionComment.set('');
 
-    this.http
-      .get<{ data: any }>(
-        `${this.apiBaseUrl}/api/sequences/${sequenceId}/submission`
-      )
-      .subscribe({
-        next: (res) => this.currentSubmission.set(res.data ?? null),
-        error: () => {},   // pas encore de soumission : silence
-      });
+    // this.http
+    //   .get<{ data: any }>(
+    //     `${this.apiBaseUrl}/api/sequences/${sequenceId}/submission`
+    //   )
+    //   .subscribe({
+    //     next: (res) => this.currentSubmission.set(res.data ?? null),
+    //     error: () => {},   // pas encore de soumission : silence
+    //   });
   }
 
     /** URL absolue du fichier de soumission (via LARAVEL, pas Angular). */
@@ -2273,27 +2592,40 @@ markSequenceDone(): void {
     fd.append('file', this.submissionFile()!);
     fd.append('comment', this.submissionComment().trim());
 
-    this.http
-      .post<{ message: string; data: any }>(
-        `${this.apiBaseUrl}/api/sequences/${seq.id}/submission`,
-        fd
-      )
-      .subscribe({
-        next: (res) => {
-          this.submitting.set(false);
-          this.submitSuccess.set(res.message ?? 'Devoir soumis avec succÃ¨s !');
-          this.currentSubmission.set(res.data);
-          this.submissionFile.set(null);
-          this.submissionComment.set('');
-        },
-        error: (err) => {
-          this.submitting.set(false);
-          this.submitError.set(
-            err?.error?.message ?? "Impossible d'envoyer ton devoir."
-          );
-        },
-      });
-  }
+    // this.http
+    //   .post<{ message: string; data: any }>(
+    //     `${this.apiBaseUrl}/api/sequences/${seq.id}/submission`,
+    //     fd
+    //   )
+    //   .subscribe({
+    //     next: (res) => {
+    //       this.submitting.set(false);
+    //       this.submitSuccess.set(res.message ?? 'Devoir soumis avec succÃ¨s !');
+    //       this.currentSubmission.set(res.data);
+    //       this.submissionFile.set(null);
+    //       this.submissionComment.set('');
+    //     },
+    //     error: (err) => {
+    //       this.submitting.set(false);
+    //       this.submitError.set(
+    //         err?.error?.message ?? "Impossible d'envoyer ton devoir."
+    //       );
+    //     },
+    //   });
+
+      setTimeout(() => {
+    this.submitting.set(false);
+    this.submitSuccess.set('Devoir soumis avec succès !');
+    this.currentSubmission.set({
+      status: 'soumis',
+      submittedAt: new Date().toISOString(),
+      fileUrl: null,
+    });
+    this.submissionFile.set(null);
+    this.submissionComment.set('');
+  }, 800);
+}
+  
 
 // ============================================================
 // TÃ‰LÃ‰CHARGER LE CERTIFICAT
@@ -2314,55 +2646,57 @@ markSequenceDone(): void {
       return;
     }
 
-    this.http
-      .post<{
-          data: {
-            uuid: string;
-          };
-        }>(
-          `${this.apiBaseUrl}/api/courses/${courseId}/certificate`,
-          {}
-        )
-      .subscribe({
+    // this.http
+    //   .post<{
+    //       data: {
+    //         uuid: string;
+    //       };
+    //     }>(
+    //       `${this.apiBaseUrl}/api/courses/${courseId}/certificate`,
+    //       {}
+    //     )
+    //   .subscribe({
 
-        next: (res) => {
+    //     next: (res) => {
 
-          const certificateUuid =
-            res.data?.uuid;
+    //       const certificateUuid =
+    //         res.data?.uuid;
 
-          if (!certificateUuid) {
+    //       if (!certificateUuid) {
 
-            alert(
-              'Le certificat n\'a pas pu Ãªtre gÃ©nÃ©rÃ©.'
-            );
+    //         alert(
+    //           'Le certificat n\'a pas pu Ãªtre gÃ©nÃ©rÃ©.'
+    //         );
 
-            return;
-          }
+    //         return;
+    //       }
 
-          // âœ… URL de tÃ©lÃ©chargement construite depuis le UUID â€”
-          //    le endpoint /download gÃ©nÃ¨re le PDF Ã  la volÃ©e.
-          window.open(
-            `${this.apiBaseUrl}/api/certificates/${certificateUuid}/download`,
-            '_blank'
-          );
+    //       // âœ… URL de tÃ©lÃ©chargement construite depuis le UUID â€”
+    //       //    le endpoint /download gÃ©nÃ¨re le PDF Ã  la volÃ©e.
+    //       window.open(
+    //         `${this.apiBaseUrl}/api/certificates/${certificateUuid}/download`,
+    //         '_blank'
+    //       );
 
-        },
+    //     },
 
-        error: (error) => {
+    //     error: (error) => {
 
-          console.error(
-            'Erreur lors de la gÃ©nÃ©ration du certificat :',
-            error
-          );
+    //       console.error(
+    //         'Erreur lors de la gÃ©nÃ©ration du certificat :',
+    //         error
+    //       );
 
-          alert(
-            error?.error?.message ??
-            'Erreur lors de la gÃ©nÃ©ration du certificat.'
-          );
+    //       alert(
+    //         error?.error?.message ??
+    //         'Erreur lors de la gÃ©nÃ©ration du certificat.'
+    //       );
 
-        },
+    //     },
 
-      });
+    //   });
+
+    
 
   }
 }

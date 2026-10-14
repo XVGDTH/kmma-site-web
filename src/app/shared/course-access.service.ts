@@ -1,4 +1,4 @@
-﻿import { HttpClient } from '@angular/common/http';
+﻿// import { HttpClient } from '@angular/common/http';
 import { Injectable, inject, signal } from '@angular/core';
 
 export interface CourseAccess {
@@ -49,8 +49,8 @@ export interface EvaluationItem {
 @Injectable({ providedIn: 'root' })
 export class CourseAccessService {
 
-  private readonly http = inject(HttpClient);
-  private readonly apiUrl = 'https://api.convergesas.com/api';
+  // private readonly http = inject(HttpClient);
+  // private readonly apiUrl = 'http://127.0.0.1:8000/api';
 
   // ============================================================
   // DROITS D'ACCÃˆS
@@ -92,27 +92,27 @@ export class CourseAccessService {
     // 1. Droits d'accÃ¨s
     // ----------------------------------------------------------
 
-    this.http
-      .get<{ data: CourseAccess }>(
-        `${this.apiUrl}/courses/${encodeURIComponent(courseSlug)}/access`
-      )
-      .subscribe({
-        next: (res) => this.access.set(res.data),
-        error: () => {},
-      });
+    // this.http
+    //   .get<{ data: CourseAccess }>(
+    //     `${this.apiUrl}/courses/${encodeURIComponent(courseSlug)}/access`
+    //   )
+    //   .subscribe({
+    //     next: (res) => this.access.set(res.data),
+    //     error: () => {},
+    //   });
 
     // ----------------------------------------------------------
     // 2. Formule actuelle + toutes les formules (comparatif)
     // ----------------------------------------------------------
 
-    this.http
-      .get<{ data: MyPlanInfo }>(
-        `${this.apiUrl}/courses/${encodeURIComponent(courseSlug)}/my-plan`
-      )
-      .subscribe({
-        next: (res) => this.myPlan.set(res.data),
-        error: () => {},
-      });
+    // this.http
+    //   .get<{ data: MyPlanInfo }>(
+    //     `${this.apiUrl}/courses/${encodeURIComponent(courseSlug)}/my-plan`
+    //   )
+    //   .subscribe({
+    //     next: (res) => this.myPlan.set(res.data),
+    //     error: () => {},
+    //   });
 
     // ----------------------------------------------------------
     // 3. âœ… MES Ã‰VALUATIONS â€” C'EST ICI QU'IL VAIT !
@@ -129,17 +129,17 @@ export class CourseAccessService {
   loadEvaluations(courseSlug: string): void {
     if (!courseSlug) return;
 
-    this.http
-      .get<{ data: { evaluations: EvaluationItem[]; average: number | null } }>(
-        `${this.apiUrl}/courses/${encodeURIComponent(courseSlug)}/my-evaluations`
-      )
-      .subscribe({
-        next: (res) => {
-          this.evaluations.set(res.data?.evaluations ?? []);
-          this.averageGrade.set(res.data?.average ?? null);
-        },
-        error: () => {},
-      });
+    // this.http
+    //   .get<{ data: { evaluations: EvaluationItem[]; average: number | null } }>(
+    //     `${this.apiUrl}/courses/${encodeURIComponent(courseSlug)}/my-evaluations`
+    //   )
+    //   .subscribe({
+    //     next: (res) => {
+    //       this.evaluations.set(res.data?.evaluations ?? []);
+    //       this.averageGrade.set(res.data?.average ?? null);
+    //     },
+    //     error: () => {},
+    //   });
   }
 
   // ============================================================

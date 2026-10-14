@@ -12,6 +12,7 @@ import {
 } from '../../shared/course-content-api.service';
 import { toAbsoluteUrl } from '../../shared/formateur-content.service';
 
+
 type SelectedItem = { kind: 'sequence'; sequence: LearnerSequenceDto };
 
 @Component({

@@ -1,0 +1,178 @@
+<section class="lic-page">
+  <div class="lic-page__container">
+
+    <!-- EN-TÊTE -->
+    <header class="lic-header">
+      <div>
+        <span class="lic-header__eyebrow">ESPACE ENTREPRISE</span>
+        <h1>Mes licences</h1>
+        <p>Gérez vos formations d'équipe et vos invitations.</p>
+      </div>
+      <a routerLink="/entreprises/formations" class="lic-header__cta">
+        + Nouvelle formation
+      </a>
+    </header>
+
+    <!-- STATS -->
+    <div class="lic-stats">
+      <div class="lic-stat">
+        <span class="lic-stat__value">{{ licenses().length }}</span>
+        <span class="lic-stat__label">Licence(s) active(s)</span>
+      </div>
+      <div class="lic-stat">
+        <span class="lic-stat__value">{{ totalSeats() }}</span>
+        <span class="lic-stat__label">Siège(s) total</span>
+      </div>
+      <div class="lic-stat">
+        <span class="lic-stat__value">{{ totalSeatsUsed() }}</span>
+        <span class="lic-stat__label">Siège(s) utilisé(s)</span>
+      </div>
+      <div class="lic-stat">
+        <span class="lic-stat__value">{{ totalSeats() - totalSeatsUsed() }}</span>
+        <span class="lic-stat__label">Siège(s) disponible(s)</span>
+      </div>
+    </div>
+
+    <!-- LISTE -->
+    @if (licenses().length === 0) {
+      <div class="lic-empty">
+        <div class="lic-empty__icon">🎫</div>
+        <h2>Aucune licence active</h2>
+        <p>Vous n'avez pas encore acheté de formation entreprise.</p>
+        <a routerLink="/entreprises/formations" class="lic-empty__btn">
+          Découvrir les formations entreprises
+        </a>
+      </div>
+    } @else {
+      <div class="lic-list">
+        @for (lic of licenses(); track lic.id) {
+          <article class="lic-card" (click)="selectLicense(lic)">
+            <div class="lic-card__image">
+              <img [src]="lic.courseImage" [alt]="lic.courseTitle" loading="lazy" />
+              <span class="lic-card__badge">{{ lic.planName }}</span>
+            </div>
+
+            <div class="lic-card__body">
+              <h3>{{ lic.courseTitle }}</h3>
+
+              <div class="lic-card__progress">
+                <div class="lic-card__progress-bar">
+                  <div
+                    class="lic-card__progress-fill"
+                    [style.width.%]="progressPercent(lic)"
+                  ></div>
+                </div>
+                <span class="lic-card__progress-label">
+                  {{ lic.seatsUsed }} / {{ lic.seatsTotal }} siège(s)
+                </span>
+              </div>
+
+              <div class="lic-card__meta">
+                <span>📅 Expire le {{ formatDate(lic.expiresAt) }}</span>
+                <span>💰 {{ formatPrice(lic.totalPaid) }}</span>
+              </div>
+            </div>
+
+            <div class="lic-card__cta">
+              <span>Gérer</span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path d="M5 12h14M13 6l6 6-6 6" />
+              </svg>
+            </div>
+          </article>
+        }
+      </div>
+    }
+
+    <!-- PANNEAU DÉTAIL -->
+    @if (selectedLicense(); as lic) {
+      <div class="lic-modal" (click)="closeDetail()">
+        <div class="lic-modal__content" (click)="$event.stopPropagation()">
+          <header class="lic-modal__header">
+            <h2>{{ lic.courseTitle }}</h2>
+            <button type="button" class="lic-modal__close" (click)="closeDetail()">✕</button>
+          </header>
+
+          <div class="lic-modal__stats">
+            <div class="lic-modal__stat">
+              <span>Sièges disponibles</span>
+              <strong>{{ lic.seatsRemaining }} / {{ lic.seatsTotal }}</strong>
+            </div>
+            <div class="lic-modal__stat">
+              <span>Formule</span>
+              <strong>{{ lic.planName }}</strong>
+            </div>
+            <div class="lic-modal__stat">
+              <span>Expire le</span>
+              <strong>{{ formatDate(lic.expiresAt) }}</strong>
+            </div>
+          </div>
+
+          <!-- Formulaire invitation -->
+          <div class="lic-modal__invite">
+            <h3>Inviter un collaborateur</h3>
+            <div class="lic-modal__invite-form">
+              <input
+                type="email"
+                placeholder="email@entreprise.com"
+                [value]="newEmail()"
+                (input)="onEmailInput($event)"
+                (keyup.enter)="inviteMember()"
+                [disabled]="lic.seatsRemaining <= 0"
+              />
+              <button
+                type="button"
+                (click)="inviteMember()"
+                [disabled]="lic.seatsRemaining <= 0"
+              >
+                Inviter
+              </button>
+            </div>
+            @if (feedbackMsg()) {
+              <p class="lic-modal__success">✓ {{ feedbackMsg() }}</p>
+            }
+            @if (feedbackError()) {
+              <p class="lic-modal__error">⚠ {{ feedbackError() }}</p>
+            }
+          </div>
+
+          <!-- Liste membres -->
+          <div class="lic-modal__members">
+            <h3>Membres ({{ lic.members.length + 1 }})</h3>
+
+            <ul class="lic-members">
+              <!-- Owner -->
+              <li class="lic-member lic-member--owner">
+                <span class="lic-member__avatar">{{ lic.ownerName.charAt(0).toUpperCase() }}</span>
+                <div class="lic-member__info">
+                  <strong>{{ lic.ownerName }}</strong>
+                  <span>{{ lic.ownerEmail }}</span>
+                </div>
+                <span class="lic-member__badge">Propriétaire</span>
+              </li>
+
+              @for (m of lic.members; track m.id) {
+                <li class="lic-member">
+                  <span class="lic-member__avatar">{{ m.email.charAt(0).toUpperCase() }}</span>
+                  <div class="lic-member__info">
+                    <strong>{{ m.name || m.email.split('@')[0] }}</strong>
+                    <span>{{ m.email }}</span>
+                  </div>
+                  <button
+                    type="button"
+                    class="lic-member__remove"
+                    (click)="removeMember(m.id)"
+                    title="Retirer ce membre"
+                  >
+                    ✕
+                  </button>
+                </li>
+              }
+            </ul>
+          </div>
+        </div>
+      </div>
+    }
+
+  </div>
+</section>

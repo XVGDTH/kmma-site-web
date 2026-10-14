@@ -1,26 +1,31 @@
-import { APP_INITIALIZER, ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
-import { provideRouter } from '@angular/router';
+import {
+  ApplicationConfig,
+  provideBrowserGlobalErrorListeners,
+} from '@angular/core';
+import { provideRouter, withInMemoryScrolling } from '@angular/router';
 
 import { routes } from './app.routes';
-import { provideHttpClient, withInterceptors } from '@angular/common/http';
-import { authInterceptor } from './shared/auth.interceptor';
-import { AuthService } from './shared/auth.service';
 
-
-function initAuth(auth: AuthService) {
-  return () => auth.refreshSession();
-}
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
-    provideRouter(routes),
-    // providers connexion vers les apis
-  
-    provideHttpClient(withInterceptors([authInterceptor])),
 
-    // fichier connexion
+    // ✅ Router avec restauration du scroll (nécessaire pour ton parcours)
+    provideRouter(
+      routes,
+      withInMemoryScrolling({
+        anchorScrolling: 'enabled',
+        scrollPositionRestoration: 'enabled',
+      }),
+    ),
 
-     { provide: APP_INITIALIZER, useFactory: initAuth, deps: [AuthService], multi: true },
-  
-  ]
+    // ❌ SUPPRIMÉ : provideHttpClient(withInterceptors([authInterceptor]))
+    //    → à réactiver quand tu brancheras tes vraies APIs
+    //
+    // ❌ SUPPRIMÉ : { provide: APP_INITIALIZER, useFactory: initAuth, ... }
+    //    → auth.refreshSession() appelait le backend au démarrage
+    //
+    // ❌ SUPPRIMÉ : import AuthService, authInterceptor
+    //    → plus utilisés tant que tu es en simulation
+  ],
 };

@@ -10,24 +10,6 @@ export interface QuizQuestion {
 
 
 
-// export interface CourseSequence {
-//   id: string;
-//   title: string;
-//   type: SequenceType;
-
-//   position?: number;
-
-//   duration?: string;
-//   videoUrl?: string;
-//   documentUrl?: string;
-
-//   quizQuestions?: QuizQuestion[];
-
-//   instructions?: string;
-
-//   completed: boolean;
-// }
-
 export interface CourseSequence {
   id: string;
   title: string;
@@ -50,13 +32,6 @@ export interface CourseSequence {
 }
 
 
-
-// export interface CourseChapter {
-//   id: string;
-//   title: string;
-//   position?: number;
-//   sequences: CourseSequence[];
-// }
 
 export interface CourseChapter {
   id: string;

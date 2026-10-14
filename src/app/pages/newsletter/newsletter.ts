@@ -31,7 +31,7 @@ export class Newsletter {
 
   private readonly route = inject(ActivatedRoute);
   private readonly http = inject(HttpClient);
-  private readonly apiUrl = 'https://api.convergesas.com/api';
+  private readonly apiUrl = 'http://127.0.0.1:8000/api';
 
   // ============================================================
   // DÃ‰SINSCRIPTION (via lien email : /newsletter?token=xxx)

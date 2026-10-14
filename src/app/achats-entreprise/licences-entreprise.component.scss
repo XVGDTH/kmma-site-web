@@ -1,0 +1,531 @@
+$green-dark: #0e3b32;
+$green-darker: #082621;
+$copper: #b87333;
+$copper-dark: #96551f;
+$copper-light: #e6a869;
+$ink: #1f2a28;
+$grey: #5c6b66;
+$bg-light: #f9f7f4;
+
+@mixin container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+.lic-page {
+  background: $bg-light;
+  min-height: 100vh;
+  padding: 3rem 0 5rem;
+  &__container { @include container; }
+}
+
+.lic-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 2rem;
+  flex-wrap: wrap;
+  margin-bottom: 2.5rem;
+
+  &__eyebrow {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 800;
+    color: $copper;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.5rem;
+  }
+
+  h1 {
+    font-size: clamp(1.75rem, 3vw, 2.5rem);
+    color: $green-dark;
+    font-weight: 800;
+    margin: 0 0 0.5rem;
+  }
+
+  p { color: $grey; margin: 0; font-size: 1rem; }
+
+  &__cta {
+    padding: 0.85rem 1.75rem;
+    background: linear-gradient(135deg, $copper, $copper-dark);
+    color: #fff;
+    border-radius: 10px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.3s;
+    box-shadow: 0 6px 18px rgba(184, 115, 51, 0.3);
+
+    &:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 26px rgba(184, 115, 51, 0.5);
+    }
+  }
+}
+
+/* ---------- STATS ---------- */
+.lic-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-bottom: 3rem;
+
+  @media (max-width: 700px) { grid-template-columns: repeat(2, 1fr); }
+}
+
+.lic-stat {
+  background: #fff;
+  border-radius: 14px;
+  padding: 1.5rem 1.25rem;
+  text-align: center;
+  border: 1px solid rgba(14, 59, 50, 0.06);
+  box-shadow: 0 4px 14px rgba(14, 59, 50, 0.04);
+
+  &__value {
+    display: block;
+    font-size: 2rem;
+    font-weight: 800;
+    color: $copper-dark;
+    margin-bottom: 0.35rem;
+  }
+
+  &__label {
+    display: block;
+    font-size: 0.82rem;
+    color: $grey;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+}
+
+/* ---------- VIDE ---------- */
+.lic-empty {
+  text-align: center;
+  padding: 5rem 2rem;
+  background: #fff;
+  border-radius: 20px;
+  border: 1px solid rgba(14, 59, 50, 0.06);
+
+  &__icon {
+    font-size: 4rem;
+    margin-bottom: 1.5rem;
+    opacity: 0.5;
+  }
+
+  h2 {
+    font-size: 1.5rem;
+    color: $green-dark;
+    font-weight: 800;
+    margin: 0 0 0.75rem;
+  }
+
+  p {
+    color: $grey;
+    font-size: 1rem;
+    margin: 0 0 2rem;
+  }
+
+  &__btn {
+    display: inline-block;
+    padding: 1rem 2rem;
+    background: linear-gradient(135deg, $copper, $copper-dark);
+    color: #fff;
+    border-radius: 10px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.3s;
+
+    &:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 26px rgba(184, 115, 51, 0.4);
+    }
+  }
+}
+
+/* ---------- LISTE LICENCES ---------- */
+.lic-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.lic-card {
+  display: flex;
+  gap: 1.5rem;
+  background: #fff;
+  border-radius: 16px;
+  padding: 1.5rem;
+  border: 1px solid rgba(14, 59, 50, 0.06);
+  box-shadow: 0 4px 14px rgba(14, 59, 50, 0.04);
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1);
+  align-items: center;
+
+  @media (max-width: 700px) {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 32px rgba(14, 59, 50, 0.1);
+    border-color: rgba(184, 115, 51, 0.3);
+  }
+
+  &__image {
+    position: relative;
+    width: 120px;
+    height: 100px;
+    flex-shrink: 0;
+
+    @media (max-width: 700px) { width: 100%; height: 160px; }
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 12px;
+    }
+  }
+
+  &__badge {
+    position: absolute;
+    top: 0.5rem;
+    left: 0.5rem;
+    background: $copper;
+    color: #fff;
+    font-size: 0.7rem;
+    font-weight: 800;
+    padding: 0.25rem 0.6rem;
+    border-radius: 50px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  &__body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    min-width: 0;
+
+    h3 {
+      font-size: 1.05rem;
+      color: $green-dark;
+      font-weight: 700;
+      margin: 0;
+      line-height: 1.4;
+    }
+  }
+
+  &__progress {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  &__progress-bar {
+    flex: 1;
+    height: 8px;
+    background: $bg-light;
+    border-radius: 50px;
+    overflow: hidden;
+  }
+
+  &__progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, $copper, $copper-light);
+    border-radius: 50px;
+    transition: width 0.4s;
+  }
+
+  &__progress-label {
+    font-size: 0.82rem;
+    color: $grey;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  &__meta {
+    display: flex;
+    gap: 1.25rem;
+    flex-wrap: wrap;
+
+    span {
+      font-size: 0.82rem;
+      color: $grey;
+      font-weight: 500;
+    }
+  }
+
+  &__cta {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: $copper;
+    font-weight: 800;
+    font-size: 0.9rem;
+    white-space: nowrap;
+
+    svg { transition: transform 0.2s; }
+  }
+
+  &:hover &__cta svg { transform: translateX(4px); }
+}
+
+/* ---------- MODAL ---------- */
+.lic-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(8, 38, 33, 0.7);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  animation: fadeIn 0.25s ease;
+
+  &__content {
+    background: #fff;
+    border-radius: 20px;
+    padding: 2rem;
+    max-width: 720px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    animation: slideUp 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
+  }
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+    padding-bottom: 1.5rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 2px solid $bg-light;
+
+    h2 {
+      font-size: 1.3rem;
+      color: $green-dark;
+      font-weight: 800;
+      margin: 0;
+      line-height: 1.35;
+    }
+  }
+
+  &__close {
+    background: none;
+    border: none;
+    font-size: 1.3rem;
+    color: $grey;
+    cursor: pointer;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    transition: all 0.2s;
+
+    &:hover { background: $bg-light; color: $ink; }
+  }
+
+  &__stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-bottom: 2rem;
+
+    @media (max-width: 600px) { grid-template-columns: 1fr; }
+  }
+
+  &__stat {
+    background: $bg-light;
+    border-radius: 12px;
+    padding: 1rem;
+
+    span {
+      display: block;
+      font-size: 0.75rem;
+      color: $grey;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.35rem;
+    }
+
+    strong {
+      display: block;
+      color: $copper-dark;
+      font-size: 1.15rem;
+      font-weight: 800;
+    }
+  }
+
+  &__invite {
+    margin-bottom: 2rem;
+
+    h3 {
+      font-size: 1rem;
+      color: $green-dark;
+      font-weight: 800;
+      margin: 0 0 1rem;
+    }
+  }
+
+  &__invite-form {
+    display: flex;
+    gap: 0.75rem;
+
+    @media (max-width: 500px) { flex-direction: column; }
+
+    input {
+      flex: 1;
+      padding: 0.85rem 1.15rem;
+      border: 2px solid rgba(14, 59, 50, 0.1);
+      border-radius: 10px;
+      font-size: 0.95rem;
+      outline: none;
+      transition: all 0.2s;
+
+      &:focus { border-color: $copper; box-shadow: 0 0 0 3px rgba(184, 115, 51, 0.15); }
+      &:disabled { background: $bg-light; cursor: not-allowed; }
+    }
+
+    button {
+      padding: 0.85rem 1.75rem;
+      background: linear-gradient(135deg, $copper, $copper-dark);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+
+      &:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(184, 115, 51, 0.4); }
+      &:disabled { opacity: 0.5; cursor: not-allowed; }
+    }
+  }
+
+  &__success {
+    color: #15803d;
+    font-size: 0.88rem;
+    font-weight: 700;
+    margin: 0.75rem 0 0;
+  }
+
+  &__error {
+    color: #dc2626;
+    font-size: 0.88rem;
+    font-weight: 700;
+    margin: 0.75rem 0 0;
+  }
+
+  &__members {
+    h3 {
+      font-size: 1rem;
+      color: $green-dark;
+      font-weight: 800;
+      margin: 0 0 1rem;
+    }
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to   { transform: translateY(0); opacity: 1; }
+}
+
+/* ---------- MEMBRES ---------- */
+.lic-members {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.lic-member {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.85rem 1rem;
+  background: $bg-light;
+  border-radius: 10px;
+
+  &--owner {
+    background: linear-gradient(135deg, rgba(184, 115, 51, 0.08), rgba(184, 115, 51, 0.15));
+    border: 1px solid rgba(184, 115, 51, 0.25);
+  }
+
+  &__avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, $copper, $copper-dark);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 0.95rem;
+    flex-shrink: 0;
+  }
+
+  &__info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+    min-width: 0;
+
+    strong {
+      font-size: 0.9rem;
+      color: $ink;
+      font-weight: 700;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    span {
+      font-size: 0.78rem;
+      color: $grey;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+
+  &__badge {
+    background: $copper;
+    color: #fff;
+    font-size: 0.7rem;
+    font-weight: 800;
+    padding: 0.25rem 0.6rem;
+    border-radius: 50px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    flex-shrink: 0;
+  }
+
+  &__remove {
+    background: none;
+    border: none;
+    color: #dc2626;
+    cursor: pointer;
+    font-size: 1rem;
+    padding: 0.35rem 0.6rem;
+    border-radius: 6px;
+    transition: background 0.2s;
+    flex-shrink: 0;
+
+    &:hover { background: rgba(220, 38, 38, 0.1); }
+  }
+}

@@ -14,7 +14,7 @@ import { map } from 'rxjs/operators';
 import { LiveSessionService } from '../../../shared/live-session.service';
 import { AuthService } from '../../../shared/auth.service';
 
-const API_URL = 'https://api.convergesas.com/api';
+const API_URL = 'http://127.0.0.1:8000/api';
 
 @Component({
   selector: 'app-live-session-host',

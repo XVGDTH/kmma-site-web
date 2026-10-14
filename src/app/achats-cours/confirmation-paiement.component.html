@@ -1,0 +1,124 @@
+@if (course(); as c) {
+  <section class="confirmation-page">
+    <div class="confirmation-page__container">
+
+      <!-- ============================================ -->
+      <!-- ICÔNE DE SUCCÈS                              -->
+      <!-- ============================================ -->
+      <div class="confirm-success">
+        <div class="confirm-success__icon">
+          <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 6L9 17l-5-5" />
+          </svg>
+        </div>
+        <h1>Paiement confirmé !</h1>
+        <p>Félicitations, votre inscription est validée. Vous pouvez dès maintenant accéder à votre formation.</p>
+      </div>
+
+      <!-- ============================================ -->
+      <!-- RÉCAPITULATIF DU PAIEMENT                    -->
+      <!-- ============================================ -->
+      <div class="confirm-receipt">
+        <div class="confirm-receipt__header">
+          <h2>Reçu de paiement</h2>
+          <span class="confirm-receipt__badge">Payé</span>
+        </div>
+
+        <div class="confirm-receipt__course">
+          <img [src]="c.image" [alt]="c.imageAlt" loading="lazy" />
+          <div class="confirm-receipt__course-info">
+            <span class="confirm-receipt__provider">{{ c.provider }}</span>
+            <h3>{{ c.title }}</h3>
+            <div class="confirm-receipt__meta">
+              <span>⏱ {{ c.duration }}</span>
+              <span>🎓 {{ c.level }}</span>
+              <span>📚 {{ c.subject }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="confirm-receipt__lines">
+          <div class="confirm-receipt__line">
+            <span>N° de transaction</span>
+            <strong>{{ transactionId() }}</strong>
+          </div>
+          <div class="confirm-receipt__line">
+            <span>Date</span>
+            <strong>{{ paymentDate() }}</strong>
+          </div>
+          <div class="confirm-receipt__line">
+            <span>Moyen de paiement</span>
+            <strong>{{ methodLabel() }}</strong>
+          </div>
+          <div class="confirm-receipt__line confirm-receipt__line--total">
+            <span>Total payé</span>
+            <strong>{{ total() | number:'1.0-0' }} FCFA</strong>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================================ -->
+      <!-- PROCHAINES ÉTAPES                            -->
+      <!-- ============================================ -->
+      <div class="confirm-steps">
+        <h2>Et maintenant ?</h2>
+
+        <div class="confirm-step">
+          <div class="confirm-step__icon">🎬</div>
+          <div class="confirm-step__body">
+            <strong>Accédez à vos cours</strong>
+            <p>Retrouvez tous vos modules, vidéos et quiz dans votre espace d'apprentissage.</p>
+          </div>
+        </div>
+
+        <div class="confirm-step">
+          <div class="confirm-step__icon">📊</div>
+          <div class="confirm-step__body">
+            <strong>Suivez votre progression</strong>
+            <p>Votre tableau de bord vous aide à reprendre où vous vous êtes arrêté.</p>
+          </div>
+        </div>
+
+        <div class="confirm-step">
+          <div class="confirm-step__icon">🏆</div>
+          <div class="confirm-step__body">
+            <strong>Obtenez votre certificat</strong>
+            <p>Terminez à 100% pour débloquer votre certificat officiel KMAA Academy.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================================ -->
+      <!-- ACTIONS                                      -->
+      <!-- ============================================ -->
+      <div class="confirm-actions">
+        <button type="button" class="btn-primary" (click)="goToCourse()">
+          🎬 Accéder à mon cours
+        </button>
+
+        <div class="confirm-actions__secondary">
+          <button type="button" class="btn-ghost" (click)="goToSpace()">
+            👤 Mon espace
+          </button>
+          <button type="button" class="btn-ghost" (click)="goToDashboard()">
+            📊 Mon tableau de bord
+          </button>
+        </div>
+      </div>
+
+      <!-- ============================================ -->
+      <!-- NOTE DE SIMULATION (à retirer plus tard)     -->
+      <!-- ============================================ -->
+      <p class="confirm-note">
+        💡 <em>Paiement effectué avec succès<script></script>.</em>
+      </p>
+
+    </div>
+  </section>
+} @else {
+  <div class="confirm-error">
+    <h2>Cours introuvable</h2>
+    <p>Impossible de retrouver le cours associé à ce paiement.</p>
+    <a routerLink="/sujets" class="btn-primary">Retour au catalogue</a>
+  </div>
+}

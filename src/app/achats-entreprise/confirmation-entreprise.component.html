@@ -1,0 +1,154 @@
+@if (license(); as lic) {
+  <section class="confirm-ent-page">
+    <div class="confirm-ent-page__container">
+
+      <!-- SUCCÈS -->
+      <div class="confirm-ent-success">
+        <div class="confirm-ent-success__icon">
+          <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 6L9 17l-5-5" />
+          </svg>
+        </div>
+        <h1>Commande confirmée !</h1>
+        <p>Votre licence entreprise est active. Invitez dès maintenant vos collaborateurs depuis votre espace.</p>
+      </div>
+
+      <!-- REÇU -->
+      <div class="confirm-ent-receipt">
+        <div class="confirm-ent-receipt__header">
+          <h2>Facture {{ invoiceNumber() }}</h2>
+          <span class="confirm-ent-receipt__badge">Payé</span>
+        </div>
+
+        <div class="confirm-ent-receipt__course">
+          <img [src]="lic.courseImage" [alt]="lic.courseTitle" loading="lazy" />
+          <div class="confirm-ent-receipt__course-info">
+            <span class="confirm-ent-receipt__provider">KMAA Entreprises</span>
+            <h3>{{ lic.courseTitle }}</h3>
+            <div class="confirm-ent-receipt__meta">
+              <span>📦 Formule {{ lic.planName }}</span>
+              <span>👥 {{ lic.seatsTotal }} apprenant(s)</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="confirm-ent-receipt__lines">
+          <div class="confirm-ent-receipt__line">
+            <span>N° de transaction</span>
+            <strong>{{ transactionId() }}</strong>
+          </div>
+          <div class="confirm-ent-receipt__line">
+            <span>Date</span>
+            <strong>{{ paymentDate() }}</strong>
+          </div>
+          <div class="confirm-ent-receipt__line">
+            <span>Raison sociale</span>
+            <strong>{{ lic.ownerName }}</strong>
+          </div>
+          <div class="confirm-ent-receipt__line">
+            <span>Sièges achetés</span>
+            <strong>{{ lic.seatsTotal }}</strong>
+          </div>
+          <div class="confirm-ent-receipt__line">
+            <span>Prix par siège</span>
+            <strong>{{ formatPrice(lic.pricePerSeat) }}</strong>
+          </div>
+          @if (lic.discountApplied > 0) {
+            <div class="confirm-ent-receipt__line confirm-ent-receipt__line--discount">
+              <span>Réduction {{ lic.promoCode ? '(' + lic.promoCode + ')' : '' }}</span>
+              <strong>-{{ formatPrice(lic.discountApplied) }}</strong>
+            </div>
+          }
+          <div class="confirm-ent-receipt__line confirm-ent-receipt__line--total">
+            <span>Total TTC payé</span>
+            <strong>{{ formatPrice(lic.totalPaid) }}</strong>
+          </div>
+        </div>
+      </div>
+
+      <!-- INFO LICENCE -->
+      <div class="confirm-ent-licence">
+        <h2>🎫 Votre licence</h2>
+        <div class="confirm-ent-licence__info">
+          <div class="confirm-ent-licence__item">
+            <span class="confirm-ent-licence__label">Sièges disponibles</span>
+            <span class="confirm-ent-licence__value">{{ lic.seatsRemaining }} / {{ lic.seatsTotal }}</span>
+          </div>
+          <div class="confirm-ent-licence__item">
+            <span class="confirm-ent-licence__label">Valide jusqu'au</span>
+            <span class="confirm-ent-licence__value">
+              {{ lic.expiresAt | slice:0:10 }}
+            </span>
+          </div>
+        </div>
+
+        @if (lic.members.length > 0) {
+          <div class="confirm-ent-licence__members">
+            <h3>Membres invités ({{ lic.members.length }})</h3>
+            <ul>
+              @for (m of lic.members; track m.id) {
+                <li>✓ {{ m.email }}</li>
+              }
+            </ul>
+          </div>
+        }
+      </div>
+
+      <!-- ÉTAPES SUIVANTES -->
+      <div class="confirm-ent-steps">
+        <h2>Et maintenant ?</h2>
+
+        <div class="confirm-ent-step">
+          <div class="confirm-ent-step__icon">👥</div>
+          <div class="confirm-ent-step__body">
+            <strong>Invitez vos collaborateurs</strong>
+            <p>Depuis votre espace licences, ajoutez les emails des apprenants à former.</p>
+          </div>
+        </div>
+
+        <div class="confirm-ent-step">
+          <div class="confirm-ent-step__icon">📊</div>
+          <div class="confirm-ent-step__body">
+            <strong>Suivez la progression</strong>
+            <p>Un tableau de bord manager vous permet de suivre chaque apprenant.</p>
+          </div>
+        </div>
+
+        <div class="confirm-ent-step">
+          <div class="confirm-ent-step__icon">📄</div>
+          <div class="confirm-ent-step__body">
+            <strong>Facture envoyée</strong>
+            <p>Votre facture officielle vous sera transmise sous 24h par email.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ACTIONS -->
+      <div class="confirm-ent-actions">
+        <button type="button" class="btn-primary" (click)="goToLicenses()">
+          🎫 Gérer mes licences
+        </button>
+
+        <div class="confirm-ent-actions__secondary">
+          <button type="button" class="btn-ghost" (click)="goToCourse()">
+            🎬 Aperçu du cours
+          </button>
+          <button type="button" class="btn-ghost" (click)="goToDashboard()">
+            📊 Tableau de bord
+          </button>
+        </div>
+      </div>
+
+      <p class="confirm-ent-note">
+        💡 <em>Votre abonnement a bel et bien été pris en compte. Merci de nous faire confiance.</em>
+      </p>
+
+    </div>
+  </section>
+} @else {
+  <div class="confirm-ent-error">
+    <h2>Licence introuvable</h2>
+    <p>Impossible de retrouver les informations de cette commande.</p>
+    <a routerLink="/entreprises/formations" class="btn-primary">Retour au catalogue</a>
+  </div>
+}

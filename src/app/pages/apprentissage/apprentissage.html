@@ -1,16 +1,30 @@
 <section class="learn">
 
+  <!-- ✅ SYSTÈME DE NOTIFICATION -->
+@if (notificationMessage(); as msg) {
+  <div class="custom-notification" style="position: fixed; top: 20px; right: 20px; z-index: 9999; background-color: #10b981; color: white; padding: 15px 20px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); display: flex; align-items: center; gap: 10px; font-weight: 500;">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"></path></svg>
+    {{ msg }}
+  </div>
+}
+
   @if (loading()) {
-    <div class="learn__loading">⏳ Chargement du cours…</div>
+    <div class="learn__loading">Chargement du cours…</div>
   } @else if (error(); as err) {
-    <div class="learn__error">⚠️ {{ err }}</div>
+    <div class="learn__error">{{ err }}</div>
   } @else if (!course()) {
     <div class="learn__empty">Cours introuvable.</div>
   } @else {
 
     <header class="learn__topbar">
       <a routerLink="/apprendre" class="learn__back">← Mon espace</a>
-      <h1>{{ course()!.title }}</h1>
+      
+      <div class="learn__topbar-content" style="display: flex; align-items: center; gap: 15px;">
+        @if (course()?.image) {
+          <img [src]="assetUrl(course()!.image)!" alt="Bannière du cours" style="width: 60px; height: 60px; border-radius: 8px; object-fit: cover;">
+        }
+        <h1 style="margin: 0;">{{ course()!.title }}</h1>
+      </div>
     </header>
 
     <div class="learn__body">
@@ -48,13 +62,32 @@
                   <button type="button" class="seq-item"
                     [class.seq-item--active]="selectedItem()?.sequence?.id === seq.id"
                     (click)="selectSequence(seq)">
-                    <span class="seq-item__icon">{{ typeIcon(seq.type) }}</span>
+                    <!-- Icone SVG propre (remplace l'emoji) -->
+                    <span class="seq-item__icon" style="display: flex; align-items: center;">
+                      @switch (seq.type) {
+                        @case ('video') {
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                        }
+                        @case ('document') {
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+                        }
+                        @case ('quiz') {
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                        }
+                        @default {
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+                        }
+                      }
+                    </span>
                     <span class="seq-item__label">{{ seq.title }}</span>
                     @if (seq.duration) {
                       <span class="seq-item__meta">{{ seq.duration }}</span>
                     }
                     @if (seq.isBlocking && seq.passingScore) {
-                      <span class="seq-item__meta seq-item__meta--lock">🔒 {{ seq.passingScore }}%</span>
+                      <span class="seq-item__meta seq-item__meta--lock">Seuil : {{ seq.passingScore }}%</span>
+                    }
+                    @if (seq.completed) {
+                      <span class="seq-item__meta" style="color: #10b981; font-weight: bold;">✓ Fait</span>
                     }
                   </button>
                 }
@@ -65,9 +98,11 @@
               <button type="button" class="seq-item seq-item--module-quiz"
                 [class.seq-item--active]="selectedItem()?.sequence?.id === mq.id"
                 (click)="selectSequence(mq)">
-                <span class="seq-item__icon">🎓</span>
+                <span class="seq-item__icon" style="display: flex; align-items: center;">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                </span>
                 <span class="seq-item__label">{{ mq.title }}</span>
-                <span class="seq-item__meta">🔒 {{ mq.passingScore ?? 85 }}%</span>
+                <span class="seq-item__meta">Seuil : {{ mq.passingScore ?? 85 }}%</span>
               </button>
             }
           </div>
@@ -88,7 +123,9 @@
                   <button type="button" class="seq-item"
                     [class.seq-item--active]="selectedItem()?.sequence?.id === seq.id"
                     (click)="selectSequence(seq)">
-                    <span class="seq-item__icon">{{ typeIcon(seq.type) }}</span>
+                    <span class="seq-item__icon" style="display: flex; align-items: center;">
+                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+                    </span>
                     <span class="seq-item__label">{{ seq.title }}</span>
                   </button>
                 }
@@ -100,13 +137,17 @@
         @if (finalExam(); as exam) {
           <div class="module-block module-block--final">
             <div class="module-block__head">
-              <span class="module-block__badge">🏆</span>
+              <span class="module-block__badge" style="display: flex; align-items: center;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="6"></circle><path d="M9 14l-2 7 5-3 5 3-2-7"></path></svg>
+              </span>
               <h2>Examen final</h2>
             </div>
             <button type="button" class="seq-item seq-item--final"
               [class.seq-item--active]="selectedItem()?.sequence?.id === exam.id"
               (click)="selectSequence(exam)">
-              <span class="seq-item__icon">🏆</span>
+              <span class="seq-item__icon" style="display: flex; align-items: center;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="6"></circle><path d="M9 14l-2 7 5-3 5 3-2-7"></path></svg>
+              </span>
               <span class="seq-item__label">{{ exam.title }}</span>
               <span class="seq-item__meta">Score requis : {{ exam.passingScore ?? 70 }}%</span>
             </button>
@@ -120,9 +161,9 @@
         @if (!selectedItem()) {
           <div class="learn__placeholder">
             <h2>{{ course()!.title }}</h2>
-            <p>{{ course()!.description ?? 'Sélectionne un élément dans le programme à gauche.' }}</p>
+            <p>{{ course()!.description ?? 'Sélectionnez un élément dans le programme à gauche pour commencer.' }}</p>
             <p class="learn__placeholder-meta">
-              👨‍🏫 {{ course()!.instructor }} — {{ course()!.instructorRole }}
+              Formateur : {{ course()!.instructor || 'Expert KMAA' }} — {{ course()!.instructorRole || 'Consultant' }}
             </p>
           </div>
         }
@@ -142,6 +183,38 @@
                 <p>Aucune URL vidéo renseignée pour cette séquence.</p>
               </div>
             }
+
+            <!-- ✅ BOUTON MARQUER COMME TERMINÉ (VIDÉO) -->
+            <!-- ✅ BOUTON MARQUER COMME TERMINÉ -->
+<div class="sequence-actions" style="margin-top: 20px; display: flex; align-items: center; justify-content: flex-end; gap: 15px;">
+  
+  <!-- ✅ L'ICÔNE DE VALIDATION (apparaît quand c'est fait) -->
+  @if (sel.sequence.completed) {
+    <span class="status-validated" style="display: inline-flex; align-items: center; gap: 6px; color: #10b981; font-weight: 600; font-size: 0.9rem;">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M20 6L9 17l-5-5"></path>
+      </svg>
+      Validé
+    </span>
+  }
+
+  <!-- Le bouton -->
+  <button 
+    type="button" 
+    class="btn btn-gold" 
+    [disabled]="sel.sequence.completed || isCompleting()"
+    (click)="markAsComplete(sel.sequence)"
+    style="display: inline-flex; align-items: center; gap: 8px;"
+  >
+    @if (sel.sequence.completed) {
+      Terminé
+    } @else if (isCompleting()) {
+      Enregistrement...
+    } @else {
+      Marquer comme terminé
+    }
+  </button>
+</div>
           }
 
           <!-- DOCUMENT / TD / TP / CAS PRATIQUE -->
@@ -152,21 +225,43 @@
               @if (sel.sequence.instructions) { <p>{{ sel.sequence.instructions }}</p> }
 
               @if (assetUrl(sel.sequence.documentUrl); as durl) {
-                <a [href]="durl" target="_blank" class="doc-view__link">📎 Télécharger le support</a>
+                <a [href]="durl" target="_blank" class="doc-view__link" style="display: inline-flex; align-items: center; gap: 8px;">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                  Télécharger le support
+                </a>
               }
 
               @if (sel.sequence.deadline) {
                 <p class="doc-view__deadline">
-                  ⏰ À rendre avant le {{ sel.sequence.deadline | slice:0:10 }}
+                  À rendre avant le {{ sel.sequence.deadline | slice:0:10 }}
                 </p>
               }
 
               @if (sel.sequence.allowFileUpload) {
-                <label class="doc-view__file">
+                <label class="doc-view__file" style="display: inline-flex; align-items: center; gap: 8px; cursor: pointer;">
                   <input type="file" hidden />
-                  📤 Téléverser mon travail
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                  Téléverser mon travail
                 </label>
               }
+            </div>
+
+            <!-- ✅ BOUTON MARQUER COMME TERMINÉ (DOCUMENT) -->
+            <div class="sequence-actions" style="margin-top: 20px; text-align: right;">
+              <button 
+                type="button" 
+                class="btn btn-gold" 
+                [disabled]="sel.sequence.completed || isCompleting()"
+                (click)="markAsComplete(sel.sequence)"
+              >
+                @if (sel.sequence.completed) {
+                  ✓ Terminé
+                } @else if (isCompleting()) {
+                  Enregistrement...
+                } @else {
+                  Marquer comme terminé
+                }
+              </button>
             </div>
           }
 
@@ -211,7 +306,7 @@
                 <div class="quiz-result" [class.quiz-result--fail]="!quizResult()!.passed">
                   <h3>{{ quizResult()!.score }} / {{ quizResult()!.total }}</h3>
                   @if (quizResult()!.passed) {
-                    <p>✓ Bravo, quiz validé !</p>
+                    <p style="color: #10b981; font-weight: bold;">Quiz validé avec succès.</p>
                   } @else {
                     <p>Score insuffisant. Revois le contenu puis retente.</p>
                     <button type="button" class="btn btn-outline-dark"
@@ -228,3 +323,4 @@
     </div>
   }
 </section>
+

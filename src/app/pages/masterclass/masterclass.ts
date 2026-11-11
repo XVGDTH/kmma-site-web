@@ -85,7 +85,7 @@ export class Masterclass {
 });
 
   /* =========================================================
-     Ã‰TAT GLOBAL
+     ÉTAT GLOBAL
   ========================================================= */
 
   readonly isRegistered = signal(false);
@@ -105,7 +105,7 @@ export class Masterclass {
   readonly videoProgress = signal(68);
 
   /* =========================================================
-     COMPTE Ã€ REBOURS
+     COMPTE À REBOURS
   ========================================================= */
 
   readonly countdown = signal({
@@ -145,21 +145,21 @@ export class Masterclass {
           if (d.status) this.eventStatus.set(d.status);
           if (d.youtube_id) this.currentVideoId.set(d.youtube_id);
         },
-        error: () => console.warn('Masterclass API indisponible â€” contenu statique affichÃ©.'),
+        error: () => console.warn('Masterclass API indisponible — contenu statique affiché.'),
       });
   }
 
   readonly masterclass = signal<MasterclassInfo>({
-    category: 'LEADERSHIP â€¢ INNOVATION',
+    category: 'LEADERSHIP • INNOVATION',
     title: 'Construire une vision qui transforme',
-    subtitle: 'Leadership, innovation et impact : les clÃ©s pour transformer une idÃ©e en vÃ©ritable projet.',
-    description: 'Une expÃ©rience immersive pensÃ©e pour les entrepreneurs, Ã©tudiants, professionnels et porteurs de projets.',
+    subtitle: 'Leadership, innovation et impact : les clés pour transformer une idée en véritable projet.',
+    description: 'Une expérience immersive pensée pour les entrepreneurs, étudiants, professionnels et porteurs de projets.',
     date: 'Samedi 12 septembre 2026',
-    time: '18:00 â€“ 20:00',
+    time: '18:00 – 20:00',
     timezone: 'GMT',
     participants: 284,
     capacity: 500,
-    language: 'FranÃ§ais',
+    language: 'Français',
   });
 
 
@@ -171,11 +171,11 @@ export class Masterclass {
     name: 'M. Martial YAOGO',
     role: 'Expert Comptable',
     organization: 'KMAA Academy',
-    bio: 'Entrepreneur, formateur et passionnÃ© par la transformation des organisations et le dÃ©veloppement des talents.',
+    bio: 'Entrepreneur, formateur et passionné par la transformation des organisations et le développement des talents.',
     image: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=600&q=85',
     stats: [
-      { value: '12+', label: 'annÃ©es dâ€™expÃ©rience' },
-      { value: '80+', label: 'confÃ©rences' },
+      { value: '12+', label: 'années d’expérience' },
+      { value: '80+', label: 'conférences' },
       { value: '2.4K', label: 'apprenants' },
     ],
   });
@@ -190,15 +190,15 @@ export class Masterclass {
       duration: '10 min',
       title: 'Ouverture & bienvenue',
       description:
-        'Introduction, prÃ©sentation de lâ€™expert et dÃ©couverte des objectifs de la session.',
+        'Introduction, présentation de l’expert et découverte des objectifs de la session.',
       status: 'done',
     },
     {
       time: '18:10',
       duration: '25 min',
-      title: 'Pourquoi les grands projets Ã©chouent-ils ?',
+      title: 'Pourquoi les grands projets échouent-ils ?',
       description:
-        'Comprendre les erreurs classiques et les blocages qui empÃªchent une idÃ©e de devenir un projet.',
+        'Comprendre les erreurs classiques et les blocages qui empêchent une idée de devenir un projet.',
       status: 'done',
     },
     {
@@ -206,23 +206,23 @@ export class Masterclass {
       duration: '30 min',
       title: 'Construire une vision forte',
       description:
-        'MÃ©thodes concrÃ¨tes pour dÃ©finir une vision claire, mobilisatrice et mesurable.',
+        'Méthodes concrètes pour définir une vision claire, mobilisatrice et mesurable.',
       status: 'live',
     },
     {
       time: '19:05',
       duration: '25 min',
-      title: 'Leadership & passage Ã  lâ€™action',
+      title: 'Leadership & passage à l’action',
       description:
-        'Transformer sa vision en dÃ©cisions, habitudes et rÃ©sultats.',
+        'Transformer sa vision en décisions, habitudes et résultats.',
       status: 'next',
     },
     {
       time: '19:30',
       duration: '20 min',
-      title: 'Questions & rÃ©ponses',
+      title: 'Questions & réponses',
       description:
-        'Ã‰change direct avec lâ€™expert autour des problÃ©matiques des participants.',
+        'Échange direct avec l’expert autour des problématiques des participants.',
       status: 'next',
     },
     {
@@ -230,34 +230,34 @@ export class Masterclass {
       duration: '10 min',
       title: 'Conclusion & challenge',
       description:
-        'SynthÃ¨se, challenge personnel et prochaines Ã©tapes.',
+        'Synthèse, challenge personnel et prochaines étapes.',
       status: 'next',
     },
   
   ]);
 
   /* =========================================================
-     VIDÃ‰OS YOUTUBE
+     VIDÉOS YOUTUBE
   ========================================================= */
 
   readonly videos = signal<MasterclassVideo[]>([
     {
       id: 'qp0HIF3SfI4',
       title: 'How Great Leaders Inspire Action',
-      speaker: 'Simon Sinek â€” TED',
+      speaker: 'Simon Sinek — TED',
       duration: '18:04',
       category: 'Leadership',
       description:
-        'Une rÃ©fÃ©rence incontournable sur la vision, le leadership et la capacitÃ© Ã  inspirer.',
+        'Une référence incontournable sur la vision, le leadership et la capacité à inspirer.',
     },
     {
       id: 'eIho2S0ZahI',
       title: 'How to Speak So That People Want to Listen',
-      speaker: 'Julian Treasure â€” TED',
+      speaker: 'Julian Treasure — TED',
       duration: '9:58',
       category: 'Communication',
       description:
-        'Comprendre comment communiquer avec plus dâ€™impact et capter vÃ©ritablement lâ€™attention.',
+        'Comprendre comment communiquer avec plus d’impact et capter véritablement l’attention.',
     },
   ]);
 
@@ -270,28 +270,28 @@ export class Masterclass {
       id: 1,
       author: 'Aminata',
       role: 'participant',
-      message: 'Bonjour Ã  tous ðŸ‘‹',
+      message: 'Bonjour à tous 👋',
       time: '18:32',
     },
     {
       id: 2,
       author: 'M. Martial YAOGO',
       role: 'expert',
-      message: 'Bienvenue Ã  tous ! Nous allons parler de vision et surtout de passage Ã  lâ€™action.',
+      message: 'Bienvenue à tous ! Nous allons parler de vision et surtout de passage à l’action.',
       time: '18:33',
     },
     {
       id: 3,
       author: 'Issouf',
       role: 'participant',
-      message: 'TrÃ¨s intÃ©ressant, surtout la partie sur les projets qui Ã©chouent.',
+      message: 'Très intéressant, surtout la partie sur les projets qui échouent.',
       time: '18:35',
     },
     {
       id: 4,
       author: 'Fatou',
       role: 'participant',
-      message: 'Est-ce quâ€™on peut appliquer cette mÃ©thode Ã  un projet Ã©tudiant ?',
+      message: 'Est-ce qu’on peut appliquer cette méthode à un projet étudiant ?',
       time: '18:36',
     },
   ]);
@@ -307,17 +307,17 @@ export class Masterclass {
       id: 1,
       author: 'Aminata Z.',
       question:
-        'Comment maintenir une vision claire lorsque plusieurs personnes travaillent sur le mÃªme projet ?',
+        'Comment maintenir une vision claire lorsque plusieurs personnes travaillent sur le même projet ?',
       likes: 18,
       answered: true,
       answer:
-        'Il faut transformer la vision en objectifs communs, puis dÃ©finir des indicateurs simples permettant Ã  chaque membre de comprendre sa contribution.',
+        'Il faut transformer la vision en objectifs communs, puis définir des indicateurs simples permettant à chaque membre de comprendre sa contribution.',
     },
     {
       id: 2,
       author: 'Issouf O.',
       question:
-        'Quelle est la premiÃ¨re chose Ã  faire lorsquâ€™on souhaite transformer une idÃ©e en projet ?',
+        'Quelle est la première chose à faire lorsqu’on souhaite transformer une idée en projet ?',
       likes: 12,
       answered: false,
     },
@@ -325,7 +325,7 @@ export class Masterclass {
       id: 3,
       author: 'Fatou K.',
       question:
-        'Comment convaincre une Ã©quipe de suivre une nouvelle vision ?',
+        'Comment convaincre une équipe de suivre une nouvelle vision ?',
       likes: 9,
       answered: false,
     },
@@ -334,7 +334,7 @@ export class Masterclass {
   questionDraft = '';
 
   /* =========================================================
-     RÃ‰ACTIONS
+     RÉACTIONS
   ========================================================= */
 
   readonly reactions = signal({
@@ -349,10 +349,10 @@ export class Masterclass {
   ========================================================= */
 
   readonly pollOptions = [
-    'DÃ©finir ma vision',
-    'AmÃ©liorer mon leadership',
+    'Définir ma vision',
+    'Améliorer mon leadership',
     'Mieux communiquer',
-    'Passer Ã  lâ€™action',
+    'Passer à l’action',
   ];
 
   readonly selectedPoll = signal<string | null>(null);
@@ -364,25 +364,25 @@ export class Masterclass {
 
    readonly resources = signal<MasterclassResource[]>([ 
     {
-      icon: 'ðŸ“˜',
-      title: 'Guide â€” Construire sa vision',
+      icon: '📘',
+      title: 'Guide — Construire sa vision',
       type: 'PDF',
       size: '2.4 MB',
     },
     {
-      icon: 'ðŸ“Š',
+      icon: '📊',
       title: 'Canvas Vision & Objectifs',
       type: 'PDF',
       size: '1.1 MB',
     },
     {
-      icon: 'ðŸ§ ',
+      icon: '🧠',
       title: 'Checklist Leadership',
       type: 'PDF',
       size: '840 KB',
     },
     {
-      icon: 'ðŸ“',
+      icon: '📝',
       title: 'Notes de la Masterclass',
       type: 'PDF',
       size: '1.7 MB',
@@ -396,11 +396,11 @@ export class Masterclass {
  readonly quizQuestions = signal<QuizQ[]>([ 
     {
       question:
-        'Quel est le premier Ã©lÃ©ment permettant de mobiliser une Ã©quipe autour dâ€™un projet ?',
+        'Quel est le premier élément permettant de mobiliser une équipe autour d’un projet ?',
       options: [
         'Une vision claire',
         'Un budget important',
-        'Une grande Ã©quipe',
+        'Une grande équipe',
         'Une campagne publicitaire',
       ],
       correct: 0,
@@ -410,9 +410,9 @@ export class Masterclass {
         'Quel est le meilleur moyen de transformer une vision en action ?',
       options: [
         'Attendre le moment parfait',
-        'DÃ©finir des objectifs concrets',
-        'Multiplier les rÃ©unions',
-        'Changer rÃ©guliÃ¨rement de stratÃ©gie',
+        'Définir des objectifs concrets',
+        'Multiplier les réunions',
+        'Changer régulièrement de stratégie',
       ],
       correct: 1,
     },
@@ -420,10 +420,10 @@ export class Masterclass {
       question:
         'Un bon leader doit principalement savoir :',
       options: [
-        'Tout contrÃ´ler',
+        'Tout contrôler',
         'Travailler seul',
         'Donner du sens et mobiliser',
-        'Ã‰viter les erreurs',
+        'Éviter les erreurs',
       ],
       correct: 2,
     },
@@ -494,7 +494,7 @@ export class Masterclass {
     try {
       localStorage.setItem('masterclass_registered', 'true');
     } catch {
-      // localStorage indisponible : on continue simplement en mÃ©moire.
+      // localStorage indisponible : on continue simplement en mémoire.
     }
   }
 
@@ -507,7 +507,7 @@ export class Masterclass {
   }
 
   /* =========================================================
-     VIDÃ‰O
+     VIDÉO
   ========================================================= */
 
   selectVideo(videoId: string): void {
@@ -583,7 +583,7 @@ export class Masterclass {
   }
 
   /* =========================================================
-     RÃ‰ACTIONS
+     RÉACTIONS
   ========================================================= */
 
   react(type: 'heart' | 'fire' | 'clap' | 'idea'): void {
@@ -659,12 +659,12 @@ export class Masterclass {
   downloadResource(resource: MasterclassResource): void {
     /*
      * Pour le moment, pas de backend.
-     * Cette fonction simule le tÃ©lÃ©chargement.
+     * Cette fonction simule le téléchargement.
      * Plus tard :
-     * -> URL renvoyÃ©e par le backend
-     * -> tÃ©lÃ©chargement rÃ©el.
+     * -> URL renvoyée par le backend
+     * -> téléchargement réel.
      */
-    console.log(`TÃ©lÃ©chargement simulÃ© : ${resource.title}`);
+    console.log(`Téléchargement simulé : ${resource.title}`);
   }
 
   /* =========================================================
@@ -676,6 +676,6 @@ export class Masterclass {
       return;
     }
 
-    console.log('GÃ©nÃ©ration du certificat...');
+    console.log('Génération du certificat...');
   }
 }

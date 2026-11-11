@@ -1,0 +1,130 @@
+<section class="catalogue-page">
+  <div class="catalogue-container">
+
+    <header class="catalogue-header">
+      <h1>
+        @if (subjectFilter() !== 'tous') {
+          Cours en {{ subjectFilter() }}
+        } @else {
+          Explorez notre catalogue
+        }
+      </h1>
+      <p>Découvrez nos formations pour booster votre carrière ou former vos équipes.</p>
+    </header>
+
+    <!-- FILTRES -->
+    <div class="filters-bar">
+      <div class="filter-group">
+        <span class="filter-label">Type d'achat</span>
+        <div class="filter-buttons">
+          <button [class.active]="typeFilter() === 'tous'" (click)="typeFilter.set('tous')">Tout</button>
+          <button [class.active]="typeFilter() === 'cours'" (click)="typeFilter.set('cours')">Cours à l'unité</button>
+          <button [class.active]="typeFilter() === 'abonnement'" (click)="typeFilter.set('abonnement')">Abonnement Entreprise</button>
+        </div>
+      </div>
+      <div class="filter-group">
+        <span class="filter-label">Format</span>
+        <div class="filter-buttons">
+          <button [class.active]="formatFilter() === 'tous'" (click)="formatFilter.set('tous')">Tout</button>
+          <button [class.active]="formatFilter() === 'en_ligne'" (click)="formatFilter.set('en_ligne')">En ligne</button>
+          <button [class.active]="formatFilter() === 'presentiel'" (click)="formatFilter.set('presentiel')">Présentiel</button>
+        </div>
+      </div>
+    </div>
+
+    @if (isLoading()) {
+      <div class="loading-state">Chargement des cours...</div>
+    } @else if (errorMessage()) {
+      <div class="error-state">{{ errorMessage() }}</div>
+    } @else {
+
+      <!-- ✅ 1. RÉSULTATS EXACTS -->
+      <div class="section-results">
+        <h2 class="section-title">
+          @if (matchingCourses().length > 0) {
+            {{ matchingCourses().length }} formation(s) trouvée(s)
+          } @else {
+            Aucune formation exacte trouvée
+          }
+        </h2>
+
+        @if (matchingCourses().length > 0) {
+          <div class="courses-grid">
+            @for (course of matchingCourses(); track course.id) {
+              <article class="course-card">
+                <div class="course-image">
+                  <img [src]="resolveMediaUrl(course.image) ?? ''" [alt]="course.imageAlt" loading="lazy" />
+                  <span class="type-badge" [class.badge-ent]="course.type === 'enterprise'">
+                    {{ course.type === 'enterprise' ? 'Abonnement' : 'Cours à l\'unité' }}
+                  </span>
+                </div>
+                <div class="course-body">
+                  <span class="course-provider">{{ course.provider }}</span>
+                  <h3>{{ course.title }}</h3>
+                  <p class="course-desc">{{ course.description | slice:0:80 }}...</p>
+                  <div class="course-footer">
+                    <!-- <strong class="course-price">{{ course.price | number }} FCFA</strong> -->
+                     <strong class="course-price">
+  @if (course.type === 'enterprise') {
+    {{ course.enterpriseBasePrice | number:'1.0-0' }} FCFA
+  } @else {
+    {{ course.price | number:'1.0-0' }} FCFA
+  }
+</strong>
+                    @if (course.type === 'enterprise') {
+                      <a [routerLink]="['/entreprises/formation', course.courseId]" class="btn-action btn-enterprise">Voir les formules</a>
+                    } @else {
+                      <a [routerLink]="['/sujets/cours', course.id]" class="btn-action btn-buy">Acheter</a>
+                    }
+                  </div>
+                </div>
+              </article>
+            }
+          </div>
+        }
+      </div>
+
+      <!-- ✅ 2. SUGGESTIONS -->
+      @if (suggestedCourses().length > 0) {
+        <div class="section-suggestions">
+          <div class="suggestions-header">
+            <h2 class="section-title">Ces cours et formations pourraient vous intéresser</h2>
+            <p>Découvrez d'autres compétences à développer dans notre catalogue.</p>
+          </div>
+
+          <div class="courses-grid">
+            @for (course of suggestedCourses(); track course.id) {
+              <article class="course-card course-card--suggested">
+                <div class="course-image">
+                  <img [src]="resolveMediaUrl(course.image) ?? ''" [alt]="course.imageAlt" loading="lazy" />
+                  <span class="type-badge" [class.badge-ent]="course.type === 'enterprise'">
+                    {{ course.type === 'enterprise' ? 'Abonnement' : 'Cours à l\'unité' }}
+                  </span>
+                </div>
+                <div class="course-body">
+                  <span class="course-provider">{{ course.provider }}</span>
+                  <h3>{{ course.title }}</h3>
+                  <div class="course-footer">
+                    <strong class="course-price">
+  @if (course.type === 'enterprise') {
+    {{ course.enterpriseBasePrice | number:'1.0-0' }} FCFA
+  } @else {
+    {{ course.price | number:'1.0-0' }} FCFA
+  }
+</strong>
+                    @if (course.type === 'enterprise') {
+                      <a [routerLink]="['/entreprises/formation', course.courseId]" class="btn-action btn-enterprise">Voir</a>
+                    } @else {
+                      <a [routerLink]="['/sujets/cours', course.id]" class="btn-action btn-buy">Acheter</a>
+                    }
+                  </div>
+                </div>
+              </article>
+            }
+          </div>
+        </div>
+      }
+
+    }
+  </div>
+</section>

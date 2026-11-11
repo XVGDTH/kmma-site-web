@@ -204,6 +204,7 @@ import { Router, RouterLink } from '@angular/router';
 
 import { EnrollmentService } from '../../shared/enrollment.service';
 import { LearningStatsService } from '../../shared/learning-stats.service';
+import { toAbsoluteUrl } from '../../shared/formateur-content.service';
 
 interface UserInfo { name: string; email: string; role: string; }
 
@@ -277,59 +278,96 @@ export class Apprendre {
   // ÉTAT COURS
   // ============================================================
   readonly loading = signal(false);
-  readonly resume = signal<ResumeInfo | null>(null);
-  readonly courses = signal<CourseCard[]>([]);
+
   readonly liveNow = signal<LiveInfo[]>([]);
   readonly deadlines = signal<DeadlineInfo[]>([]);
-  readonly enrollmentStats = signal({ coursesCount: 0, completedCount: 0 });
+    // ✅ Ajoute cette ligne pour exposer la fonction au HTML
+  readonly assetUrl = toAbsoluteUrl;
 
-  // ============================================================
-  // CONSTRUCTEUR
-  // ============================================================
-  constructor() {
+    constructor() {
+    // On recharge depuis l'API
     this.enrollmentService.reload();
-    this.hydrate();
+    
+    // On écoute les changements du signal (via un effet ou en mettant à jour dans le subscribe)
+    // Pour faire simple avec les signals, on va faire le mapping dans un computed.
   }
 
+  // Transforme les données de l'API en cartes pour l'affichage
+  readonly courses = computed<CourseCard[]>(() => {
+    return this.enrollmentService.enrollments().map((e) => ({
+      slug: e.courseId, // Le backend renvoie le slug dans courseId
+      title: e.title ?? 'Cours ' + e.courseId,
+      image: e.image ?? 'assets/placeholder.jpg',
+      category: e.subject ?? 'Général',
+      progressPercent: e.progressPercent,
+      accessLevel: e.access_level ?? 2,
+      lastAccessedAt: this.formatDate(e.lastAccessedAt),
+    }));
+  });
+
+  // On met à jour resume (le cours à reprendre) dynamiquement
+  readonly resume = computed<ResumeInfo | null>(() => {
+    const inProgress = this.courses().filter(c => c.progressPercent < 100);
+    if (inProgress.length === 0) return null;
+    
+    const c = inProgress[0];
+    return {
+      courseSlug: c.slug,
+      courseTitle: c.title,
+      courseImage: c.image,
+      sequenceTitle: 'Reprendre la formation',
+      chapterTitle: c.category,
+      progressPercent: c.progressPercent,
+    };
+  });
+
+  // Les stats
+  readonly enrollmentStats = computed(() => {
+    const list = this.courses();
+    return {
+      coursesCount: list.filter(c => c.progressPercent < 100).length,
+      completedCount: list.filter(c => c.progressPercent >= 100).length,
+    };
+  });
   // ============================================================
   // HYDRATATION
   // ============================================================
-  private hydrate(): void {
-    const list = this.enrollmentService.enrollments();
+  // private hydrate(): void {
+  //   const list = this.enrollmentService.enrollments();
 
-    this.courses.set(
-      list.map((e) => ({
-        slug: String(e.courseId),
-        title: e.title,
-        image: e.image,
-        category: e.subject,
-        progressPercent: e.progressPercent,
-        accessLevel: 2,
-        lastAccessedAt: this.formatDate(e.lastAccessedAt),
-      }))
-    );
+  //   this.courses.set(
+  //     list.map((e) => ({
+  //       slug: String(e.courseId),
+  //       title: e.title,
+  //       image: e.image,
+  //       category: e.subject,
+  //       progressPercent: e.progressPercent,
+  //       accessLevel: 2,
+  //       lastAccessedAt: this.formatDate(e.lastAccessedAt),
+  //     }))
+  //   );
 
-    const inProgress = list.filter((e) => e.progressPercent < 100);
-    this.enrollmentStats.set({
-      coursesCount: inProgress.length,
-      completedCount: list.filter((e) => e.progressPercent >= 100).length,
-    });
+  //   const inProgress = list.filter((e) => e.progressPercent < 100);
+  //   this.enrollmentStats.set({
+  //     coursesCount: inProgress.length,
+  //     completedCount: list.filter((e) => e.progressPercent >= 100).length,
+  //   });
 
-    if (inProgress.length > 0) {
-      const c = inProgress[0];
-      this.resume.set({
-        courseSlug: String(c.courseId),
-        courseTitle: c.title,
-        courseImage: c.image,
-        sequenceTitle: 'Reprendre la formation',
-        chapterTitle: c.subject,
-        progressPercent: c.progressPercent,
-      });
-    }
+  //   if (inProgress.length > 0) {
+  //     const c = inProgress[0];
+  //     this.resume.set({
+  //       courseSlug: String(c.courseId),
+  //       courseTitle: c.title,
+  //       courseImage: c.image,
+  //       sequenceTitle: 'Reprendre la formation',
+  //       chapterTitle: c.subject,
+  //       progressPercent: c.progressPercent,
+  //     });
+  //   }
 
-    this.liveNow.set([]);
-    this.deadlines.set([]);
-  }
+  //   this.liveNow.set([]);
+  //   this.deadlines.set([]);
+  // }
 
   // ============================================================
   // HELPERS

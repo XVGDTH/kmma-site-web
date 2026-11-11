@@ -529,3 +529,43 @@ $bg-light: #f9f7f4;
     &:hover { background: rgba(220, 38, 38, 0.1); }
   }
 }
+
+
+
+//"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""//
+
+
+.lic-alert--error {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #991b1b;
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+.lic-loading {
+  text-align: center;
+  padding: 40px;
+  color: #64748b;
+}
+.lic-member__status {
+  font-size: 11px;
+  color: #b45309;
+  display: block;
+  margin-top: 2px;
+  &--ok { color: #15803d; }
+}
+.lic-member__actions {
+  display: flex;
+  gap: 4px;
+  margin-left: auto;
+}
+.lic-member__resend {
+  background: none;
+  border: none;
+  color: #0284c7;
+  cursor: pointer;
+  font-size: 16px;
+  padding: 4px;
+  &:hover { background: #e0f2fe; border-radius: 4px; }
+}

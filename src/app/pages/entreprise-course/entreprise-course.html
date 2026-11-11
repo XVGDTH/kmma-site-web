@@ -77,72 +77,68 @@
     } @else {
       <div class="ent-courses__grid">
         @for (course of visibleCourses(); track course.id) {
-          <article class="ent-course-card">
-            <div class="ent-course-card__image">
-              <img [src]="course.image" [alt]="course.imageAlt" loading="lazy" />
-              <!-- ✅ Badge du mode de formation -->
-              <span
-                class="ent-course-card__mode"
-                [class.ent-course-card__mode--online]="course.mode === 'En ligne'"
-                [class.ent-course-card__mode--onsite]="course.mode === 'Présentiel'"
-                [class.ent-course-card__mode--hybrid]="course.mode === 'Mixte'"
-              >
-                @if (course.mode === 'En ligne') { 💻 }
-                @if (course.mode === 'Présentiel') { 🏢 }
-                @if (course.mode === 'Mixte') { 🔄 }
-                {{ course.mode | uppercase }}
-              </span>
-            </div>
+<article class="ent-course-card">
+  <div class="ent-course-card__image">
+  <img [src]="assetUrl(course.image)!" [alt]="course.imageAlt" loading="lazy" />
 
-            <div class="ent-course-card__body">
-              <p class="ent-course-card__provider">{{ course.provider }}</p>
+    <!-- ✅ Badge du mode de formation (avec deliveryMode) -->
+    <span
+      class="ent-course-card__mode"
+      [class.ent-course-card__mode--online]="course.deliveryMode === 'en_ligne'"
+      [class.ent-course-card__mode--onsite]="course.deliveryMode === 'presentiel'"
+      [class.ent-course-card__mode--hybrid]="course.deliveryMode === 'mixte'"
+    >
+      @switch (course.deliveryMode) {
+        @case ('en_ligne') { 💻 EN LIGNE }
+        @case ('presentiel') { 🏢 PRÉSENTIEL }
+        @case ('mixte') { 🔄 MIXTE }
+        @default { 📚 FORMATION }
+      }
+    </span>
+  </div>
 
-              <h3 class="ent-course-card__title">{{ course.title }}</h3>
+  <div class="ent-course-card__body">
+    <p class="ent-course-card__provider">{{ course.provider }}</p>
+    <h3 class="ent-course-card__title">{{ course.title }}</h3>
+    <p class="ent-course-card__desc">{{ course.description }}</p>
 
-              <p class="ent-course-card__desc">{{ course.description }}</p>
+    <ul class="ent-course-card__meta">
+      <li>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M6 2h12M6 22h12M8 2v4l4 5 4-5V2M8 22v-4l4-5 4 5v4" />
+        </svg>
+        {{ course.durationFull }}
+      </li>
+      <li>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="9" />
+          <path d="M12 7v5l3 3" />
+        </svg>
+        {{ course.hoursPerWeek || 'Flexible' }}
+      </li>
+      <li>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+          <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+        </svg>
+        {{ course.modulesCount || 0 }} module{{ (course.modulesCount || 0) > 1 ? 's' : '' }}
+      </li>
+    </ul>
 
-              <ul class="ent-course-card__meta">
-                <li>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M6 2h12M6 22h12M8 2v4l4 5 4-5V2M8 22v-4l4-5 4 5v4" />
-                  </svg>
-                  {{ course.duration }}
-                </li>
-                <li>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="12" cy="12" r="9" />
-                    <path d="M12 7v5l3 3" />
-                  </svg>
-                  {{ course.hoursPerWeek }}
-                </li>
-                <!-- <li>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
-                  </svg>
-                  {{ course.price | number:'1.0-0' }} FCFA
-                </li> -->
-                <!-- ✅ À AJOUTER -->
-<li>
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
-    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
-  </svg>
-  {{ course.modulesCount }} module{{ course.modulesCount > 1 ? 's' : '' }}
-</li>
-              </ul>
+    <!-- ✅ Prix affiché -->
+    <p class="ent-course-card__price">
+      À partir de <strong>{{ course.price | number:'1.0-0' }} FCFA</strong>
+    </p>
 
-              <!-- ✅ Bouton "Choisir cette formation" -->
-              <a
-                class="ent-course-card__cta"
-                [routerLink]="['/entreprises/formation', course.id]"
-              >
-                Choisir cette formation
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M5 12h14M13 6l6 6-6 6" />
-                </svg>
-              </a>
-            </div>
-          </article>
+    <!-- ✅ Bouton — utiliser courseId (number) pour la route détail -->
+    <a class="ent-course-card__cta" [routerLink]="['/entreprises/formation', course.courseId]">
+      Choisir cette formation
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M5 12h14M13 6l6 6-6 6" />
+      </svg>
+    </a>
+  </div>
+</article>
         }
       </div>
 

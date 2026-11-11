@@ -1,445 +1,571 @@
 <section class="importer">
   <div class="importer__container">
 
-    <nav class="importer__breadcrumb">
+    <!-- <nav class="importer__breadcrumb">
       <a routerLink="/formateur">Espace formateur</a>
+      <span>/</span>
+      <span>Contenu du cours</span>
+    </nav> -->
+    <nav class="importer__breadcrumb">
+      <a routerLink="/formateur/tableau-de-bord">Espace formateur</a>
       <span>/</span>
       <span>Contenu du cours</span>
     </nav>
 
+    <!-- ✅ NOUVEAU : Bouton retour au dashboard -->
+    <div style="display: flex; justify-content: flex-end; margin-top: 20px;">
+      <a routerLink="/formateur/tableau-de-bord" class="btn btn--outline"
+        style="display: inline-flex; align-items: center; gap: 8px; text-decoration: none;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <path d="M19 12H5M12 19l-7-7 7-7" />
+        </svg>
+        Retour à mon espace
+      </a>
+    </div>
+
     @if (loading()) {
-      <p class="importer__error">⏳ Chargement du contenu du cours…</p>
+    <p class="importer__error">Chargement du contenu du cours…</p>
     } @else if (loadError(); as err) {
-      <p class="importer__error">⚠️ {{ err }}</p>
+    <p class="importer__error">{{ err }}</p>
     } @else {
 
-      <header class="importer__header">
-        <span class="importer__eyebrow">Espace formateur</span>
-        <h1>Contenu de « {{ course()?.title ?? 'cours' }} »</h1>
-        <p>
-          Crée tes modules, puis dans chaque module les chapitres (Semaine 1, 2…).
-          Ajoute ensuite vidéos, documents, TD, TP, cas pratiques et quiz.
-        </p>
-      </header>
-
-      @if (message(); as msg)   { <p class="publish-bar__success">✓ {{ msg }}</p> }
-      @if (saveError(); as err) { <p class="importer__error">⚠️ {{ err }}</p> }
-
-      <!-- ============ CRÉER UN MODULE ============ -->
-      <section class="step">
-        <div class="step__title">
-          <span class="step__number">1</span>
-          <h2>Modules du cours</h2>
+    <header class="importer__header">
+          <!-- ✅ BANDEAU INFORMATIF : TYPE ET PRIX -->
+    @if (course(); as c) {
+      <div class="course-summary">
+        <div class="course-summary__type">
+          <span class="course-summary__label">Type de cours</span>
+          <strong>
+            @if (c.type === 'individual') { Cours individuel }
+            @else { Formation entreprise }
+          </strong>
         </div>
-
-        <div class="assignment-form">
-          <input type="text"
-            placeholder="Titre du module (ex : Analyse financière)"
-            [value]="newModuleTitle()"
-            (input)="newModuleTitle.set($any($event.target).value)"
-            (keyup.enter)="createModule()"
-            [disabled]="creatingModule()" />
-          <input type="text"
-            placeholder="Description (optionnel)"
-            [value]="newModuleDesc()"
-            (input)="newModuleDesc.set($any($event.target).value)"
-            [disabled]="creatingModule()" />
-          <button type="button" class="btn btn-ink"
-            (click)="createModule()"
-            [disabled]="creatingModule() || !newModuleTitle().trim()">
-            @if (creatingModule()) { Création… } @else { + Ajouter le module }
-          </button>
+        <div class="course-summary__price">
+          <span class="course-summary__label">Prix de référence</span>
+          <strong>
+            @if (c.type === 'individual') { {{ c.price | number:'1.0-0' }} FCFA }
+            @else { {{ c.enterpriseBasePrice | number:'1.0-0' }} FCFA }
+          </strong>
         </div>
-
-        @if (modules().length === 0) {
-          <p class="step__hint">Aucun module — commence par créer le premier ci-dessus.</p>
+        @if (c.type === 'enterprise') {
+          <div class="course-summary__mode">
+            <span class="course-summary__label">Mode</span>
+            <strong>{{ c.deliveryMode }}</strong>
+          </div>
         }
-      </section>
+      </div>
+    }
+      <span class="importer__eyebrow">Espace formateur</span>
+      <h1>Contenu de « {{ course()?.title ?? 'cours' }} »</h1>
+      <p>
+        Créez vos modules, puis dans chaque module les chapitres (Semaine 1, 2…).
+        Ajoutez ensuite vidéos, documents, TD, TP, cas pratiques et quiz.
+      </p>
+    </header>
 
-      <!-- ============ BOUCLE MODULES ============ -->
-      @for (module of modules(); track module.id) {
-        <section class="step module-block">
+    <!-- Bandeau d'aide + pré-remplissage -->
+    <!-- Bandeau d'aide + pré-remplissage -->
+    <div class="importer__helper">
+      <div class="importer__helper-text">
+        <strong>Gagnez du temps</strong>
+        <p>Utilisez la structure prête à l'emploi ci-dessous, puis modifiez ce que vous voulez.</p>
+        <p style="margin-top: 8px; font-size: 0.85rem; color: #64748b;">
+          Cela créera 4 modules (Introduction, Approfondissement, Application, Ressources) avec leurs chapitres.
+        </p>
+      </div>
+      <button type="button" class="btn btn--gold" (click)="prefillStructure()">
+        Pré-remplir la structure complète
+      </button>
+    </div>
 
-          <!-- En-tête module -->
-          <div class="step__title module-block__head">
-            <span class="step__number">M{{ module.position + 1 }}</span>
+    @if (message(); as msg) { <p class="publish-bar__success">{{ msg }}</p> }
+    @if (saveError(); as err) { <p class="importer__error">{{ err }}</p> }
 
-            @if (editingModuleId() === module.id) {
-              <input type="text" class="chapter-rename"
-                [value]="editingModuleTitle()"
-                (input)="editingModuleTitle.set($any($event.target).value)"
-                (keyup.enter)="renameModule()" />
-              <button type="button" class="btn btn-ink" (click)="renameModule()">💾</button>
-              <button type="button" class="btn btn-outline-dark" (click)="cancelRenameModule()">Annuler</button>
-            } @else {
-              <h2>{{ module.title }}</h2>
-              <span class="step__hint">{{ module.chapters.length }} chapitre(s)</span>
-              <button type="button" class="btn btn-outline-dark"
-                (click)="startRenameModule(module)">✏️</button>
-              <button type="button" class="btn btn-outline-dark"
-                (click)="deleteModule(module)"
-                [disabled]="deletingModuleId() === module.id">
-                @if (deletingModuleId() === module.id) { … } @else { 🗑 }
-              </button>
+    <!-- ============ CRÉER UN MODULE ============ -->
+    <section class="step">
+      <div class="step__title">
+        <span class="step__number">1</span>
+        <h2>Modules du cours</h2>
+      </div>
+
+      <div class="assignment-form">
+        <label class="field">
+          <span class="field__label">Titre <small>(optionnel — auto-généré)</small></span>
+          <input type="text" placeholder="Ex : Vidéo de présentation" [value]="draft().title"
+            (input)="updateDraft('title', $any($event.target).value)" />
+        </label>
+
+        <label class="field">
+          <span class="field__label">Description <small>(optionnelle)</small></span>
+          <input type="text" placeholder="Ex : Ce module pose les bases du cours." [value]="newModuleDesc()"
+            (input)="newModuleDesc.set($any($event.target).value)" [disabled]="creatingModule()" />
+        </label>
+
+        <button type="button" class="btn btn--ink" (click)="createModule()"
+          [disabled]="creatingModule() || !newModuleTitle().trim()">
+          @if (creatingModule()) { Création… } @else { Ajouter le module }
+        </button>
+      </div>
+
+      @if (modules().length === 0) {
+      <p class="step__hint">Aucun module. Utilisez le bouton de pré-remplissage ou créez-en un ci-dessus.</p>
+      }
+    </section>
+
+    <!-- ============ BOUCLE MODULES ============ -->
+    <!-- ============ BOUCLE MODULES ============ -->
+    @for (module of modules(); track module.id) {
+    <section class="step module-block"
+      [class.module-block--resources]="module.title.toLowerCase().includes('ressource')">
+
+      <div class="step__title module-block__head">
+        <span class="step__number">M{{ module.position + 1 }}</span>
+
+        @if (editingModuleId() === module.id) {
+        <input type="text" class="chapter-rename" [value]="editingModuleTitle()"
+          (input)="editingModuleTitle.set($any($event.target).value)" (keyup.enter)="renameModule()" />
+        <button type="button" class="btn btn--ink" (click)="renameModule()">Enregistrer</button>
+        <button type="button" class="btn btn--outline" (click)="cancelRenameModule()">Annuler</button>
+        } @else {
+        <h2 class="module-title">{{ module.title }}</h2>
+        <span class="step__hint">{{ module.chapters.length }} chapitre(s)</span>
+        <button type="button" class="btn btn--outline" (click)="startRenameModule(module)">Renommer</button>
+        <button type="button" class="btn btn--outline" (click)="deleteModule(module)"
+          [disabled]="deletingModuleId() === module.id">
+          @if (deletingModuleId() === module.id) { … } @else { Supprimer }
+        </button>
+        }
+      </div>
+
+      @if (module.description) {
+      <p class="step__hint">{{ module.description }}</p>
+      }
+
+      <!-- Créer un chapitre -->
+      <div class="assignment-form">
+        <label class="field">
+          <span class="field__label">Titre du chapitre</span>
+          <input type="text" placeholder="Ex : Semaine 1 : Les fondamentaux" [value]="newChapterTitle()"
+            (input)="newChapterTitle.set($any($event.target).value)" (keyup.enter)="createChapterIn(module.id)"
+            [disabled]="creatingChapter()" />
+        </label>
+
+        <label class="field field--small">
+          <span class="field__label">N° de semaine <small>(optionnel)</small></span>
+          <input type="number" min="1" max="52" placeholder="1" [value]="newChapterWeekNum() ?? ''"
+            (input)="newChapterWeekNum.set($any($event.target).value ? +$any($event.target).value : null)"
+            [disabled]="creatingChapter()" />
+        </label>
+
+        <button type="button" class="btn btn--outline" (click)="createChapterIn(module.id)"
+          [disabled]="creatingChapter() || !newChapterTitle().trim()">
+          @if (creatingChapter()) { Création… } @else { Ajouter le chapitre }
+        </button>
+      </div>
+
+      @if (module.chapters.length === 0) {
+      <p class="step__hint">Aucun chapitre — créez le premier ci-dessus.</p>
+      }
+
+      <!-- ============ CHAPITRES ============ -->
+      @for (chapter of module.chapters; track chapter.id) {
+      <section class="step chapter-block">
+
+        <div class="step__title">
+          <span class="step__number">
+            @if (chapter.weekNumber) { S{{ chapter.weekNumber }} } @else { C{{ chapter.position + 1 }} }
+          </span>
+
+          @if (editingChapterId() === chapter.id) {
+          <input type="text" class="chapter-rename" [value]="editingChapterTitle()"
+            (input)="editingChapterTitle.set($any($event.target).value)" (keyup.enter)="renameChapter()"
+            (keyup.escape)="cancelRenameChapter()" />
+          <button type="button" class="btn btn--ink" (click)="renameChapter()">Enregistrer</button>
+          <button type="button" class="btn btn--outline" (click)="cancelRenameChapter()">Annuler</button>
+          } @else {
+          <h3 class="chapter-title">
+            {{ chapter.title }}
+            @if (chapter.weekNumber) {
+            <em class="week-label">(Semaine {{ chapter.weekNumber }})</em>
             }
-          </div>
-
-          @if (module.description) {
-            <p class="step__hint">{{ module.description }}</p>
+          </h3>
+          <span class="step__hint">{{ chapter.sequences.length }} séquence(s)</span>
+          <button type="button" class="btn btn--outline" (click)="startRenameChapter(chapter)">Renommer</button>
+          <button type="button" class="btn btn--outline" (click)="deleteChapter(chapter)"
+            [disabled]="deletingChapterId() === chapter.id">
+            @if (deletingChapterId() === chapter.id) { … } @else { Supprimer }
+          </button>
           }
+        </div>
 
-          <!-- Créer un chapitre -->
-          <div class="assignment-form">
-            <input type="text"
-              placeholder="Titre du chapitre (ex : Introduction et analyse des marges)"
-              [value]="newChapterTitle()"
-              (input)="newChapterTitle.set($any($event.target).value)"
-              (keyup.enter)="createChapterIn(module.id)"
-              [disabled]="creatingChapter()" />
-            <input type="number" min="1" max="52"
-              placeholder="Semaine n° (optionnel)"
-              [value]="newChapterWeekNum() ?? ''"
-              (input)="newChapterWeekNum.set($any($event.target).value ? +$any($event.target).value : null)"
-              [disabled]="creatingChapter()" />
-            <button type="button" class="btn btn-outline-dark"
-              (click)="createChapterIn(module.id)"
-              [disabled]="creatingChapter() || !newChapterTitle().trim()">
-              @if (creatingChapter()) { Création… } @else { + Chapitre }
-            </button>
-          </div>
-
-          @if (module.chapters.length === 0) {
-            <p class="step__hint">Aucun chapitre — crée le premier ci-dessus.</p>
-          }
-
-          <!-- ============ CHAPITRES DU MODULE ============ -->
-          @for (chapter of module.chapters; track chapter.id) {
-            <section class="step chapter-block">
-
-              <div class="step__title">
-                <span class="step__number">
-                  @if (chapter.weekNumber) { S{{ chapter.weekNumber }} } @else { C{{ chapter.position + 1 }} }
-                </span>
-
-                @if (editingChapterId() === chapter.id) {
-                  <input type="text" class="chapter-rename"
-                    [value]="editingChapterTitle()"
-                    (input)="editingChapterTitle.set($any($event.target).value)"
-                    (keyup.enter)="renameChapter()"
-                    (keyup.escape)="cancelRenameChapter()" />
-                  <button type="button" class="btn btn-ink" (click)="renameChapter()">💾</button>
-                  <button type="button" class="btn btn-outline-dark" (click)="cancelRenameChapter()">Annuler</button>
-                } @else {
-                  <h3>
-                    {{ chapter.title }}
-                    @if (chapter.weekNumber) {
-                      <em class="week-label">(Semaine {{ chapter.weekNumber }})</em>
-                    }
-                  </h3>
-                  <span class="step__hint">{{ chapter.sequences.length }} séquence(s)</span>
-                  <button type="button" class="btn btn-outline-dark"
-                    (click)="startRenameChapter(chapter)">✏️</button>
-                  <button type="button" class="btn btn-outline-dark"
-                    (click)="deleteChapter(chapter)"
-                    [disabled]="deletingChapterId() === chapter.id">
-                    @if (deletingChapterId() === chapter.id) { … } @else { 🗑 }
-                  </button>
-                }
-              </div>
-
-              <!-- Séquences -->
-              @if (chapter.sequences.length > 0) {
-                <ul class="assignment-list">
-                  @for (seq of chapter.sequences; track seq.id) {
-                    <li class="assignment-list__item">
-                      <span class="assignment-list__kind">
-                        {{ typeIcon(seq.type) }} {{ typeLabel(seq.type) }}
-                        @if (seq.isBlocking && seq.passingScore) {
-                          🔒 {{ seq.passingScore }}%
-                        }
-                      </span>
-
-                      <div class="assignment-list__body">
-                        <strong>{{ seq.title }}</strong>
-                        @if (seq.duration) { <span>⏱ {{ seq.duration }}</span> }
-                        @if (seq.instructions) { <p>{{ seq.instructions }}</p> }
-                        @if (seq.quizQuestions?.length) {
-                          <span class="assignment-list__file">❓ {{ seq.quizQuestions!.length }} question(s)</span>
-                        }
-                        @if (seq.videoUrl; as vurl) {
-                          <video class="video-list__preview"
-                            [src]="assetUrl(vurl) ?? undefined"
-                            controls preload="metadata"></video>
-                        }
-                        @if (seq.documentUrl; as durl) {
-                          <a class="assignment-list__file"
-                            [href]="assetUrl(durl) ?? undefined"
-                            target="_blank" rel="noopener">📎 Voir le document</a>
-                        }
-                        @if (seq.deadline) {
-                          <span class="assignment-list__file">⏰ Deadline : {{ seq.deadline | slice:0:10 }}</span>
-                        }
-                      </div>
-
-                      <div class="published-card__actions">
-                        <button type="button" class="course-card__btn course-card__btn--ghost"
-                          (click)="openSequenceEdit(seq)">✏️ Modifier</button>
-                        <button type="button" class="course-card__btn course-card__btn--ghost"
-                          (click)="deleteSequence(seq)"
-                          [disabled]="deletingSequenceId() === seq.id">
-                          @if (deletingSequenceId() === seq.id) { … } @else { 🗑 }
-                        </button>
-                      </div>
-                    </li>
-                  }
-                </ul>
-              } @else {
-                <p class="step__hint">Ce chapitre est vide.</p>
+        <!-- Séquences -->
+        @if (chapter.sequences.length > 0) {
+        <ul class="assignment-list">
+          @for (seq of chapter.sequences; track seq.id) {
+          <li class="assignment-list__item" [attr.data-type]="seq.type">
+            <span class="assignment-list__kind">
+              {{ typeLabel(seq.type) }}
+              @if (seq.isBlocking && seq.passingScore) {
+              — Seuil : {{ seq.passingScore }}%
               }
+            </span>
 
-              <!-- Formulaire d'ajout/modif séquence -->
-              @if (sequenceFormOpenFor(chapter)) {
-                <ng-container *ngTemplateOutlet="seqFormTpl"></ng-container>
-              } @else {
-                <button type="button" class="btn btn-outline-dark"
-                  (click)="openSequenceForm(chapter)">
-                  + Ajouter une séquence
-                </button>
+            <div class="assignment-list__body">
+              <strong class="sequence-title">{{ seq.title }}</strong>
+              @if (seq.duration) { <span>{{ seq.duration }}</span> }
+              @if (seq.instructions) { <p>{{ seq.instructions }}</p> }
+              @if (seq.quizQuestions?.length) {
+              <span class="assignment-list__file">{{ seq.quizQuestions!.length }} question(s)</span>
               }
-            </section>
-          }
-
-          <!-- ============ QUIZ DE FIN DE MODULE ============ -->
-          <section class="step module-quiz-block">
-            <div class="step__title">
-              <span class="step__number">🎓</span>
-              <h3>Quiz de fin de module</h3>
-              @if (module.moduleQuiz) {
-                <span class="step__hint">
-                  {{ module.moduleQuiz.quizQuestions?.length ?? 0 }} question(s)
-                  — 🔒 {{ module.moduleQuiz.passingScore ?? 85 }}%
-                </span>
-              } @else {
-                <span class="step__hint">Optionnel — le formateur décide</span>
+              @if (seq.videoUrl; as vurl) {
+              <video class="video-list__preview" [src]="assetUrl(vurl) ?? undefined" controls
+                preload="metadata"></video>
+              }
+              @if (seq.documentUrl; as durl) {
+              <a class="assignment-list__file" [href]="assetUrl(durl) ?? undefined" target="_blank" rel="noopener">Voir
+                le document</a>
+              }
+              @if (seq.deadline) {
+              <span class="assignment-list__file">Deadline : {{ seq.deadline | slice:0:10 }}</span>
               }
             </div>
 
-            @if (module.moduleQuiz) {
-              <div class="published-card__actions">
-                <button type="button" class="course-card__btn course-card__btn--ghost"
-                  (click)="openModuleQuizForm(module)">✏️ Modifier</button>
-                <button type="button" class="course-card__btn course-card__btn--ghost"
-                  (click)="deleteModuleQuiz(module)">🗑 Supprimer</button>
-              </div>
-            } @else {
-              <button type="button" class="btn btn-outline-dark"
-                (click)="openModuleQuizForm(module)">+ Ajouter le quiz de fin de module</button>
-            }
+            <div class="published-card__actions">
+              <button type="button" class="course-card__btn course-card__btn--ghost"
+                (click)="openSequenceEdit(seq)">Modifier</button>
+              <button type="button" class="course-card__btn course-card__btn--ghost" (click)="deleteSequence(seq)"
+                [disabled]="deletingSequenceId() === seq.id">
+                @if (deletingSequenceId() === seq.id) { … } @else { Supprimer }
+              </button>
+            </div>
+          </li>
+          }
+        </ul>
+        } @else {
+        <p class="step__hint">Ce chapitre est vide.</p>
+        }
 
-            @if (moduleQuizFormOpenFor(module)) {
-              <ng-container *ngTemplateOutlet="seqFormTpl"></ng-container>
-            }
-          </section>
+        <!-- Bandeau de pré-remplissage pour Ressources -->
+        @if (module.title.toLowerCase().includes('ressource')) {
+        <div class="resources-hint">
+          <strong>Ajoutez vos ressources ici</strong>
+          <p>Cliquez sur "Ajouter une séquence" ci-dessous, choisissez le type <strong>Document</strong>, puis importez
+            votre manuel (PDF, Word, Excel).</p>
+        </div>
+        }
 
-        </section>
+        @if (sequenceFormOpenFor(chapter)) {
+        <ng-container *ngTemplateOutlet="seqFormTpl"></ng-container>
+        } @else {
+        <button type="button" class="btn btn--outline" (click)="openSequenceForm(chapter)">
+          Ajouter une séquence
+        </button>
+        }
+      </section>
       }
 
-      <!-- ============ EXAMEN FINAL ============ -->
-      <section class="step final-exam-block">
+      <!-- ============ QUIZ DE FIN DE MODULE ============ -->
+      <section class="step module-quiz-block">
         <div class="step__title">
-          <span class="step__number">🏆</span>
-          <h2>Examen final</h2>
-          @if (finalExam(); as exam) {
-            <span class="step__hint">
-              {{ exam.quizQuestions?.length ?? 0 }} question(s)
-              — Score requis : {{ exam.passingScore ?? 70 }}%
-            </span>
+          <span class="step__number">Q</span>
+          <h3>Quiz de fin de module</h3>
+          @if (module.moduleQuiz) {
+          <span class="step__hint">
+            {{ module.moduleQuiz.quizQuestions?.length ?? 0 }} question(s)
+            — Seuil : {{ module.moduleQuiz.passingScore ?? 85 }}%
+          </span>
           } @else {
-            <span class="step__hint">Optionnel — détermine l'obtention du certificat</span>
+          <span class="step__hint">Optionnel</span>
           }
         </div>
 
-        @if (finalExam(); as exam) {
-          <div class="published-card__actions">
-            <button type="button" class="course-card__btn course-card__btn--ghost"
-              (click)="openFinalExamForm()">✏️ Modifier</button>
-            <button type="button" class="course-card__btn course-card__btn--ghost"
-              (click)="deleteFinalExam()">🗑 Supprimer</button>
-          </div>
+        @if (module.moduleQuiz) {
+        <div class="published-card__actions">
+          <button type="button" class="course-card__btn course-card__btn--ghost"
+            (click)="openModuleQuizForm(module)">Modifier</button>
+          <button type="button" class="course-card__btn course-card__btn--ghost"
+            (click)="deleteModuleQuiz(module)">Supprimer</button>
+        </div>
         } @else {
-          <button type="button" class="btn btn-gold"
-            (click)="openFinalExamForm()">+ Configurer l'examen final</button>
+        <button type="button" class="btn btn--outline" (click)="openModuleQuizForm(module)">Ajouter le quiz de fin de
+          module</button>
         }
 
-        @if (finalExamFormOpen()) {
-          <ng-container *ngTemplateOutlet="seqFormTpl"></ng-container>
+        @if (moduleQuizFormOpenFor(module)) {
+        <ng-container *ngTemplateOutlet="seqFormTpl"></ng-container>
         }
       </section>
+
+    </section>
+    }
+
+    <!-- ============ EXAMEN FINAL ============ -->
+    <section class="step final-exam-block">
+      <div class="step__title">
+        <span class="step__number">F</span>
+        <h2>Examen final</h2>
+        @if (finalExam(); as exam) {
+        <span class="step__hint">
+          {{ exam.quizQuestions?.length ?? 0 }} question(s)
+          — Score requis : {{ exam.passingScore ?? 70 }}%
+        </span>
+        } @else {
+        <span class="step__hint">Optionnel — détermine l'obtention du certificat</span>
+        }
+      </div>
+
+      @if (finalExam(); as exam) {
+      <div class="published-card__actions">
+        <button type="button" class="course-card__btn course-card__btn--ghost"
+          (click)="openFinalExamForm()">Modifier</button>
+        <button type="button" class="course-card__btn course-card__btn--ghost"
+          (click)="deleteFinalExam()">Supprimer</button>
+      </div>
+      } @else {
+      <button type="button" class="btn btn--gold" (click)="openFinalExamForm()">
+        Configurer l'examen final
+      </button>
+      }
+
+      @if (finalExamFormOpen()) {
+      <ng-container *ngTemplateOutlet="seqFormTpl"></ng-container>
+      }
+    </section>
 
     }
   </div>
 </section>
 
 
-<!-- ============================================================
-     TEMPLATE RÉUTILISABLE — FORMULAIRE DE SÉQUENCE / QUIZ
-     ============================================================ -->
+<!-- ============================================================ -->
+<!-- FORMULAIRE DE SÉQUENCE                                       -->
+<!-- ============================================================ -->
 <ng-template #seqFormTpl>
   <div class="assignment-form sequence-form">
     @if (editingSequence(); as editing) {
-      <h3>✏️ Modifier « {{ editing.title }} »</h3>
+    <h3>Modifier « {{ editing.title }} »</h3>
     } @else {
-      <h3>➕ Nouvelle séquence</h3>
+    <h3>Nouvelle séquence</h3>
     }
 
-    <!-- Type — seulement si on n'est PAS sur un quiz de module / final -->
     @if (draftModuleQuizId() == null && !draftFinalExam()) {
-      <div class="assignment-form__kind">
-        @for (t of sequenceTypes; track t.id) {
-          <button type="button" class="segment-chip segment-chip--small"
-            [class.segment-chip--active]="draft().type === t.id"
-            (click)="setDraftType(t.id)">
-            {{ t.icon }} {{ t.label }}
-          </button>
-        }
-      </div>
-    }
-
-    <input type="text" placeholder="Titre"
-      [value]="draft().title"
-      (input)="updateDraft('title', $any($event.target).value)" />
-
-    <input type="text" placeholder="Durée (ex : 12:30)"
-      [value]="draft().duration"
-      (input)="updateDraft('duration', $any($event.target).value)" />
-
-    @if (draft().type === 'video') {
-      <input type="url"
-        placeholder="URL vidéo (YouTube…)"
-        [value]="draft().videoUrl"
-        (input)="updateDraft('videoUrl', $any($event.target).value)" />
-
-      <label class="file-drop">
-        <input type="file" accept="video/*" (change)="onVideoSelected($event)" hidden />
-        <span>{{ draft().videoFile?.name ?? 'Téléverser une vidéo (mp4, webm…)' }}</span>
-        <small>Max 500 Mo.</small>
-      </label>
-    }
-
-    @if (needsDocument()) {
-      <label class="assignment-form__file">
-        <input type="file" accept="application/pdf" (change)="onDocumentSelected($event)" hidden />
-        📎 {{ draft().documentFile?.name ?? 'Joindre un support (PDF)' }}
-      </label>
-      <textarea rows="3" placeholder="Consignes…"
-        [value]="draft().instructions"
-        (input)="updateDraft('instructions', $any($event.target).value)"></textarea>
-    }
-
-    <!-- Options cas pratique -->
-    @if (needsDeadline()) {
-      <label>
-        Deadline :
-        <input type="datetime-local"
-          [value]="draft().deadline"
-          (input)="updateDraft('deadline', $any($event.target).value)" />
-      </label>
-
-      <label>
-        <input type="checkbox"
-          [checked]="draft().allowFileUpload"
-          (change)="updateDraftBool('allowFileUpload', $any($event.target).checked)" />
-        Autoriser le téléversement de fichiers par l'apprenant
-      </label>
-    }
-
-    <!-- Quiz -->
-    @if (needsQuizOptions()) {
-      <div class="quiz-options">
-        <label>
-          Score minimum (%)
-          <input type="number" min="0" max="100"
-            [value]="draft().passingScore ?? 85"
-            (input)="updateDraftNumber('passingScore', +$any($event.target).value)" />
-        </label>
-        <label>
-          <input type="checkbox"
-            [checked]="draft().isBlocking"
-            (change)="updateDraftBool('isBlocking', $any($event.target).checked)" />
-          Quiz bloquant (l'apprenant doit le réussir pour continuer)
-        </label>
-      </div>
-
-      <p class="step__hint">{{ draft().quizQuestions.length }} question(s).</p>
-
-      <div class="quiz-quick-actions">
-        <button type="button" class="btn btn-outline-dark" (click)="addBlankQuestion()">+ Question</button>
-        <button type="button" class="btn btn-outline-dark" (click)="addManyBlankQuestions(10)">+ 10 questions</button>
-      </div>
-
-      @if (draft().quizQuestions.length > 0) {
-        <ol class="quiz-editor">
-          @for (q of draft().quizQuestions; track $index) {
-            <li class="quiz-editor__item">
-              <div class="quiz-editor__head">
-                <span>Question {{ $index + 1 }}</span>
-                <button type="button" class="video-list__remove"
-                  (click)="removeQuestion($index)">✕</button>
-              </div>
-
-              <input type="text" placeholder="Intitulé"
-                [value]="q.question"
-                (input)="updateQuestionText($index, $any($event.target).value)" />
-
-              <div class="quiz-question-type">
-                <label>
-                  <input type="radio" [name]="'qtype-' + $index"
-                    [checked]="q.type === 'qcm'"
-                    (change)="setQuestionType($index, 'qcm')" />
-                  QCM
-                </label>
-                <label>
-                  <input type="radio" [name]="'qtype-' + $index"
-                    [checked]="q.type === 'texte'"
-                    (change)="setQuestionType($index, 'texte')" />
-                  Réponse libre
-                </label>
-              </div>
-
-              @if (q.type === 'qcm') {
-                @for (opt of q.options; track $index; let oi = $index) {
-                  <div class="quiz-editor__option">
-                    <input type="radio" [name]="'correct-' + $index"
-                      [checked]="q.correctIndex === oi"
-                      (change)="setCorrectIndex($index, oi)" />
-                    <input type="text" [placeholder]="'Option ' + (oi + 1)"
-                      [value]="opt"
-                      (input)="updateOptionText($index, oi, $any($event.target).value)" />
-                    <button type="button" class="video-list__remove"
-                      (click)="removeOption($index, oi)">✕</button>
-                  </div>
-                }
-                <button type="button" class="btn btn-outline-dark" (click)="addOption($index)">+ Option</button>
-              }
-
-              @if (q.type === 'texte') {
-                <input type="text" placeholder="Réponse attendue"
-                  [value]="q.expectedAnswer"
-                  (input)="updateExpectedAnswer($index, $any($event.target).value)" />
-              }
-            </li>
-          }
-        </ol>
+    <div class="assignment-form__kind">
+      @for (t of sequenceTypes; track t.id) {
+      <button type="button" class="segment-chip segment-chip--small"
+        [class.segment-chip--active]="draft().type === t.id" (click)="setDraftType(t.id)">
+        {{ t.label }}
+      </button>
       }
+    </div>
+    }
+
+    <!-- Titre (optionnel pour tous les types) -->
+    <label class="field">
+      <span class="field__label">Titre <small>(optionnel — auto-généré depuis le fichier)</small></span>
+      <input type="text" placeholder="Ex : Vidéo de présentation" [value]="draft().title"
+        (input)="updateDraft('title', $any($event.target).value)" />
+    </label>
+
+    <!-- ==================== VIDÉO ==================== -->
+    @if (draft().type === 'video') {
+    <label class="field">
+      <span class="field__label">Durée <small>(optionnelle)</small></span>
+      <input type="text" placeholder="Ex : 12:30" [value]="draft().duration"
+        (input)="updateDraft('duration', $any($event.target).value)" />
+    </label>
+
+    <label class="field">
+      <span class="field__label">URL vidéo (YouTube)</span>
+      <input type="url" placeholder="https://..." [value]="draft().videoUrl"
+        (input)="updateDraft('videoUrl', $any($event.target).value)" />
+    </label>
+
+    <label class="file-drop">
+      <input type="file" accept="video/*" (change)="onVideoSelected($event)" hidden />
+      <span>{{ draft().videoFile?.name ?? 'Téléverser une vidéo (mp4, webm…)' }}</span>
+      <small>Max 500 Mo.</small>
+    </label>
+    }
+
+    <!-- ==================== DOCUMENT / TD / TP / CAS PRATIQUE ==================== -->
+    @if (needsDocument()) {
+    <label class="assignment-form__file">
+      <input type="file" accept="application/pdf" (change)="onDocumentSelected($event)" hidden />
+      {{ draft().documentFile?.name ?? 'Joindre un support (PDF)' }}
+    </label>
+
+    <!-- Pour TD et TP : consignes -->
+    @if (draft().type === 'td' || draft().type === 'tp') {
+    <label class="field">
+      <span class="field__label">Consignes</span>
+      <textarea rows="3" placeholder="Expliquez l'exercice ou le devoir…" [value]="draft().instructions"
+        (input)="updateDraft('instructions', $any($event.target).value)"></textarea>
+    </label>
+    }
+
+    <!-- Pour CAS PRATIQUE : consignes + deadline -->
+    @if (draft().type === 'cas_pratique') {
+    <label class="field">
+      <span class="field__label">Consignes</span>
+      <textarea rows="3" placeholder="Décrivez le cas pratique…" [value]="draft().instructions"
+        (input)="updateDraft('instructions', $any($event.target).value)"></textarea>
+    </label>
+
+    <label class="field">
+      <span class="field__label">Date limite</span>
+      <input type="datetime-local" [value]="draft().deadline"
+        (input)="updateDraft('deadline', $any($event.target).value)" />
+    </label>
+
+    <label class="field-check">
+      <input type="checkbox" [checked]="draft().allowFileUpload"
+        (change)="updateDraftBool('allowFileUpload', $any($event.target).checked)" />
+      Autoriser le téléversement de fichiers par l'apprenant
+    </label>
+    }
+    }
+
+    <!-- ==================== QUIZ ==================== -->
+    @if (needsQuizOptions()) {
+    <div class="quiz-options">
+      <label class="field">
+        <span class="field__label">Score minimum (%)</span>
+        <input type="number" min="0" max="100" [value]="draft().passingScore ?? 85"
+          (input)="updateDraftNumber('passingScore', +$any($event.target).value)" />
+      </label>
+      <label class="field-check">
+        <input type="checkbox" [checked]="draft().isBlocking"
+          (change)="updateDraftBool('isBlocking', $any($event.target).checked)" />
+        Quiz bloquant
+      </label>
+    </div>
+
+    <p class="step__hint">{{ draft().quizQuestions.length }} question(s).</p>
+
+    <div class="quiz-quick-actions">
+      <button type="button" class="btn btn--outline" (click)="addBlankQuestion()">+ Question</button>
+      <button type="button" class="btn btn--outline" (click)="addManyBlankQuestions(10)">+ 10 questions</button>
+
+      <label class="btn btn--outline" style="cursor:pointer;">
+        Importer un quiz
+        <input type="file" accept=".json,application/json" (change)="onQuizFileSelected($event)" hidden />
+      </label>
+
+      <label class="btn btn--outline" style="cursor:pointer;">
+        Importer un quiz ( excell ou csv)
+        <input type="file" accept=".csv,text/csv" (change)="onQuizCsvSelected($event)" hidden />
+      </label>
+    </div>
+
+    @if (draft().quizQuestions.length > 0) {
+    <ol class="quiz-editor">
+      <!-- @for (q of draft().quizQuestions; track $index) {
+      <li class="quiz-editor__item">
+        <div class="quiz-editor__head">
+          <span>Question {{ $index + 1 }}</span>
+          <button type="button" class="video-list__remove" (click)="removeQuestion($index)">✕</button>
+        </div>
+
+        <input type="text" placeholder="Intitulé" [value]="q.question"
+          (input)="updateQuestionText($index, $any($event.target).value)" />
+
+        <div class="quiz-question-type">
+          <label>
+            <input type="radio" [name]="'qtype-' + $index" [checked]="q.type === 'qcm'"
+              (change)="setQuestionType($index, 'qcm')" />
+            QCM
+          </label>
+          <label>
+            <input type="radio" [name]="'qtype-' + $index" [checked]="q.type === 'texte'"
+              (change)="setQuestionType($index, 'texte')" />
+            Réponse libre
+          </label>
+        </div>
+
+        @if (q.type === 'qcm') {
+        @for (opt of q.options; track $index; let oi = $index) {
+        <div class="quiz-editor__option">
+          <input type="radio" [name]="'correct-' + $index" [checked]="q.correctIndex === oi"
+            (change)="setCorrectIndex($index, oi)" />
+          <input type="text" [placeholder]="'Option ' + (oi + 1)" [value]="opt"
+            (input)="updateOptionText($index, oi, $any($event.target).value)" />
+          <button type="button" class="video-list__remove" (click)="$event.stopPropagation(); removeOption($index, oi)"
+            title="Supprimer cette option">✕</button>
+        </div>
+        }
+        <button type="button" class="btn btn--outline" (click)="addOption($index)">+ Option</button>
+        }
+
+        @if (q.type === 'texte') {
+        <input type="text" placeholder="Réponse attendue" [value]="q.expectedAnswer"
+          (input)="updateExpectedAnswer($index, $any($event.target).value)" />
+        }
+      </li>
+      } -->
+      @for (q of draft().quizQuestions; track $index; let qi = $index) {
+  <li class="quiz-editor__item">
+    <div class="quiz-editor__head">
+      <span>Question {{ qi + 1 }}</span>
+      <button type="button" class="video-list__remove" (click)="removeQuestion(qi)">✕</button>
+    </div>
+
+    <input type="text" placeholder="Intitulé"
+      [value]="q.question"
+      (input)="updateQuestionText(qi, $any($event.target).value)" />
+
+    <div class="quiz-question-type">
+      <label>
+        <input type="radio" [name]="'qtype-' + qi"
+          [checked]="q.type === 'qcm'" (change)="setQuestionType(qi, 'qcm')" />
+        QCM
+      </label>
+      <label>
+        <input type="radio" [name]="'qtype-' + qi"
+          [checked]="q.type === 'texte'" (change)="setQuestionType(qi, 'texte')" />
+        Réponse libre
+      </label>
+    </div>
+
+    @if (q.type === 'qcm') {
+      <p class="step__hint">Cochez la bonne réponse.</p>
+      @for (opt of q.options; track $index; let oi = $index) {
+        <div class="quiz-editor__option">
+          <input type="radio" [name]="'correct-' + qi"
+            [checked]="q.correctIndex === oi"
+            (change)="setCorrectIndex(qi, oi)" />
+          <input type="text" [placeholder]="'Option ' + (oi + 1)"
+            [value]="opt"
+            (input)="updateOptionText(qi, oi, $any($event.target).value)" />
+          <button type="button" class="video-list__remove"
+            [disabled]="q.options.length <= 2"
+            (click)="removeOption(qi, oi)"
+            title="Supprimer cette option">✕</button>
+        </div>
+      }
+      <button type="button" class="btn btn--outline" (click)="addOption(qi)">+ Option</button>
+    }
+
+    @if (q.type === 'texte') {
+      <input type="text" placeholder="Réponse attendue"
+        [value]="q.expectedAnswer"
+        (input)="updateExpectedAnswer(qi, $any($event.target).value)" />
+    }
+  </li>
+}
+
+
+      
+    </ol>
+    }
     }
 
     <div class="publish-bar">
-      <button type="button" class="btn btn-gold"
-        (click)="saveSequence()" [disabled]="saving() || !canSave()">
-        @if (saving()) { Enregistrement… } @else { 💾 Enregistrer }
+      <button type="button" class="btn btn--gold" (click)="saveSequence()" [disabled]="saving() || !canSave()">
+        @if (saving()) { Enregistrement… } @else { Enregistrer }
       </button>
-      <button type="button" class="btn btn-outline-dark"
-        (click)="closeSequenceForm()" [disabled]="saving()">Annuler</button>
+      <button type="button" class="btn btn--outline" (click)="closeSequenceForm()"
+        [disabled]="saving()">Annuler</button>
     </div>
   </div>
 </ng-template>

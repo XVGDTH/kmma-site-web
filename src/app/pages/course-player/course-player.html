@@ -1,2439 +1,2038 @@
 @if (course(); as c) {
 
-  <div class="player">
+<div class="player">
+  <ng-template #submissionTpl>
+    @if (accessService.can('assignment_review')) {
 
-    <!-- ========================================================= -->
-    <!-- BARRE DU HAUT -->
-    <!-- ========================================================= -->
-
-    <!-- <header class="player__topbar">
-
-      <a
-        [routerLink]="['/cours', c.id]"
-        class="player__back"
-        aria-label="Retour au cours"
-      >
-        <svg
-          width="18"
-          height="18"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-        >
-          <path
-            d="M19 12H5M12 19l-7-7 7 7"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-        </svg>
-      </a>
-
-      <div class="player__topbar-title">
-
-        <span class="player__topbar-eyebrow">
-          {{ c.category }}
-        </span>
-
-        <h1>
-          {{ c.title }}
-        </h1>
-
-      </div>
-
-      <div
-        class="player__stats"
-        title="Statistiques en temps réel"
-      >
-
-        <div class="player__stat">
-
-          <span
-            class="player__stat-dot player__stat-dot--live"
-          ></span>
-
-          {{ stats().currentlyOnline }} en ligne
-
-        </div>
-
-        <div class="player__stat">
-
-          <svg
-            width="15"
-            height="15"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-          >
-            <path d="M23 7l-7 5 7 5V7z" />
-            <rect
-              x="1"
-              y="5"
-              width="15"
-              height="14"
-              rx="2"
-            />
-          </svg>
-
-          {{ stats().videoViewers }} regardent une vidéo
-
-        </div>
-
-        <div class="player__stat">
-
-          <svg
-            width="15"
-            height="15"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-          >
-            <path
-              d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"
-            />
-            <circle
-              cx="9"
-              cy="7"
-              r="4"
-            />
-          </svg>
-
-          {{ stats().totalEnrolled }} inscrits
-
-        </div>
-
-      </div>
-
-    </header> -->
-
-
-    <header class="player__topbar player__topbar--hec"
-      [style.backgroundImage]="c.image ? 'linear-gradient(120deg, rgba(13,27,62,0.93), rgba(13,27,62,0.72)), url(' + c.image + ')' : null">
-  <a [routerLink]="['/cours', c.id]" class="player__breadcrumb">‹ Sommaire</a>
-
-  <div class="player__topbar-title">
-    <span class="player__topbar-eyebrow">{{ c.category }}</span>
-    <h1>{{ c.title }}</h1>
-    @if (activeSequence; as seq) {
-      <p class="player__topbar-subtitle">{{ seq.title }}</p>
+    @if (activeSequence?.deadline; as dl) {
+    <p class="player__assignment-text">
+      <strong>Date limite de rendu :</strong> {{ dl | date:'dd/MM/yyyy à HH:mm' }}
+    </p>
     }
+
+    @if (currentSubmission(); as sub) {
+    <div class="submission-status" [class.submission-status--graded]="sub.status === 'corrige'">
+      @if (sub.status === 'corrige') {
+      <strong>Évaluation terminée — Note : {{ sub.grade }}/20</strong>
+      @if (sub.feedback) { <p class="submission-status__feedback">{{ sub.feedback }}</p> }
+      } @else {
+      <strong>Travail soumis le {{ sub.submittedAt }} — en attente d'évaluation</strong>
+      }
+      @if (submissionFileUrl(sub); as fileUrl) {
+      <a [href]="fileUrl" target="_blank" rel="noopener noreferrer">Voir mon fichier envoyé</a>
+      }
+    </div>
+    }
+
+    <div class="submission-box">
+      <h4>
+        @if (currentSubmission()) { Soumettre une nouvelle version } @else { Déposer votre travail ici }
+      </h4>
+
+      <form class="submission-form" (submit)="$event.preventDefault(); submitAssignmentWork()">
+        <label class="submission-form__file">
+          <input type="file" accept=".pdf,.doc,.docx,.zip,.xlsx,.pptx" (change)="onSubmissionFileSelected($event)"
+            hidden />
+          {{ submissionFile()?.name ?? 'Choisir mon fichier (PDF, Word, Excel, ZIP)' }}
+        </label>
+
+        <textarea rows="3" placeholder="Commentaire pour le formateur (optionnel)" [value]="submissionComment()"
+          (input)="onSubmissionCommentInput($any($event.target).value)"></textarea>
+
+        @if (submitError(); as err) { <p class="submission-form__error">{{ err }}</p> }
+
+        <button type="submit" class="player__done-btn" [disabled]="submitting()">
+          @if (submitting()) { Envoi… } @else { Envoyer mon travail }
+        </button>
+      </form>
+
+      @if (submitSuccess(); as msg) { <p class="submission-form__success">{{ msg }}</p> }
+    </div>
+
+    } @else {
+    <div class="locked-feature">
+      <strong>La soumission de travaux avec évaluation personnalisée est incluse dès la formule Standard.</strong>
+      <a [routerLink]="['/paiement', courseId()]" class="player__certificate-btn">Passer à Standard →</a>
+    </div>
+    }
+  </ng-template>
+
+
+  <!-- ✅ BANDEAU APERÇU FORMATEUR -->
+  @if (isInstructorPreview()) {
+  <div class="player__instructor-preview">
+    <div class="player__instructor-preview__content">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round">
+        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8Z" />
+        <circle cx="12" cy="12" r="3" />
+      </svg>
+      <strong>Mode aperçu</strong>
+      <span>Vous voyez ce cours tel que vos apprenants le verront.</span>
+    </div>
+
+    <a [routerLink]="['/formateur/tableau-de-bord']" class="player__instructor-preview__back">
+      ← Retour au tableau de bord
+    </a>
   </div>
+  }
 
-</header>
-
-<nav class="player__tabbar" role="tablist">
-  <button type="button" role="tab" [class.active]="activeTab() === 'cours'" (click)="setTab('cours')">Cours</button>
-  <button type="button" role="tab" [class.active]="activeTab() === 'discussion'" (click)="setTab('discussion')">Discussion</button>
-  <button type="button" role="tab" [class.active]="activeTab() === 'progression'" (click)="setTab('progression')">Progression</button>
-  <button type="button" role="tab" [class.active]="activeTab() === 'manuels'" (click)="setTab('manuels')">Manuels</button>
-  <button type="button" role="tab" [class.active]="activeTab() === 'reglements'" (click)="setTab('reglements')">Règlements</button>
-  <button type="button" role="tab" [class.active]="activeTab() === 'calendrier'" (click)="setTab('calendrier')">Calendrier</button>
-  <button type="button" role="tab" [class.active]="activeTab() === 'evaluations'" (click)="setTab('evaluations')">Évaluations</button>
-  <button type="button" role="tab" [class.active]="activeTab() === 'formule'" (click)="setTab('formule')">Ma formule</button>
-  <button type="button" role="tab" [class.active]="activeTab() === 'live'" (click)="setTab('live')">
-    Séances en direct
-    @if (liveSession().isLive) { <span class="player__tabbar-dot"></span> }
-  </button>
-  <!-- 🆕 NOUVEAU : Onglet Replays -->
-  <button type="button" role="tab" [class.active]="activeTab() === 'replays'" (click)="setTab('replays')">
-     Replays
-  </button>
-</nav>
-
-    <!-- ========================================================= -->
-    <!-- CORPS -->
-    <!-- ========================================================= -->
-     @if (activeTab() === 'cours') {
-
-    <div class="player__body">
+  <!-- ========================================================= -->
+  <!-- BARRE DU HAUT -->
+  <!-- ========================================================= -->
 
 
-      <!-- ======================================================= -->
-      <!-- SIDEBAR -->
-      <!-- ======================================================= -->
 
-            <aside class="player__sidebar" [class.player__sidebar--closed]="!isSidebarOpen()">
+  <header class="player__topbar player__topbar--hec"
+    [style.backgroundImage]="c.image ? 'linear-gradient(120deg, rgba(13,27,62,0.93), rgba(13,27,62,0.72)), url(' + resolveMediaUrl(c.image) + ')' : null">
+    <a [routerLink]="['/cours', c.id]" class="player__breadcrumb">‹ Sommaire</a>
 
-        <!-- ===================================================== -->
-        <!-- BOUTON HAMBURGER (toujours visible) -->
-        <!-- ===================================================== -->
+    <div class="player__topbar-title">
+      <span class="player__topbar-eyebrow">{{ c.category }}</span>
+      <h1>{{ c.title }}</h1>
+      @if (activeSequence; as seq) {
+      <p class="player__topbar-subtitle">{{ seq.title }}</p>
+      }
+    </div>
 
-        <div class="player__sidebar-toggle">
-          <button type="button" (click)="toggleSidebar()" aria-label="Toggle sidebar">
-            ☰
-          </button>
+  </header>
+
+  <nav class="player__tabbar" role="tablist">
+    <button type="button" role="tab" [class.active]="activeTab() === 'cours'" (click)="setTab('cours')">Cours</button>
+    <button type="button" role="tab" [class.active]="activeTab() === 'discussion'"
+      (click)="setTab('discussion')">Discussion</button>
+    <button type="button" role="tab" [class.active]="activeTab() === 'progression'"
+      (click)="setTab('progression')">Progression</button>
+    <button type="button" role="tab" [class.active]="activeTab() === 'manuels'"
+      (click)="setTab('manuels')">Manuels</button>
+    <button type="button" role="tab" [class.active]="activeTab() === 'videos'" (click)="setTab('videos')">
+      Vidéos
+    </button>
+
+    <button type="button" role="tab" [class.active]="activeTab() === 'reglements'"
+      (click)="setTab('reglements')">Règlements</button>
+    <button type="button" role="tab" [class.active]="activeTab() === 'calendrier'"
+      (click)="setTab('calendrier')">Calendrier</button>
+    <button type="button" role="tab" [class.active]="activeTab() === 'evaluations'"
+      (click)="setTab('evaluations')">Évaluations</button>
+
+    <!--  UN SEUL bouton "Séances en direct" (avec clignotement) -->
+    @if (c.type === 'enterprise') {
+    <button type="button" role="tab" [class.active]="activeTab() === 'live'" (click)="setTab('live')"
+      [class.pulse-live]="liveSession().isLive">
+      Séances en direct
+      @if (liveSession().isLive) {
+      <span class="player__tabbar-dot live-dot"></span>
+      }
+    </button>
+    }
+
+    <button type="button" role="tab" [class.active]="activeTab() === 'replays'" (click)="setTab('replays')">
+      Replays
+    </button>
+  </nav>
+
+  <!-- ========================================================= -->
+  <!-- CORPS -->
+  <!-- ========================================================= -->
+  @if (activeTab() === 'cours') {
+
+  <div class="player__body">
+
+
+    <!-- ======================================================= -->
+    <!-- SIDEBAR -->
+    <!-- ======================================================= -->
+
+    <aside class="player__sidebar" [class.player__sidebar--closed]="!isSidebarOpen()">
+
+
+      <!-- ✅ BOUTON GÉRER LES LICENCES (uniquement pour le propriétaire) -->
+      @if (c.type === 'enterprise' && accessService.access().role === 'owner') {
+      <div
+        style="margin: 15px; padding: 15px; background: #fef3c7; border-left: 4px solid #b87333; border-radius: 8px;">
+        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#b87333" stroke-width="2">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+            <circle cx="9" cy="7" r="4"></circle>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"></path>
+          </svg>
+          <strong style="color: #1a202c; font-size: 0.95rem;">Gestion des licences</strong>
+        </div>
+        <p style="font-size: 0.8rem; color: #4a5568; margin: 0 0 10px 0;">
+          Invitez vos collaborateurs à rejoindre cette formation.
+        </p>
+        <a routerLink="/achats-entreprise/licences"
+          style="display: block; text-align: center; background: #b87333; color: white; padding: 8px 15px; border-radius: 6px; text-decoration: none; font-weight: 600; font-size: 0.85rem;">
+          Gérer mes licences
+        </a>
+      </div>
+      }
+
+
+      <!-- ===================================================== -->
+      <!-- BOUTON HAMBURGER (toujours visible) -->
+      <!-- ===================================================== -->
+
+      <div class="player__sidebar-toggle">
+        <button type="button" (click)="toggleSidebar()" aria-label="Toggle sidebar">
+          ☰
+        </button>
+      </div>
+
+      <!-- ===================================================== -->
+      <!-- CONTENU DE LA SIDEBAR (masqué quand fermée) -->
+      <!-- ===================================================== -->
+
+      @if (isSidebarOpen()) {
+
+
+      <!-- ===================================================== -->
+      <!-- CERTIFICAT -->
+      <!-- ===================================================== -->
+
+      @if (progressPercent() === 100) {
+
+      <div class="player__certificate-banner">
+
+        <div class="player__certificate-icon">
         </div>
 
-        <!-- ===================================================== -->
-        <!-- CONTENU DE LA SIDEBAR (masqué quand fermée) -->
-        <!-- ===================================================== -->
+        <div class="player__certificate-content">
 
-        @if (isSidebarOpen()) {
-        
+          <strong>
+            Félicitations !
+          </strong>
+
+          <p>
+            Vous avez terminé ce cours.
+          </p>
+
+          <button type="button" class="player__certificate-btn" (click)="downloadCertificate()">
+            Télécharger mon certificat
+          </button>
+
+        </div>
+
+      </div>
+
+      }
 
 
 
-        <!-- ===================================================== -->
-        <!-- CERTIFICAT -->
-        <!-- ===================================================== -->
 
-        @if (progressPercent === 100) {
 
-          <div class="player__certificate-banner">
+      <!-- ===================================================== -->
+      <!-- SESSION LIVE (gated : formule Standard+) -->
+      <!-- ===================================================== -->
 
-            <div class="player__certificate-icon">
-              🎉
-            </div>
 
-            <div class="player__certificate-content">
+      <!-- ===================================================== -->
+      <!-- PROGRAMME -->
+      <!-- ===================================================== -->
 
-              <strong>
-                Félicitations !
-              </strong>
+      <nav class="player__curriculum" aria-label="Programme du cours">
 
-              <p>
-                Vous avez terminé ce cours.
-              </p>
 
-              <button
-                type="button"
-                class="player__certificate-btn"
-                (click)="downloadCertificate()"
-              >
-                Télécharger mon certificat
-              </button>
+        <!-- =================================================== -->
+        <!-- CONTENU PUBLIÉ PAR LE FORMATEUR -->
+        <!-- =================================================== -->
 
-            </div>
+        @if (hasPublishedContent()) {
 
+        @for (
+        week of publishedWeeks();
+        track week.id
+        ) {
+
+        <div class="week-block" [class.week-block--locked]="!isWeekUnlocked(week)">
+
+
+          @if (week.introText || week.objectives?.length) {
+          <div class="week-block__intro">
+            @if (week.introText) {
+            <p class="week-block__intro-text">{{ week.introText }}</p>
+            }
+            @if (week.objectives?.length) {
+            <ul class="week-block__objectives">
+              @for (obj of week.objectives; track obj) {
+              <li>{{ obj }}</li>
+              }
+            </ul>
+            }
+            <span class="week-block__duration">~{{ weekEstimatedDuration(week) }}</span>
           </div>
+          }
 
-        }
+          <button type="button" class="week-block__header" (click)="togglePublishedWeek(week.id)"
+            [disabled]="!isWeekUnlocked(week)">
+
+            <span class="week-block__title">
+
+              @if (!isWeekUnlocked(week)) {
+
+              <svg class="week-block__lock" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2">
+                <rect x="4" y="11" width="16" height="9" rx="2" />
+                <path d="M8 11V7a4 4 0 0 1 8 0v4" />
+              </svg>
+
+              }
+
+              {{ week.label }}
+
+            </span>
+
+            <span class="week-block__progress">
+
+              {{
+              progressFor(week).videosWatched.length
+              +
+              progressFor(week).assignmentsSubmitted.length
+              +
+              (progressFor(week).quizPassed ? 1 : 0)
+              }}
+
+              /
+
+              {{
+              week.videos.length
+              +
+              week.assignments.length
+              +
+              (week.quiz ? 1 : 0)
+              }}
+
+            </span>
+
+          </button>
 
 
+          @if (
+          expandedWeekId() === week.id &&
+          isWeekUnlocked(week)
+          ) {
+
+          <div class="week-block__items">
 
 
-        <!-- ===================================================== -->
-        <!-- SESSION LIVE (gated : formule Standard+) -->
-        <!-- ===================================================== -->
-
-        
-
-         
-
-
-        <!-- ===================================================== -->
-        <!-- PROGRAMME -->
-        <!-- ===================================================== -->
-
-        <!-- //
-        //
-        // programme sous forme de hec paris
-        //
-        //
-        // -->
-        <nav
-          class="player__curriculum"
-          aria-label="Programme du cours"
-        >
-
-
-          <!-- =================================================== -->
-          <!-- CONTENU PUBLIÉ PAR LE FORMATEUR -->
-          <!-- =================================================== -->
-
-          @if (hasPublishedContent()) {
+            <!-- ======================================= -->
+            <!-- VIDÉOS PUBLIÉES -->
+            <!-- ======================================= -->
 
             @for (
-              week of publishedWeeks();
-              track week.id
+            video of week.videos;
+            track video.id
             ) {
 
-              <div
-                class="week-block"
-                [class.week-block--locked]="!isWeekUnlocked(week)"
-              >
-
-              <!-- ////
-                  //format hec paris presentation
-                  //  -->
-
-              @if (week.introText || week.objectives?.length) {
-  <div class="week-block__intro">
-    @if (week.introText) {
-      <p class="week-block__intro-text">{{ week.introText }}</p>
-    }
-    @if (week.objectives?.length) {
-      <ul class="week-block__objectives">
-        @for (obj of week.objectives; track obj) {
-          <li>🎯 {{ obj }}</li>
-        }
-      </ul>
-    }
-    <span class="week-block__duration">⏱ ~{{ weekEstimatedDuration(week) }}</span>
-  </div>
-}
-
-                <button
-                  type="button"
-                  class="week-block__header"
-                  (click)="togglePublishedWeek(week.id)"
-                  [disabled]="!isWeekUnlocked(week)"
-
-                  
-                  
-                >
-
-                  <span class="week-block__title">
-
-                    @if (!isWeekUnlocked(week)) {
-
-                      <svg
-                        class="week-block__lock"
-                        width="13"
-                        height="13"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                      >
-                        <rect
-                          x="4"
-                          y="11"
-                          width="16"
-                          height="9"
-                          rx="2"
-                        />
-                        <path
-                          d="M8 11V7a4 4 0 0 1 8 0v4"
-                        />
-                      </svg>
-
-                    }
-
-                    {{ week.label }}
-
-                  </span>
-
-                  <span class="week-block__progress">
-
-                    {{
-                      progressFor(week).videosWatched.length
-                      +
-                      progressFor(week).assignmentsSubmitted.length
-                      +
-                      (progressFor(week).quizPassed ? 1 : 0)
-                    }}
-
-                    /
-
-                    {{
-                      week.videos.length
-                      +
-                      week.assignments.length
-                      +
-                      (week.quiz ? 1 : 0)
-                    }}
-
-                  </span>
-
-                </button>
-
-
-                @if (
-                  expandedWeekId() === week.id &&
-                  isWeekUnlocked(week)
-                ) {
-
-                  <div class="week-block__items">
-
-
-                    <!-- ======================================= -->
-                    <!-- VIDÉOS PUBLIÉES -->
-                    <!-- ======================================= -->
-
-                    @for (
-                      video of week.videos;
-                      track video.id
-                    ) {
-
-                      <button
-                        type="button"
-                        class="seq-item"
-                        [class.seq-item--active]="
+            <button type="button" class="seq-item" [class.seq-item--active]="
                           selectedPublishedVideo()?.id === video.id
-                        "
-                        [class.seq-item--done]="
+                        " [class.seq-item--done]="
                           progressFor(week)
                             .videosWatched
                             .includes(video.id)
-                        "
-                        (click)="
+                        " (click)="
                           selectPublishedVideo(
                             week,
                             video
                           )
-                        "
-                      >
+                        ">
 
-                        <span class="seq-item__icon">
-                          ▶
-                        </span>
+              <span class="seq-item__icon">
+              </span>
 
-                        <span class="seq-item__label">
-                          {{ video.fileName }}
-                        </span>
+              <span class="seq-item__label">
+                {{ video.fileName }}
+              </span>
 
-                        <span class="seq-item__meta">
-                          {{
-                            formatDuration(
-                              video.durationSeconds
-                            )
-                          }}
-                        </span>
+              <span class="seq-item__meta">
+                {{
+                formatDuration(
+                video.durationSeconds
+                )
+                }}
+              </span>
 
-                        @if (
-                          progressFor(week)
-                            .videosWatched
-                            .includes(video.id)
-                        ) {
+              @if (
+              progressFor(week)
+              .videosWatched
+              .includes(video.id)
+              ) {
 
-                          <span class="seq-item__check">
-                            ✓
-                          </span>
+              <span class="seq-item__check">
+                ✓
+              </span>
 
-                        }
+              }
 
-                      </button>
-
-                    }
-
-
-                    <!-- ======================================= -->
-                    <!-- DEVOIRS / TP / TD -->
-                    <!-- ======================================= -->
-
-                    @for (
-                      a of week.assignments;
-                      track a.title
-                    ) {
-
-                      <button
-                        type="button"
-                        class="seq-item"
-                        [class.seq-item--active]="
-                          selectedAssignment()?.title === a.title
-                        "
-                        [class.seq-item--done]="
-                          progressFor(week)
-                            .assignmentsSubmitted
-                            .includes(a.title)
-                        "
-                        (click)="
-                          selectPublishedAssignment(
-                            week,
-                            a
-                          )
-                        "
-                      >
-
-                        <span class="seq-item__icon">
-                          📝
-                        </span>
-
-                        <span class="seq-item__label">
-                          {{ a.title }}
-                        </span>
-
-                        <span class="seq-item__meta">
-                          {{ a.kind | uppercase }}
-                        </span>
-
-                        @if (
-                          progressFor(week)
-                            .assignmentsSubmitted
-                            .includes(a.title)
-                        ) {
-
-                          <span class="seq-item__check">
-                            ✓
-                          </span>
-
-                        }
-
-                      </button>
-
-                    }
-
-
-                    <!-- ======================================= -->
-                    <!-- QUIZ -->
-                    <!-- ======================================= -->
-
-                    @if (week.quiz) {
-
-                      <button
-                        type="button"
-                        class="seq-item seq-item--quiz"
-                        [class.seq-item--active]="
-                          selectedQuizWeek()?.id === week.id
-                        "
-                        [class.seq-item--done]="
-                          progressFor(week).quizPassed
-                        "
-                        (click)="
-                          selectPublishedQuiz(week)
-                        "
-                      >
-
-                        <span class="seq-item__icon">
-                          🎯
-                        </span>
-
-                        <span class="seq-item__label">
-                          Quiz de la semaine
-                        </span>
-
-                        <span class="seq-item__meta">
-                          {{ week.quiz.questions.length }} Q
-                        </span>
-
-                        @if (
-                          progressFor(week).quizPassed
-                        ) {
-
-                          <span class="seq-item__check">
-                            ✓
-                          </span>
-
-                        }
-
-                      </button>
-
-                    }
-
-                  </div>
-
-                }
-
-              </div>
+            </button>
 
             }
 
 
-          } @else {
+            <!-- ======================================= -->
+            <!-- DEVOIRS / TP / TD -->
+            <!-- ======================================= -->
+
+            @for (
+            a of week.assignments;
+            track a.title
+            ) {
+
+            <button type="button" class="seq-item" [class.seq-item--active]="
+                          selectedAssignment()?.title === a.title
+                        " [class.seq-item--done]="
+                          progressFor(week)
+                            .assignmentsSubmitted
+                            .includes(a.title)
+                        " (click)="
+                          selectPublishedAssignment(
+                            week,
+                            a
+                          )
+                        ">
+
+              <span class="seq-item__icon">
+              </span>
+
+              <span class="seq-item__label">
+                {{ a.title }}
+              </span>
+
+              <span class="seq-item__meta">
+                {{ a.kind | uppercase }}
+              </span>
+
+              @if (
+              progressFor(week)
+              .assignmentsSubmitted
+              .includes(a.title)
+              ) {
+
+              <span class="seq-item__check">
+                ✓
+              </span>
+
+              }
+
+            </button>
+
+            }
 
 
-            <!-- ================================================= -->
-            <!-- FALLBACK : CURRICULUM LARAVEL -->
-            <!-- ================================================= -->
+            <!-- ======================================= -->
+            <!-- QUIZ -->
+            <!-- ======================================= -->
 
-            <!-- @for (
+            @if (week.quiz) {
+
+            <button type="button" class="seq-item seq-item--quiz" [class.seq-item--active]="
+                          selectedQuizWeek()?.id === week.id
+                        " [class.seq-item--done]="
+                          progressFor(week).quizPassed
+                        " (click)="
+                          selectPublishedQuiz(week)
+                        ">
+
+              <span class="seq-item__icon">
+              </span>
+
+              <span class="seq-item__label">
+                Quiz de la semaine
+              </span>
+
+              <span class="seq-item__meta">
+                {{ week.quiz.questions.length }} Q
+              </span>
+
+              @if (
+              progressFor(week).quizPassed
+              ) {
+
+              <span class="seq-item__check">
+                ✓
+              </span>
+
+              }
+
+            </button>
+
+            }
+
+          </div>
+
+          }
+
+        </div>
+
+        }
+
+
+        } @else {
+
+
+        <!-- ================================================= -->
+        <!-- FALLBACK : CURRICULUM LARAVEL -->
+        <!-- ================================================= -->
+
+        <!-- @for (
               chapter of curriculum().chapters;
               track chapter.id
             ) {
 
               <div class="week-block"> -->
-                @for (
-  chapter of curriculum().chapters;
-  track chapter.id
-) {
-  <div class="week-block">
+        @for (
+        chapter of curriculum().chapters;
+        track chapter.id
+        ) {
+        <div class="week-block">
 
-    <!-- 🆕 Bandeau module (si le chapitre appartient à un module HEC) -->
-    @if (chapter.moduleTitle) {
-      <div class="module-banner">
-        <span class="module-banner__badge">
-          M{{ (chapter.modulePosition ?? 0) + 1 }}
-        </span>
-        <span class="module-banner__title">
-          {{ chapter.moduleTitle }}
-        </span>
-      </div>
-    }
+          <!-- NOUVEAU : Bandeau module (si le chapitre appartient à un module HEC) -->
+          @if (chapter.moduleTitle) {
+          <div class="module-banner">
+            <span class="module-banner__badge">
+              M{{ (chapter.modulePosition ?? 0) + 1 }}
+            </span>
+            <span class="module-banner__title">
+              {{ chapter.moduleTitle }}
+            </span>
+          </div>
+          }
 
-    <!-- =========================================== -->
-    <!-- CHAPITRE -->
-    <!-- =========================================== -->
+          <!-- =========================================== -->
+          <!-- CHAPITRE -->
+          <!-- =========================================== -->
 
-    <button
-      type="button"
-      class="week-block__header"
-      (click)="toggleChapter(chapter.id)"
-    >
-      <span class="week-block__title">
-        <!-- 🆕 Badge "Semaine N" si présent -->
-        @if (chapter.weekNumber) {
-          <span class="week-badge">Semaine {{ chapter.weekNumber }}</span>
-        }
+          <button type="button" class="week-block__header" (click)="toggleChapter(chapter.id)">
+            <span class="week-block__title">
+              <!-- NOUVEAU : Badge "Semaine N" si présent -->
+              @if (chapter.weekNumber) {
+              <span class="week-badge">Semaine {{ chapter.weekNumber }}</span>
+              }
 
-        {{ chapter.title }}
-      </span>
+              {{ chapter.title }}
+            </span>
 
-      <svg
-        width="14"
-        height="14"
-        viewBox="0 0 10 6"
-        fill="none"
-        class="player__chevron"
-        [class.player__chevron--open]="openChapterId() === chapter.id"
-      >
-        <path
-          d="M1 1L5 5L9 1"
-          stroke="currentColor"
-          stroke-width="1.6"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        />
-      </svg>
-    </button>
-
-    <!-- =========================================== -->
-    <!-- SÉQUENCES -->
-    <!-- =========================================== -->
-
-    @if (openChapterId() === chapter.id) {
-      <div class="week-block__items">
-
-        @for (seq of chapter.sequences; track seq.id) {
-          <button
-            type="button"
-            class="seq-item seq-item--text-only"
-            [class.seq-item--active]="activeSequenceId() === seq.id"
-            [class.seq-item--done]="seq.completed"
-            [class.seq-item--locked]="seq.type === 'quiz' && !isSequenceUnlocked(seq.id)"
-            [disabled]="seq.type === 'quiz' && !isSequenceUnlocked(seq.id)"
-            (click)="selectSequence(seq.id)"
-          >
-            <span class="seq-item__label">{{ cleanSequenceTitle(seq.title) }}</span>
-
-            @if (seq.type === 'quiz' && !isSequenceUnlocked(seq.id)) {
-              <span class="seq-item__lock"> </span>
-            }
+            <svg width="14" height="14" viewBox="0 0 10 6" fill="none" class="player__chevron"
+              [class.player__chevron--open]="openChapterId() === chapter.id">
+              <path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"
+                stroke-linejoin="round" />
+            </svg>
           </button>
-        }
 
-        <!-- 🆕 Quiz de fin de module (s'il existe) -->
-        <!-- 🆕 Quiz de fin de module (s'il existe) -->
-        @if (chapter.moduleQuiz; as mq) {
-          <button
-            type="button"
-            class="seq-item seq-item--module-quiz"
-            [class.seq-item--active]="activeSequenceId() === mq.id"
-            [class.seq-item--done]="mq.completed"
-            [class.seq-item--locked]="!isSequenceUnlocked(mq.id)"
-            [disabled]="!isSequenceUnlocked(mq.id)"
-            (click)="selectSequence(mq.id)"
-          >
-            <span class="seq-item__icon">🎓</span>
-            <span class="seq-item__label">{{ mq.title }}</span>
-            <span class="seq-item__meta">Quiz module</span>
-            @if (mq.completed) {
+          <!-- =========================================== -->
+          <!-- SÉQUENCES -->
+          <!-- =========================================== -->
+
+          @if (openChapterId() === chapter.id) {
+          <div class="week-block__items">
+
+            @for (seq of chapter.sequences; track seq.id) {
+            <button type="button" class="seq-item seq-item--text-only"
+              [class.seq-item--active]="activeSequenceId() === seq.id" [class.seq-item--done]="seq.completed"
+              [class.seq-item--locked]="seq.type === 'quiz' && !isSequenceUnlocked(seq.id)"
+              [disabled]="seq.type === 'quiz' && !isSequenceUnlocked(seq.id)" (click)="selectSequence(seq.id)">
+              <span class="seq-item__label">{{ cleanSequenceTitle(seq.title) }}</span>
+
+              @if (seq.type === 'quiz' && !isSequenceUnlocked(seq.id)) {
+              <span class="seq-item__lock"> </span>
+              }
+            </button>
+            }
+
+            <!-- NOUVEAU : Quiz de fin de module (s'il existe) -->
+            <!-- @if (chapter.moduleQuiz; as mq) { -->
+            @if (isLastChapterOfModule(chapter) && chapter.moduleQuiz; as mq) {
+            <button type="button" class="seq-item seq-item--module-quiz"
+              [class.seq-item--active]="activeSequenceId() === mq.id" [class.seq-item--done]="mq.completed"
+              [class.seq-item--locked]="!isSequenceUnlocked(mq.id)" [disabled]="!isSequenceUnlocked(mq.id)"
+              (click)="selectSequence(mq.id)">
+              <span class="seq-item__icon"></span>
+              <span class="seq-item__label">{{ mq.title }}</span>
+              <span class="seq-item__meta">Quiz module</span>
+              @if (mq.completed) {
               <span class="seq-item__check">✓</span>
-            }
-            @if (!isSequenceUnlocked(mq.id)) {
+              }
+              @if (!isSequenceUnlocked(mq.id)) {
               <span class="seq-item__lock"> </span>
+              }
+            </button>
             }
-          </button>
+          </div>
+          }
+        </div>
         }
-<!-- 
-      </div>
-    }
-  </div>
-}
-
-} 
-} 
-        </nav> -->
-         </div>
-    }
-  </div>
-}
-
-}
-</nav>
-
 
         <!-- =================================================== -->
-<!-- 🆕 EXAMEN FINAL (HEC) -->
-<!-- =================================================== -->
-
-@if (finalExam(); as exam) {
-  <div class="week-block week-block--final">
-
-    <button
-      type="button"
-      class="week-block__header"
-      [class.week-block--locked]="!isSequenceUnlocked(exam.id)"
-      [disabled]="!isSequenceUnlocked(exam.id)"
-      (click)="selectSequence(exam.id)"
-    >
-      <span class="week-block__title">
-         {{ exam.title }}
-        @if (!isSequenceUnlocked(exam.id)) {
-          <span class="seq-item__lock"> </span>
-        }
-      </span>
-
-      <span class="week-block__progress">
-        Score requis : {{ exam.passingScore ?? 70 }}%
-      </span>
-    </button>
-
-  </div>
-}
-
-        } <!-- Fin du @if (isSidebarOpen()) -->
-
-      </aside>
-
-
-      <!-- ======================================================= -->
-      <!-- CONTENU PRINCIPAL -->
-      <!-- ======================================================= -->
-
-      <main class="player__main">
-
-
-        <!-- ===================================================== -->
-        <!-- VIDÉO PUBLIÉE PAR LE FORMATEUR -->
-        <!-- ===================================================== -->
-
-        @if (selectedPublishedVideo(); as video) {
-
-          <h2 class="player__section-title">
-            {{ video.fileName }}
-          </h2>
-
-          <div class="player__video-wrapper">
-
-            @if (activeVideoUrl(); as src) {
-
-              <video
-                class="player__real-video"
-                [src]="src"
-                controls
-                preload="metadata"
-                playsinline
-                (ended)="onPublishedVideoEnded(selectedWeek()!, video)"
-              ></video>
-
-            } @else {
-
-              <div class="player__video-placeholder">
-
-                <span>
-                  Chargement de la vidéo…
-                </span>
-
-              </div>
-
-            }
-
+        <!-- NOUVEAU : EXAMEN FINAL (HEC) -->
+        <!-- =================================================== -->
+        @if (finalExam(); as exam) {
+        <div class="week-block week-block--final"
+          style="border: 2px solid #b87333; border-radius: 8px; margin-top: 20px;">
+          <button type="button" class="week-block__header" [class.week-block--locked]="!isSequenceUnlocked(exam.id)"
+            [disabled]="!isSequenceUnlocked(exam.id)" (click)="selectSequence(exam.id)">
+            <span class="week-block__title" style="font-weight: bold; color: #b87333;">
+              CERTIFICATION FINALE
+            </span>
+            <span class="week-block__progress">
+              Score requis : {{ exam.passingScore ?? 70 }}%
+            </span>
+          </button>
+          <div style="padding: 10px 15px; font-size: 0.9rem; color: #475569;">
+            Passez l'examen final pour valider votre certification et télécharger votre diplôme.
           </div>
+        </div>
+        }
 
-          @if (video.transcript) {
-  <details class="player__transcript">
-    <summary>📄 Voir la transcription</summary>
-    <p>{{ video.transcript }}</p>
-  </details>
-}
+        } <!-- ferme le @if (hasPublishedContent()) / @else -->
 
-          <p class="player__assignment-text">
+      </nav> <!-- CORRECTION : balise </nav> manquante -->
 
-            La séquence est marquée comme terminée
-            à la fin de la vidéo.
+      } <!-- CORRECTION : accolade manquante, ferme le @if (isSidebarOpen()) -->
+
+    </aside>
+
+    <!-- ======================================================= -->
+    <!-- CONTENU PRINCIPAL -->
+    <!-- ======================================================= -->
+
+    <main class="player__main">
+
+      <!-- ===================================================== -->
+      <!-- VIDÉO PUBLIÉE PAR LE FORMATEUR -->
+      <!-- ===================================================== -->
+
+      @if (selectedPublishedVideo(); as video) {
+
+      <h2 class="player__section-title">
+        {{ video.fileName }}
+      </h2>
+
+      <div class="player__video-wrapper">
+
+        @if (activeVideoUrl(); as src) {
+
+        <video class="player__real-video" [src]="src" controls preload="metadata" playsinline
+          (ended)="onPublishedVideoEnded(selectedWeek()!, video)"></video>
+
+        } @else {
+
+        <div class="player__video-placeholder">
+
+          <span>
+            Chargement de la vidéo…
+          </span>
+
+        </div>
+
+        }
+
+      </div>
+
+      @if (video.transcript) {
+      <details class="player__transcript">
+        <summary>Voir la transcription</summary>
+        <p>{{ video.transcript }}</p>
+      </details>
+      }
+
+      <p class="player__assignment-text">
+
+        La séquence est marquée comme terminée
+        à la fin de la vidéo.
+
+      </p>
+
+
+      }
+
+
+      <!-- ===================================================== -->
+      <!-- DEVOIR / TP / TD PUBLIÉ -->
+      <!-- ===================================================== -->
+
+      @else if (selectedAssignment(); as a) {
+
+      <div class="player__assignment">
+
+        <span class="player__assignment-tag" [class.player__assignment-tag--tp]="a.kind === 'tp'"
+          [class.player__assignment-tag--devoir]="a.kind === 'devoir'">
+          {{ a.kind | uppercase }}
+        </span>
+
+        <h2 class="player__section-title">
+          {{ a.title }}
+        </h2>
+
+        @if (a.instructions) {
+
+        <p class="player__assignment-text">
+          {{ a.instructions }}
+        </p>
+
+        }
+
+
+        <!-- =============================================== -->
+        <!-- PDF DU DEVOIR -->
+        <!-- =============================================== -->
+
+        @if (
+        getPdfResourceUrl(a.attachmentUrl);
+        as pdfUrl
+        ) {
+
+        <div class="player__pdf-viewer">
+
+          <iframe class="player__pdf-frame" [src]="pdfUrl" [title]="a.attachmentName || a.title"></iframe>
+
+        </div>
+
+        }
+
+
+        <!-- =============================================== -->
+        <!-- TÉLÉCHARGEMENT -->
+        <!-- =============================================== -->
+
+        @if (
+        resolveMediaUrl(a.attachmentUrl);
+        as attachmentUrl
+        ) {
+
+        <a class="player__doc-link" [href]="attachmentUrl" [download]="a.attachmentName || a.title" target="_blank"
+          rel="noopener noreferrer">
+          Télécharger le document
+        </a>
+
+        }
+
+        @if (a.gradingCriteria?.length) {
+        <div class="player__grading">
+          <strong>Barème ({{ a.maxScore ?? 20 }} points)</strong>
+          <ul>
+            @for (c of a.gradingCriteria; track c.label) {
+            <li>{{ c.label }} — {{ c.points }} pts</li>
+            }
+          </ul>
+        </div>
+        }
+
+
+        <!-- =============================================== -->
+        <!-- SOUMISSION (gated : formule Standard+) -->
+        <!-- =============================================== -->
+
+        @if (accessService.can('assignment_review')) {
+
+        <label class="player__upload">
+          <input type="file" hidden />
+          Choisir mon fichier à rendre
+        </label>
+
+        } @else {
+
+        <div class="locked-feature">
+          <span class="locked-feature__icon"></span>
+          <strong>La soumission avec correction personnalisée est incluse dès la formule Standard</strong>
+          <a [routerLink]="['/paiement', courseId()]" class="player__certificate-btn">
+            Passer à Standard →
+          </a>
+        </div>
+
+        }
+
+      </div>
+
+
+      }
+
+
+      <!-- ===================================================== -->
+      <!-- QUIZ PUBLIÉ -->
+      <!-- ===================================================== -->
+
+      @else if (selectedQuizWeek(); as week) {
+
+      @if (week.quiz) {
+
+      <div class="player__assignment">
+
+        <h2 class="player__section-title">
+          Quiz — {{ week.label }}
+        </h2>
+
+
+        @for (
+        q of week.quiz.questions;
+        track $index
+        ) {
+
+        <div class="player__quiz-question">
+
+          <p class="player__quiz-question-text">
+
+            {{ $index + 1 }}.
+            {{ q.question }}
 
           </p>
 
 
-        }
+          <div class="player__quiz-options">
 
-
-        <!-- ===================================================== -->
-        <!-- DEVOIR / TP / TD PUBLIÉ -->
-        <!-- ===================================================== -->
-
-        @else if (selectedAssignment(); as a) {
-
-          <div class="player__assignment">
-
-            <span
-              class="player__assignment-tag"
-              [class.player__assignment-tag--tp]="a.kind === 'tp'"
-              [class.player__assignment-tag--devoir]="a.kind === 'devoir'"
-            >
-              {{ a.kind | uppercase }}
-            </span>
-
-            <h2 class="player__section-title">
-              {{ a.title }}
-            </h2>
-
-            @if (a.instructions) {
-
-              <p class="player__assignment-text">
-                {{ a.instructions }}
-              </p>
-
-            }
-
-
-            <!-- =============================================== -->
-            <!-- PDF DU DEVOIR -->
-            <!-- =============================================== -->
-
-            @if (
-              getPdfResourceUrl(a.attachmentUrl);
-              as pdfUrl
+            @for (
+            opt of q.options;
+            track $index;
+            let oi = $index
             ) {
 
-              <div class="player__pdf-viewer">
 
-                <iframe
-                  class="player__pdf-frame"
-                  [src]="pdfUrl"
-                  [title]="a.attachmentName || a.title"
-                ></iframe>
-
-              </div>
-
-            }
-
-
-            <!-- =============================================== -->
-            <!-- TÉLÉCHARGEMENT -->
-            <!-- =============================================== -->
-
-            @if (
-              resolveMediaUrl(a.attachmentUrl);
-              as attachmentUrl
-            ) {
-
-              <a
-                class="player__doc-link"
-                [href]="attachmentUrl"
-                [download]="a.attachmentName || a.title"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                ⬇ Télécharger le document
-              </a>
-
-            }
-
-            <!-- // modele coursera presentation -->
-
-            @if (a.gradingCriteria?.length) {
-  <div class="player__grading">
-    <strong>Barème ({{ a.maxScore ?? 20 }} points)</strong>
-    <ul>
-      @for (c of a.gradingCriteria; track c.label) {
-        <li>{{ c.label }} — {{ c.points }} pts</li>
-      }
-    </ul>
-  </div>
-}
-
-
-            <!-- =============================================== -->
-            <!-- SOUMISSION (gated : formule Standard+) -->
-            <!-- =============================================== -->
-
-            @if (accessService.can('assignment_review')) {
-
-              <label class="player__upload">
-                <input type="file" hidden />
-                Choisir mon fichier à rendre
-              </label>
-
-            } @else {
-
-              <div class="locked-feature">
-                <span class="locked-feature__icon">🔒</span>
-                <strong>La soumission avec correction personnalisée est incluse dès la formule Standard</strong>
-                <a
-                  [routerLink]="['/paiement', courseId()]"
-                  class="player__certificate-btn"
-                >
-                  Passer à Standard →
-                </a>
-              </div>
-
-            }
-
-          </div>
-
-
-        }
-
-
-        <!-- ===================================================== -->
-        <!-- QUIZ PUBLIÉ -->
-        <!-- ===================================================== -->
-
-        @else if (selectedQuizWeek(); as week) {
-
-          @if (week.quiz) {
-
-            <div class="player__assignment">
-
-              <h2 class="player__section-title">
-                Quiz — {{ week.label }}
-              </h2>
-
-
-              @for (
-                q of week.quiz.questions;
-                track $index
-              ) {
-
-                <div class="player__quiz-question">
-
-                  <p class="player__quiz-question-text">
-
-                    {{ $index + 1 }}.
-                    {{ q.question }}
-
-                  </p>
-
-
-                  <div class="player__quiz-options">
-
-                    @for (
-                      opt of q.options;
-                      track $index;
-                      let oi = $index
-                    ) {
-
-                  
-                      <button
-                        type="button"
-                        class="player__quiz-option"
-
-                        [class.player__quiz-option--selected]="
+            <button type="button" class="player__quiz-option" [class.player__quiz-option--selected]="
                           quizAnswers()[$index] === oi &&
                           !quizSubmitted()
-                        "
-
-                        [class.player__quiz-option--correct]="
+                        " [class.player__quiz-option--correct]="
                           quizSubmitted() &&
                           isCorrectAnswer($index, oi)
-                        "
-
-                        [class.player__quiz-option--wrong]="
+                        " [class.player__quiz-option--wrong]="
                           quizSubmitted() &&
                           quizAnswers()[$index] === oi &&
                           !isCorrectAnswer($index, oi)
-                        "
+                        " [disabled]="quizSubmitted()" (click)="selectQuizAnswer($index, oi)">
 
-                        [disabled]="quizSubmitted()"
+              {{ opt }}
 
-                        (click)="selectQuizAnswer($index, oi)"
-                      >
+            </button>
 
-                        {{ opt }}
+            }
 
-                      </button>
+          </div>
 
-                    }
-
-                  </div>
-
-                </div>
-
-              }
-
-
-              @if (!quizSubmitted()) {
-
-                <button
-                  type="button"
-                  class="player__done-btn"
-                  (click)="submitQuiz()"
-                >
-                  Valider mes réponses
-                </button>
-
-              } @else {
-
-                <p class="player__quiz-result">
-                  ✓ Réponses enregistrées.
-                </p>
-
-              }
-
-            </div>
-
-          }
+        </div>
 
         }
 
 
-        <!-- ===================================================== -->
-        <!-- CURRICULUM LARAVEL / SÉQUENCE ACTIVE -->
-        <!-- ===================================================== -->
+        @if (!quizSubmitted()) {
 
-        @else if (activeSequence; as seq) {
+        <button type="button" class="player__done-btn" (click)="submitQuiz()">
+          Valider mes réponses
+        </button>
 
-          <!-- //
-          // div pour la presentation hec du cours facon hec paris.
-          // -->
-          <div class="content-panel__head">
-  <button type="button" class="content-panel__bookmark" (click)="toggleBookmark(seq.id)">
-    <span>{{ bookmarkedIds().has(seq.id) ? '★' : '☆' }}</span>
-    Ajouter cette page aux favoris
-  </button>
-  <div class="content-panel__arrows">
-    <button type="button" aria-label="Section précédente">←</button>
-    <button type="button" aria-label="Section suivante">→</button>
-  </div>
-</div>
+        } @else {
 
+        <p class="player__quiz-result">
+          ✓ Réponses enregistrées.
+        </p>
 
+        }
 
-          @switch (seq.type) {
+      </div>
+
+      }
+
+      }
 
 
-            <!-- ================================================= -->
-            <!-- VIDÉO -->
-            <!-- ================================================= -->
+      <!-- ===================================================== -->
+      <!-- CURRICULUM LARAVEL / SÉQUENCE ACTIVE -->
+      <!-- ===================================================== -->
 
-            @case ('video') {
-
-              <!-- <h2 class="player__section-title">
-                {{ seq.title }}
-              </h2>
+      @else if (activeSequence; as seq) {
 
 
-              <div class="player__video-wrapper"> -->
-
-                              <h2 class="player__section-title">
-                {{ seq.title }}
-              </h2>
-
-              <div class="video-layout">
-
-              <div class="player__video-wrapper">
-
-
-                <!-- =========================================== -->
-                <!-- YOUTUBE -->
-                <!-- =========================================== -->
-
-                @if (
-                  isYoutubeUrl(seq.videoUrl);
-                  as isYoutube
-                ) {
-
-                  @if (
-                    isYoutube &&
-                    getYoutubeEmbedUrl(seq.videoUrl);
-                    as youtubeUrl
-                  ) {
-
-                    <iframe
-                      class="player__youtube-frame"
-                      [src]="youtubeUrl"
-                      [title]="seq.title"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                      allowfullscreen
-                    ></iframe>
-
-                  } @else {
-
-                    <div class="player__video-placeholder">
-
-                      <span>
-                        Impossible de charger cette vidéo YouTube.
-                      </span>
-
-                    </div>
-
-                  }
+      <div class="content-panel__head">
+        <button type="button" class="content-panel__bookmark" (click)="toggleBookmark(seq.id)">
+          <span>{{ bookmarkedIds().has(seq.id) ? '★' : '☆' }}</span>
+          Ajouter cette page aux favoris
+        </button>
+        <div class="content-panel__arrows">
+          <button type="button" aria-label="Section précédente">←</button>
+          <button type="button" aria-label="Section suivante">→</button>
+        </div>
+      </div>
 
 
+
+      @switch (seq.type) {
+
+
+      <!-- ================================================= -->
+      <!-- VIDÉO -->
+      <!-- ================================================= -->
+
+      @case ('video') {
+
+
+
+      <h2 class="player__section-title">
+        {{ seq.title }}
+      </h2>
+
+      <div class="video-layout">
+
+        <div class="player__video-wrapper">
+
+
+          <!-- =========================================== -->
+          <!-- YOUTUBE -->
+          <!-- =========================================== -->
+
+          @if (
+          isYoutubeUrl(seq.videoUrl);
+          as isYoutube
+          ) {
+
+          @if (
+          isYoutube &&
+          getYoutubeEmbedUrl(seq.videoUrl);
+          as youtubeUrl
+          ) {
+
+          <iframe class="player__youtube-frame" [src]="youtubeUrl" [title]="seq.title"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowfullscreen></iframe>
+
+          } @else {
+
+          <div class="player__video-placeholder">
+
+            <span>
+              Impossible de charger cette vidéo YouTube.
+            </span>
+
+          </div>
+
+          }
+
+
+          }
+
+
+          <!-- =========================================== -->
+          <!-- VIDÉO MP4 -->
+          <!-- =========================================== -->
+
+          @else if (
+          resolveMediaUrl(seq.videoUrl);
+          as videoUrl
+          ) {
+
+          <video class="player__real-video" [src]="videoUrl" controls preload="metadata" playsinline
+            (ended)="markSequenceDone()"></video>
+
+          }
+
+
+          <!-- =========================================== -->
+          <!-- AUCUNE VIDÉO -->
+          <!-- =========================================== -->
+
+          @else {
+          <div class="player__video-placeholder">
+            <span>Aucune vidéo disponible pour cette séquence.</span>
+          </div>
+          }
+
+        </div>
+
+        <aside class="video-nav-panel" aria-label="Navigation de la séquence">
+          <h3 class="video-nav-panel__title">Dans cette section</h3>
+          <ul class="video-nav-panel__list">
+            @for (sib of activeChapterSequences(); track sib.id) {
+            <li>
+              <button type="button" class="video-nav-panel__link"
+                [class.video-nav-panel__link--active]="sib.id === seq.id" (click)="selectSequence(sib.id)">
+                <span class="video-nav-panel__icon">{{ typeIconFor(sib.type) }}</span>
+                <span>{{ cleanSequenceTitle(sib.title) }}</span>
+                @if (sib.completed) {
+                <span class="video-nav-panel__check">✓</span>
                 }
-
-
-                <!-- =========================================== -->
-                <!-- VIDÉO MP4 -->
-                <!-- =========================================== -->
-
-                @else if (
-                  resolveMediaUrl(seq.videoUrl);
-                  as videoUrl
-                ) {
-
-                  <video
-                    class="player__real-video"
-                    [src]="videoUrl"
-                    controls
-                    preload="metadata"
-                    playsinline
-                    (ended)="markSequenceDone()"
-                  ></video>
-
-                }
-
-
-                <!-- =========================================== -->
-                <!-- AUCUNE VIDÉO -->
-                <!-- =========================================== -->
-
-                @else {
-
-                  <!-- <div class="player__video-placeholder">
-
-                    <span>
-                      Aucune vidéo disponible pour cette séquence.
-                    </span>
-
-                  </div>
-
-                }
-
-              </div>
-
-
-              <button
-                type="button"
-                class="player__done-btn"
-                (click)="markSequenceDone()"
-              >
-                Marquer comme terminé
               </button>
-
-            } -->
-                                <div class="player__video-placeholder">
-
-                    <span>
-                      Aucune vidéo disponible pour cette séquence.
-                    </span>
-
-                  </div>
-
-                }
-
-              </div>
-
-              <aside class="video-nav-panel" aria-label="Navigation de la séquence">
-                <h3 class="video-nav-panel__title">Dans cette section</h3>
-                <ul class="video-nav-panel__list">
-                  @for (sib of activeChapterSequences(); track sib.id) {
-                    <li>
-                      <button type="button" class="video-nav-panel__link"
-                        [class.video-nav-panel__link--active]="sib.id === seq.id"
-                        (click)="selectSequence(sib.id)">
-                        <span class="video-nav-panel__icon">{{ typeIconFor(sib.type) }}</span>
-                        <span>{{ cleanSequenceTitle(sib.title) }}</span>
-                        @if (sib.completed) {
-                          <span class="video-nav-panel__check">✓</span>
-                        }
-                      </button>
-                    </li>
-                  }
-                </ul>
-              </aside>
-
-              </div>
-
-              <button
-                type="button"
-                class="player__done-btn"
-                (click)="markSequenceDone()"
-              >
-                Marquer comme terminé
-              </button>
-
+            </li>
             }
+          </ul>
+        </aside>
 
+      </div>
 
-            <!-- ================================================= -->
-            <!-- DOCUMENT / PDF -->
-            <!-- ================================================= -->
+      <button type="button" class="player__done-btn" (click)="markSequenceDone()">
+        Marquer comme terminé
+      </button>
+      <!-- ✅ AJOUTE CE BLOC ICI (juste après le bouton) -->
+      @if (activeSequence?.completed) {
+      <span class="status-validated"
+        style="display: inline-flex; align-items: center; gap: 6px; color: #10b981; font-weight: 600; font-size: 0.9rem; margin-left: 15px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+          stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 6L9 17l-5-5"></path>
+        </svg>
+        Validé
+      </span>
+      }
 
-            @case ('document') {
+      }
 
-              <div class="player__document-header">
 
-                <div class="player__document-icon">
-                  📄
-                </div>
 
-                <div>
 
-                  <span class="player__topbar-eyebrow">
-                    DOCUMENT
-                  </span>
+      <!-- ================================================= -->
+      <!-- DOCUMENT / PDF -->
+      <!-- ================================================= -->
 
-                  <h2 class="player__document-name">
-                    {{ seq.title }}
-                  </h2>
+      @case ('document') {
 
-                </div>
+      <div class="player__document-header">
 
-              </div>
+        <div class="player__document-icon">
 
+        </div>
 
-              @if (
-                getPdfResourceUrl(seq.documentUrl);
-                as pdfUrl
-              ) {
+        <div>
 
-                <div class="player__pdf-viewer">
+          <span class="player__topbar-eyebrow">
+            DOCUMENT
+          </span>
 
-                  <iframe
-                    class="player__pdf-frame"
-                    [src]="pdfUrl"
-                    [title]="seq.title"
-                  ></iframe>
+          <h2 class="player__document-name">
+            {{ seq.title }}
+          </h2>
 
-                </div>
+        </div>
 
+      </div>
 
-                <div class="player__document-actions">
 
-                  @if (
-                    resolveMediaUrl(seq.documentUrl);
-                    as documentUrl
-                  ) {
+      @if (
+      getPdfResourceUrl(seq.documentUrl);
+      as pdfUrl
+      ) {
 
-                    <a
-                      class="player__doc-link"
-                      [href]="documentUrl"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      ↗ Ouvrir dans un nouvel onglet
-                    </a>
+      <div class="player__pdf-viewer">
 
-                    <a
-                      class="player__doc-link"
-                      [href]="documentUrl"
-                      [download]="seq.title"
-                    >
-                      ⬇ Télécharger le PDF
-                    </a>
+        <iframe class="player__pdf-frame" [src]="pdfUrl" [title]="seq.title"></iframe>
 
-                  }
+      </div>
 
-                </div>
 
+      <div class="player__document-actions">
 
-                <button
-                  type="button"
-                  class="player__done-btn"
-                  (click)="markSequenceDone()"
-                >
-                  Marquer comme lu
-                </button>
+        @if (
+        resolveMediaUrl(seq.documentUrl);
+        as documentUrl
+        ) {
 
+        <a class="player__doc-link" [href]="documentUrl" target="_blank" rel="noopener noreferrer">
+          ↗ Ouvrir dans un nouvel onglet
+        </a>
 
-              } @else {
+        <a class="player__doc-link" [href]="documentUrl" [download]="seq.title">
+          Télécharger le PDF
+        </a>
 
+        }
 
-                <div class="player__doc-viewer">
+      </div>
 
-                  <div class="player__document-icon">
-                    📄
-                  </div>
 
-                  <p>
-                    Aucun document attaché à cette séquence.
-                  </p>
+      <button type="button" class="player__done-btn" (click)="markSequenceDone()">
+        Marquer comme lu
+      </button>
+      <!-- ✅ AJOUTE LE MÊME BLOC ICI -->
+      @if (activeSequence?.completed) {
+      <span class="status-validated"
+        style="display: inline-flex; align-items: center; gap: 6px; color: #10b981; font-weight: 600; font-size: 0.9rem; margin-left: 15px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+          stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 6L9 17l-5-5"></path>
+        </svg>
+        Validé
+      </span>
+      }
 
-                </div>
 
-              }
+      } @else {
 
-            }
 
+      <div class="player__doc-viewer">
 
-            <!-- ================================================= -->
-            <!-- QUIZ LARAVEL -->
-            <!-- ================================================= -->
+        <div class="player__document-icon">
+        </div>
 
-            <!-- @case ('quiz') {
+        <p>
+          Aucun document attaché à cette séquence.
+        </p>
 
-              <div class="player__assignment">
+      </div>
 
-                <span class="player__assignment-tag">
-                  QUIZ
-                </span>
+      }
 
-                <h2 class="player__section-title">
-                  {{ seq.title }}
-                </h2>
+      }
 
 
-                @if (
-                  seq.quizQuestions?.length
-                ) {
+      <!-- ================================================= -->
+      <!-- QUIZ LARAVEL (QCM + texte, correction instantanée) -->
+      <!-- ================================================= -->
 
-                  @for (
-                    question of seq.quizQuestions;
-                    track $index
-                  ) {
+      @case ('quiz') {
 
-                    <div class="player__quiz-question">
+      <div class="player__assignment">
 
-                      <p class="player__quiz-question-text">
+        <span class="player__assignment-tag">
+          QUIZ
+        </span>
 
-                        {{ $index + 1 }}.
-                        {{ question.question }}
+        @if (seq.quizQuestions?.length) {
+        <p class="player__assignment-text">
+          {{ seq.quizQuestions.length }} question(s) —
+          <strong>seuil de réussite : {{ seq.passingScore ?? 85 }}%</strong>
+          @if (seq.isBlocking) { — quiz bloquant }
+        </p>
+        }
 
-                      </p>
+        <h2 class="player__section-title">
+          {{ seq.title }}
+        </h2>
 
 
-                      <div class="player__quiz-options">
+        @if (seq.quizQuestions?.length) {
 
-                        @for (
-                          option of question.options;
-                          track $index;
-                          let optionIndex = $index
-                        ) {
+        @for (question of seq.quizQuestions; track $index; let qi = $index) {
 
-                          <button
-                            type="button"
-                            class="player__quiz-option"
-                          >
-                            {{ option }}
-                          </button>
+        <div class="player__quiz-question">
 
-                        }
+          <p class="player__quiz-question-text">
 
-                      </div>
+            {{ qi + 1 }}.
+            {{ question.question }}
 
-                    </div>
+          </p>
 
-                  }
 
+          <!-- ========== QUESTION QCM ========== -->
+          @if (question.type !== 'texte' && question.options?.length) {
 
-                } @else {
+          <div class="player__quiz-options">
 
-                  <p>
-                    Aucune question n'a encore été configurée
-                    pour ce quiz.
-                  </p>
+            @for (option of question.options; track $index; let oi = $index) {
 
-                }
-
-              </div>
-
-            } -->
-                          <!-- ================================================= -->
-            <!-- QUIZ LARAVEL (QCM + texte, correction instantanée) -->
-            <!-- ================================================= -->
-
-            @case ('quiz') {
-
-              <div class="player__assignment">
-
-                <span class="player__assignment-tag">
-                  QUIZ
-                </span>
-
-                <h2 class="player__section-title">
-                  {{ seq.title }}
-                </h2>
-
-
-                @if (seq.quizQuestions?.length) {
-
-                  @for (question of seq.quizQuestions; track $index; let qi = $index) {
-
-                    <div class="player__quiz-question">
-
-                      <p class="player__quiz-question-text">
-
-                        {{ qi + 1 }}.
-                        {{ question.question }}
-
-                      </p>
-
-
-                      <!-- ========== QUESTION QCM ========== -->
-                      <!-- @if (question.type === 'qcm' && question.options?.length) { -->
-                                             <!-- ========== QUESTION QCM ========== -->
-                      @if (question.type !== 'texte' && question.options?.length) {
-
-                        <div class="player__quiz-options">
-
-                          @for (option of question.options; track $index; let oi = $index) {
-
-                            <button
-                              type="button"
-                              class="player__quiz-option"
-
-                                [class.player__quiz-option--selected]="
+            <button type="button" class="player__quiz-option" [class.player__quiz-option--selected]="
                                 isQcmSelected(qi, oi) &&
                                 !laravelQuizSubmitted()
-                              "
-
-                              [class.player__quiz-option--correct]="
+                              " [class.player__quiz-option--correct]="
                                 laravelQuizSubmitted() &&
                                 question.correctIndex === oi
-                              "
-
-                                [class.player__quiz-option--wrong]="
+                              " [class.player__quiz-option--wrong]="
                                 laravelQuizSubmitted() &&
                                 isQcmSelected(qi, oi) &&
                                 question.correctIndex !== oi
-                              "
+                              " [disabled]="laravelQuizSubmitted()" (click)="selectLaravelQuizAnswer(qi, oi)">
 
-                              [disabled]="laravelQuizSubmitted()"
+              {{ option }}
 
-                              (click)="selectLaravelQuizAnswer(qi, oi)"
-                            >
-
-                              {{ option }}
-
-                            </button>
-
-                          }
-
-                        </div>
-
-                      }
-
-
-                      <!-- ========== QUESTION TEXTE ========== -->
-                      @else {
-
-                        <input
-                          type="text"
-                          class="player__quiz-text-input"
-
-                          placeholder="Tapez votre réponse…"
-
-                          [value]="laravelQuizAnswers()[qi] ?? ''"
-
-                          (input)="selectLaravelQuizAnswer(qi, $any($event.target).value)"
-
-                          [readonly]="laravelQuizSubmitted()"
-
-                          [class.player__quiz-text-input--correct]="
-                            laravelQuizSubmitted() &&
-                            isLaravelAnswerCorrect(qi, laravelQuizAnswers()[qi] ?? '')
-                          "
-
-                          [class.player__quiz-text-input--wrong]="
-                            laravelQuizSubmitted() &&
-                            !isLaravelAnswerCorrect(qi, laravelQuizAnswers()[qi] ?? '')
-                          "
-                        />
-
-                        @if (laravelQuizSubmitted() && !isLaravelAnswerCorrect(qi, laravelQuizAnswers()[qi] ?? '')) {
-                          <p class="player__quiz-expected">
-                            💡 Réponse attendue : <strong>{{ question.expectedAnswer }}</strong>
-                          </p>
-                        }
-
-                      }
-
-                    </div>
-
-                  }
-
-
-                  <!-- RÉSULTAT + ACTIONS -->
-                  <!-- @if (!laravelQuizSubmitted()) {
-
-                    <button
-                      type="button"
-                      class="player__done-btn"
-                      [disabled]="laravelAnsweredCount() !== seq.quizQuestions.length"
-                      (click)="submitLaravelQuiz()"
-                    >
-                      Valider mes réponses →
-                    </button>
-
-                  } @else {
-
-                    <div
-                      class="quiz-result-banner"
-                      [class.quiz-result-banner--pass]="laravelQuizScore()!.score === laravelQuizScore()!.total"
-                    >
-
-                      <strong>
-                        🎯 Score : {{ laravelQuizScore()!.score }}/{{ laravelQuizScore()!.total }}
-                      </strong>
-
-                      <span>
-                        @if (laravelQuizScore()!.score === laravelQuizScore()!.total) {
-                          Parfait ! 🎉
-                        } @else if (laravelQuizScore()!.score > 0) {
-                          Bien joué, continue ! 💪
-                        } @else {
-                          Révise le chapitre et retente ! 📚
-                        }
-                      </span>
-
-                    </div>
-
-                    <button
-                      type="button"
-                      class="player__done-btn"
-                      (click)="resetLaravelQuiz()"
-                    >
-                      ↻ Refaire le quiz
-                    </button>
-
-                  } -->
-
-                                    <!-- RÉSULTAT + ACTIONS -->
-                  @if (!laravelQuizSubmitted()) {
-
-                    <button
-                      type="button"
-                      class="player__done-btn"
-                      [disabled]="laravelAnsweredCount() !== seq.quizQuestions.length"
-                      (click)="submitLaravelQuiz()"
-                    >
-                      Valider mes réponses →
-                    </button>
-
-                  } @else {
-
-                    <div
-                      class="quiz-result-banner"
-                      [class.quiz-result-banner--pass]="laravelQuizScore()!.score === laravelQuizScore()!.total"
-                    >
-
-                      <strong>
-                        🎯 Score : {{ laravelQuizScore()!.score }}/{{ laravelQuizScore()!.total }}
-                      </strong>
-
-                      <span>
-                        @if (laravelQuizScore()!.score === laravelQuizScore()!.total) {
-                          Parfait ! 🎉
-                        } @else if (laravelQuizScore()!.score > 0) {
-                          Bien joué, continue ! 💪
-                        } @else {
-                          Révise le chapitre et retente ! 📚
-                        }
-                      </span>
-
-                    </div>
-
-                    <button
-                      type="button"
-                      class="player__done-btn"
-                      (click)="resetLaravelQuiz()"
-                    >
-                      ↻ Refaire le quiz
-                    </button>
-
-                  }
-
-                } @else {
-
-                  <p>
-                    Aucune question n'a encore été configurée
-                    pour ce quiz.
-                  </p>
-
-                }
-
-              </div>
+            </button>
 
             }
 
-
-            <!-- ================================================= -->
-            <!-- DEVOIR (gated : formule Standard+) -->
-            <!-- ================================================= -->
-
-                       <!-- ================================================= -->
-            <!-- DEVOIR (gated : formule Standard+) -->
-            <!-- ================================================= -->
-
-            @case ('devoir') {
-
-              <div class="player__assignment">
-
-                <span
-                  class="player__assignment-tag
-                         player__assignment-tag--devoir"
-                >
-                  DEVOIR
-                </span>
-
-                <h2 class="player__section-title">
-                  {{ seq.title }}
-                </h2>
-
-
-                @if (seq.instructions) {
-
-                  <p class="player__assignment-text">
-                    {{ seq.instructions }}
-                  </p>
-
-                }
-
-
-                @if (
-                  getPdfResourceUrl(seq.documentUrl);
-                  as pdfUrl
-                ) {
-
-                  <div class="player__pdf-viewer">
-
-                    <iframe
-                      class="player__pdf-frame"
-                      [src]="pdfUrl"
-                      [title]="seq.title"
-                    ></iframe>
-
-                  </div>
-
-                }
-
-
-                @if (
-                  resolveMediaUrl(seq.documentUrl);
-                  as documentUrl
-                ) {
-
-                  <a
-                    class="player__doc-link"
-                    [href]="documentUrl"
-                    [download]="seq.title"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    ⬇ Télécharger le document
-                  </a>
-
-                }
-
-
-                <!-- =============================================== -->
-                <!-- SOUMISSION + FEEDBACK (gated Standard+) -->
-                <!-- =============================================== -->
-
-                @if (accessService.can('assignment_review')) {
-
-                  <!-- Déjà soumis / corrigé ? -->
-                  @if (currentSubmission(); as sub) {
-
-                    <div
-                      class="submission-status"
-                      [class.submission-status--graded]="sub.status === 'corrige'"
-                    >
-
-                      @if (sub.status === 'corrige') {
-                        <strong>
-                          ✓ Devoir corrigé — Note :
-                          {{ sub.grade }}/20
-                        </strong>
-
-                        @if (sub.feedback) {
-                          <p class="submission-status__feedback">
-                            💬 {{ sub.feedback }}
-                          </p>
-                        }
-
-                      } @else {
-                        <strong>
-                          ⏳ Devoir soumis le {{ sub.submittedAt }}
-                          — en attente de correction
-                        </strong>
-                      }
-
-                      <!-- @if (sub.fileUrl) {
-                        <a
-                          [href]="sub.fileUrl"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          📄 Voir mon fichier envoyé
-                        </a>
-                      } -->
-                                              @if (submissionFileUrl(sub); as fileUrl) {
-                        <a
-                          [href]="fileUrl"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          📄 Voir mon fichier envoyé
-                        </a>
-                      }
-
-                    </div>
-
-                  }
-
-
-                  <!-- Formulaire de dépôt / re-dépôt -->
-                  <div class="submission-box">
-
-                    <h4>
-                      @if (currentSubmission()) {
-                        ↻ Re-soumettre une nouvelle version
-                      } @else {
-                        Dépose ton devoir ici
-                      }
-                    </h4>
-
-                    <form
-                      class="submission-form"
-                      (submit)="$event.preventDefault(); submitAssignmentWork()"
-                    >
-
-                      <label class="submission-form__file">
-                        <input
-                          type="file"
-                          accept=".pdf,.doc,.docx,.zip"
-                          (change)="onSubmissionFileSelected($event)"
-                          hidden
-                        />
-                        📎 {{
-                          submissionFile()?.name ??
-                          'Choisir mon fichier (PDF, Word, ZIP)'
-                        }}
-                      </label>
-
-                      <textarea
-                        rows="3"
-                        placeholder="Un mot pour ton formateur ? (optionnel)"
-                        [value]="submissionComment()"
-                        (input)="onSubmissionCommentInput($any($event.target).value)"
-                      ></textarea>
-
-                      @if (submitError(); as err) {
-                        <p class="submission-form__error">⚠️ {{ err }}</p>
-                      }
-
-                      <button
-                        type="submit"
-                        class="player__done-btn"
-                        [disabled]="submitting()"
-                      >
-                        @if (submitting()) {
-                          Envoi…
-                        } @else {
-                          📤 Envoyer mon devoir
-                        }
-                      </button>
-
-                    </form>
-
-                    @if (submitSuccess(); as msg) {
-                      <p class="submission-form__success">✓ {{ msg }}</p>
-                    }
-
-                  </div>
-
-                } @else {
-
-                  <div class="locked-feature">
-                    <span class="locked-feature__icon">🔒</span>
-                    <strong>Soumettre et faire corriger vos devoirs est inclus dès la formule Standard</strong>
-                    <a
-                      [routerLink]="['/paiement', courseId()]"
-                      class="player__certificate-btn"
-                    >
-                      Passer à Standard →
-                    </a>
-                  </div>
-
-                }
-
-              </div>
-
-            }
-
-
-            <!-- ================================================= -->
-            <!-- TP -->
-            <!-- ================================================= -->
-
-            @case ('tp') {
-
-              <div class="player__assignment">
-
-                <span
-                  class="player__assignment-tag
-                         player__assignment-tag--tp"
-                >
-                  TP
-                </span>
-
-                <h2 class="player__section-title">
-                  {{ seq.title }}
-                </h2>
-
-
-                @if (seq.instructions) {
-
-                  <p class="player__assignment-text">
-                    {{ seq.instructions }}
-                  </p>
-
-                }
-
-
-                @if (
-                  getPdfResourceUrl(seq.documentUrl);
-                  as pdfUrl
-                ) {
-
-                  <div class="player__pdf-viewer">
-
-                    <iframe
-                      class="player__pdf-frame"
-                      [src]="pdfUrl"
-                      [title]="seq.title"
-                    ></iframe>
-
-                  </div>
-
-                }
-
-
-                @if (
-                  resolveMediaUrl(seq.documentUrl);
-                  as documentUrl
-                ) {
-
-                  <a
-                    class="player__doc-link"
-                    [href]="documentUrl"
-                    [download]="seq.title"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    ⬇ Télécharger le document
-                  </a>
-
-                }
-
-
-                <button
-                  type="button"
-                  class="player__done-btn"
-                  (click)="markSequenceDone()"
-                >
-                  Marquer comme terminé
-                </button>
-
-              </div>
-
-            }
-
-
-            <!-- ================================================= -->
-            <!-- TD -->
-            <!-- ================================================= -->
-
-            @case ('td') {
-
-              <div class="player__assignment">
-
-                <span class="player__assignment-tag">
-                  TD
-                </span>
-
-                <h2 class="player__section-title">
-                  {{ seq.title }}
-                </h2>
-
-
-                @if (seq.instructions) {
-
-                  <p class="player__assignment-text">
-                    {{ seq.instructions }}
-                  </p>
-
-                }
-
-
-                @if (
-                  getPdfResourceUrl(seq.documentUrl);
-                  as pdfUrl
-                ) {
-
-                  <div class="player__pdf-viewer">
-
-                    <iframe
-                      class="player__pdf-frame"
-                      [src]="pdfUrl"
-                      [title]="seq.title"
-                    ></iframe>
-
-                  </div>
-
-                }
-
-
-                @if (
-                  resolveMediaUrl(seq.documentUrl);
-                  as documentUrl
-                ) {
-
-                  <a
-                    class="player__doc-link"
-                    [href]="documentUrl"
-                    [download]="seq.title"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    ⬇ Télécharger le document
-                  </a>
-
-                }
-
-
-                <button
-                  type="button"
-                  class="player__done-btn"
-                  (click)="markSequenceDone()"
-                >
-                  Marquer comme terminé
-                </button>
-
-              </div>
-
-            }
-
-
-            <!-- ================================================= -->
-            <!-- TYPE INCONNU -->
-            <!-- ================================================= -->
-
-            @default {
-
-              <div class="player__doc-viewer">
-
-                <div class="player__document-icon">
-                  📄
-                </div>
-
-                <h2 class="player__section-title">
-                  {{ seq.title }}
-                </h2>
-
-                @if (seq.instructions) {
-
-                  <p>
-                    {{ seq.instructions }}
-                  </p>
-
-                }
-
-                @if (
-                  resolveMediaUrl(seq.documentUrl);
-                  as documentUrl
-                ) {
-
-                  <a
-                    class="player__doc-link"
-                    [href]="documentUrl"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    Ouvrir le document
-                  </a>
-
-                }
-
-              </div>
-
-            }
+          </div>
 
           }
 
 
-          <!-- // presentation des sections à l'imagge de hec paris
-          //
-          //
-          // -->
-          <div class="feedback-box">
-  @if (!feedbackSent()) {
-    <h4>Veuillez nous donner votre avis sur cette section</h4>
-    <textarea rows="3" [value]="feedbackText()"
-      (input)="feedbackText.set($any($event.target).value)"></textarea>
-    <p class="feedback-box__label">Veuillez évaluer votre expérience globale avec cette section.</p>
-    <div class="feedback-box__emojis">
-      @for (r of [1,2,3,4,5]; track r) {
-        <button type="button" [class.selected]="feedbackRating() === r" (click)="setFeedbackRating(r)">
-          {{ ['😞','🙁','😐','🙂','😄'][r-1] }}
-        </button>
-      }
-    </div>
-    <button type="button" class="feedback-box__submit" (click)="submitFeedback()">Submit Feedback</button>
-  } @else {
-    <p class="feedback-box__thanks">Merci pour votre retour !</p>
-  }
-</div>
+          <!-- ========== QUESTION TEXTE ========== -->
+          @else {
 
+          <input type="text" class="player__quiz-text-input" placeholder="Tapez votre réponse…"
+            [value]="laravelQuizAnswers()[qi] ?? ''" (input)="selectLaravelQuizAnswer(qi, $any($event.target).value)"
+            [readonly]="laravelQuizSubmitted()" [class.player__quiz-text-input--correct]="
+                            laravelQuizSubmitted() &&
+                            isLaravelAnswerCorrect(qi, laravelQuizAnswers()[qi] ?? '')
+                          " [class.player__quiz-text-input--wrong]="
+                            laravelQuizSubmitted() &&
+                            !isLaravelAnswerCorrect(qi, laravelQuizAnswers()[qi] ?? '')
+                          " />
+
+          @if (laravelQuizSubmitted() && !isLaravelAnswerCorrect(qi, laravelQuizAnswers()[qi] ?? '')) {
+          <p class="player__quiz-expected">
+            Réponse attendue : <strong>{{ question.expectedAnswer }}</strong>
+          </p>
+          }
+
+          }
+
+        </div>
 
         }
 
 
-        <!-- ===================================================== -->
-        <!-- AUCUNE SÉQUENCE SÉLECTIONNÉE -->
-        <!-- ===================================================== -->
 
-        <!-- @else {
 
-          <section class="welcome-card">
-            <div class="welcome-card__glow welcome-card__glow--one"></div>
-            <div class="welcome-card__glow welcome-card__glow--two"></div>
+        <!-- RÉSULTAT + ACTIONS -->
+        @if (!laravelQuizSubmitted()) {
 
-            <div class="welcome-card__content">
-              <span class="welcome-card__eyebrow">
-                <span class="welcome-card__dot"></span>
-                VOTRE PARCOURS COMMENCE ICI
-              </span>
+        <button type="button" class="player__done-btn" [disabled]="laravelAnsweredCount() !== seq.quizQuestions.length"
+          (click)="submitLaravelQuiz()">
+          Valider mes réponses →
+        </button>
 
-              <h1>
-                Bienvenue dans votre
-                <span>espace d'apprentissage</span>
-              </h1>
+        } @else {
 
-              <p class="welcome-card__intro">
-                Préparez-vous à développer vos compétences, à relever de nouveaux défis
-                et à transformer chaque apprentissage en une véritable opportunité.
-              </p>
+        <div class="quiz-result-banner" [class.quiz-result-banner--pass]="laravelQuizPassed()">
+          <strong>
+            Score : {{ laravelQuizScore()!.score }}% — seuil requis : {{ laravelQuizThreshold() }}%
+          </strong>
+          <span>
+            @if (laravelQuizPassed()) {
+            Félicitations, quiz validé !
+            } @else {
+            Seuil non atteint. Révisez le chapitre et réessayez.
+            }
+          </span>
+        </div>
 
-              <div class="welcome-card__features">
-                <div class="welcome-feature">
-                  <div class="welcome-feature__icon">▶</div>
-                  <div>
-                    <strong>Apprenez à votre rythme</strong>
-                    <small>Des contenus accessibles à tout moment</small>
-                  </div>
-                </div>
+        @if (!laravelQuizPassed()) {
+        <button type="button" class="player__done-btn" (click)="resetLaravelQuiz()">
+          ↻ Refaire le quiz
+        </button>
+        }
 
-                <div class="welcome-feature">
-                  <div class="welcome-feature__icon">◆</div>
-                  <div>
-                    <strong>Progressez efficacement</strong>
-                    <small>Des activités pour renforcer vos compétences</small>
-                  </div>
-                </div>
+        }
+        } @else {
 
-                <div class="welcome-feature">
-                  <div class="welcome-feature__icon">✓</div>
-                  <div>
-                    <strong>Atteignez vos objectifs</strong>
-                    <small>Avancez étape par étape vers la réussite</small>
-                  </div>
-                </div>
-              </div>
+        <p>
+          Aucune question n'a encore été configurée
+          pour ce quiz.
+        </p>
 
-              <div class="welcome-card__footer">
-                <div class="welcome-card__message">
-                  <span>✨</span>
-                  <p>
-                    Votre réussite commence par un premier pas.
-                    <strong>Faites-le dès maintenant !</strong>
-                  </p>
-                </div>
+        }
 
-                <div class="welcome-card__arrow">→</div>
-              </div>
-            </div>
+      </div>
 
-            <div class="welcome-card__badge">
-              <span>MY</span>
-              <small>ACADEMY</small>
-            </div>
-          </section>
-
-        } -->
-
-        <!-- ===================================================== -->
-<!-- AUCUNE SÉQUENCE SÉLECTIONNÉE — DASHBOARD HEC -->
-<!-- ===================================================== -->
-
-@else {
-
-  <section class="course-hero">
-
-    <!-- En-tête du cours -->
-    <header class="course-hero__head">
-      <span class="course-hero__eyebrow">
-        {{ c.category ?? 'COURS' }}
-      </span>
-      <h1 class="course-hero__title">{{ c.title }}</h1>
-      @if (c.description) {
-        <p class="course-hero__desc">{{ c.description }}</p>
       }
 
-      <div class="course-hero__meta">
-        @if (c.subject)  { <span>📚 {{ c.subject }}</span> }
-        @if (c.level)    { <span>🎓 {{ c.level }}</span> }
-        @if (c.durationFull) { <span>⏱ {{ c.durationFull }}</span> }
-        @if (c.diploma)  { <span>🏅 {{ c.diploma }}</span> }
-      </div>
-    </header>
 
-    <!-- Statistiques du cours -->
-    <div class="course-stats">
-      <div class="course-stats__item">
-        <span class="course-stats__value">{{ modulesCount() }}</span>
-        <span class="course-stats__label">Module(s)</span>
-      </div>
-      <div class="course-stats__item">
-        <span class="course-stats__value">{{ totalSequences }}</span>
-        <span class="course-stats__label">Séquence(s)</span>
-      </div>
-      <div class="course-stats__item">
-        <span class="course-stats__value">{{ completedSequences }}</span>
-        <span class="course-stats__label">Terminée(s)</span>
-      </div>
-      <div class="course-stats__item">
-        <span class="course-stats__value">{{ progressPercent }}%</span>
-        <span class="course-stats__label">Progression</span>
-      </div>
-    </div>
+      <!-- ================================================= -->
+      <!-- DEVOIR (gated : formule Standard+) -->
+      <!-- ================================================= -->
 
-    <!-- Barre de progression -->
-    <div class="course-progress">
-      <div class="course-progress__head">
+      @case ('devoir') {
+      <div class="player__assignment">
+
+        <span class="player__assignment-tag player__assignment-tag--devoir">
+          TRAVAIL À RENDRE
+        </span>
+
+        <h2 class="player__section-title">
+          {{ seq.title }}
+        </h2>
+
+        @if (seq.instructions) {
+        <p class="player__assignment-text">
+          {{ seq.instructions }}
+        </p>
+        }
+
+        <!-- PDF du travail -->
+        @if (getPdfResourceUrl(seq.documentUrl); as pdfUrl) {
+        <div class="player__pdf-viewer">
+          <iframe class="player__pdf-frame" [src]="pdfUrl" [title]="seq.title"></iframe>
+        </div>
+        }
+
+        @if (resolveMediaUrl(seq.documentUrl); as documentUrl) {
+        <a class="player__doc-link" [href]="documentUrl" [download]="seq.title" target="_blank"
+          rel="noopener noreferrer">
+          Télécharger les consignes
+        </a>
+        }
+
+        <!-- Zone de soumission (gated Standard+) -->
+        @if (accessService.can('assignment_review')) {
+
+        @if (currentSubmission(); as sub) {
+        <div class="submission-status" [class.submission-status--graded]="sub.status === 'corrige'">
+          @if (sub.status === 'corrige') {
+          <strong>Évaluation terminée — Note : {{ sub.grade }}/20</strong>
+          @if (sub.feedback) {
+          <p class="submission-status__feedback">{{ sub.feedback }}</p>
+          }
+          } @else {
+          <strong>Travail soumis le {{ sub.submittedAt }} — en attente d'évaluation</strong>
+          }
+
+          @if (submissionFileUrl(sub); as fileUrl) {
+          <a [href]="fileUrl" target="_blank" rel="noopener noreferrer">Voir mon fichier envoyé</a>
+          }
+        </div>
+        }
+
+        <div class="submission-box">
+          <h4>
+            @if (currentSubmission()) {
+            Soumettre une nouvelle version
+            } @else {
+            Déposer votre travail ici
+            }
+          </h4>
+
+          <form class="submission-form" (submit)="$event.preventDefault(); submitAssignmentWork()">
+            <label class="submission-form__file">
+              <input type="file" accept=".pdf,.doc,.docx,.zip" (change)="onSubmissionFileSelected($event)" hidden />
+              {{ submissionFile()?.name ?? 'Choisir mon fichier (PDF, Word, ZIP)' }}
+            </label>
+
+            <textarea rows="3" placeholder="Commentaire pour le formateur (optionnel)" [value]="submissionComment()"
+              (input)="onSubmissionCommentInput($any($event.target).value)"></textarea>
+
+            @if (submitError(); as err) {
+            <p class="submission-form__error">{{ err }}</p>
+            }
+
+            <button type="submit" class="player__done-btn" [disabled]="submitting()">
+              @if (submitting()) { Envoi… } @else { Envoyer mon travail }
+            </button>
+          </form>
+
+          @if (submitSuccess(); as msg) {
+          <p class="submission-form__success">{{ msg }}</p>
+          }
+        </div>
+
+        } @else {
+        <div class="locked-feature">
+          <strong>La soumission de travaux avec évaluation personnalisée est incluse dès la formule
+            Standard.</strong>
+          <a [routerLink]="['/paiement', courseId()]" class="player__certificate-btn">
+            Passer à Standard →
+          </a>
+        </div>
+        }
+      </div>
+      }
+
+
+      <!-- ================================================= -->
+      <!-- TP -->
+      <!-- ================================================= -->
+
+      @case ('tp') {
+
+      <div class="player__assignment">
+
+        <span class="player__assignment-tag
+                         player__assignment-tag--tp">
+          TP
+        </span>
+
+        <h2 class="player__section-title">
+          {{ seq.title }}
+        </h2>
+
+
+        @if (seq.instructions) {
+
+        <p class="player__assignment-text">
+          {{ seq.instructions }}
+        </p>
+
+        }
+
+
+        @if (
+        getPdfResourceUrl(seq.documentUrl);
+        as pdfUrl
+        ) {
+
+        <div class="player__pdf-viewer">
+
+          <iframe class="player__pdf-frame" [src]="pdfUrl" [title]="seq.title"></iframe>
+
+        </div>
+
+        }
+
+
+        @if (
+        resolveMediaUrl(seq.documentUrl);
+        as documentUrl
+        ) {
+
+        <a class="player__doc-link" [href]="documentUrl" [download]="seq.title" target="_blank"
+          rel="noopener noreferrer">
+          Télécharger le document
+        </a>
+
+        }
+
+        <ng-container *ngTemplateOutlet="submissionTpl"></ng-container>
+
+
+        <button type="button" class="player__done-btn" (click)="markSequenceDone()">
+          Marquer comme terminé
+        </button>
+
+      </div>
+
+      }
+
+
+      <!-- ================================================= -->
+      <!-- TD -->
+      <!-- ================================================= -->
+
+      @case ('td') {
+
+      <div class="player__assignment">
+
+        <span class="player__assignment-tag">
+          TD
+        </span>
+
+        <h2 class="player__section-title">
+          {{ seq.title }}
+        </h2>
+
+
+        @if (seq.instructions) {
+
+        <p class="player__assignment-text">
+          {{ seq.instructions }}
+        </p>
+
+        }
+
+
+        @if (
+        getPdfResourceUrl(seq.documentUrl);
+        as pdfUrl
+        ) {
+
+        <div class="player__pdf-viewer">
+
+          <iframe class="player__pdf-frame" [src]="pdfUrl" [title]="seq.title"></iframe>
+
+        </div>
+
+        }
+
+
+        @if (
+        resolveMediaUrl(seq.documentUrl);
+        as documentUrl
+        ) {
+
+        <a class="player__doc-link" [href]="documentUrl" [download]="seq.title" target="_blank"
+          rel="noopener noreferrer">
+          Télécharger le document
+        </a>
+
+        }
+
+        <ng-container *ngTemplateOutlet="submissionTpl"></ng-container>
+
+
+        <button type="button" class="player__done-btn" (click)="markSequenceDone()">
+          Marquer comme terminé
+        </button>
+
+      </div>
+
+      }
+
+
+      @case ('cas_pratique') {
+      <div class="player__assignment">
+        <span class="player__assignment-tag">CAS PRATIQUE</span>
+        <h2 class="player__section-title">{{ seq.title }}</h2>
+
+        @if (seq.instructions) { <p class="player__assignment-text">{{ seq.instructions }}</p> }
+
+        @if (getPdfResourceUrl(seq.documentUrl); as pdfUrl) {
+        <div class="player__pdf-viewer">
+          <iframe class="player__pdf-frame" [src]="pdfUrl" [title]="seq.title"></iframe>
+        </div>
+        }
+        @if (resolveMediaUrl(seq.documentUrl); as documentUrl) {
+        <a class="player__doc-link" [href]="documentUrl" [download]="seq.title" target="_blank"
+          rel="noopener noreferrer">Télécharger le document</a>
+        }
+
+        @if (seq.allowFileUpload !== false) {
+        <ng-container *ngTemplateOutlet="submissionTpl"></ng-container>
+        }
+      </div>
+      }
+
+
+      <!-- ================================================= -->
+      <!-- TYPE INCONNU -->
+      <!-- ================================================= -->
+
+      @default {
+
+      <div class="player__doc-viewer">
+
+        <div class="player__document-icon">
+        </div>
+
+        <h2 class="player__section-title">
+          {{ seq.title }}
+        </h2>
+
+        @if (seq.instructions) {
+
+        <p>
+          {{ seq.instructions }}
+        </p>
+
+        }
+
+        @if (
+        resolveMediaUrl(seq.documentUrl);
+        as documentUrl
+        ) {
+
+        <a class="player__doc-link" [href]="documentUrl" target="_blank" rel="noopener noreferrer">
+          Ouvrir le document
+        </a>
+
+        }
+
+      </div>
+
+      }
+
+      }
+
+
+      <div class="feedback-box">
+        @if (!feedbackSent()) {
+        <h4>Veuillez nous donner votre avis sur cette section</h4>
+        <textarea rows="3" [value]="feedbackText()" (input)="feedbackText.set($any($event.target).value)"></textarea>
+        <p class="feedback-box__label">Veuillez évaluer votre expérience globale avec cette section.</p>
+        <div class="feedback-box__emojis">
+          @for (r of [1,2,3,4,5]; track r) {
+          <button type="button" [class.selected]="feedbackRating() === r" (click)="setFeedbackRating(r)">
+            {{ ['😞','🙁','😐','🙂','😄'][r-1] }}
+          </button>
+          }
+        </div>
+        <button type="button" class="feedback-box__submit" (click)="submitFeedback()">Submit Feedback</button>
+        } @else {
+        <p class="feedback-box__thanks">Merci pour votre retour !</p>
+        }
+      </div>
+
+
+      }
+
+
+      <!-- ===================================================== -->
+      <!-- AUCUNE SÉQUENCE SÉLECTIONNÉE — DASHBOARD HEC -->
+      <!-- ===================================================== -->
+
+      @else {
+
+      <section class="course-hero">
+
+        <!-- En-tête du cours -->
+        <header class="course-hero__head">
+          <span class="course-hero__eyebrow">
+            {{ c.category ?? 'COURS' }}
+          </span>
+          <h1 class="course-hero__title">{{ c.title }}</h1>
+          @if (c.description) {
+          <p class="course-hero__desc">{{ c.description }}</p>
+          }
+
+          <div class="course-hero__meta">
+            @if (c.subject) { <span>{{ c.subject }}</span> }
+            @if (c.level) { <span>{{ c.level }}</span> }
+            @if (c.durationFull) { <span>{{ c.durationFull }}</span> }
+            @if (c.diploma) { <span>{{ c.diploma }}</span> }
+          </div>
+        </header>
+
+        <!-- Statistiques du cours -->
+        <div class="course-stats">
+          <div class="course-stats__item">
+            <span class="course-stats__value">{{ modulesCount() }}</span>
+            <span class="course-stats__label">Module(s)</span>
+          </div>
+          <div class="course-stats__item">
+            <span class="course-stats__value">{{ totalSequences }}</span>
+            <span class="course-stats__label">Séquence(s)</span>
+          </div>
+          <div class="course-stats__item">
+            <span class="course-stats__value">{{ completedSequences }}</span>
+            <span class="course-stats__label">Terminée(s)</span>
+          </div>
+          <div class="course-stats__item">
+            <span class="course-stats__value">{{ progressPercent() }}%</span>
+            <span class="course-stats__label">Progression</span>
+          </div>
+        </div>
+
+        <!-- Barre de progression -->
+        <div class="course-progress">
+          <div class="course-progress__head">
+            <span>Votre progression</span>
+            <strong>{{ progressPercent() }}%</strong>
+          </div>
+          <div class="course-progress__bar">
+            <div class="course-progress__fill" [style.width.%]="progressPercent()"></div>
+          </div>
+        </div>
+
+        <!-- Bouton reprendre -->
+        @if (progressPercent() > 0 && progressPercent() < 100) { <button type="button" class="course-resume"
+          (click)="goToFirstIncomplete()">
+          <span class="course-resume__icon"></span>
+          <span class="course-resume__text">
+            <small>REPRENDRE OÙ VOUS ÉTIEZ</small>
+            <strong>Continuer votre parcours</strong>
+          </span>
+          <span class="course-resume__arrow">→</span>
+          </button>
+          }
+
+          <!-- Sommaire complet -->
+          <div class="course-summary">
+            <h2 class="course-summary__title">Programme complet</h2>
+
+            @for (chapter of curriculum().chapters; track chapter.id) {
+
+            <!-- Bandeau module (regroupement) -->
+            @if (chapter.moduleTitle) {
+            <div class="course-summary__module">
+              <span class="course-summary__module-badge">
+                M{{ (chapter.modulePosition ?? 0) + 1 }}
+              </span>
+              <strong>{{ chapter.moduleTitle }}</strong>
+            </div>
+            }
+
+            <!-- Chapitre -->
+            <div class="course-summary__chapter">
+              <div class="course-summary__chapter-head">
+                @if (chapter.weekNumber) {
+                <span class="course-summary__week">Semaine {{ chapter.weekNumber }}</span>
+                }
+                <span class="course-summary__chapter-title">{{ chapter.title }}</span>
+              </div>
+
+              <!-- Séquences du chapitre -->
+              <ul class="course-summary__list">
+                @for (seq of chapter.sequences; track seq.id) {
+                <li>
+                  <button type="button" class="course-summary__item" [class.course-summary__item--done]="seq.completed"
+                    (click)="selectSequence(seq.id)">
+                    <span class="course-summary__item-icon" [attr.data-type]="seq.type">
+                      @switch (seq.type) {
+                      @case ('video') {
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                      </svg>
+                      }
+                      @case ('document') {
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                      </svg>
+                      }
+                      @case ('quiz') {
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                        <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                      </svg>
+                      }
+                      @case ('devoir') {
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                      </svg>
+                      }
+                      @case ('tp') {
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path
+                          d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z">
+                        </path>
+                      </svg>
+                      }
+                      @case ('td') {
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 20h9"></path>
+                        <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+                      </svg>
+                      }
+                      @default {
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path>
+                        <polyline points="13 2 13 9 20 9"></polyline>
+                      </svg>
+                      }
+                      }
+                    </span>
+
+                    <span class="course-summary__item-label">{{ seq.title }}</span>
+                    @if (seq.completed) {
+                    <span class="course-summary__item-check">✓</span>
+                    }
+                  </button>
+                </li>
+                }
+
+                <!-- Quiz de module -->
+                <!-- @if (chapter.moduleQuiz; as mq) { -->
+                @if (isLastChapterOfModule(chapter) && chapter.moduleQuiz; as mq) {
+                <li>
+                  <button type="button" class="course-summary__item course-summary__item--module-quiz"
+                    [class.course-summary__item--done]="mq.completed" (click)="selectSequence(mq.id)">
+                    <span class="course-summary__item-icon"></span>
+                    <span class="course-summary__item-label">{{ mq.title }}</span>
+                    @if (mq.completed) {
+                    <span class="course-summary__item-check">✓</span>
+                    }
+                  </button>
+                </li>
+                }
+              </ul>
+            </div>
+            }
+
+            <!-- Examen final -->
+            @if (finalExam(); as exam) {
+            <div class="course-summary__final">
+              <button type="button" class="course-summary__item course-summary__item--final"
+                (click)="selectSequence(exam.id)">
+                <span class="course-summary__item-icon"></span>
+                <span class="course-summary__item-label">{{ exam.title }}</span>
+              </button>
+            </div>
+            }
+          </div>
+
+      </section>
+
+      }
+
+
+
+    </main>
+
+  </div>
+  }
+
+  @if (activeTab() === 'discussion') {
+  <div class="player__tab-panel">
+    <app-course-forum [courseId]="c.id" [currentUserId]="currentUser()?.id ?? 0"
+      [currentUserName]="currentUser()?.name ?? 'Apprenant'"
+      [currentUserRole]="currentUser()?.role ?? 'apprenant'"></app-course-forum>
+  </div>
+  }
+
+  <!-- @if (activeTab() === 'progression') {
+  <div class="player__tab-panel">
+    <div class="player__progress">
+      <div class="player__progress-header">
         <span>Votre progression</span>
         <strong>{{ progressPercent }}%</strong>
       </div>
-      <div class="course-progress__bar">
-        <div class="course-progress__fill" [style.width.%]="progressPercent"></div>
+      <div class="player__progress-bar">
+        <div class="player__progress-fill" [style.width.%]="progressPercent"></div>
       </div>
     </div>
+  </div>
+  } -->
+  @if (activeTab() === 'progression') {
+  <div class="player__tab-panel">
+    <div class="progress-dashboard">
 
-    <!-- Bouton reprendre -->
-    @if (progressPercent > 0 && progressPercent < 100) {
-      <button type="button" class="course-resume" (click)="goToFirstIncomplete()">
-        <span class="course-resume__icon">▶</span>
-        <span class="course-resume__text">
-          <small>REPRENDRE OÙ VOUS ÉTIEZ</small>
-          <strong>Continuer votre parcours</strong>
-        </span>
-        <span class="course-resume__arrow">→</span>
-      </button>
-    }
+      <!-- En-tête -->
+      <header class="progress-dashboard__head">
+        <h2>Votre progression</h2>
+        <p>Suivez votre avancement dans ce cours et identifiez les prochaines étapes.</p>
+      </header>
 
-    <!-- Sommaire complet -->
-    <div class="course-summary">
-      <h2 class="course-summary__title">📋 Programme complet</h2>
+      <!-- Carte principale : Cercle de progression + stats clés -->
+      <div class="progress-dashboard__main">
 
-      @for (chapter of curriculum().chapters; track chapter.id) {
-
-        <!-- Bandeau module (regroupement) -->
-        @if (chapter.moduleTitle) {
-          <div class="course-summary__module">
-            <span class="course-summary__module-badge">
-              M{{ (chapter.modulePosition ?? 0) + 1 }}
-            </span>
-            <strong>{{ chapter.moduleTitle }}</strong>
+        <!-- Graphique circulaire -->
+        <!-- Graphique circulaire -->
+        <div class="progress-circle">
+          <svg viewBox="0 0 120 120" class="progress-circle__svg">
+            <circle cx="60" cy="60" r="52" fill="none" stroke="#e2e8f0" stroke-width="12" />
+            <circle cx="60" cy="60" r="52" fill="none" stroke="#b87333" stroke-width="12" stroke-linecap="round"
+              [attr.stroke-dasharray]="2 * 3.14159 * 52"
+              [attr.stroke-dashoffset]="2 * 3.14159 * 52 * (1 - progressPercent() / 100)" transform="rotate(-90 60 60)" />
+          </svg>
+          <div class="progress-circle__label">
+            <strong>{{ progressPercent() }}%</strong>
+            <span>complété</span>
           </div>
+        </div>
+
+        <!-- Stats clés -->
+        <div class="progress-stats">
+          <div class="progress-stat">
+            <span class="progress-stat__value">{{ progressStats().completed }}</span>
+            <span class="progress-stat__label">Séquences terminées</span>
+          </div>
+          <div class="progress-stat">
+            <span class="progress-stat__value">{{ progressStats().total }}</span>
+            <span class="progress-stat__label">Séquences au total</span>
+          </div>
+          <div class="progress-stat">
+            <span class="progress-stat__value">{{ progressStats().remaining }}</span>
+            <span class="progress-stat__label">Restantes</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Barre de progression globale -->
+      <!-- Barre de progression globale -->
+      <div class="progress-bar-section">
+        <div class="progress-bar-section__head">
+          <span>Progression globale</span>
+          <strong>{{ progressPercent() }}%</strong> <!-- ✅ API -->
+        </div>
+        <div class="progress-bar-section__bar">
+          <div class="progress-bar-section__fill" [style.width.%]="progressPercent()"> <!-- ✅ API -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Répartition par type de contenu -->
+      <div class="progress-types">
+        <div class="progress-type">
+          <div class="progress-type__icon" style="background: #dbeafe;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2">
+              <polygon points="5 3 19 12 5 21 5 3"></polygon>
+            </svg>
+          </div>
+          <div class="progress-type__body">
+            <strong>{{ sequencesByType().videos }}</strong>
+            <span>Vidéos</span>
+          </div>
+        </div>
+        <div class="progress-type">
+          <div class="progress-type__icon" style="background: #fef3c7;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#b87333" stroke-width="2">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+            </svg>
+          </div>
+          <div class="progress-type__body">
+            <strong>{{ sequencesByType().documents }}</strong>
+            <span>Documents</span>
+          </div>
+        </div>
+        <div class="progress-type">
+          <div class="progress-type__icon" style="background: #f3e8ff;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-width="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+              <line x1="12" y1="17" x2="12.01" y2="17"></line>
+            </svg>
+          </div>
+          <div class="progress-type__body">
+            <strong>{{ sequencesByType().quizzes }}</strong>
+            <span>Quiz</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Progression par module -->
+      <div class="progress-modules">
+        <h3>Progression par module</h3>
+        @for (module of moduleProgress(); track module.id) {
+        <div class="progress-module">
+          <div class="progress-module__head">
+            <div class="progress-module__title">
+              @if (module.weekNumber) {
+              <span class="progress-module__week">Semaine {{ module.weekNumber }}</span>
+              }
+              <strong>{{ module.title }}</strong>
+            </div>
+            <span class="progress-module__count">{{ module.completed }}/{{ module.total }}</span>
+          </div>
+          <div class="progress-module__bar">
+            <div class="progress-module__fill" [style.width.%]="module.percent"
+              [style.background]="module.percent === 100 ? '#10b981' : '#b87333'">
+            </div>
+          </div>
+        </div>
+        }
+      </div>
+
+    </div>
+  </div>
+  }
+
+  @if (activeTab() === 'evaluations') {
+  <div class="player__tab-panel">
+
+    <!-- ===================================================== -->
+    <!-- MES ÉVALUATIONS (notes + devoirs) -->
+    <!-- ===================================================== -->
+
+    <div class="player__evaluations">
+
+      <div class="player__evaluations-head">
+
+        <span class="player__evaluations-title">
+          Mes évaluations
+        </span>
+
+        @if (accessService.averageGrade(); as avg) {
+        <span class="player__evaluations-avg">
+          {{ avg | number:'1.1-1' }}/20
+        </span>
         }
 
-        <!-- Chapitre -->
-        <div class="course-summary__chapter">
-          <div class="course-summary__chapter-head">
-            @if (chapter.weekNumber) {
-              <span class="course-summary__week">Semaine {{ chapter.weekNumber }}</span>
-            }
-            <span class="course-summary__chapter-title">{{ chapter.title }}</span>
-          </div>
+      </div>
 
-          <!-- Séquences du chapitre -->
-          <ul class="course-summary__list">
-            @for (seq of chapter.sequences; track seq.id) {
-              <li>
-                <button
-                  type="button"
-                  class="course-summary__item"
-                  [class.course-summary__item--done]="seq.completed"
-                  (click)="selectSequence(seq.id)"
-                >
-                  <span class="course-summary__item-icon">
-                    @switch (seq.type) {
-                      @case ('video')        { 🎬 }
-                      @case ('document')     { 📄 }
-                      @case ('quiz')         { ❓ }
-                      @case ('devoir')       { 📝 }
-                      @case ('tp')           { 🛠️ }
-                      @case ('td')           { ✍️ }
-                      @case ('cas_pratique') { 📝 }
-                      @default               { 📄 }
-                    }
-                  </span>
-                  <span class="course-summary__item-label">{{ seq.title }}</span>
-                  @if (seq.completed) {
-                    <span class="course-summary__item-check">✓</span>
-                  }
-                </button>
-              </li>
-            }
+      <div class="player__evaluations-filters">
 
-            <!-- Quiz de module -->
-            @if (chapter.moduleQuiz; as mq) {
-              <li>
-                <button
-                  type="button"
-                  class="course-summary__item course-summary__item--module-quiz"
-                  [class.course-summary__item--done]="mq.completed"
-                  (click)="selectSequence(mq.id)"
-                >
-                  <span class="course-summary__item-icon">🎓</span>
-                  <span class="course-summary__item-label">{{ mq.title }}</span>
-                  @if (mq.completed) {
-                    <span class="course-summary__item-check">✓</span>
-                  }
-                </button>
-              </li>
-            }
-          </ul>
-        </div>
-      }
+        <button type="button" [class.active]="evalFilter() === 'tous'" (click)="setEvalFilter('tous')">
+          Tous
+        </button>
 
-      <!-- Examen final -->
-      @if (finalExam(); as exam) {
-        <div class="course-summary__final">
-          <button
-            type="button"
-            class="course-summary__item course-summary__item--final"
-            (click)="selectSequence(exam.id)"
-          >
-            <span class="course-summary__item-icon">🏆</span>
-            <span class="course-summary__item-label">{{ exam.title }}</span>
+        <button type="button" [class.active]="evalFilter() === 'corrige'" (click)="setEvalFilter('corrige')">
+          Corrigés
+        </button>
+
+        <button type="button" [class.active]="evalFilter() === 'attente'" (click)="setEvalFilter('attente')">
+          En attente
+        </button>
+
+      </div>
+
+      @if (filteredEvaluations().length > 0) {
+
+      <ul class="player__evaluations-list">
+
+        @for (evalItem of filteredEvaluations(); track evalItem.id) {
+
+        <li>
+          <button type="button" class="eval-item" (click)="goToEvaluation(evalItem.sequenceId)">
+
+            <span class="eval-item__icon">
+              @if (evalItem.type === 'quiz') {
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                <line x1="12" y1="17" x2="12.01" y2="17"></line>
+              </svg>
+              } @else {
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+              </svg>
+              }
+            </span>
+
+            <span class="eval-item__body">
+              <span class="eval-item__title">{{ evalItem.title }}</span>
+              @if (evalItem.type === 'devoir') {
+              @if (evalItem.status === 'corrige' && evalItem.grade !== null) {
+              <span class="eval-item__grade eval-item__grade--ok">Note : {{ evalItem.grade }}/20</span>
+              } @else if (evalItem.status === 'retourne') {
+              <span class="eval-item__grade eval-item__grade--ko">À refaire</span>
+              } @else {
+              <span class="eval-item__grade">En attente d'évaluation</span>
+              }
+              } @else {
+              <span class="eval-item__grade eval-item__grade--ok">Validé</span>
+              }
+            </span>
+
           </button>
-        </div>
+        </li>
+
+        }
+
+      </ul>
+
+      } @else {
+
+      <p class="player__evaluations-empty">
+        Aucune évaluation pour le moment.
+        Tes examens notés et quiz apparaîtront ici.
+      </p>
+
       }
-    </div>
-
-  </section>
-
-}
-
-
-
-      <!-- </main>
 
     </div>
-
   </div>
 
+  }
 
-} @else { -->
+  @if (activeTab() === 'formule') {
+  <div class="player__tab-panel">
 
-      </main>
+    <!-- ===================================================== -->
+    <!-- MA FORMULE -->
+    <!-- ===================================================== -->
+
+    <div class="player__plan-card">
+
+      <div class="player__plan-head">
+        <span class="player__plan-label">Ma formule</span>
+        <strong class="player__plan-name">
+          {{ accessService.myPlan().planName }}
+        </strong>
+        <span class="player__plan-level">
+          Niveau {{ accessService.myPlan().level }}
+        </span>
+      </div>
+
+      @if (accessService.myPlan().level === 0) {
+      <p class="player__plan-hint">
+        Vous n'avez pas encore de formule pour ce cours.
+      </p>
+      <a [routerLink]="['/paiement', courseId()]" class="player__certificate-btn">
+        Choisir une formule →
+      </a>
+      } @else {
+      <ul class="player__plan-features">
+        <li [class.ok]="accessService.can('certificate')">
+          {{ accessService.can('certificate') ? '✓' : '' }} Certificat
+        </li>
+        <li [class.ok]="accessService.can('live_sessions')">
+          {{ accessService.can('live_sessions') ? '✓' : '' }} Séances en direct
+        </li>
+        <li [class.ok]="accessService.can('assignment_review')">
+          {{ accessService.can('assignment_review') ? '✓' : '' }} Évaluation des travaux
+        </li>
+        <li [class.ok]="accessService.can('coaching')">
+          {{ accessService.can('coaching') ? '✓' : '' }} Coaching individuel
+        </li>
+      </ul>
+
+      @if (accessService.myPlan().level < 4) { <a [routerLink]="['/paiement', courseId()]" class="player__plan-upgrade">
+        Passer au plan supérieur →
+        </a>
+        }
+        }
 
     </div>
-    }
-
-    @if (activeTab() === 'discussion') {
-      <div class="player__tab-panel">
-        <app-course-forum [courseId]="c.id"></app-course-forum>
-      </div>
-    }
-
-    @if (activeTab() === 'progression') {
-      <div class="player__tab-panel">
-        <div class="player__progress">
-          <div class="player__progress-header">
-            <span>Votre progression</span>
-            <strong>{{ progressPercent }}%</strong>
-          </div>
-          <div class="player__progress-bar">
-            <div class="player__progress-fill" [style.width.%]="progressPercent"></div>
-          </div>
-        </div>
-      </div>
-    }
-
-    @if (activeTab() === 'evaluations') {
-      <div class="player__tab-panel">
-        <!-- 🔽 colle ici tout le contenu que tu vas couper à l'étape 5 -->
-
-               <!-- ===================================================== -->
-        <!-- 🏆 MES ÉVALUATIONS (notes + devoirs) -->
-        <!-- ===================================================== -->
-
-        <div class="player__evaluations">
-
-          <div class="player__evaluations-head">
-
-            <span class="player__evaluations-title">
-              🏆 Mes évaluations
-            </span>
-
-            @if (accessService.averageGrade(); as avg) {
-              <span class="player__evaluations-avg">
-                {{ avg | number:'1.1-1' }}/20
-              </span>
-            }
-
-          </div>
-
-          <div class="player__evaluations-filters">
-
-            <button
-              type="button"
-              [class.active]="evalFilter() === 'tous'"
-              (click)="setEvalFilter('tous')"
-            >
-              Tous
-            </button>
-
-            <button
-              type="button"
-              [class.active]="evalFilter() === 'corrige'"
-              (click)="setEvalFilter('corrige')"
-            >
-              Corrigés
-            </button>
-
-            <button
-              type="button"
-              [class.active]="evalFilter() === 'attente'"
-              (click)="setEvalFilter('attente')"
-            >
-              En attente
-            </button>
-
-          </div>
-
-          @if (filteredEvaluations().length > 0) {
-
-            <ul class="player__evaluations-list">
-
-              @for (evalItem of filteredEvaluations(); track evalItem.id) {
-
-                <li>
-                  <button
-                    type="button"
-                    class="eval-item"
-                    (click)="goToEvaluation(evalItem.sequenceId)"
-                  >
-
-                    <span class="eval-item__icon">
-                      {{ evalItem.type === 'quiz' ? '🎯' : '📝' }}
-                    </span>
-
-                    <span class="eval-item__body">
-
-                      <span class="eval-item__title">
-                        {{ evalItem.title }}
-                      </span>
-
-                      @if (evalItem.type === 'devoir') {
-
-                        @if (evalItem.status === 'corrige' && evalItem.grade !== null) {
-                          <span class="eval-item__grade eval-item__grade--ok">
-                            {{ evalItem.grade }}/20
-                          </span>
-                        } @else if (evalItem.status === 'retourne') {
-                          <span class="eval-item__grade eval-item__grade--ko">
-                            À refaire
-                          </span>
-                        } @else {
-                          <span class="eval-item__grade">
-                            ⏳ En attente
-                          </span>
-                        }
-
-                      } @else {
-                        <span class="eval-item__grade eval-item__grade--ok">
-                          ✓ Réussi
-                        </span>
-                      }
-
-                    </span>
-
-                  </button>
-                </li>
-
-              }
-
-            </ul>
-
-          } @else {
-
-            <p class="player__evaluations-empty">
-              Aucune évaluation pour le moment.
-              Tes devoirs notés et quiz apparaîtront ici.
-            </p>
-
-          }
-
-        </div>
-      </div>
-      
-    }
-
-    @if (activeTab() === 'formule') {
-      <div class="player__tab-panel">
-        <!-- 🔽 colle ici tout le contenu que tu vas couper à l'étape 4 -->
-         
-                <!-- ===================================================== -->
-        <!-- MA FORMULE -->
-        <!-- ===================================================== -->
-
-        <div class="player__plan-card">
-
-          <div class="player__plan-head">
-            <span class="player__plan-label">💳 Ma formule</span>
-            <strong class="player__plan-name">
-              {{ accessService.myPlan().planName }}
-            </strong>
-            <span class="player__plan-level">
-              Niveau {{ accessService.myPlan().level }}
-            </span>
-          </div>
-
-          @if (accessService.myPlan().level === 0) {
-            <p class="player__plan-hint">
-              Vous n'avez pas encore de formule pour ce cours.
-            </p>
-            <a
-              [routerLink]="['/paiement', courseId()]"
-              class="player__certificate-btn"
-            >
-              Choisir une formule →
-            </a>
-          } @else {
-            <ul class="player__plan-features">
-              <li [class.ok]="accessService.can('certificate')">
-                {{ accessService.can('certificate') ? '✓' : '🔒' }} Certificat
-              </li>
-              <li [class.ok]="accessService.can('live_sessions')">
-                {{ accessService.can('live_sessions') ? '✓' : '🔒' }} Séances en direct
-              </li>
-              <li [class.ok]="accessService.can('assignment_review')">
-                {{ accessService.can('assignment_review') ? '✓' : '🔒' }} Correction des devoirs
-              </li>
-              <li [class.ok]="accessService.can('coaching')">
-                {{ accessService.can('coaching') ? '✓' : '🔒' }} Coaching individuel
-              </li>
-            </ul>
-
-            @if (accessService.myPlan().level < 4) {
-              <a
-                [routerLink]="['/paiement', courseId()]"
-                class="player__plan-upgrade"
-              >
-                Passer au plan supérieur →
-              </a>
-            }
-          }
-
-        </div>
-      </div>
-    }
+  </div>
+  }
 
 
 
-<!-- ===================================================== -->
-<!-- 🆕 ONGLET REPLAYS — Séances live passées -->
-<!-- ===================================================== -->
-@if (activeTab() === 'replays') {
+  <!-- ===================================================== -->
+  <!-- ONGLET REPLAYS — Séances live passées -->
+  <!-- ===================================================== -->
+  @if (activeTab() === 'replays') {
   <div class="player__tab-panel">
     <div class="replays-page">
 
@@ -2444,351 +2043,282 @@
           <h2>Séances en direct — Replays</h2>
           <p>Revoyez toutes les sessions live passées, à votre rythme.</p>
         </div>
-        <span class="replays-page__count">{{ mockLiveReplays.length }} replays</span>
+        <span class="replays-page__count">{{ apiReplays().length }} replays</span>
       </header>
 
       <!-- Grille -->
       <div class="replays-grid">
-        @for (replay of mockLiveReplays; track replay.id) {
-          <article class="replay-card">
-
-            <!-- Vignette -->
-            <div class="replay-card__thumbnail">
-              <img [src]="replay.thumbnail" [alt]="replay.title" loading="lazy" />
-              <div class="replay-card__overlay">
-                <button type="button" class="replay-card__play" (click)="playReplay(replay)">
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M8 5v14l11-7z"/>
-                  </svg>
-                </button>
-              </div>
-              <span class="replay-card__duration">{{ replay.duration }}</span>
-              @if (replay.isNew) {
-                <span class="replay-card__new">Nouveau</span>
-              }
-            </div>
-
-            <!-- Body -->
-            <div class="replay-card__body">
-              <span class="replay-card__date">📅 {{ replay.date }}</span>
-              <h3 class="replay-card__title">{{ replay.title }}</h3>
-              <p class="replay-card__desc">{{ replay.description }}</p>
-
-              <div class="replay-card__meta">
-                <span class="replay-card__instructor">👤 {{ replay.instructor }}</span>
-                <span class="replay-card__views">👁 {{ replay.views }} vues</span>
-              </div>
-
-              <!-- Ressources attachées -->
-              @if (replay.resources.length > 0) {
-                <div class="replay-card__resources">
-                  <span class="replay-card__resources-label">Ressources :</span>
-                  @for (res of replay.resources; track res.label) {
-                    <a href="#" class="replay-card__resource" [attr.download]="res.label">
-                      📎 {{ res.label }}
-                    </a>
-                  }
-                </div>
-              }
-
-              <!-- Actions -->
-              <div class="replay-card__actions">
-                <button type="button" class="replay-card__btn replay-card__btn--primary" (click)="playReplay(replay)">
-                  ▶ Regarder
-                </button>
-                <button type="button" class="replay-card__btn replay-card__btn--ghost" (click)="downloadReplay(replay)">
-                  ⬇ Télécharger
-                </button>
-              </div>
-            </div>
-
-          </article>
-        } @empty {
-          <div class="replays-empty">
-            <span class="replays-empty__icon">🎬</span>
-            <p>Aucun replay disponible pour le moment.</p>
-            <small>Les replays apparaîtront ici après chaque session en direct.</small>
+        @for (replay of apiReplays(); track replay.id) {
+        <article class="replay-card">
+          <!-- Vignette (si tu as une image, sinon un placeholder) -->
+          <div class="replay-card__thumbnail"
+            style="background: #0d1b3e; display: flex; align-items: center; justify-content: center; min-height: 180px;">
+            <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="#b87333" stroke-width="1.5">
+              <circle cx="12" cy="12" r="10"></circle>
+              <polygon points="10 8 16 12 10 16 10 8" fill="#b87333"></polygon>
+            </svg>
           </div>
+
+          <!-- Body -->
+          <div class="replay-card__body">
+            <!-- Date de la séance -->
+            <span class="replay-card__date">
+              {{ replay.scheduled_at | date:'dd MMMM yyyy à HH:mm' }}
+            </span>
+
+            <!-- Titre de la séance -->
+            <h3 class="replay-card__title">
+              Séance du {{ replay.scheduled_at | date:'dd/MM/yyyy' }}
+            </h3>
+
+            <!-- Description -->
+            <p class="replay-card__desc">
+              Replay de la séance en direct avec votre formateur.
+            </p>
+
+            <!-- Actions -->
+            <div class="replay-card__actions">
+              @if (replay.replay_url) {
+              <a [href]="replay.replay_url" target="_blank" rel="noopener noreferrer"
+                class="replay-card__btn replay-card__btn--primary"
+                style="text-decoration: none; display: inline-flex; align-items: center; justify-content: center;">
+                ▶ Regarder le replay
+              </a>
+              } @else {
+              <span style="color: #718096; font-style: italic;">
+                Replay en cours de traitement...
+              </span>
+              }
+            </div>
+          </div>
+        </article>
+        } @empty {
+        <div class="replays-empty">
+          <span class="replays-empty__icon"></span>
+          <p>Aucun replay disponible pour le moment.</p>
+          <small>Les replays apparaîtront ici après chaque session en direct.</small>
+        </div>
         }
       </div>
 
     </div>
   </div>
-}
+  }
 
 
 
 
-    @if (activeTab() === 'live') {
-      <div class="player__tab-panel">
-        <!-- 🔽 colle ici tout le contenu que tu vas couper à l'étape 4bis -->
-         <div class="player__live-info">
+  @if (activeTab() === 'live') {
+  <div class="player__tab-panel">
+    <div class="player__live-info">
 
-          <div class="player__live-header">
+      <div class="player__live-header">
 
-            <span
-              class="player__live-dot"
-              [class.player__live-dot--active]="liveSession().isLive"
-            ></span>
+        <span class="player__live-dot" [class.player__live-dot--active]="liveSession().isLive"></span>
 
-            <span>
-              {{
-                liveSession().isLive
-                  ? 'Séance en cours'
-                  : 'Prochaines séances en direct'
-              }}
-            </span>
+        <span>
+          {{
+          liveSession().isLive
+          ? 'Séance en cours'
+          : 'Prochaines séances en direct'
+          }}
+        </span>
 
-          </div>
-
-          <div class="player__live-days">
-
-            @for (day of liveSchedule().days; track day) {
-
-              <span class="player__live-day">
-                {{ day }}
-              </span>
-
-            }
-
-          </div>
-
-          <p class="player__live-time">
-
-            {{ liveSchedule().time }}
-            —
-            {{ liveSchedule().timezone }}
-
-          </p>
-
-          @if (liveSession().isLive) {
-
-            @if (accessService.can('live_sessions')) {
-
-              <button
-                type="button"
-                class="live-join-btn"
-                (click)="joinLive()"
-              >
-                🔴 La séance est en direct. Veuillez la rejoindre maintenant.
-              </button>
-
-            } @else {
-
-              <div class="locked-feature">
-                <span class="locked-feature__icon">🔒</span>
-                <strong>Les séances en direct sont incluses dès la formule Standard</strong>
-                <p>Passez à la formule supérieure pour rejoindre l'expert en direct.</p>
-                <a
-                  [routerLink]="['/paiement', courseId()]"
-                  class="player__certificate-btn"
-                >
-                  Passer à Standard →
-                </a>
-              </div>
-
-            }
-
-          } @else {
-
-            <span class="player__live-waiting">
-              Le bouton apparaîtra ici dès que le formateur démarre
-              la séance.
-            </span>
-
-          }
-
-        </div>
       </div>
-    }
 
-        <!-- ===================================================== -->
-    <!-- 🆕 ONGLET MANUELS -->
-    <!-- ===================================================== -->
-    <!-- @if (activeTab() === 'manuels') {
-      <div class="player__tab-panel">
-        <div class="player__manuals">
-          <h2 class="player__manuals-title">📚 Manuels du cours</h2>
-          <p class="player__manuals-desc">
-            Retrouvez ici tous les manuels officiels, supports PDF et ressources
-            complémentaires pour approfondir votre apprentissage.
-          </p>
+      <div class="player__live-days">
 
-          <div class="player__manuals-grid">
-            <div class="manual-card">
-              <div class="manual-card__icon">📘</div>
-              <h3 class="manual-card__title">Manuel principal — Français</h3>
-              <p class="manual-card__desc">
-                Support officiel du cours en français, couvrant l'ensemble du programme.
-              </p>
-              <a href="#" class="manual-card__btn" target="_blank">⬇ Télécharger le PDF</a>
-            </div>
+        @for (day of liveSchedule().days; track day) {
 
-            <div class="manual-card">
-              <div class="manual-card__icon">📗</div>
-              <h3 class="manual-card__title">Manuel principal — Anglais</h3>
-              <p class="manual-card__desc">
-                English version of the official course material.
-              </p>
-              <a href="#" class="manual-card__btn" target="_blank">⬇ Download PDF</a>
-            </div>
+        <span class="player__live-day">
+          {{ day }}
+        </span>
 
-            <div class="manual-card">
-              <div class="manual-card__icon">📙</div>
-              <h3 class="manual-card__title">Cas pratiques & exercices</h3>
-              <p class="manual-card__desc">
-                Recueil d'exercices et cas pratiques pour s'entraîner.
-              </p>
-              <a href="#" class="manual-card__btn" target="_blank">⬇ Télécharger le PDF</a>
-            </div>
-          </div>
-        </div>
+        }
+
       </div>
-    } -->
 
-    @if (activeTab() === 'manuels') {
+      <p class="player__live-time">
+
+        {{ liveSchedule().time }}
+        —
+        {{ liveSchedule().timezone }}
+
+      </p>
+
+      @if (liveSession().isLive) {
+
+      @if (accessService.can('live_sessions')) {
+
+      <button type="button" class="live-join-btn" (click)="joinLive()">
+        <span class="live-dot"></span> La séance est en direct. Veuillez la rejoindre maintenant.
+      </button>
+
+      } @else {
+
+      <div class="locked-feature">
+        <span class="locked-feature__icon"></span>
+        <strong>Les séances en direct sont incluses dès la formule Standard</strong>
+        <p>Passez à la formule supérieure pour rejoindre l'expert en direct.</p>
+        <a [routerLink]="['/paiement', courseId()]" class="player__certificate-btn">
+          Passer à Standard →
+        </a>
+      </div>
+
+      }
+
+      } @else {
+
+      <span class="player__live-waiting">
+        Le bouton apparaîtra ici dès que le formateur démarre
+        la séance.
+      </span>
+
+      }
+
+    </div>
+  </div>
+  }
+
+  <!-- ===================================================== -->
+  <!-- ONGLET MANUELS -->
+  <!-- ===================================================== -->
+
+  @if (activeTab() === 'manuels') {
   <div class="player__tab-panel">
     <div class="manuals-page">
-
-      <!-- En-tête -->
       <header class="manuals-page__head">
         <div>
           <span class="manuals-page__eyebrow">RESSOURCES PÉDAGOGIQUES</span>
           <h2>Manuels du cours</h2>
-          <p>Retrouvez ici tous les supports officiels, manuels PDF et ressources complémentaires pour approfondir votre apprentissage.</p>
+          <p>Retrouvez ici tous les supports officiels, manuels PDF et ressources complémentaires.</p>
         </div>
-        <span class="manuals-page__count">{{ mockManuals.length }} documents</span>
+        <span class="manuals-page__count">{{ apiManuals().length }} documents</span>
       </header>
 
-      <!-- Grille des manuels -->
-      <div class="manuals-grid">
-        @for (manual of mockManuals; track manual.id) {
-          <article class="manual-item">
-            <div class="manual-item__icon" [attr.data-type]="manual.type">
-              @switch (manual.type) {
-                @case ('pdf')  { 📕 }
-                @case ('doc')  { 📘 }
-                @case ('xls')  { 📗 }
-                @case ('zip')  { 📦 }
-                @default        { 📄 }
-              }
-            </div>
-
-            <div class="manual-item__body">
-              <span class="manual-item__category">{{ manual.category }}</span>
-              <h3 class="manual-item__title">{{ manual.title }}</h3>
-              <p class="manual-item__desc">{{ manual.description }}</p>
-
-              <ul class="manual-item__meta">
-                <li>
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <rect x="3" y="4" width="18" height="18" rx="2"/>
-                    <path d="M16 2v4M8 2v4M3 10h18"/>
-                  </svg>
-                  {{ manual.updatedAt }}
-                </li>
-                <li>
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                    <polyline points="7 10 12 15 17 10"/>
-                    <line x1="12" y1="15" x2="12" y2="3"/>
-                  </svg>
-                  {{ manual.size }}
-                </li>
-                <li>
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8Z"/>
-                    <circle cx="12" cy="12" r="3"/>
-                  </svg>
-                  {{ manual.pages }} pages
-                </li>
-              </ul>
-            </div>
-
-            <div class="manual-item__actions">
-              <button type="button" class="manual-item__btn manual-item__btn--preview" (click)="previewManual(manual)" title="Aperçu">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8Z"/>
-                  <circle cx="12" cy="12" r="3"/>
-                </svg>
-              </button>
-              <button type="button" class="manual-item__btn manual-item__btn--download" (click)="downloadManual(manual)">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                  <polyline points="7 10 12 15 17 10"/>
-                  <line x1="12" y1="15" x2="12" y2="3"/>
-                </svg>
-                Télécharger
-              </button>
-            </div>
-          </article>
-        } @empty {
-          <div class="manuals-empty">
-            <span class="manuals-empty__icon">📚</span>
-            <p>Aucun manuel disponible pour ce cours.</p>
-          </div>
+      <!-- ✅ APERÇU PDF INTÉGRÉ -->
+      @if (activeSequence && ['document','td','tp','cas_pratique','devoir'].includes(activeSequence.type)) {
+      <div style="margin-bottom: 30px; padding: 20px; background: #f8fafc; border-radius: 12px;">
+        <h3 style="margin-bottom: 15px;">{{ activeSequence.title }}</h3>
+        @if (getPdfResourceUrl(activeSequence.documentUrl); as pdfUrl) {
+        <iframe [src]="pdfUrl" style="width: 100%; height: 600px; border-radius: 8px; border: 1px solid #e2e8f0;">
+        </iframe>
         }
       </div>
+      }
 
+      <div class="manuals-grid">
+        @for (manual of apiManuals(); track manual.id) {
+        <article class="manual-item"
+          [style.border]="activeSequence?.id === manual.id ? '2px solid #b87333' : '1px solid #e2e8f0'">
+          <div class="manual-item__icon" data-type="pdf">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+            </svg>
+          </div>
+          <div class="manual-item__body">
+            <span class="manual-item__category">{{ typeLabel(manual.type) }}</span>
+            <h3 class="manual-item__title">{{ manual.title }}</h3>
+            <p class="manual-item__desc">Cliquez sur "Voir" pour prévisualiser.</p>
+          </div>
+          <!-- ✅ BOUTONS VOIR / TÉLÉCHARGER -->
+          <div class="manual-item__actions"
+            style="display: flex; gap: 8px; padding: 15px; border-top: 1px solid #e2e8f0;">
+            <button type="button" (click)="previewDocument(manual.id)"
+              style="flex: 1; background: #081f1f; color: white; border: none; padding: 10px; border-radius: 6px; font-weight: 600; cursor: pointer;">
+              Voir
+            </button>
+            <button type="button" (click)="downloadDocument(manual)"
+              style="flex: 1; background: #b87333; color: white; border: none; padding: 10px; border-radius: 6px; font-weight: 600; cursor: pointer;">
+              Télécharger
+            </button>
+          </div>
+        </article>
+        } @empty {
+        <div class="manuals-empty">
+          <p>Aucun document n'est disponible pour ce cours pour le moment.</p>
+        </div>
+        }
+      </div>
     </div>
   </div>
-}
+  }
 
-    <!-- ===================================================== -->
-    <!-- 🆕 ONGLET RÈGLEMENTS -->
-    <!-- ===================================================== -->
-    <!-- @if (activeTab() === 'reglements') {
-      <div class="player__tab-panel">
-        <div class="player__rules">
-          <h2 class="player__rules-title">📋 Règlements et conditions</h2>
-          <p class="player__rules-desc">
-            Veuillez prendre connaissance des règles applicables à ce cours.
-          </p>
 
-          <div class="rule-section">
-            <h3 class="rule-section__title">1. Assiduité et participation</h3>
-            <p class="rule-section__text">
-              L'apprenant s'engage à suivre régulièrement les séquences du cours
-              et à participer activement aux activités proposées.
-            </p>
-          </div>
-
-          <div class="rule-section">
-            <h3 class="rule-section__title">2. Évaluations et notation</h3>
-            <p class="rule-section__text">
-              Les quiz, devoirs et examens finaux sont notés selon le barème
-              indiqué. Un score minimum de 70% est requis pour valider un module.
-            </p>
-          </div>
-
-          <div class="rule-section">
-            <h3 class="rule-section__title">3. Plagiat et intégrité académique</h3>
-            <p class="rule-section__text">
-              Tout travail rendu doit être personnel. Le plagiat entraîne
-              l'annulation de la note et peut conduire à l'exclusion du cours.
-            </p>
-          </div>
-
-          <div class="rule-section">
-            <h3 class="rule-section__title">4. Certificat</h3>
-            <p class="rule-section__text">
-              Le certificat est délivré uniquement après avoir complété 100%
-              du cours et validé l'ensemble des évaluations obligatoires.
-            </p>
-          </div>
-
-          <div class="rule-section">
-            <h3 class="rule-section__title">5. Confidentialité</h3>
-            <p class="rule-section__text">
-              Les contenus pédagogiques sont protégés par le droit d'auteur.
-              Toute diffusion non autorisée est strictement interdite.
-            </p>
-          </div>
+  <!-- ===================================================== -->
+  <!-- ONGLET VIDÉOS                                        -->
+  <!-- ===================================================== -->
+  @if (activeTab() === 'videos') {
+  <div class="player__tab-panel">
+    <div class="manuals-page">
+      <header class="manuals-page__head">
+        <div>
+          <span class="manuals-page__eyebrow">VIDÉOTHÈQUE DU COURS</span>
+          <h2>Vidéos du cours</h2>
+          <p>Retrouvez toutes les vidéos de cette formation, classées par module.</p>
         </div>
-      </div>
-    } -->
+        <span class="manuals-page__count">{{ allVideos().length }} vidéos</span>
+      </header>
 
-    @if (activeTab() === 'reglements') {
+      <!-- ✅ LECTEUR VIDÉO INTÉGRÉ -->
+      @if (activeSequence && activeSequence.type === 'video' && activeVideoUrl()) {
+      <div style="margin-bottom: 30px; padding: 20px; background: #f8fafc; border-radius: 12px;">
+        <h3 style="margin-bottom: 15px;">{{ activeSequence.title }}</h3>
+        @if (isYoutubeUrl(activeSequence.videoUrl)) {
+        @if (getYoutubeEmbedUrl(activeSequence.videoUrl); as youtubeUrl) {
+        <iframe [src]="youtubeUrl" style="width: 100%; aspect-ratio: 16/9; border-radius: 8px; border: none;"
+          allowfullscreen>
+        </iframe>
+        }
+        } @else {
+        <video [src]="activeVideoUrl()!" controls style="width: 100%; border-radius: 8px;" (ended)="markSequenceDone()">
+        </video>
+        }
+      </div>
+      }
+
+      <div class="manuals-grid">
+        @for (video of allVideos(); track video.id) {
+        <article class="manual-item"
+          [style.border]="activeSequence?.id === video.id ? '2px solid #b87333' : '1px solid #e2e8f0'">
+          <div class="manual-item__icon" data-type="video" style="background: #0d1b3e;">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#b87333" stroke-width="2">
+              <polygon points="5 3 19 12 5 21 5 3"></polygon>
+            </svg>
+          </div>
+          <div class="manual-item__body">
+            <span class="manual-item__category">Vidéo</span>
+            <h3 class="manual-item__title">{{ video.title }}</h3>
+            <p class="manual-item__desc">Cliquez sur "Voir" pour visionner la vidéo.</p>
+          </div>
+          <!-- ✅ BOUTONS VOIR / TÉLÉCHARGER -->
+          <div class="manual-item__actions"
+            style="display: flex; gap: 8px; padding: 15px; border-top: 1px solid #e2e8f0;">
+            <button type="button" (click)="previewVideo(video.id)"
+              style="flex: 1; background: #081f1f; color: white; border: none; padding: 10px; border-radius: 6px; font-weight: 600; cursor: pointer;">
+              Voir
+            </button>
+            <button type="button" (click)="downloadVideo(video)"
+              style="flex: 1; background: #b87333; color: white; border: none; padding: 10px; border-radius: 6px; font-weight: 600; cursor: pointer;">
+              Télécharger
+            </button>
+          </div>
+        </article>
+        } @empty {
+        <div class="manuals-empty">
+          <p>Aucune vidéo n'est disponible pour ce cours pour le moment.</p>
+        </div>
+        }
+      </div>
+    </div>
+  </div>
+  }
+
+  <!-- ===================================================== -->
+  <!-- ONGLET RÈGLEMENTS -->
+  <!-- ===================================================== -->
+  @if (activeTab() === 'reglements') {
   <div class="player__tab-panel">
     <div class="rules-page">
 
@@ -2830,7 +2360,6 @@
       <div class="rules-list">
 
         <article class="rule-card" id="rule-1">
-          <div class="rule-card__icon">📅</div>
           <div class="rule-card__body">
             <div class="rule-card__header">
               <h3>Assiduité et participation</h3>
@@ -2850,7 +2379,6 @@
         </article>
 
         <article class="rule-card" id="rule-2">
-          <div class="rule-card__icon">📊</div>
           <div class="rule-card__body">
             <div class="rule-card__header">
               <h3>Évaluations et notation</h3>
@@ -2870,7 +2398,6 @@
         </article>
 
         <article class="rule-card" id="rule-3">
-          <div class="rule-card__icon">⚖️</div>
           <div class="rule-card__body">
             <div class="rule-card__header">
               <h3>Plagiat et intégrité académique</h3>
@@ -2890,7 +2417,6 @@
         </article>
 
         <article class="rule-card" id="rule-4">
-          <div class="rule-card__icon">🎓</div>
           <div class="rule-card__body">
             <div class="rule-card__header">
               <h3>Certification</h3>
@@ -2909,7 +2435,6 @@
         </article>
 
         <article class="rule-card" id="rule-5">
-          <div class="rule-card__icon">🔒</div>
           <div class="rule-card__body">
             <div class="rule-card__header">
               <h3>Confidentialité et droits d'auteur</h3>
@@ -2933,93 +2458,20 @@
       <!-- Pied de page -->
       <footer class="rules-footer">
         <p>
-          📧 Une question sur le règlement ?
-          <a routerLink="/contact">Contactez l'administration</a>
+          Une question sur le règlement ? <a routerLink="/contact">Contactez l'administration</a>
         </p>
       </footer>
 
     </div>
   </div>
-}
+  }
 
-    <!-- ===================================================== -->
-    <!-- 🆕 ONGLET CALENDRIER -->
-    <!-- ===================================================== -->
-    <!-- @if (activeTab() === 'calendrier') {
-      <div class="player__tab-panel">
-        <div class="player__calendar">
-          <h2 class="player__calendar-title">📅 Calendrier du cours</h2>
-          <p class="player__calendar-desc">
-            Retrouvez ici toutes les dates importantes : sessions en direct,
-            remises de devoirs, examens et événements du cours.
-          </p>
+  <!-- ===================================================== -->
+  <!-- ONGLET CALENDRIER -->
+  <!-- ===================================================== -->
 
-          <div class="calendar-timeline">
-            <div class="calendar-event calendar-event--live">
-              <div class="calendar-event__date">
-                <span class="calendar-event__day">15</span>
-                <span class="calendar-event__month">Jan</span>
-              </div>
-              <div class="calendar-event__body">
-                <span class="calendar-event__badge">🔴 En direct</span>
-                <h3 class="calendar-event__title">Séance live — Introduction</h3>
-                <p class="calendar-event__text">
-                  Première session en direct avec le formateur pour lancer le cours.
-                </p>
-                <span class="calendar-event__time">⏰ 18h00 — 20h00</span>
-              </div>
-            </div>
 
-            <div class="calendar-event calendar-event--devoir">
-              <div class="calendar-event__date">
-                <span class="calendar-event__day">22</span>
-                <span class="calendar-event__month">Jan</span>
-              </div>
-              <div class="calendar-event__body">
-                <span class="calendar-event__badge">📝 Devoir</span>
-                <h3 class="calendar-event__title">Remise du devoir n°1</h3>
-                <p class="calendar-event__text">
-                  Date limite pour rendre le premier devoir noté.
-                </p>
-                <span class="calendar-event__time">⏰ Avant 23h59</span>
-              </div>
-            </div>
-
-            <div class="calendar-event calendar-event--quiz">
-              <div class="calendar-event__date">
-                <span class="calendar-event__day">05</span>
-                <span class="calendar-event__month">Fév</span>
-              </div>
-              <div class="calendar-event__body">
-                <span class="calendar-event__badge">🎯 Quiz</span>
-                <h3 class="calendar-event__title">Quiz de validation Module 1</h3>
-                <p class="calendar-event__text">
-                  Quiz obligatoire pour valider le premier module du cours.
-                </p>
-                <span class="calendar-event__time">⏰ Disponible 24h</span>
-              </div>
-            </div>
-
-            <div class="calendar-event calendar-event--exam">
-              <div class="calendar-event__date">
-                <span class="calendar-event__day">28</span>
-                <span class="calendar-event__month">Fév</span>
-              </div>
-              <div class="calendar-event__body">
-                <span class="calendar-event__badge">🏆 Examen</span>
-                <h3 class="calendar-event__title">Examen final</h3>
-                <p class="calendar-event__text">
-                  Évaluation finale du cours. Score minimum requis : 70%.
-                </p>
-                <span class="calendar-event__time">⏰ 9h00 — 12h00</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    } -->
-
-    @if (activeTab() === 'calendrier') {
+  @if (activeTab() === 'calendrier') {
   <div class="player__tab-panel">
     <div class="calendar-page">
 
@@ -3034,128 +2486,167 @@
 
       <!-- Filtres -->
       <div class="calendar-filters">
-        <button type="button" class="calendar-filter"
-          [class.calendar-filter--active]="calFilter() === 'all'"
+        <button type="button" class="calendar-filter" [class.calendar-filter--active]="calFilter() === 'all'"
           (click)="setCalFilter('all')">
           Tout
         </button>
-        <button type="button" class="calendar-filter"
-          [class.calendar-filter--active]="calFilter() === 'live'"
+        <button type="button" class="calendar-filter" [class.calendar-filter--active]="calFilter() === 'live'"
           (click)="setCalFilter('live')">
-          🔴 Live
+          Sessions en direct
         </button>
-        <button type="button" class="calendar-filter"
-          [class.calendar-filter--active]="calFilter() === 'devoir'"
+        <button type="button" class="calendar-filter" [class.calendar-filter--active]="calFilter() === 'devoir'"
           (click)="setCalFilter('devoir')">
-          📝 Devoirs
+          Travaux à rendre
         </button>
-        <button type="button" class="calendar-filter"
-          [class.calendar-filter--active]="calFilter() === 'quiz'"
+        <button type="button" class="calendar-filter" [class.calendar-filter--active]="calFilter() === 'quiz'"
           (click)="setCalFilter('quiz')">
-          🎯 Quiz
+          Quiz
         </button>
-        <button type="button" class="calendar-filter"
-          [class.calendar-filter--active]="calFilter() === 'exam'"
+        <button type="button" class="calendar-filter" [class.calendar-filter--active]="calFilter() === 'exam'"
           (click)="setCalFilter('exam')">
-          🏆 Examens
+          Examens
         </button>
       </div>
 
       <!-- Timeline -->
       <div class="calendar-timeline">
-        @for (event of filteredCalendarEvents(); track event.id) {
-          <div class="cal-event" [attr.data-type]="event.type" [class.cal-event--past]="event.status === 'past'">
 
-            <!-- Date -->
-            <div class="cal-event__date">
-              <span class="cal-event__day">{{ event.day }}</span>
-              <span class="cal-event__month">{{ event.month }}</span>
+
+        <!--
+        """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+                Afficher la session programmée si elle existe
+        """"""        """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""" 
+
+                -->
+        @if (liveSession().scheduledAt) {
+        <div class="cal-event" data-type="live">
+          <div class="cal-event__date">
+            <span class="cal-event__day">{{ liveSession().scheduledAt | date:'dd' }}</span>
+            <span class="cal-event__month">{{ liveSession().scheduledAt | date:'MMM' }}</span>
+          </div>
+          <div class="cal-event__line"></div>
+          <div class="cal-event__body">
+            <div class="cal-event__head">
+              <span class="cal-event__badge" data-type="live">Session en direct programmée</span>
+              <span class="cal-event__status cal-event__status--upcoming">À venir</span>
             </div>
+            <h3 class="cal-event__title">Visioconférence avec le formateur</h3>
+            <p class="cal-event__desc">Rejoignez la session Zoom à l'heure prévue.</p>
+            <div class="cal-event__meta">
+              <span class="cal-event__time">{{ liveSession().scheduledAt | date:'HH:mm' }}</span>
+            </div>
+          </div>
+        </div>
+        }
+        @for (event of filteredCalendarEvents(); track event.id) {
+        <div class="cal-event" [attr.data-type]="event.type" [class.cal-event--past]="event.status === 'past'">
 
-            <!-- Connecteur -->
-            <div class="cal-event__line"></div>
+          <!-- Date -->
+          <div class="cal-event__date">
+            <span class="cal-event__day">{{ event.day }}</span>
+            <span class="cal-event__month">{{ event.month }}</span>
+          </div>
 
-            <!-- Contenu -->
-            <div class="cal-event__body">
-              <div class="cal-event__head">
-                <span class="cal-event__badge" [attr.data-type]="event.type">
-                  @switch (event.type) {
-                    @case ('live')    { 🔴 En direct }
-                    @case ('devoir')  { 📝 Devoir }
-                    @case ('quiz')    { 🎯 Quiz }
-                    @case ('exam')    { 🏆 Examen }
-                  }
-                </span>
-                @if (event.status === 'past') {
-                  <span class="cal-event__status cal-event__status--past">Terminé</span>
-                } @else if (event.status === 'today') {
-                  <span class="cal-event__status cal-event__status--today">Aujourd'hui</span>
-                } @else {
-                  <span class="cal-event__status cal-event__status--upcoming">À venir</span>
+          <!-- Connecteur -->
+          <div class="cal-event__line"></div>
+
+          <!-- Contenu -->
+          <div class="cal-event__body">
+            <div class="cal-event__head">
+              <span class="cal-event__badge" [attr.data-type]="event.type">
+                @switch (event.type) {
+                @case ('live') { Session en direct }
+                @case ('devoir') { Travail à rendre }
+                @case ('quiz') { Quiz }
+                @case ('exam') { Examen final }
                 }
-              </div>
-
-              <h3 class="cal-event__title">{{ event.title }}</h3>
-              <p class="cal-event__desc">{{ event.description }}</p>
-
-              <div class="cal-event__meta">
-                <span class="cal-event__time">⏰ {{ event.time }}</span>
-                @if (event.duration) {
-                  <span class="cal-event__duration">⏱ {{ event.duration }}</span>
-                }
-                @if (event.instructor) {
-                  <span class="cal-event__instructor">👤 {{ event.instructor }}</span>
-                }
-              </div>
-
-              @if (event.status === 'today' || event.status === 'upcoming') {
-                <div class="cal-event__actions">
-                  @if (event.type === 'live') {
-                    <button type="button" class="cal-event__btn cal-event__btn--primary">
-                      Rejoindre la session
-                    </button>
-                  }
-                  <button type="button" class="cal-event__btn cal-event__btn--ghost">
-                    📅 Ajouter à mon agenda
-                  </button>
-                </div>
+              </span>
+              @if (event.status === 'past') {
+              <span class="cal-event__status cal-event__status--past">Terminé</span>
+              } @else if (event.status === 'today') {
+              <span class="cal-event__status cal-event__status--today">Aujourd'hui</span>
+              } @else {
+              <span class="cal-event__status cal-event__status--upcoming">À venir</span>
               }
             </div>
 
+            <h3 class="cal-event__title">{{ event.title }}</h3>
+            <p class="cal-event__desc">{{ event.description }}</p>
+
+            <div class="cal-event__meta">
+              <span class="cal-event__time">{{ event.time }}</span>
+              @if (event.duration) {
+              <span class="cal-event__duration">{{ event.duration }}</span>
+              }
+              @if (event.instructor) {
+              <span class="cal-event__instructor">{{ event.instructor }}</span>
+              }
+            </div>
+
+            @if (event.status === 'today' || event.status === 'upcoming') {
+            <div class="cal-event__actions">
+              @if (event.type === 'live') {
+              <button type="button" class="cal-event__btn cal-event__btn--primary">
+                Rejoindre la session
+              </button>
+              }
+              <button type="button" class="cal-event__btn cal-event__btn--ghost">
+                Ajouter à mon agenda
+              </button>
+            </div>
+            }
           </div>
+        </div>
         } @empty {
-          <p class="calendar-empty">Aucun événement pour ce filtre.</p>
+        <p class="calendar-empty">Aucun événement pour ce filtre.</p>
+        }
+
+        <!-- Dans l'onglet calendrier, après le @for existant -->
+        @for (schedule of schedules(); track schedule.id) {
+        <div class="cal-event" data-type="live">
+          <div class="cal-event__date">
+            <span class="cal-event__day">{{ schedule.scheduled_at | date:'dd' }}</span>
+            <span class="cal-event__month">{{ schedule.scheduled_at | date:'MMM' }}</span>
+          </div>
+          <div class="cal-event__line"></div>
+          <div class="cal-event__body">
+            <h3 class="cal-event__title">Séance en direct programmée</h3>
+            <div class="cal-event__meta">
+              <span class="cal-event__time">{{ schedule.scheduled_at | date:'HH:mm' }}</span>
+            </div>
+          </div>
+        </div>
         }
       </div>
 
     </div>
   </div>
-}
+  }
 
-  </div>
+</div>
 
 
 } @else {
 
 
-  <!-- ========================================================= -->
-  <!-- COURS INTROUVABLE -->
-  <!-- ========================================================= -->
+<!-- ========================================================= -->
+<!-- COURS INTROUVABLE -->
+<!-- ========================================================= -->
 
-  <div class="player__not-found">
+<div class="player__not-found">
 
-    <h1>
-      Cours introuvable
-    </h1>
+  <h1>
+    Cours introuvable
+  </h1>
 
-    <p>
-      Le cours demandé n'existe pas ou n'est plus disponible.
-    </p>
+  <p>
+    Le cours demandé n'existe pas ou n'est plus disponible.
+  </p>
 
-    <a routerLink="/">
-      Retour à l'accueil
-    </a>
+  <a routerLink="/">
+    Retour à l'accueil
+  </a>
 
-  </div>
+</div>
 
 }

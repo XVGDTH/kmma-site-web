@@ -40,7 +40,7 @@ export class Method implements AfterViewInit, OnDestroy {
       description:
         'Comprendre votre situation, vos objectifs et les réalités de votre organisation.',
       image: '/images/method/ecouter.png',
-      route: '/notre_method/ecouter',
+      route: '/',
       tone: 'gold',
     },
     {
@@ -49,7 +49,7 @@ export class Method implements AfterViewInit, OnDestroy {
       description:
         'Étudier vos données, vos processus et vos risques pour faire émerger les priorités.',
       image: '/images/notre_method/analyser.png',
-      route: '/notre_methode/analyser',
+      route: '/',
       tone: 'blue',
     },
     {
@@ -58,7 +58,7 @@ export class Method implements AfterViewInit, OnDestroy {
       description:
         'Élaborer avec vous une réponse personnalisée, claire et adaptée à votre contexte.',
       image: '/images/notre_method/construire.png',
-      route: '/notre-methode/construire',
+      route: '/',
       tone: 'purple',
     },
     {
@@ -67,7 +67,7 @@ export class Method implements AfterViewInit, OnDestroy {
       description:
         'Mettre la solution en œuvre et mesurer les progrès réalisés dans la durée.',
       image: '/images/notre_method/vous_accompagner.png',
-      route: '/notre-methode/accompagner',
+      route: '/',
       tone: 'cyan',
     },
   ];

@@ -53,7 +53,7 @@ export class WhyUs implements AfterViewInit, OnDestroy {
       title: 'Formations & certifications',
       description: 'Parcours individuels, sessions certifiantes et formations à distance',
       ctaLabel: 'Découvrir nos formations',
-      route: '/formations',
+      route: '/catalogue',
     },
     right: {
       title: 'Conseil & accompagnement',

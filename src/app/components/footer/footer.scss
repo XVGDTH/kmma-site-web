@@ -99,22 +99,40 @@
   color: var(--gold-300);
 }
 
+// .footer__bottom {
+//   max-width: 1440px; // même largeur que le conteneur du header (.header__bar) pour un alignement parfait
+//   margin: 0 auto;
+//   padding: 20px 24px;
+//   border-top: 1px solid rgba(255, 255, 255, 0.1);
+//   display: flex;
+//   align-items: center;
+//   justify-content: space-between;
+//   flex-wrap: wrap;
+//   gap: 12px;
+// }
 .footer__bottom {
-  max-width: 1440px; // même largeur que le conteneur du header (.header__bar) pour un alignement parfait
+  max-width: 1440px;
   margin: 0 auto;
   padding: 20px 24px;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center; /* ✅ Centre le contenu horizontalement */
   flex-wrap: wrap;
   gap: 12px;
 }
 
+// .footer__copyright {
+//   margin: 0;
+//   color: rgba(255, 255, 255, 0.55);
+//   font-size: 0.85rem;
+// }
 .footer__copyright {
   margin: 0;
   color: rgba(255, 255, 255, 0.55);
   font-size: 0.85rem;
+  text-align: center; /* ✅ Centre le texte à l'intérieur du bloc */
+  width: 100%;        /* ✅ Prend toute la largeur disponible */
 }
 
 .footer__staff-link {

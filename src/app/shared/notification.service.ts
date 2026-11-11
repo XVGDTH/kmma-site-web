@@ -19,7 +19,7 @@ export class NotificationService {
   readonly notifications = signal<AppNotification[]>([]);
   readonly unreadCount = signal(0);
 
-  /** Charge la liste + le badge (appelÃ© au boot + au polling). */
+  /** Charge la liste + le badge (appelé au boot + au polling). */
   load(): void {
     // this.http
     //   .get<{ data: AppNotification[]; unreadCount: number }>(

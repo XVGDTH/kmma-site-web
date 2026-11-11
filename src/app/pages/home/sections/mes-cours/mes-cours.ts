@@ -11,7 +11,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs/operators';
 
 import { SubjectId, Course } from '../../../../data/courses';
-import { CoursesApiService } from '../../../../shared/courses-api.service';
+import { ApiCourseSummary, CoursesApiService } from '../../../../shared/courses-api.service';
 // import { CoursesApiService } from '../../../../services/courses-api.service';
 
 type LevelFilter =
@@ -60,7 +60,8 @@ export class MesCours {
   readonly courses = toSignal(
     this.coursesApi.getCourses(),
     {
-      initialValue: [] as Course[]
+      // initialValue: [] as Course[]
+      initialValue: [] as ApiCourseSummary[]
     }
   );
 
@@ -150,7 +151,8 @@ export class MesCours {
 
     const filter = this.activeFilter();
 
-    let list = this.courses().filter(
+    // let list = this.courses().filter(
+    let list = (this.courses() ?? []).filter(
       course => course.subject === subject
     );
 

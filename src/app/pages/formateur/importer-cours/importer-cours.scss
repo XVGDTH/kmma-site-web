@@ -600,3 +600,369 @@
     gap: 0.5rem;
   }
 }
+
+
+
+/* ============================================================
+   AGRANDISSEMENT & LISIBILITÉ
+   ============================================================ */
+
+.importer__helper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+  padding: 20px 24px;
+  background: #fef9f3;
+  border: 1.5px solid #fde4c4;
+  border-radius: 14px;
+  margin-bottom: 28px;
+  flex-wrap: wrap;
+
+  &-text {
+    strong {
+      font-size: 1.05rem;
+      color: var(--navy-900);
+      display: block;
+      margin-bottom: 4px;
+    }
+    p {
+      font-size: 0.95rem;
+      color: var(--slate-600);
+      margin: 0;
+    }
+  }
+}
+
+/* Labels et inputs */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 20px;
+
+  &__label {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--navy-900);
+
+    small {
+      font-weight: 400;
+      color: var(--slate-600);
+      font-size: 0.88rem;
+      margin-left: 4px;
+    }
+  }
+
+  input[type='text'],
+  input[type='number'],
+  input[type='url'],
+  input[type='datetime-local'],
+  textarea,
+  select {
+    padding: 14px 16px;
+    font-size: 1rem;
+    font-family: inherit;
+    border: 1.5px solid var(--line-light);
+    border-radius: 10px;
+    background: var(--white);
+    outline: none;
+    transition: border-color 0.2s;
+
+    &:focus {
+      border-color: var(--gold-400);
+      box-shadow: 0 0 0 3px rgba(201, 153, 46, 0.1);
+    }
+  }
+
+  textarea {
+    resize: vertical;
+    min-height: 90px;
+  }
+
+  &--small input {
+    max-width: 120px;
+  }
+}
+
+.field-check {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.95rem;
+  color: var(--navy-900);
+  margin-bottom: 12px;
+}
+
+/* Boutons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 26px;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 700;
+  font-family: inherit;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+
+  &--ink {
+    background: var(--navy-900);
+    color: var(--white);
+    &:hover:not(:disabled) { background: #082621; }
+  }
+
+  &--gold {
+    background: linear-gradient(90deg, #c9992e, #e3b74f);
+    color: var(--navy-900);
+    &:hover:not(:disabled) { background: #c9992e; }
+  }
+
+  &--outline {
+    background: transparent;
+    color: var(--navy-900);
+    border: 1.5px solid var(--line-light);
+    &:hover:not(:disabled) { background: var(--ivory); }
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+/* Titres de section */
+.step__title h2 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--navy-900);
+}
+
+.step__title h3 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--navy-900);
+}
+
+.step__hint {
+  font-size: 1rem;
+  color: var(--slate-600);
+  line-height: 1.5;
+}
+
+/* Cartes de séquence */
+.assignment-list__body strong {
+  font-size: 1rem;
+}
+
+.assignment-list__kind {
+  font-size: 0.8rem;
+  padding: 6px 14px;
+}
+
+.course-card__btn {
+  font-size: 0.95rem;
+  padding: 10px 18px;
+}
+
+/* Inputs dans le formulaire de séquence */
+.sequence-form {
+  padding: 24px;
+  border-radius: 14px;
+  background: var(--ivory);
+  border: 1.5px dashed var(--line-light);
+  gap: 16px;
+
+  h3 {
+    font-size: 1.2rem;
+    color: var(--navy-900);
+    margin-bottom: 8px;
+  }
+}
+
+/* Quiz */
+.quiz-editor__item {
+  padding: 20px;
+  background: var(--white);
+  border: 1px solid var(--line-light);
+  border-radius: 12px;
+}
+
+.quiz-editor__item input[type='text'] {
+  font-size: 1rem;
+  padding: 12px 14px;
+}
+
+.quiz-editor__option {
+  gap: 10px;
+  padding: 6px 0;
+}
+
+/* Score / deadline */
+.passing-score input,
+.quiz-options input[type='number'] {
+  font-size: 1rem;
+  padding: 12px 14px;
+}
+
+
+
+/* ============================================================
+   COULEURS & HIÉRARCHIE
+   ============================================================ */
+
+/* Titre du module : couleur neutre et forte */
+.module-title {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--navy-900);
+}
+
+/* Titre du chapitre : couleur BLEUE (comme un lien cliquable) */
+.chapter-title {
+  font-size: 1.25rem !important;
+  font-weight: 700 !important;
+  color: #1e40af !important; /* ✅ Bleu forcé */
+  cursor: pointer !important;
+  transition: color 0.2s !important;
+  
+  &:hover {
+    color: #1d4ed8 !important;
+    text-decoration: underline !important;
+  }
+}
+
+
+.week-label {
+  color: #64748b;
+  font-weight: 400;
+  font-size: 0.9em;
+  margin-left: 6px;
+}
+
+/* Titre de la séquence : couleur AMBRE/OR (pour différencier du chapitre) */
+/* Les séquences en ambre */
+.sequence-title {
+  font-size: 1rem !important;
+  font-weight: 700 !important;
+  color: #b45309 !important; /* ✅ Ambre foncé */
+}
+
+/* Cartes de séquence : bordure de couleur selon le type */
+.assignment-list__item {
+  border-left: 4px solid #cbd5e1;
+  transition: border-color 0.2s;
+
+  &[data-type="video"]    { border-left-color: #dc2626; }  /* Rouge */
+  &[data-type="document"] { border-left-color: #2563eb; }  /* Bleu */
+  &[data-type="quiz"]     { border-left-color: #7c3aed; }  /* Violet */
+  &[data-type="devoir"]   { border-left-color: #ea580c; }  /* Orange */
+  &[data-type="tp"]       { border-left-color: #059669; }  /* Vert */
+  &[data-type="td"]       { border-left-color: #0891b2; }  /* Cyan */
+  &[data-type="cas_pratique"] { border-left-color: #db2777; } /* Rose */
+}
+
+/* Carte de séquence : badge coloré */
+.assignment-list__kind {
+  font-size: 0.8rem;
+  padding: 6px 14px;
+  background: #f1f5f9;
+  color: var(--navy-900);
+  border-radius: 999px;
+}
+
+.assignment-list__item[data-type="video"] .assignment-list__kind {
+  background: #fef2f2;
+  color: #991b1b;
+}
+.assignment-list__item[data-type="document"] .assignment-list__kind {
+  background: #eff6ff;
+  color: #1e40af;
+}
+.assignment-list__item[data-type="quiz"] .assignment-list__kind {
+  background: #f5f3ff;
+  color: #5b21b6;
+}
+.assignment-list__item[data-type="devoir"] .assignment-list__kind {
+  background: #fff7ed;
+  color: #9a3412;
+}
+.assignment-list__item[data-type="tp"] .assignment-list__kind {
+  background: #ecfdf5;
+  color: #065f46;
+}
+.assignment-list__item[data-type="td"] .assignment-list__kind {
+  background: #ecfeff;
+  color: #155e75;
+}
+.assignment-list__item[data-type="cas_pratique"] .assignment-list__kind {
+  background: #fdf2f8;
+  color: #9d174d;
+}
+
+/* Module "Ressources" : fond spécial */
+.module-block--resources {
+  background: #f0f9ff;
+  border: 2px solid #bae6fd;
+}
+
+.resources-hint {
+  padding: 16px 20px;
+  background: #f0f9ff;
+  border: 1px dashed #7dd3fc;
+  border-radius: 12px;
+  margin: 12px 0;
+
+  strong {
+    display: block;
+    color: #075985;
+    font-size: 0.95rem;
+    margin-bottom: 6px;
+  }
+  p {
+    color: #0c4a6e;
+    font-size: 0.9rem;
+    margin: 0;
+    line-height: 1.5;
+  }
+}
+
+
+
+.importer__helper {
+  background: linear-gradient(135deg, #fef9f3, #fef3e7) !important;
+  border: 2px solid #fde4c4 !important;
+  padding: 24px 28px !important;
+  border-radius: 16px !important;
+  box-shadow: 0 4px 14px rgba(201, 153, 46, 0.1) !important;
+}
+
+
+.course-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  padding: 18px 22px;
+  margin-bottom: 28px;
+  background: #f8faf9;
+  border: 1px solid #e5e8e4;
+  border-radius: 12px;
+
+  &__label {
+    display: block;
+    font-size: 0.75rem;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 4px;
+  }
+
+  strong {
+    font-size: 1.05rem;
+    color: #0f3d3e;
+  }
+}

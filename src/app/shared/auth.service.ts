@@ -1,6 +1,6 @@
 ﻿import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, tap } from 'rxjs';
+import { map, Observable, tap } from 'rxjs';
 
 export interface AuthUser {
   id: number;
@@ -55,15 +55,34 @@ export class AuthService {
     if (token) {
       this.http.post(`${API_URL}/auth/logout`, {}).subscribe({
         complete: () => this.clearSession(),
-        error: () => this.clearSession(), // on nettoie cÃ´tÃ© client mÃªme si l'appel Ã©choue
+        error: () => this.clearSession(), // on nettoie côté client même si l'appel échoue
       });
     } else {
       this.clearSession();
     }
   }
+  updateAvatar(file: File): Observable<AuthUser> {
+    const formData = new FormData();
+    formData.append('avatar', file);
+
+    return this.http.post<{ user: AuthUser }>(`${API_URL}/auth/avatar`, formData).pipe(
+      map((res) => {
+        // ✅ On transforme le chemin relatif en URL absolue
+        const user = res.user;
+        if (user.avatar && !user.avatar.startsWith('http')) {
+          user.avatar = `http://127.0.0.1:8000/storage/${user.avatar}`;
+        }
+        return user;
+      }),
+      tap((user) => {
+        localStorage.setItem('kmaa_user', JSON.stringify(user));
+        this.currentUser.set(user);
+      })
+    );
+  }
 
   // ============================================================
-  // RAFRAÃŽCHIR LA SESSION (appelÃ© au dÃ©marrage de l'app)
+  // RAFRAÎCHIR LA SESSION (appelé au démarrage de l'app)
   // ============================================================
 
   refreshSession(): void {
@@ -76,9 +95,10 @@ export class AuthService {
         localStorage.setItem('kmaa_user', JSON.stringify(res.user));
         this.currentUser.set(res.user);
       },
-      error: () => this.clearSession(), // token invalide ou expirÃ©
+      error: () => this.clearSession(), // token invalide ou expiré
     });
   }
+  
 
   // ============================================================
   // HELPERS PUBLICS
@@ -93,7 +113,7 @@ export class AuthService {
   }
 
   // ============================================================
-  // PRIVÃ‰
+  // PRIVÉ
   // ============================================================
 
   private persistSession(res: AuthResponse): void {
@@ -112,4 +132,5 @@ export class AuthService {
     const raw = localStorage.getItem('kmaa_user');
     return raw ? JSON.parse(raw) : null;
   }
+  
 }

@@ -17,7 +17,9 @@ $bg-light: #f9f7f4;
   padding: 0 1.5rem;
 }
 
-/* ---------- HERO ---------- */
+/* ============================================================ */
+/* HERO                                                          */
+/* ============================================================ */
 .ent-detail-hero {
   position: relative;
   background-size: cover;
@@ -35,8 +37,18 @@ $bg-light: #f9f7f4;
     z-index: 1;
   }
 
-  &__container { @include container; position: relative; z-index: 2; width: 100%; }
-  &__content { max-width: 800px; padding: 3rem 0; }
+  &__container {
+    @include container;
+    position: relative;
+    z-index: 2;
+    width: 100%;
+  }
+
+ &__content {
+    max-width: 700px;
+    padding: 3rem 0;
+    position: relative;   /* ✅ ESSENTIEL pour la carte formateur */
+  }t
 
   &__breadcrumb {
     display: flex; gap: 0.5rem; font-size: 0.85rem; color: rgba(255, 255, 255, 0.7); margin-bottom: 1.5rem;
@@ -70,22 +82,205 @@ $bg-light: #f9f7f4;
   }
 }
 
-/* ---------- BARRE D'INFO ---------- */
-.ent-detail-info-bar {
-  background: #fff; border-bottom: 1px solid rgba(14, 59, 50, 0.1); box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-  position: sticky; top: 0; z-index: 100;
+/* ============================================================ */
+/* ✅ CARTE FORMATEUR (indépendant, positionné dans __content)   */
+/* ============================================================ */
+.ent-detail-hero__instructor {
+  position: absolute;
+  right: -650px;          /* ✅ Identique à sujet-detail */
+  top: 70%;               /* ✅ Identique à sujet-detail */
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 2rem 1.5rem;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  min-width: 220px;
 
-  &__container { @include container; display: flex; justify-content: space-around; padding: 1.5rem 0; flex-wrap: wrap; gap: 1rem; }
-
-  &__item {
-    display: flex; flex-direction: column; text-align: center; font-size: 0.9rem;
-
-    .label { font-weight: 700; color: $grey; text-transform: uppercase; font-size: 0.75rem; margin-bottom: 0.25rem; }
-    .value { color: $ink; font-weight: 600; }
+  @media (max-width: 1200px) {
+    position: static;
+    transform: none;
+    margin-top: 2rem;
+    flex-direction: row;
+    min-width: auto;
+    padding: 1rem 1.25rem;
   }
 }
 
-/* ---------- ONGLETS ---------- */
+.instructor-photo-wrapper {
+  position: relative;
+  width: 110px;
+  height: 110px;
+  flex-shrink: 0;
+
+  @media (max-width: 1200px) {
+    width: 70px;
+    height: 70px;
+  }
+}
+
+.instructor-photo {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid $copper;
+  box-shadow: 0 0 0 4px rgba(184, 115, 51, 0.25), 0 8px 20px rgba(0, 0, 0, 0.3);
+  background: #fff;
+}
+
+.instructor-status {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  width: 18px;
+  height: 18px;
+  background: #22c55e;
+  border: 3px solid #fff;
+  border-radius: 50%;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+
+  @media (max-width: 1200px) {
+    width: 14px;
+    height: 14px;
+    bottom: 4px;
+    right: 4px;
+  }
+}
+
+.instructor-details {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.25rem;
+
+  @media (max-width: 1200px) {
+    align-items: flex-start;
+    text-align: left;
+  }
+}
+
+.instructor-name {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: 0.02em;
+  line-height: 1.2;
+
+  @media (max-width: 1200px) {
+    font-size: 1rem;
+  }
+}
+
+.instructor-role {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 500;
+  font-style: italic;
+}
+
+.instructor-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1.2rem;
+  background: linear-gradient(135deg, $copper 0%, $copper-dark 100%);
+  color: #fff;
+  font-size: 0.85rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  border-radius: 50px;
+  box-shadow: 0 4px 12px rgba(184, 115, 51, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  position: relative;
+  overflow: hidden;
+  white-space: nowrap;
+
+  svg {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+  }
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.5s ease;
+  }
+
+  &:hover::before {
+    left: 100%;
+  }
+}
+
+/* ============================================================ */
+/* BARRE D'INFORMATION STICKY                                    */
+/* ============================================================ */
+.ent-detail-info-bar {
+  background: #fff;
+  border-bottom: 1px solid rgba(14, 59, 50, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+
+  &__container {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 1.5rem 1.5rem;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem 2rem;
+  }
+
+  &__item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    font-size: 0.9rem;
+    min-width: 100px;
+
+    .label {
+      font-weight: 700;
+      color: #5c6b66;
+      text-transform: uppercase;
+      font-size: 0.7rem;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.35rem;
+    }
+
+    .value {
+      color: #1f2a28;
+      font-weight: 600;
+      font-size: 0.95rem;
+      white-space: nowrap;
+    }
+  }
+
+  @media (max-width: 768px) {
+    &__container { justify-content: flex-start; gap: 1rem; }
+    &__item { flex: 1 1 calc(50% - 1rem); min-width: 0; }
+  }
+}
+
+/* ============================================================ */
+/* ONGLETS                                                       */
+/* ============================================================ */
 .ent-detail-tabs {
   background: #fff; border-bottom: 1px solid #eee;
 
@@ -100,7 +295,9 @@ $bg-light: #f9f7f4;
   }
 }
 
-/* ---------- CONTENU ---------- */
+/* ============================================================ */
+/* CONTENU PRINCIPAL                                             */
+/* ============================================================ */
 .ent-detail-content {
   padding: 4rem 0; background: #fff;
 
@@ -135,8 +332,7 @@ $bg-light: #f9f7f4;
 
 /* --- Timeline --- */
 .ent-timeline {
-  position: relative;
-  padding-left: 2rem;
+  position: relative; padding-left: 2rem;
   border-left: 3px solid rgba(184, 115, 51, 0.3);
 
   &__phase { position: relative; margin-bottom: 2rem; }
@@ -201,13 +397,11 @@ $bg-light: #f9f7f4;
   }
 
   &__title { flex: 1; margin: 0; font-size: 1rem; color: $green-dark; font-weight: 600; }
-
   &__chevron { color: $copper; font-size: 0.8rem; transition: transform 0.3s; }
   &.open &__chevron { transform: rotate(180deg); }
 
   &__body {
-    padding: 1.25rem 1.5rem; background: #fff;
-    border-top: 1px solid #f0f0f0;
+    padding: 1.25rem 1.5rem; background: #fff; border-top: 1px solid #f0f0f0;
 
     ul {
       list-style: none; padding: 0; margin: 0;
@@ -221,9 +415,9 @@ $bg-light: #f9f7f4;
   }
 }
 
-/* ============================================ */
-/* FORMULES & TARIFS                             */
-/* ============================================ */
+/* ============================================================ */
+/* FORMULES & TARIFS                                             */
+/* ============================================================ */
 .pricing-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -276,80 +470,36 @@ $bg-light: #f9f7f4;
     box-shadow: 0 4px 10px rgba(184, 115, 51, 0.4);
   }
 
-  &__name {
-    font-size: 1.25rem;
-    color: $green-dark;
-    margin: 0 0 1rem;
-    font-weight: 700;
-  }
+  &__name { font-size: 1.25rem; color: $green-dark; margin: 0 0 1rem; font-weight: 700; }
 
   &__price {
-    font-size: 2rem;
-    color: $copper;
-    font-weight: 800;
-    margin: 0 0 0.5rem;
-    line-height: 1;
+    font-size: 2rem; color: $copper; font-weight: 800; margin: 0 0 0.5rem; line-height: 1;
 
-    span {
-      font-size: 0.85rem;
-      color: $grey;
-      font-weight: 500;
-      display: block;
-      margin-top: 0.35rem;
-    }
+    span { font-size: 0.85rem; color: $grey; font-weight: 500; display: block; margin-top: 0.35rem; }
   }
 
-  &__desc {
-    font-size: 0.9rem;
-    color: $grey;
-    margin: 0 0 1.5rem;
-    line-height: 1.5;
-  }
+  &__desc { font-size: 0.9rem; color: $grey; margin: 0 0 1.5rem; line-height: 1.5; }
 
   &__features {
-    list-style: none;
-    padding: 0;
-    margin: 0 0 2rem;
-    flex: 1;
+    list-style: none; padding: 0; margin: 0 0 2rem; flex: 1;
 
     li {
-      display: flex;
-      align-items: flex-start;
-      gap: 0.5rem;
-      font-size: 0.85rem;
-      color: $ink;
-      margin-bottom: 0.75rem;
-      line-height: 1.5;
+      display: flex; align-items: flex-start; gap: 0.5rem;
+      font-size: 0.85rem; color: $ink; margin-bottom: 0.75rem; line-height: 1.5;
 
-      .check {
-        color: $copper;
-        font-weight: bold;
-        flex-shrink: 0;
-      }
+      .check { color: $copper; font-weight: bold; flex-shrink: 0; }
     }
   }
 
   &__cta {
-    width: 100%;
-    padding: 0.9rem 1rem;
-    border: 2px solid $copper;
-    background: transparent;
-    color: $copper;
-    font-weight: 700;
-    font-size: 0.9rem;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.3s;
+    width: 100%; padding: 0.9rem 1rem;
+    border: 2px solid $copper; background: transparent; color: $copper;
+    font-weight: 700; font-size: 0.9rem; border-radius: 8px; cursor: pointer; transition: all 0.3s;
 
-    &:hover {
-      background: $copper;
-      color: #fff;
-    }
+    &:hover { background: $copper; color: #fff; }
 
     &--primary {
-      background: $copper;
-      color: #fff;
-
+      background: $copper; color: #fff;
       &:hover { background: $copper-dark; }
     }
   }
@@ -357,80 +507,34 @@ $bg-light: #f9f7f4;
 
 /* --- Calculateur de taille d'équipe --- */
 .team-calculator {
-  background: $bg-light;
-  padding: 2rem;
-  border-radius: 12px;
-  text-align: center;
-  margin-bottom: 2rem;
+  background: $bg-light; padding: 2rem; border-radius: 12px; text-align: center; margin-bottom: 2rem;
 
-  h3 {
-    font-size: 1.15rem;
-    color: $green-dark;
-    margin: 0 0 1.5rem;
-    font-weight: 700;
-  }
+  h3 { font-size: 1.15rem; color: $green-dark; margin: 0 0 1.5rem; font-weight: 700; }
 
   &__input {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.75rem;
-    background: #fff;
-    padding: 0.5rem;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(14, 59, 50, 0.08);
+    display: inline-flex; align-items: center; gap: 0.75rem; background: #fff; padding: 0.5rem;
+    border-radius: 12px; box-shadow: 0 4px 12px rgba(14, 59, 50, 0.08);
 
     button {
-      width: 44px;
-      height: 44px;
-      border-radius: 8px;
-      border: none;
-      background: $green-dark;
-      color: #fff;
-      font-size: 1.5rem;
-      font-weight: 700;
-      cursor: pointer;
-      transition: all 0.2s;
-
+      width: 44px; height: 44px; border-radius: 8px; border: none; background: $green-dark; color: #fff;
+      font-size: 1.5rem; font-weight: 700; cursor: pointer; transition: all 0.2s;
       &:hover { background: $copper; }
     }
 
     input {
-      width: 70px;
-      text-align: center;
-      border: none;
-      font-size: 1.5rem;
-      font-weight: 800;
-      color: $green-dark;
-      outline: none;
-
-      &::-webkit-outer-spin-button,
-      &::-webkit-inner-spin-button {
-        -webkit-appearance: none;
-        margin: 0;
-      }
+      width: 70px; text-align: center; border: none; font-size: 1.5rem; font-weight: 800; color: $green-dark; outline: none;
+      &::-webkit-outer-spin-button, &::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
     }
 
-    .team-calculator__label {
-      font-size: 0.9rem;
-      color: $grey;
-      font-weight: 600;
-      padding-right: 0.75rem;
-    }
+    .team-calculator__label { font-size: 0.9rem; color: $grey; font-weight: 600; padding-right: 0.75rem; }
   }
 }
 
 /* --- Checkout panel --- */
 .checkout-panel {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 1.5rem;
-  background: linear-gradient(135deg, $green-dark 0%, $green-darker 100%);
-  color: #fff;
-  padding: 1.75rem 2rem;
-  border-radius: 12px;
-  margin-bottom: 1.5rem;
-  flex-wrap: wrap;
+  display: flex; justify-content: space-between; align-items: center; gap: 1.5rem;
+  background: linear-gradient(135deg, $green-dark 0%, $green-darker 100%); color: #fff;
+  padding: 1.75rem 2rem; border-radius: 12px; margin-bottom: 1.5rem; flex-wrap: wrap;
 
   &__summary {
     p { margin: 0 0 0.35rem; font-size: 0.95rem; }
@@ -439,40 +543,24 @@ $bg-light: #f9f7f4;
   }
 
   &__cta {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 1rem 2rem;
-    background: $copper;
-    color: #fff;
-    border: none;
-    border-radius: 8px;
-    font-weight: 700;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: all 0.3s;
+    display: inline-flex; align-items: center; gap: 0.5rem; padding: 1rem 2rem;
+    background: $copper; color: #fff; border: none; border-radius: 8px;
+    font-weight: 700; font-size: 1rem; cursor: pointer; transition: all 0.3s;
 
     svg { transition: transform 0.3s; }
 
     &:hover {
-      background: $copper-dark;
-      transform: translateY(-2px);
-      box-shadow: 0 8px 20px rgba(184, 115, 51, 0.4);
-
+      background: $copper-dark; transform: translateY(-2px); box-shadow: 0 8px 20px rgba(184, 115, 51, 0.4);
       svg { transform: translateX(4px); }
     }
   }
 }
 
 .custom-quote-note {
-  text-align: center;
-  color: $grey;
-  font-size: 0.95rem;
+  text-align: center; color: $grey; font-size: 0.95rem;
 
   a {
-    color: $copper;
-    font-weight: 700;
-    text-decoration: none;
+    color: $copper; font-weight: 700; text-decoration: none;
     &:hover { text-decoration: underline; }
   }
 }
@@ -518,9 +606,7 @@ $bg-light: #f9f7f4;
 
 /* --- CTA Final --- */
 .ent-cta-final {
-  background: linear-gradient(135deg, $copper 0%, $copper-dark 100%);
-  padding: 4rem 0;
-  color: #fff;
+  background: linear-gradient(135deg, $copper 0%, $copper-dark 100%); padding: 4rem 0; color: #fff;
 
   &__container { @include container; max-width: 700px; text-align: center; }
 
@@ -531,14 +617,12 @@ $bg-light: #f9f7f4;
     display: inline-flex; align-items: center; gap: 0.5rem;
     padding: 1rem 2.5rem; background: #fff; color: $copper-dark;
     font-weight: 800; font-size: 1rem; text-decoration: none;
-    border-radius: 50px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
-    transition: all 0.3s;
+    border-radius: 50px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2); transition: all 0.3s;
 
     svg { transition: transform 0.3s; }
 
     &:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
+      transform: translateY(-3px); box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
       svg { transform: translateX(4px); }
     }
   }

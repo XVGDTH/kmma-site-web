@@ -42,6 +42,12 @@ export class Apprentissage {
 
   readonly quizAnswers = signal<Record<number, number>>({});
   readonly quizResult  = signal<{ score: number; total: number; passed: boolean } | null>(null);
+  // Ajoute cet état dans ta classe
+readonly isCompleting = signal<boolean>(false);
+// Ajoute ceci avec les autres signaux
+readonly notificationMessage = signal<string | null>(null);
+
+
 
   constructor() {
     if (this.courseSlug) {
@@ -121,5 +127,77 @@ export class Apprentissage {
 
   isQuiz(seq: LearnerSequenceDto): boolean {
     return seq.type === 'quiz';
+  }
+
+  // Dans la classe Apprentissage
+markAsComplete(seq: LearnerSequenceDto): void {
+  if (seq.completed || this.isCompleting()) return;
+  
+  this.isCompleting.set(true);
+  
+  this.contentApi.markSequenceComplete(Number(seq.id)).subscribe({
+    next: () => {
+      // ✅ On force la mise à jour en recréant le signal
+      const current = this.selectedItem();
+      // ✅ Vérifie si TOUT le cours est terminé
+const allSequences = this.modules().flatMap(m => m.chapters.flatMap(c => c.sequences));
+const allCompleted = allSequences.every(s => s.completed);
+const finalExamDone = this.finalExam() ? this.finalExam()!.completed : true;
+
+if (allCompleted && finalExamDone) {
+  this.showNotification("🎉 Félicitations ! Vous avez terminé tout le cours. Vous pouvez télécharger votre certificat depuis votre espace.");
+}
+      if (current) {
+        this.selectedItem.set({
+          ...current,
+          sequence: { ...current.sequence, completed: true }
+        });
+      }
+      
+      // ✅ On affiche la notification de succès
+      this.showNotification("Vous avez marqué cette séquence comme terminée !");
+      
+      this.isCompleting.set(false);
+    },
+    error: (err) => {
+      console.error('Erreur validation', err);
+      alert("Impossible de marquer comme terminé.");
+      this.isCompleting.set(false);
+    }
+
+    
+  });
+}
+
+
+// Méthode pour afficher une notification
+showNotification(message: string): void {
+  this.notificationMessage.set(message);
+  // La notification disparaît après 5 secondes
+  setTimeout(() => this.notificationMessage.set(null), 5000);
+}
+
+  // ============================================================
+  // FEEDBACK (Avis)
+  // ============================================================
+  submitFeedback(sequenceId: number, comment: string, rating: number | null): void {
+    if (!sequenceId) return;
+
+    // On appelle l'API
+    this.contentApi.sendFeedback(sequenceId, comment, rating).subscribe({
+      next: () => {
+        // ✅ Notification de succès
+        this.showNotification("Merci ! Votre avis a bien été enregistré.");
+        
+        // Optionnel : vider le formulaire ou fermer le modal
+        // this.feedbackComment.set('');
+        // this.feedbackRating.set(null);
+        // this.showFeedbackForm.set(false);
+      },
+      error: (err) => {
+        console.error('Erreur feedback', err);
+        alert("Impossible d'envoyer votre avis pour le moment.");
+      }
+    });
   }
 }

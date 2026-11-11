@@ -1,153 +1,211 @@
-import { Injectable, signal, computed } from '@angular/core';
+import { Injectable, computed, inject, signal } from '@angular/core';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Observable, tap, catchError, throwError } from 'rxjs';
 
+// ============================================================
+// TYPES (alignés sur le backend)
+// ============================================================
 export interface TeamMember {
   id: string;
   email: string;
-  name?: string;
-  status: 'invite' | 'actif';
-  joinedAt?: string;
+  name?: string | null;
+  status: 'invite' | 'active' | 'revoked';
+  invitedAt?: string;
+  joinedAt?: string | null;
 }
 
 export interface EnterpriseLicense {
-  id: string;
+  id: string;                       // uuid
   courseId: number;
-  courseTitle: string;
-  courseImage: string;
+  courseSlug?: string;
+  courseTitle?: string;
+  courseImage?: string;
   planId: string;
-  planName: string;
+  planName?: string;
   seatsTotal: number;
   seatsUsed: number;
   seatsRemaining: number;
   pricePerSeat: number;
   totalPaid: number;
   discountApplied: number;
-  promoCode?: string;
-  purchasedAt: string;
-  expiresAt: string;
-  status: 'active' | 'expired';
+  promoCode?: string | null;
+  status: 'active' | 'expired' | 'cancelled';
+  purchasedAt?: string;
+  expiresAt?: string;
+  companyName: string;
+  companyEmail: string;
   members: TeamMember[];
-  ownerEmail: string;
-  ownerName: string;
 }
 
+export interface EnterprisePlan {
+  id: string;
+  slug: string;
+  name: string;
+  pricePerSeat: number;
+  minSeats: number;
+  maxSeats: number;
+  badge?: string | null;
+  description?: string | null;
+  features: string[];
+  featured: boolean;
+}
+
+export interface CreateLicensePayload {
+  course_id: number;
+  plan_id: string | number;
+  seats_total: number;
+  company_name: string;
+  company_email: string;
+  company_phone?: string;
+  company_address?: string;
+  company_tax_id?: string;
+  promo_code?: string;
+  payment_method: 'virement' | 'orange' | 'moov' | 'telecel' | 'card';
+  members?: { email: string; name?: string }[];
+}
+
+export interface CreateLicenseResponse {
+  data: EnterpriseLicense;
+  order: {
+    uuid: string;
+    reference: string;
+    invoiceNumber: string;
+    subtotal: number;
+    discount: number;
+    tva: number;
+    total: number;
+    currency: string;
+    status: string;
+    paidAt?: string;
+    transactionId: string;
+  };
+}
+
+// ============================================================
+// SERVICE
+// ============================================================
 @Injectable({ providedIn: 'root' })
 export class EntrepriseSubscriptionService {
 
-  readonly licenses = signal<EnterpriseLicense[]>([]);
+  private readonly http = inject(HttpClient);
+  private readonly apiBase = 'http://127.0.0.1:8000/api';
 
+  // ---- État global (signals) ----
+  readonly licenses = signal<EnterpriseLicense[]>([]);
+  readonly loading  = signal(false);
+  readonly error    = signal<string | null>(null);
+
+  // ---- Computed ----
   readonly activeLicenses = computed(() =>
-    this.licenses().filter((l) => l.status === 'active')
+    this.licenses().filter(l => l.status === 'active')
   );
 
   readonly totalSeats = computed(() =>
-    this.activeLicenses().reduce((sum, l) => sum + l.seatsTotal, 0)
+    this.activeLicenses().reduce((s, l) => s + l.seatsTotal, 0)
   );
 
   readonly totalSeatsUsed = computed(() =>
-    this.activeLicenses().reduce((sum, l) => sum + l.seatsUsed, 0)
+    this.activeLicenses().reduce((s, l) => s + l.seatsUsed, 0)
   );
 
-  constructor() {
-    this.reload();
+  // ============================================================
+  // PLANS (public)
+  // ============================================================
+  getPlans(): Observable<{ data: EnterprisePlan[] }> {
+    return this.http.get<{ data: EnterprisePlan[] }>(`${this.apiBase}/enterprise/plans`);
+  }
+    // ✅ NOUVELLE MÉTHODE : Télécharger la facture d'une licence
+  downloadLicenseInvoice(licenseId: string): Observable<Blob> {
+    return this.http.get(
+      `${this.apiBase}/enterprise-licenses/${licenseId}/invoice`, 
+      { responseType: 'blob' }
+    );
   }
 
+
+  // ============================================================
+  // LICENCES
+  // ============================================================
   reload(): void {
-    try {
-      const raw = localStorage.getItem('kmaa_enterprise_licenses');
-      const list = raw ? JSON.parse(raw) : [];
-      this.licenses.set(list);
-    } catch {
-      this.licenses.set([]);
-    }
+    this.loading.set(true);
+    this.error.set(null);
+
+    this.http.get<{ data: EnterpriseLicense[] }>(`${this.apiBase}/me/enterprise-licenses`)
+      .subscribe({
+        next: (res) => {
+          this.licenses.set(res.data);
+          this.loading.set(false);
+        },
+        error: (err) => {
+          this.error.set(err?.error?.message ?? 'Erreur chargement licences.');
+          this.loading.set(false);
+        },
+      });
   }
 
-  private persist(): void {
-    try {
-      localStorage.setItem(
-        'kmaa_enterprise_licenses',
-        JSON.stringify(this.licenses())
-      );
-    } catch { /* ignore */ }
-  }
-
-  addLicense(license: EnterpriseLicense): void {
-    const list = [...this.licenses(), license];
-    this.licenses.set(list);
-    this.persist();
-  }
-
-  updateLicense(id: string, patch: Partial<EnterpriseLicense>): void {
-    const list = this.licenses().map((l) =>
-      l.id === id ? { ...l, ...patch } : l
-    );
-    this.licenses.set(list);
-    this.persist();
-  }
-
-  inviteMember(
-    licenseId: string,
-    email: string,
-    name?: string
-  ): { success: boolean; message: string } {
-    const license = this.licenses().find((l) => l.id === licenseId);
-    if (!license) {
-      return { success: false, message: 'Licence introuvable.' };
-    }
-    if (license.seatsUsed >= license.seatsTotal) {
-      return { success: false, message: 'Plus de place disponible.' };
-    }
-    if (license.members.some((m) => m.email === email)) {
-      return { success: false, message: 'Cet email est déjà invité.' };
-    }
-
-    const member: TeamMember = {
-      id: 'm_' + Date.now().toString(36),
-      email,
-      name,
-      status: 'invite',
-      joinedAt: new Date().toISOString(),
-    };
-
-    this.updateLicense(licenseId, {
-      members: [...license.members, member],
-      seatsUsed: license.seatsUsed + 1,
-      seatsRemaining: license.seatsRemaining - 1,
-    });
-
-    return { success: true, message: `Invitation envoyée à ${email}` };
-  }
-
-  removeMember(licenseId: string, memberId: string): void {
-    const license = this.licenses().find((l) => l.id === licenseId);
-    if (!license) return;
-
-    const newMembers = license.members.filter((m) => m.id !== memberId);
-    this.updateLicense(licenseId, {
-      members: newMembers,
-      seatsUsed: newMembers.length,
-      seatsRemaining: license.seatsTotal - newMembers.length,
-    });
-  }
-
-  hasAccessForEmail(courseId: number, email: string): boolean {
-    const lowerEmail = email.trim().toLowerCase();
-    return this.activeLicenses().some(
-      (l) =>
-        l.courseId === courseId &&
-        (l.ownerEmail.toLowerCase() === lowerEmail ||
-          l.members.some((m) => m.email.toLowerCase() === lowerEmail))
+  getLicense(uuid: string): Observable<{ data: EnterpriseLicense }> {
+    return this.http.get<{ data: EnterpriseLicense }>(
+      `${this.apiBase}/enterprise-licenses/${uuid}`
     );
   }
 
-  getLicenseForEmail(courseId: number, email: string): EnterpriseLicense | null {
-    const lowerEmail = email.trim().toLowerCase();
-    return (
-      this.activeLicenses().find(
-        (l) =>
-          l.courseId === courseId &&
-          (l.ownerEmail.toLowerCase() === lowerEmail ||
-            l.members.some((m) => m.email.toLowerCase() === lowerEmail))
-      ) ?? null
+  createLicense(payload: CreateLicensePayload): Observable<CreateLicenseResponse> {
+    return this.http.post<CreateLicenseResponse>(
+      `${this.apiBase}/enterprise-licenses`,
+      payload
+    ).pipe(
+      tap((res) => {
+        // Ajoute immédiatement la nouvelle licence à l'état local
+        this.licenses.update(list => [res.data, ...list]);
+      }),
+      catchError((err) => throwError(() => err))
     );
+  }
+
+  // ============================================================
+  // MEMBRES
+  // ============================================================
+  getMembers(uuid: string): Observable<{
+    data: TeamMember[];
+    meta: { seatsTotal: number; seatsUsed: number; seatsRemaining: number };
+  }> {
+    return this.http.get<any>(`${this.apiBase}/enterprise-licenses/${uuid}/members`);
+  }
+
+  inviteMember(uuid: string, email: string, name?: string): Observable<{ data: TeamMember; message: string }> {
+    return this.http.post<{ data: TeamMember; message: string }>(
+      `${this.apiBase}/enterprise-licenses/${uuid}/members`,
+      { email, name }
+    ).pipe(
+      tap(() => this.reload())
+    );
+  }
+
+  removeMember(uuid: string, memberId: string): Observable<{ message: string }> {
+    return this.http.delete<{ message: string }>(
+      `${this.apiBase}/enterprise-licenses/${uuid}/members/${memberId}`
+    ).pipe(
+      tap(() => this.reload())
+    );
+  }
+
+  resendInvitation(uuid: string, memberId: string): Observable<{ message: string }> {
+    return this.http.post<{ message: string }>(
+      `${this.apiBase}/enterprise-licenses/${uuid}/members/${memberId}/resend`,
+      {}
+    );
+  }
+
+  // ============================================================
+  // ACCESS
+  // ============================================================
+  checkAccess(courseId: number): Observable<{
+    hasAccess: boolean;
+    role?: 'owner' | 'member';
+    licenseId?: string;
+    expiresAt?: string;
+  }> {
+    const params = new HttpParams().set('course_id', courseId.toString());
+    return this.http.get<any>(`${this.apiBase}/enterprise-licenses/access/check`, { params });
   }
 }

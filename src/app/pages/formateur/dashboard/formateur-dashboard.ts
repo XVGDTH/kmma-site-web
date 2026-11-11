@@ -3,1266 +3,288 @@
   Component,
   computed,
   inject,
+  OnInit,
   signal,
 } from '@angular/core';
-
 import { HttpClient } from '@angular/common/http';
 import { RouterLink } from '@angular/router';
-
-import {
-  SUBMISSIONS,
-  Submission,
-  FormateurForumThread,
-  FormateurForumReply,
-} from '../../../data/formateur';
-
-import { LiveSessionService } from '../../../shared/live-session.service';
-import { CourseContentService } from '../../../shared/course-content.service';
-import { CourseWeek } from '../../../data/Course builder.model ';
-import {
-  CourseContentDto,
-  toAbsoluteUrl,
-} from '../../../shared/formateur-content.service';
 import { AuthService } from '../../../shared/auth.service';
-
-
-// ============================================================
-// API
-// ============================================================
+import { LiveSessionService } from '../../../shared/live-session.service';
+import { DatePipe } from '@angular/common';
 
 const API_URL = 'http://127.0.0.1:8000/api';
 
-// reception des devoirs  soumis par les apprenants
+interface DashboardStats {
+  totalCourses: number;
+  totalStudents: number;
+  totalEnrollments: number;
+  completionRate: number;
+  pendingSubmissions: number;
+  gradedSubmissions: number;
+  averageGrade: number | null;
+}
 
-const LARAVEL_URL = 'http://127.0.0.1:8000';
+interface CourseStat {
+  id: number;
+  title: string;
+  image: string;
+  type: 'individual' | 'enterprise'; 
+  enrolledCount: number;
+  chaptersCount: number;
+}
 
-interface ApiSubmission {
+interface PendingSubmission {
   id: string;
   studentName: string;
   sequenceTitle: string;
   courseTitle: string;
-  status: 'soumis' | 'corrige' | 'retourne';
-  grade: number | null;
-  feedback: string | null;
   fileUrl: string | null;
   comment: string | null;
   submittedAt: string;
 }
 
-
-// ============================================================
-// STRUCTURE D'UN COURS RENVOYÃ‰ PAR LARAVEL
-// ============================================================
-
-type ApiCourse = {
-
-  /**
-   * Identifiant public du cours.
-   * Correspond actuellement au slug.
-   */
-  id: string;
-
-  /**
-   * Identifiant SQL rÃ©el du cours.
-   */
-  courseId?: number;
-
-  title: string;
-
-  slug?: string;
-
-  subject?: string;
-  category?: string;
-
-  level?: string;
-  diploma?: string;
-
-  durationFull?: string;
-  durationAlternance?: string;
-
-  image?: string;
-  imageAlt?: string;
-
-  popular?: boolean;
-  badge?: string | null;
-
-  route?: string;
-
-  description?: string;
-
-  isFree?: boolean;
-  hasCertificate?: boolean;
-};
-
-
-// ============================================================
-// STRUCTURE INTERNE DU DASHBOARD
-// ============================================================
-
-type DashboardCourseItem = {
-
-  course: ApiCourse;
-
-  stat: {
-    enrolledCount: number;
-    onlineNow: number;
-    completionRate: number;
-  };
-
-  live: ReturnType<LiveSessionService['getSession']>;
-
-  weeks: CourseWeek[];
-};
-
-
-// ============================================================
-// COMPOSANT
-// ============================================================
+interface RecentEnrollment {
+  studentName: string;
+  courseTitle: string;
+  enrolledAt: string;
+}
 
 @Component({
-
   selector: 'app-formateur-dashboard',
-
   standalone: true,
-
-  imports: [
-    RouterLink,
-  ],
-
+  imports: [RouterLink, DatePipe,],
+   
   templateUrl: './formateur-dashboard.html',
-
   styleUrl: './formateur-dashboard.scss',
-
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FormateurDashboard {
+export class FormateurDashboard implements OnInit {
+  private readonly http = inject(HttpClient);
+  private readonly authService = inject(AuthService);
+  private readonly liveService = inject(LiveSessionService); 
 
-
-  // ==========================================================
-  // SERVICES
-  // ==========================================================
-
-  private readonly liveService =
-    inject(LiveSessionService);
-
-  private readonly contentService =
-    inject(CourseContentService);
-
-  private readonly http =
-    inject(HttpClient);
-      private readonly authService =
-    inject(AuthService);
-
-
-
-  // ==========================================================
-  // INFORMATIONS DU FORMATEUR
-  // ==========================================================
-
-  // ==========================================================
-  // INFORMATIONS DU FORMATEUR CONNECTÃ‰ (depuis l'API)
-  // ==========================================================
-
-  readonly currentUser =
-    computed(() => this.authService.currentUser());
-
-  readonly instructorName =
-    computed(() =>
-      this.currentUser()?.name?.trim() || 'Formateur'
-    );
-
-  readonly instructorEmail =
-    computed(() => this.currentUser()?.email ?? '');
-
-  /** Initiales pour l'avatar (ex : "Martial YAOGO" â†’ "MY"). */
-  readonly instructorInitials =
-    computed(() =>
-      this.instructorName()
-        .split(/\s+/)
-        .filter(Boolean)
-        .slice(0, 2)
-        .map((part) => part.charAt(0).toUpperCase())
-        .join('')
-    );
-
-  readonly instructorAvatar =
-    computed(() => this.currentUser()?.avatar ?? null);
-  // ==========================================================
-  // COURS DU FORMATEUR
-  // ==========================================================
-
-  readonly myCourses =
-    signal<DashboardCourseItem[]>([]);
-
-      // ==========================================================
-  // CONTENUS PUBLIÃ‰S (chapitres/sÃ©quences depuis l'API)
-  // ==========================================================
-
-  /** Contenu de chaque cours, chargÃ© depuis l'API. */
-  readonly courseContents = signal<Record<number, CourseContentDto>>({});
-
-  /** Cours ayant du contenu, pour la section Â« Contenus publiÃ©s Â». */
-  readonly publishedContents = computed(() =>
-    this.myCourses().flatMap((item) => {
-      const id = Number(item.course.courseId ?? item.course.id);
-      const content = this.courseContents()[id];
-
-      if (!content || content.chapters.length === 0) return [];
-
-      return [{ course: item.course, content }];
-    })
+  // ---- Infos formateur ----
+  readonly currentUser = computed(() => this.authService.currentUser());
+  readonly instructorName = computed(() => this.currentUser()?.name?.trim() || 'Formateur');
+  readonly instructorEmail = computed(() => this.currentUser()?.email ?? '');
+  readonly instructorInitials = computed(() =>
+    this.instructorName()
+      .split(/\s+/)
+      .filter(Boolean)
+      .slice(0, 2)
+      .map(p => p.charAt(0).toUpperCase())
+      .join('')
   );
+  readonly instructorAvatar = computed(() => this.currentUser()?.avatar ?? null);
 
-  readonly totalPublishedSequences = computed(() =>
-    this.publishedContents().reduce(
-      (sum, item) =>
-        sum + item.content.chapters.reduce((s, ch) => s + ch.sequences.length, 0),
-      0
-    )
-  );
+  // ---- État ----
+  readonly isLoading = signal(true);
+  readonly error = signal<string | null>(null);
+    // ✅ Signaux pour les avis et discussions
+  readonly recentFeedbacks = signal<any[]>([]);
+  readonly recentDiscussions = signal<any[]>([]);
 
-  assetUrl(url: string | null | undefined): string | null {
-    return toAbsoluteUrl(url);
+    // ✅ Signaux pour les notifications et le chargement
+  readonly toastMessage = signal<string | null>(null);
+  readonly toastType = signal<'success' | 'error'>('success');
+  readonly loadingCourseId = signal<number | null>(null);
+  readonly upcomingSchedules = signal<any[]>([]);
+
+  showToast(message: string, type: 'success' | 'error' = 'success') {
+    this.toastMessage.set(message);
+    this.toastType.set(type);
+    setTimeout(() => this.toastMessage.set(null), 4000);
   }
 
-  private loadCourseContents(items: DashboardCourseItem[]): void {
-    items.forEach((item) => {
-      const id = Number(item.course.courseId ?? item.course.id);
+  // ✅ Mise à jour de startZoomSession
+  startZoomSession(courseId: number): void {
+    this.loadingCourseId.set(courseId);
+    this.liveService.startSession(
+      String(courseId),
+      (hostUrl) => {
+        this.loadingCourseId.set(null);
+        this.showToast('Session Zoom lancée avec succès !');
+        window.open(hostUrl, '_blank', 'noopener,noreferrer');
+      },
+      (error) => {
+        this.loadingCourseId.set(null);
+        this.showToast(error, 'error');
+      }
+    );
+  }
 
-      if (!Number.isFinite(id) || id <= 0) return;
+    loadUpcomingSchedules(): void {
+    // On suppose que tu as une route API qui renvoie TOUTES les séances à venir du formateur
+    this.http.get<{ data: any[] }>(`${API_URL}/formateur/live/upcoming-schedules`)
+      .subscribe({
+        next: (res) => this.upcomingSchedules.set(res.data.slice(0, 3)),
+        error: () => {}
+      });
+  }
 
-      this.http
-        .get<{ data: CourseContentDto }>(
-          `${API_URL}/formateur/courses/${id}/content`
-        )
-        .subscribe({
-          next: (res) =>
-            this.courseContents.update((map) => ({ ...map, [id]: res.data })),
-          error: () => { /* cours sans contenu : ignorÃ© */ },
-        });
+
+  readonly stats = signal<DashboardStats>({
+    totalCourses: 0,
+    totalStudents: 0,
+    totalEnrollments: 0,
+    completionRate: 0,
+    pendingSubmissions: 0,
+    gradedSubmissions: 0,
+    averageGrade: null,
+  });
+  
+
+  readonly courses = signal<CourseStat[]>([]);
+  readonly pendingSubmissions = signal<PendingSubmission[]>([]);
+  readonly upcomingLiveSessions = signal<any[]>([]);
+  readonly recentEnrollments = signal<RecentEnrollment[]>([]);
+
+  readonly gradingId = signal<string | null>(null);
+
+  ngOnInit(): void {
+    this.loadDashboard();
+     this.loadUpcomingSchedules();
+  }
+
+  protected  loadDashboard(): void {
+    this.isLoading.set(true);
+    this.error.set(null);
+    
+
+    this.http.get<{ data: any }>(`${API_URL}/formateur/dashboard`).subscribe({
+      next: (res) => {
+        const data = res.data;
+        this.stats.set(data.stats);
+        this.courses.set(data.courses ?? []);
+        this.pendingSubmissions.set(data.pendingSubmissions ?? []);
+        this.upcomingLiveSessions.set(data.upcomingLiveSessions ?? []);
+        this.recentEnrollments.set(data.recentEnrollments ?? []);
+        this.isLoading.set(false);
+        this.recentFeedbacks.set(data.recentFeedbacks ?? []);
+        this.recentDiscussions.set(data.recentDiscussions ?? []);
+      },
+      error: (err) => {
+        console.error('Erreur dashboard formateur', err);
+        this.error.set('Impossible de charger le tableau de bord.');
+        this.isLoading.set(false);
+      },
     });
   }
 
-
-  readonly coursesLoading =
-    signal(false);
-
-
-  readonly coursesError =
-    signal<string | null>(null);
-
-
-
-  // ==========================================================
-  // FORUM DU FORMATEUR
-  // ==========================================================
-
-  readonly forumThreads =
-    signal<FormateurForumThread[]>([]);
-
-
-  readonly forumLoading =
-    signal(false);
-
-
-  readonly forumError =
-    signal<string | null>(null);
-
-
-
-  // ==========================================================
-  // INTERACTION AVEC UNE DISCUSSION
-  // ==========================================================
-
-  /**
-   * ID de la discussion actuellement ouverte.
-   *
-   * null = aucune discussion ouverte.
-   */
-  readonly expandedThreadId =
-    signal<number | null>(null);
-
-
-  /**
-   * ID de la discussion pour laquelle
-   * le formulaire de rÃ©ponse est ouvert.
-   */
-  readonly replyingThreadId =
-    signal<number | null>(null);
-
-
-  /**
-   * ID de la discussion dont la rÃ©ponse
-   * est actuellement envoyÃ©e.
-   */
-  readonly replyLoadingId =
-    signal<number | null>(null);
-
-
-  /**
-   * Message d'erreur concernant une rÃ©ponse.
-   */
-  readonly replyError =
-    signal<string | null>(null);
-
-
-  /**
-   * ID de la discussion concernÃ©e par l'erreur.
-   */
-  readonly replyErrorForThread =
-    signal<number | null>(null);
-
-
-  /**
-   * ID de la discussion actuellement
-   * en cours de rÃ©solution.
-   */
-  readonly resolvingThreadId =
-    signal<number | null>(null);
-
-
-
-  // ==========================================================
-  // STATISTIQUES DU FORUM
-  // ==========================================================
-
-  readonly totalForumThreads =
-    computed(() =>
-      this.forumThreads().length
-    );
-
-
-  readonly unresolvedForumThreads =
-    computed(() =>
-      this.forumThreads().filter(
-        (thread) => !thread.resolved
-      )
-    );
-
-
-  readonly resolvedForumThreads =
-    computed(() =>
-      this.forumThreads().filter(
-        (thread) => thread.resolved
-      )
-    );
-
-
-  readonly totalForumReplies =
-    computed(() =>
-      this.forumThreads().reduce(
-        (total, thread) =>
-          total +
-          (thread.replies?.length ?? 0),
-        0
-      )
-    );
-
-
-  readonly forumQuestionsToHandle =
-    computed(() =>
-      this.forumThreads().filter(
-        (thread) =>
-          !thread.resolved &&
-          (thread.replies?.length ?? 0) === 0
-      )
-    );
-
-
-
-  // ==========================================================
-  // CONSTRUCTEUR
-  // ==========================================================
-
-  constructor() {
-
-    this.loadMyCourses();
-
-    this.loadForumThreads();
-    this.loadSubmissions(); 
-
-  }
-
-
-
-  // ==========================================================
-  // CHARGEMENT DES COURS
-  // ==========================================================
-
-  private loadMyCourses(): void {
-
-    this.coursesLoading.set(true);
-
-    this.coursesError.set(null);
-
-
-    this.http
-      .get<{ data: ApiCourse[] }>(
-        `${API_URL}/formateur/courses`
-      )
-      .subscribe({
-
-        // next: (res) => {
-
-        //   const courses =
-        //     res.data ?? [];
-
-
-
-
-                next: (res) => {
-
-          const courses = res.data ?? [];
-
-          const items = courses.map((course) => {
-
-            const courseId = String(course.id ?? course.slug ?? '');
-
-            return {
-              course: { ...course, id: courseId },
-              stat: { enrolledCount: 0, onlineNow: 0, completionRate: 0 },
-              live: this.liveService.getSession(courseId),
-              weeks: this.contentService.weeksForCourse(courseId),
-            };
-
-          });
-
-          this.myCourses.set(items);
-
-          // âœ… LA SEULE LIGNE Ã€ AJOUTER ICI
-          this.loadCourseContents(items);
-
-          this.coursesLoading.set(false);
-
-          console.log('ðŸ“š Cours du formateur rÃ©cupÃ©rÃ©s :', items);
-        },
-
-        //
-        //
-        //
-        //
-
-
-        error: (err) => {
-
-          console.error(
-            'âŒ Erreur chargement cours formateur :',
-            err
-          );
-
-
-          this.myCourses.set([]);
-
-          this.coursesLoading.set(false);
-
-          this.coursesError.set(
-            'Impossible de charger les cours du formateur.'
-          );
-
-        },
-
-      });
-
-  }
-
-
-
-  // ==========================================================
-  // CHARGEMENT DU FORUM
-  // ==========================================================
-
-  private loadForumThreads(): void {
-
-    this.forumLoading.set(true);
-
-    this.forumError.set(null);
-
-
-    this.http
-      .get<{ data: FormateurForumThread[] }>(
-        `${API_URL}/formateur/forum`
-      )
-      .subscribe({
-
-        next: (res) => {
-
-          console.log(
-            'ðŸ”¥ FORUM FORMATEUR API :',
-            res
-          );
-
-
-          console.log(
-            'ðŸ”¥ NOMBRE DE DISCUSSIONS :',
-            res.data?.length ?? 0
-          );
-
-
-          this.forumThreads.set(
-            res.data ?? []
-          );
-
-
-          this.forumLoading.set(false);
-
-        },
-
-
-        error: (err) => {
-
-          console.error(
-            'âŒ ERREUR FORUM FORMATEUR :',
-            err
-          );
-
-
-          this.forumError.set(
-            err?.error?.message ??
-            'Impossible de charger les discussions du forum.'
-          );
-
-
-          this.forumThreads.set([]);
-
-          this.forumLoading.set(false);
-
-        },
-
-      });
-
-  }
-
-
-
-  // ==========================================================
-  // VOIR / MASQUER UNE DISCUSSION
-  // ==========================================================
-
-  toggleDiscussion(
-    threadId: number
-  ): void {
-
-    if (
-      this.expandedThreadId() === threadId
-    ) {
-
-      this.expandedThreadId.set(null);
-
-      return;
-    }
-
-
-    this.expandedThreadId.set(threadId);
-
-  }
-
-
-
-  // ==========================================================
-  // OUVRIR LE FORMULAIRE DE RÃ‰PONSE
-  // ==========================================================
-
-  openReply(
-    threadId: number
-  ): void {
-
-    this.replyError.set(null);
-
-    this.replyErrorForThread.set(null);
-
-
-    /**
-     * On ouvre automatiquement
-     * la discussion.
-     */
-    this.expandedThreadId.set(threadId);
-
-
-    /**
-     * Si le formulaire est dÃ©jÃ  ouvert,
-     * on le ferme.
-     */
-    if (
-      this.replyingThreadId() === threadId
-    ) {
-
-      this.replyingThreadId.set(null);
-
-      return;
-    }
-
-
-    this.replyingThreadId.set(threadId);
-
-  }
-
-
-
-  // ==========================================================
-  // ANNULER UNE RÃ‰PONSE
-  // ==========================================================
-
-  cancelReply(): void {
-
-    this.replyingThreadId.set(null);
-
-    this.replyError.set(null);
-
-    this.replyErrorForThread.set(null);
-
-  }
-
-
-
-  // ==========================================================
-  // ENVOYER UNE RÃ‰PONSE
-  // ==========================================================
-
-  submitReply(
-    threadId: number,
-    content: string
-  ): void {
-
-    const cleanContent =
-      content.trim();
-
-
-    /**
-     * Protection contre une rÃ©ponse vide.
-     */
-    if (!cleanContent) {
-
-      this.replyError.set(
-        'Veuillez Ã©crire une rÃ©ponse avant de publier.'
-      );
-
-      this.replyErrorForThread.set(threadId);
-
-      return;
-    }
-
-
-    if (cleanContent.length < 2) {
-
-      this.replyError.set(
-        'Votre rÃ©ponse est trop courte.'
-      );
-
-      this.replyErrorForThread.set(threadId);
-
-      return;
-    }
-
-
-    this.replyLoadingId.set(threadId);
-
-    this.replyError.set(null);
-
-    this.replyErrorForThread.set(null);
-
-
-    console.log(
-      'ðŸ“¤ Envoi de la rÃ©ponse...',
-      {
-        threadId,
-        content: cleanContent,
-      }
-    );
-
-
-    this.http
-      .post<{ data: FormateurForumReply }>(
-        `${API_URL}/forum/threads/${threadId}/replies`,
-        {
-          content: cleanContent,
-        }
-      )
-      .subscribe({
-
-        next: (res) => {
-
-          console.log(
-            'âœ… RÃ‰PONSE PUBLIÃ‰E :',
-            res
-          );
-
-
-          const newReply =
-            res.data;
-
-
-          /**
-           * Ajout immÃ©diat de la rÃ©ponse
-           * dans la discussion actuellement affichÃ©e.
-           */
-          this.forumThreads.update(
-            (threads) =>
-              threads.map(
-                (thread) => {
-
-                  if (
-                    thread.id !== threadId
-                  ) {
-
-                    return thread;
-
-                  }
-
-
-                  return {
-
-                    ...thread,
-
-                    replies: [
-                      ...(thread.replies ?? []),
-                      newReply,
-                    ],
-
-                  };
-
-                }
-              )
-          );
-
-
-          /**
-           * La discussion reste ouverte.
-           */
-          this.expandedThreadId.set(threadId);
-
-
-          /**
-           * On ferme le formulaire.
-           */
-          this.replyingThreadId.set(null);
-
-
-          this.replyLoadingId.set(null);
-
-        },
-
-
-        error: (err) => {
-
-          console.error(
-            'âŒ ERREUR PUBLICATION RÃ‰PONSE :',
-            err
-          );
-
-
-          this.replyError.set(
-            err?.error?.message ??
-            'Impossible de publier votre rÃ©ponse.'
-          );
-
-
-          this.replyErrorForThread.set(
-            threadId
-          );
-
-
-          this.replyLoadingId.set(null);
-
-        },
-
-      });
-
-  }
-
-
-
-  // ==========================================================
-  // MARQUER UNE DISCUSSION COMME RÃ‰SOLUE
-  // ==========================================================
-
-  resolveDiscussion(
-    threadId: number
-  ): void {
-
-    this.resolvingThreadId.set(threadId);
-
-
-    console.log(
-      'âœ… RÃ©solution de la discussion :',
-      threadId
-    );
-
-
-    this.http
-      .patch<{ data: FormateurForumThread }>(
-        `${API_URL}/forum/threads/${threadId}/resolved`,
-        {}
-      )
-      .subscribe({
-
-        next: (res) => {
-
-          console.log(
-            'âœ… DISCUSSION MISE Ã€ JOUR :',
-            res
-          );
-
-
-          const updatedThread =
-            res.data;
-
-
-          /**
-           * Remplacement de la discussion
-           * dans le signal.
-           */
-          this.forumThreads.update(
-            (threads) =>
-              threads.map(
-                (thread) =>
-                  thread.id === threadId
-                    ? updatedThread
-                    : thread
-              )
-          );
-
-
-          /**
-           * Fermeture Ã©ventuelle du formulaire.
-           */
-          this.replyingThreadId.set(null);
-
-
-          this.resolvingThreadId.set(null);
-
-        },
-
-
-        error: (err) => {
-
-          console.error(
-            'âŒ ERREUR RÃ‰SOLUTION DISCUSSION :',
-            err
-          );
-
-
-          this.resolvingThreadId.set(null);
-
-
-          this.replyError.set(
-            err?.error?.message ??
-            'Impossible de modifier le statut de cette discussion.'
-          );
-
-
-          this.replyErrorForThread.set(
-            threadId
-          );
-
-        },
-
-      });
-
-  }
-
-
-
-  // ==========================================================
-  // SEMAINES PUBLIÃ‰ES
-  // ==========================================================
-
-  readonly allPublishedWeeks =
-    computed(() =>
-      this.myCourses().flatMap(
-        (item) =>
-          item.weeks.map(
-            (week) => ({
-
-              week,
-
-              courseTitle:
-                String(
-                  item.course.title ?? ''
-                ),
-
-              courseId:
-                item.course.id,
-
-            })
-          )
-      )
-    );
-
-
-
-  // ==========================================================
-  // STATISTIQUES DES APPRENANTS
-  // ==========================================================
-
-  readonly totalStudents =
-    computed(() =>
-      this.myCourses().reduce(
-        (sum, item) =>
-          sum +
-          item.stat.enrolledCount,
-        0
-      )
-    );
-
-
-  readonly totalOnline =
-    computed(() =>
-      this.myCourses().reduce(
-        (sum, item) =>
-          sum +
-          item.stat.onlineNow,
-        0
-      )
-    );
-
-
-  readonly activeLiveCount =
-    computed(() =>
-      this.myCourses().filter(
-        (item) =>
-          item.live.isLive
-      ).length
-    );
-
-
-
-  // ==========================================================
-  // TRAVAUX DES APPRENANTS
-  // ==========================================================
-
-  // readonly submissions =
-  //   signal<Submission[]>(
-  //     SUBMISSIONS
-  //   );
-
-
-  // readonly pendingSubmissions =
-  //   computed(() =>
-  //     this.submissions().filter(
-  //       (submission) =>
-  //         submission.status ===
-  //         'a_corriger'
-  //     )
-  //   );
-
-
-  // readonly gradedSubmissions =
-  //   computed(() =>
-  //     this.submissions().filter(
-  //       (submission) =>
-  //         submission.status ===
-  //         'note'
-  //     )
-  //   );
-
-
-
-  // // ==========================================================
-  // // NOTATION D'UN TRAVAIL
-  // // ==========================================================
-
-  // gradeSubmission(
-  //   id: string,
-  //   grade: number
-  // ): void {
-
-  //   if (
-  //     Number.isNaN(grade) ||
-  //     grade < 0 ||
-  //     grade > 20
-  //   ) {
-
-  //     return;
-
-  //   }
-
-
-  //   this.submissions.update(
-  //     (current) =>
-  //       current.map(
-  //         (submission) =>
-
-  //           submission.id === id
-
-  //             ? {
-
-  //                 ...submission,
-
-  //                 status:
-  //                   'note' as const,
-
-  //                 grade,
-
-  //               }
-
-  //             : submission
-
-  //       )
-  //   );
-
-  // }
-
-    // ==========================================================
-  // SOUMISSIONS RÃ‰ELLES (API) â€” devoirs des apprenants
-  // ==========================================================
-
-  readonly realSubmissions =
-    signal<ApiSubmission[]>([]);
-
-  readonly submissionsLoading =
-    signal(false);
-
-  readonly pendingSubmissions =
-    computed(() =>
-      this.realSubmissions().filter(
-        (s) => s.status === 'soumis'
-      )
-    );
-
-  readonly gradedSubmissions =
-    computed(() =>
-      this.realSubmissions().filter(
-        (s) => s.status === 'corrige' || s.status === 'retourne'
-      )
-    );
-
-  private loadSubmissions(): void {
-
-    this.submissionsLoading.set(true);
-
-    this.http
-      .get<{ data: ApiSubmission[] }>(
-        `${API_URL}/formateur/submissions`
-      )
-      .subscribe({
-        next: (res) => {
-          this.realSubmissions.set(res.data ?? []);
-          this.submissionsLoading.set(false);
-        },
-        error: (err) => {
-          console.error('Erreur soumissions :', err);
-          this.submissionsLoading.set(false);
-        },
-      });
-
-  }
-
-  /** URL absolue du devoir rendu. */
-  submissionFileUrl(sub: ApiSubmission): string | null {
-    if (!sub.fileUrl) return null;
-    return `${LARAVEL_URL}${sub.fileUrl}`;
-  }
-
-  // ==========================================================
-  // CORRECTION D'UNE SOUMISSION
-  // ==========================================================
-
-  readonly gradingId =
-    signal<string | null>(null);
-
-  gradeRealSubmission(
-    sub: ApiSubmission,
-    grade: number,
-    feedback: string
-  ): void {
-
-    if (
-      Number.isNaN(grade) ||
-      grade < 0 ||
-      grade > 20
-    ) {
-      alert('Note invalide (0 Ã  20).');
+  gradeSubmission(sub: PendingSubmission, grade: number, feedback: string): void {
+    if (isNaN(grade) || grade < 0 || grade > 20) {
+      alert('Note invalide (0 à 20).');
       return;
     }
 
     this.gradingId.set(sub.id);
 
-    this.http
-      .patch<{ message: string }>(
-        `${API_URL}/formateur/submissions/${sub.id}`,
-        {
-          grade: Math.round(grade),
-          instructor_feedback: feedback,
-          status: 'corrige',
-        }
-      )
-      .subscribe({
-        next: () => {
-          this.realSubmissions.update((list) =>
-            list.map((s) =>
-              s.id === sub.id
-                ? {
-                    ...s,
-                    status: 'corrige' as const,
-                    grade: Math.round(grade),
-                    feedback,
-                  }
-                : s
-            )
-          );
-          this.gradingId.set(null);
-        },
-        error: (err) => {
-          alert(err?.error?.message ?? 'Erreur lors de la correction.');
-          this.gradingId.set(null);
-        },
-      });
+    this.http.patch<{ message: string }>(`${API_URL}/formateur/submissions/${sub.id}`, {
+      grade: Math.round(grade),
+      instructor_feedback: feedback,
+      status: 'corrige',
+    }).subscribe({
+      next: () => {
+        this.pendingSubmissions.update(list => list.filter(s => s.id !== sub.id));
+        this.stats.update(s => ({
+          ...s,
+          pendingSubmissions: s.pendingSubmissions - 1,
+          gradedSubmissions: s.gradedSubmissions + 1,
+        }));
+        this.gradingId.set(null);
+      },
+      error: (err) => {
+        alert(err?.error?.message ?? 'Erreur lors de la correction.');
+        this.gradingId.set(null);
+      },
+    });
   }
 
+  formatDate(iso: string): string {
+    if (!iso) return '';
+    return new Date(iso).toLocaleDateString('fr-FR', {
+      day: '2-digit',
+      month: 'long',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+  }
 
+  assetUrl(url: string | null | undefined): string | null {
+    if (!url) return null;
+    const value = url.trim();
+    if (!value) return null;
 
-  // ==========================================================
-  // FORMATAGE DES DATES
-  // ==========================================================
-
-  formatDate(
-    iso: string
-  ): string {
-
-    if (!iso) {
-
-      return '';
-
+    // URL absolue → on garde
+    if (value.startsWith('http://') || value.startsWith('https://')) {
+      return value;
     }
 
+    // /storage/... → on préfixe avec le domaine Laravel
+    if (value.startsWith('/storage/')) {
+      return `http://127.0.0.1:8000${value}`;
+    }
 
-    try {
+    // storage/... → on préfixe avec le domaine + /
+    if (value.startsWith('storage/')) {
+      return `http://127.0.0.1:8000/${value}`;
+    }
 
-      const date =
-        new Date(iso);
+    // Chemin relatif → on ajoute /storage/
+    const path = value.replace(/^\/+/, '');
+    return `http://127.0.0.1:8000/storage/${path}`;
+  }
 
+  submissionFileUrl(sub: PendingSubmission): string | null {
+    if (!sub.fileUrl) return null;
+    if (sub.fileUrl.startsWith('http')) return sub.fileUrl;
+    return `http://127.0.0.1:8000${sub.fileUrl}`;
+  }
 
-      if (
-        Number.isNaN(
-          date.getTime()
-        )
-      ) {
+    readonly uploadingAvatar = signal(false);
 
-        return iso;
+  onAvatarSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    if (!file) return;
 
+    this.uploadingAvatar.set(true);
+    this.authService.updateAvatar(file).subscribe({
+      next: () => {
+        this.uploadingAvatar.set(false);
+        alert('Photo de profil mise à jour !');
+      },
+      error: (err) => {
+        this.uploadingAvatar.set(false);
+        alert('Erreur lors de l\'upload de la photo.');
       }
-
-
-      return date.toLocaleDateString(
-        'fr-FR',
-        {
-
-          day: 'numeric',
-
-          month: 'long',
-
-          year: 'numeric',
-
-          hour: '2-digit',
-
-          minute: '2-digit',
-
-        }
-      );
-
-    } catch {
-
-      return iso;
-
-    }
-
+    });
   }
 
+  // ✅ Méthode pour démarrer une session Zoom
+  // startZoomSession(courseId: number): void {
+  //   this.liveService.startSession(
+  //     String(courseId),
+  //     (hostUrl) => {
+  //       // Ouvre Zoom dans un nouvel onglet
+  //       window.open(hostUrl, '_blank', 'noopener,noreferrer');
+  //     },
+  //     (error) => {
+  //       alert(error);
+  //     }
+  //   );
+  // }
 
+    scheduleZoomSession(courseId: number): void {
+    const dateStr = prompt("Entrez la date et l'heure (format: 2026-11-05 18:00) :");
+    if (!dateStr) return;
 
-  // ==========================================================
-  // DATE LIMITE D'UNE SEMAINE
-  // ==========================================================
+    const scheduledAt = new Date(dateStr).toISOString();
 
-  formatDeadline(
-    week: CourseWeek
-  ): string {
-
-    const start =
-      new Date(
-        week.publishedAt
-      );
-
-
-    if (
-      Number.isNaN(
-        start.getTime()
-      )
-    ) {
-
-      return '';
-
-    }
-
-
-    const days =
-      week.programLength ===
-      '3-jours'
-
-        ? 3
-
-        : week.programLength ===
-          '5-jours'
-
-          ? 5
-
-          : 7;
-
-
-    const end =
-      new Date(start);
-
-
-    end.setDate(
-      end.getDate() + days
-    );
-
-
-    return end.toLocaleDateString(
-      'fr-FR',
-      {
-
-        day: 'numeric',
-
-        month: 'long',
-
-        year: 'numeric',
-
-      }
-    );
-
+    this.liveService.scheduleSession(courseId.toString(), scheduledAt).subscribe({
+      next: () => alert('Session programmée avec succès !'),
+      error: (err) => alert(err?.error?.message ?? 'Erreur lors de la programmation.'),
+    });
   }
-
-
-
-  // ==========================================================
-  // DURÃ‰E DU PROGRAMME
-  // ==========================================================
-
-  programLabel(
-    length: CourseWeek['programLength']
-  ): string {
-
-    if (
-      length === '3-jours'
-    ) {
-
-      return '3 jours';
-
-    }
-
-
-    if (
-      length === '5-jours'
-    ) {
-
-      return '5 jours';
-
-    }
-
-
-    return '1 semaine';
-
-  }
-
 }

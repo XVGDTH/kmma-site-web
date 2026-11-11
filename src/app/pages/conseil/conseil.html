@@ -1,0 +1,479 @@
+<main class="conseil">
+  <!-- ============ HERO ============ -->
+  <header class="hero">
+    <img class="hero__img" [src]="images.hero" alt="" loading="eager" (error)="onImgError($event)" />
+    <div class="hero__veil"></div>
+
+    <div class="wrap hero__inner">
+      <nav class="crumbs" aria-label="Fil d'Ariane">
+        <span>KMAA</span>
+        <span>Services</span>
+        <span aria-current="page">Conseil</span>
+      </nav>
+
+      <h1 class="hero__title">Conseil aux organisations</h1>
+      <p class="hero__tagline">
+        Faites de la gestion des risques un levier de performance, pas un centre de coût.
+      </p>
+      <p class="hero__text">
+        KMAA combine vision prospective, savoir-faire et technologie pour aider les dirigeants, les
+        directions financières et les responsables des risques à décider avec clarté.
+      </p>
+
+      <div class="hero__actions">
+        <a class="btn btn--primary" href="#apercu" (click)="scrollTo('apercu', $event)">En savoir plus</a>
+        <a class="btn btn--outline-light" href="#contact" (click)="scrollTo('contact', $event)">Nous contacter</a>
+      </div>
+    </div>
+
+    <span class="hero__edge" aria-hidden="true"></span>
+  </header>
+
+  <!-- ============ SOUS-NAVIGATION ============ -->
+  <nav class="subnav" aria-label="Sections de la page Conseil">
+    <div class="wrap subnav__inner">
+      <span class="subnav__brand">KMAA Conseil</span>
+      <ul class="subnav__list">
+        @for (link of navLinks; track link.id) {
+          <li>
+            <a
+              [href]="'#' + link.id"
+              [class.is-active]="activeSection() === link.id"
+              [attr.aria-current]="activeSection() === link.id ? 'true' : null"
+              (click)="scrollTo(link.id, $event)"
+            >
+              {{ link.label }}
+            </a>
+          </li>
+        }
+      </ul>
+    </div>
+  </nav>
+
+  <!-- ============ APERCU ============ -->
+  <section id="apercu" class="section section--light">
+    <div class="wrap">
+      <div class="intro">
+        <h2 class="h2 h2--wide">
+          Améliorez votre performance, maîtrisez vos risques, réussissez vos transformations
+        </h2>
+        <div class="intro__side">
+          <p class="lead">
+            Les régulations se multiplient et les exigences se durcissent. Nous vous aidons à
+            transformer cette pression en avantage, grâce à une approche intégrée qui sécurise vos
+            opérations tout en libérant votre capacité d'investissement.
+          </p>
+          <ul class="stats" aria-label="KMAA Conseil en repères">
+            @for (s of stats; track s.label) {
+              <li>
+                <span class="stats__value">{{ s.value }}</span>
+                <span class="stats__label">{{ s.label }}</span>
+              </li>
+            }
+          </ul>
+        </div>
+      </div>
+
+      <div class="split">
+        <div class="split__text">
+          <h2 class="h2">Intégrer une vision à 360 degrés des risques</h2>
+          <p>
+            Nouvelles technologies, cyberattaques, changement climatique, pression réglementaire :
+            dirigeants et directeurs des risques doivent adapter sans cesse leur stratégie pour
+            apporter de la confiance et assurer la résilience de l'entreprise.
+          </p>
+          <p>
+            Pour y parvenir, il faut développer une vision globale et prospective des risques, fondée
+            sur des scénarios pertinents et sur une meilleure exploitation des données.
+          </p>
+          <p>
+            Il est tout aussi important de fédérer les fonctions impliquées autour de cette vision,
+            pour ancrer durablement la culture du risque au sein de l'entreprise.
+          </p>
+        </div>
+
+        <figure class="media media--tall">
+          <img
+            [src]="images.vision"
+            alt="Équipe de consultants en séance de travail autour d'ordinateurs portables"
+            loading="lazy"
+            (error)="onImgError($event)"
+          />
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ OFFRES ============ -->
+  <section id="offres" class="section section--paper">
+    <div class="wrap">
+      <h2 class="h2">Nos principales offres</h2>
+
+      <ul class="offers">
+        @for (o of offers; track o.title) {
+          <li>
+            <a class="offer" [href]="o.href" (click)="$event.preventDefault()">
+              <span class="offer__title">{{ o.title }}</span>
+              <span class="offer__text">{{ o.text }}</span>
+              <span class="offer__arrow" aria-hidden="true"></span>
+            </a>
+          </li>
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============ POURQUOI KMAA ============ -->
+  <section class="section section--light" aria-labelledby="why-title">
+    <div class="wrap">
+      <h2 id="why-title" class="h2">Pourquoi faire appel à KMAA ?</h2>
+
+      <div class="why" role="tablist" aria-label="Nos atouts">
+        @for (r of reasons; track r.id; let i = $index) {
+          <button
+            type="button"
+            role="tab"
+            class="why__tab"
+            [id]="'reason-tab-' + r.id"
+            [class.is-active]="activeReason() === r.id"
+            [attr.aria-selected]="activeReason() === r.id"
+            [attr.aria-controls]="'reason-panel-' + r.id"
+            [attr.tabindex]="activeReason() === r.id ? 0 : -1"
+            (click)="selectReason(r.id)"
+            (keydown)="onTabKey($event, i)"
+          >
+            <svg class="why__icon" viewBox="0 0 48 48" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              @switch (r.icon) {
+                @case ('team') {
+                  <circle cx="24" cy="14" r="6" />
+                  <circle cx="10" cy="20" r="4" />
+                  <circle cx="38" cy="20" r="4" />
+                  <path d="M13 40c0-7 5-12 11-12s11 5 11 12" />
+                  <path d="M3 36c0-5 3-8 7-8M45 36c0-5-3-8-7-8" />
+                }
+                @case ('document') {
+                  <path d="M12 5h17l8 8v30H12z" />
+                  <path d="M29 5v8h8" />
+                  <path d="M18 22h14M18 28h14M18 34h8" />
+                }
+                @case ('tech') {
+                  <rect x="5" y="8" width="38" height="26" rx="2" />
+                  <path d="M17 41h14M24 34v7" />
+                  <circle cx="24" cy="21" r="5" />
+                  <path d="M24 13v3M24 26v3M16 21h3M29 21h3" />
+                }
+                @case ('shield') {
+                  <path d="M24 5l15 5v12c0 9-6 17-15 21C15 39 9 31 9 22V10z" />
+                  <path d="M17 24l5 5 9-10" />
+                }
+              }
+            </svg>
+            <span class="why__label">{{ r.label }}</span>
+          </button>
+        }
+      </div>
+
+      <div
+        class="why__panel"
+        role="tabpanel"
+        [id]="'reason-panel-' + currentReason.id"
+        [attr.aria-labelledby]="'reason-tab-' + currentReason.id"
+        tabindex="0"
+      >
+        <div>
+          <h3 class="why__title">{{ currentReason.title }}</h3>
+          <p>{{ currentReason.text }}</p>
+        </div>
+        <ul class="ticks ticks--dark">
+          @for (p of currentReason.points; track p) {
+            <li>{{ p }}</li>
+          }
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ BANDEAU STRATEGIE ============ -->
+  <section class="band" aria-labelledby="band-title">
+    <img class="band__img" [src]="images.strategy" alt="" loading="lazy" (error)="onImgError($event)" />
+    <div class="band__veil"></div>
+    <div class="wrap band__inner">
+      <h2 id="band-title" class="band__title">Une stratégie qui, dès le premier jour, se veut transformante</h2>
+      <p class="band__text">
+        Nous combinons vision prospective, savoir-faire et technologie pour vous aider à bâtir une
+        stratégie qui s'exécute, et pas seulement un document de plus.
+      </p>
+      <a class="btn btn--primary" href="#contact" (click)="scrollTo('contact', $event)">Parler de votre stratégie</a>
+    </div>
+  </section>
+
+  <!-- ============ EXPERTISES ============ -->
+  <section id="expertises" class="section section--light">
+    <div class="wrap">
+      <div class="head head--split">
+        <h2 class="h2">Des façons dont nous pouvons vous aider</h2>
+        <p class="head__text head__text--dark">
+          Les transactions et les initiatives stratégiques ne se font pas dans le vide. Nous vous aidons
+          à comprendre comment un événement affecte l'ensemble de votre entreprise, puis nous
+          travaillons avec vous tout au long de son cycle de vie pour maximiser la valeur et limiter les
+          perturbations.
+        </p>
+      </div>
+
+      <ul class="expertises">
+        @for (e of expertises; track e.title) {
+          <li class="expertise">
+            <h3 class="expertise__title">{{ e.title }}</h3>
+            <p class="expertise__text">{{ e.text }}</p>
+            <a class="link" href="#" (click)="$event.preventDefault()">{{ e.link }}</a>
+          </li>
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============ FINANCE ET COMPTABILITE ============ -->
+  <section id="finance" class="section section--paper">
+    <div class="wrap finance">
+      <div class="finance__text">
+        <h2 class="h2">Confiez la gestion de votre comptabilité à des experts</h2>
+        <p>
+          Toute entreprise commerciale doit produire des documents comptables obligatoires, tels que le
+          grand livre, le compte de résultat et le bilan, afin de fournir une comptabilité régulière,
+          sincère et représentative de sa réalité.
+        </p>
+        <p>
+          Une comptabilité bien tenue permet au dirigeant de mesurer l'évolution de la valeur de son
+          entreprise et de sa capacité à dégager de la trésorerie. C'est la première étape avant de
+          mettre en place des outils de pilotage de la performance financière.
+        </p>
+        <p>
+          KMAA accompagne toutes les entreprises dans leurs travaux de tenue, de vérification,
+          d'appréciation, de surveillance ou de redressement des comptes.
+        </p>
+
+        <figure class="media finance__media">
+          <img
+            [src]="images.finance"
+            alt="Calculatrice et documents comptables sur un bureau"
+            loading="lazy"
+            (error)="onImgError($event)"
+          />
+        </figure>
+      </div>
+
+      <aside class="missions" aria-labelledby="missions-title">
+        <h3 id="missions-title" class="missions__title">Nos missions de gestion comptable</h3>
+        <ul>
+          @for (m of missions; track m.title) {
+            <li class="mission">
+              <a href="#" (click)="$event.preventDefault()">
+                <span class="mission__title">{{ m.title }}</span>
+                <span class="mission__text">{{ m.text }}</span>
+              </a>
+            </li>
+          }
+        </ul>
+      </aside>
+    </div>
+  </section>
+
+  <!-- ============ EXTERNALISATION ============ -->
+  <section class="section section--dark" aria-labelledby="outsourcing-title">
+    <div class="wrap">
+      <div class="head head--split">
+        <h2 id="outsourcing-title" class="h2 h2--invert">Des services pour votre entreprise</h2>
+        <p class="head__text">
+          Vous souhaitez externaliser tout votre département comptable ou seulement vos besoins de base ?
+          Nous construisons avec vous une solution personnalisée qui évolue au rythme de votre entreprise.
+        </p>
+      </div>
+
+      <div class="groups">
+        @for (g of outsourcing; track g.title) {
+          <section class="group">
+            <h3 class="group__title">{{ g.title }}</h3>
+            <ul class="ticks">
+              @for (i of g.items; track i) {
+                <li>{{ i }}</li>
+              }
+            </ul>
+          </section>
+        }
+      </div>
+
+      <h3 class="subhead">Avantages de la comptabilité externalisée</h3>
+      <ul class="benefits">
+        @for (b of benefits; track b.title) {
+          <li class="benefit">
+            <h4 class="benefit__title">{{ b.title }}</h4>
+            <p class="benefit__text">{{ b.text }}</p>
+          </li>
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============ ACCOMPAGNEMENT ============ -->
+  <section id="accompagnement" class="section section--light">
+    <div class="wrap">
+      <div class="head head--split">
+        <h2 class="h2">Notre accompagnement</h2>
+        <p class="head__text head__text--dark">
+          Nos consultants disposent de solides compétences de terrain. Notre approche repose sur la
+          co-construction et la proximité : chaque client est unique par sa culture, son histoire, ses
+          forces et ses faiblesses, et doit trouver sa propre solution.
+        </p>
+      </div>
+
+      <div class="switch" role="group" aria-label="Domaine d'accompagnement">
+        @for (d of domains; track d.id) {
+          <button
+            type="button"
+            class="switch__btn"
+            [class.is-active]="activeDomain() === d.id"
+            [attr.aria-pressed]="activeDomain() === d.id"
+            (click)="selectDomain(d.id)"
+          >
+            {{ d.label }}
+          </button>
+        }
+      </div>
+
+      <p class="switch__intro">{{ currentDomain.intro }}</p>
+
+      <ul class="support">
+        @for (it of currentDomain.items; track it.title) {
+          <li class="support__item">
+            <h3 class="support__title">{{ it.title }}</h3>
+            <p class="support__text">{{ it.text }}</p>
+          </li>
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============ SECTEURS ============ -->
+  <section id="secteurs" class="section section--paper">
+    <div class="wrap">
+      <div class="head head--split">
+        <h2 class="h2">Une spécialisation sectorielle</h2>
+        <p class="head__text head__text--dark">
+          Nos équipes associent la compréhension de vos enjeux d'affaires et de reporting financier à une
+          vaste expertise sectorielle, pour des solutions adaptées à votre industrie.
+        </p>
+      </div>
+
+      <div class="carousel">
+        <ul #track class="carousel__track" tabindex="0" aria-label="Secteurs accompagnés">
+          @for (s of sectors; track s.name) {
+            <li class="sector">
+              <figure class="media sector__media">
+                <img [src]="s.image" [alt]="s.name" loading="lazy" (error)="onImgError($event)" />
+              </figure>
+              <h3 class="sector__name">{{ s.name }}</h3>
+              <p class="sector__text">{{ s.text }}</p>
+            </li>
+          }
+        </ul>
+        <div class="carousel__controls">
+          <button type="button" class="round" aria-label="Secteurs précédents" (click)="slide(-1)">
+            <span class="round__chevron round__chevron--left" aria-hidden="true"></span>
+          </button>
+          <button type="button" class="round" aria-label="Secteurs suivants" (click)="slide(1)">
+            <span class="round__chevron" aria-hidden="true"></span>
+          </button>
+        </div>
+      </div>
+
+      <h3 class="subhead subhead--dark">Exemples de réalisations</h3>
+      <ul class="cases">
+        @for (c of cases; track c.title) {
+          <li class="case">
+            <p class="case__sector">{{ c.sector }}</p>
+            <div>
+              <h4 class="case__title">{{ c.title }}</h4>
+              <p class="case__text">{{ c.text }}</p>
+            </div>
+          </li>
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============ PERSPECTIVES ============ -->
+  <section id="perspectives" class="section section--light">
+    <div class="wrap">
+      <h2 class="h2">Nos dernières publications</h2>
+
+      <ul class="insights">
+        @for (n of insights; track n.title) {
+          <li class="insight">
+            <figure class="media insight__media">
+              <img [src]="n.image" alt="" loading="lazy" (error)="onImgError($event)" />
+            </figure>
+            <p class="insight__type">{{ n.type }}</p>
+            <h3 class="insight__title">
+              <a href="#" (click)="$event.preventDefault()">{{ n.title }}</a>
+            </h3>
+            <p class="insight__text">{{ n.text }}</p>
+            <p class="insight__meta">
+              <time [attr.datetime]="n.dateIso">{{ n.date }}</time>
+              <span class="insight__author">{{ n.author }}</span>
+            </p>
+          </li>
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============ EQUIPE ============ -->
+  <section id="equipe" class="section section--paper">
+    <div class="wrap">
+      <h2 class="h2">L'équipe</h2>
+
+      <ul class="team">
+        @for (e of experts; track e.name) {
+          <li class="expert">
+            <div class="expert__avatar" aria-hidden="true">{{ e.initials }}</div>
+            <div class="expert__body">
+              <h3 class="expert__name">{{ e.name }}</h3>
+              <p class="expert__role">{{ e.role }}</p>
+              <p class="expert__bio">{{ e.bio }}</p>
+            </div>
+          </li>
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============ CONTACT ============ -->
+  <section id="contact" class="section section--closing">
+    <div class="wrap closing">
+      <div>
+        <h2 class="h2 h2--invert">Contactez-nous</h2>
+        <p class="closing__text">
+          Parlez-nous de vos risques, de vos transformations et de vos échéances. Nous revenons vers
+          vous avec une première lecture de votre situation et une proposition d'accompagnement.
+        </p>
+        <div class="hero__actions">
+          <a class="btn btn--primary" [href]="'mailto:' + contactEmail">Écrire à l'équipe Conseil</a>
+          <a class="btn btn--outline-light" [href]="'mailto:' + contactEmail + '?subject=Demande%20de%20rendez-vous'">
+            Demander un rendez-vous
+          </a>
+        </div>
+      </div>
+
+      <div>
+        <h3 class="closing__label">Services connexes</h3>
+        <ul class="related">
+          @for (r of relatedServices; track r.title) {
+            <li>
+              <a [href]="r.href" (click)="$event.preventDefault()">{{ r.title }}</a>
+            </li>
+          }
+        </ul>
+      </div>
+    </div>
+  </section>
+</main>

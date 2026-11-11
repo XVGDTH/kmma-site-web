@@ -2109,3 +2109,53 @@
     display: none;
   }
 }
+
+
+/* ============================================================
+   SVG ICONS STYLING
+============================================================ */
+
+// Force les SVG à prendre la taille et la couleur du conteneur
+.simulator-icon svg,
+.workspace-icon svg,
+.intro-icon svg,
+.diagnostic-symbol svg,
+.floating-icon svg,
+.core-icon-svg,
+.audience-selector svg,
+.diagnostic-option svg,
+.feature-icon svg,
+.btn-svg {
+  width: 100%;
+  height: 100%;
+  max-width: 24px;
+  max-height: 24px;
+  stroke-width: 1.5;
+}
+
+// Ajustements spécifiques pour les conteneurs qui ont des tailles différentes
+.floating-icon svg {
+  max-width: 18px;
+  max-height: 18px;
+}
+
+.core-icon-svg {
+  width: 37px;
+  height: 37px;
+  max-width: 37px;
+  max-height: 37px;
+  color: var(--gold-300, #d9a476);
+}
+
+.feature-icon svg {
+  max-width: 22px;
+  max-height: 22px;
+  color: var(--gold-500, #b87333); // Couleur cuivre pour les icônes de features
+}
+
+.btn-svg {
+  width: 16px;
+  height: 16px;
+  margin-right: 6px;
+  vertical-align: middle;
+}

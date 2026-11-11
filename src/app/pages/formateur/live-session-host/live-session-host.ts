@@ -38,7 +38,7 @@ export class LiveSessionHost {
   );
 
   // ----------------------------------------------------------
-  // Cours chargÃ© depuis l'API
+  // Cours chargé depuis l'API
   // ----------------------------------------------------------
 
   readonly course = signal<{ title: string } | null>(null);
@@ -51,7 +51,7 @@ export class LiveSessionHost {
   readonly session = computed(() => this.liveService.getSession(this.courseId()));
   readonly isLive = computed(() => this.session()?.isLive ?? false);
 
-  /** Vrai nom du formateur connectÃ© */
+  /** Vrai nom du formateur connecté */
   readonly displayName = computed(
     () => this.authService.currentUser()?.name ?? 'Formateur KMAA'
   );
@@ -59,7 +59,7 @@ export class LiveSessionHost {
   /** URL Zoom pour le formateur (host) */
   readonly hostUrl = signal<string | null>(null);
 
-  /** Ã‰tat de chargement */
+  /** État de chargement */
   readonly starting = signal(false);
   readonly loadingHostUrl = signal(false);
   readonly error = signal<string | null>(null);
@@ -87,7 +87,7 @@ export class LiveSessionHost {
   }
 
   // ----------------------------------------------------------
-  // DÃ©marrer la session Zoom (crÃ©ation de la rÃ©union)
+  // Démarrer la session Zoom (création de la réunion)
   // ----------------------------------------------------------
   startSession(): void {
     if (this.starting()) return;
@@ -101,7 +101,7 @@ export class LiveSessionHost {
         this.hostUrl.set(hostUrl);
         this.starting.set(false);
 
-        // Ouvre Zoom immÃ©diatement pour l'hÃ´te
+        // Ouvre Zoom immédiatement pour l'hôte
         window.open(hostUrl, '_blank', 'noopener,noreferrer');
       },
       (msg) => {
@@ -112,7 +112,7 @@ export class LiveSessionHost {
   }
 
   // ----------------------------------------------------------
-  // RÃ©cupÃ©rer le start_url (hÃ´te) si on a rechargÃ© la page
+  // Récupérer le start_url (hôte) si on a rechargé la page
   // ----------------------------------------------------------
   openHostRoom(): void {
     if (this.loadingHostUrl()) return;

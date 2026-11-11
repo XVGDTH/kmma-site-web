@@ -1,0 +1,365 @@
+<main class="audit">
+  <!-- ============ HERO ============ -->
+  <header class="hero">
+    <div class="wrap hero__grid">
+      <div class="hero__copy">
+        <nav class="crumbs" aria-label="Fil d'Ariane">
+          <span>KMAA</span>
+          <span>Services</span>
+          <span aria-current="page">Audit</span>
+        </nav>
+
+        <h1 class="hero__title">Audit et Fraude</h1>
+        <p class="hero__subtitle">Au-delà du contrôle, la confiance.</p>
+        <p class="hero__text">
+          KMAA réunit des auditeurs expérimentés, des méthodes rigoureuses et des outils numériques
+          de pointe pour fiabiliser vos états financiers et vous donner une lecture claire de vos
+          risques, où que se situe votre activité.
+        </p>
+
+        <div class="hero__actions">
+          <a class="btn btn--primary" routerLink="/contact">Nous contacter</a>
+          <a class="btn btn--outline-light" routerLink="/contact">
+            Soumettre un appel d'offres
+          </a>
+        </div>
+      </div>
+
+      <figure class="hero__figure media">
+        <img
+          [src]="images.hero"
+          alt="Poste de travail avec tableaux financiers et ordinateur portable"
+          loading="eager"
+          (error)="onImgError($event)"
+        />
+      </figure>
+    </div>
+  </header>
+
+  <!-- ============ SOUS-NAVIGATION ============ -->
+  <nav class="subnav" aria-label="Sections de la page Audit">
+    <div class="wrap subnav__inner">
+      <span class="subnav__brand">KMAA Audit</span>
+      <ul class="subnav__list">
+        @for (link of navLinks; track link.id) {
+          <li>
+            <a
+              [href]="'#' + link.id"
+              [class.is-active]="activeSection() === link.id"
+              [attr.aria-current]="activeSection() === link.id ? 'true' : null"
+              (click)="scrollTo(link.id, $event)"
+            >
+              {{ link.label }}
+            </a>
+          </li>
+        }
+      </ul>
+    </div>
+  </nav>
+
+  <!-- ============ APERCU ============ -->
+  <section id="apercu" class="section section--light">
+    <div class="wrap split">
+      <div class="split__text">
+        <h2 class="h2">Des services d'audit qui vont au-delà des attentes</h2>
+        <p class="lead">
+          Quelle que soit votre taille ou votre activité, vous bénéficiez du même engagement
+          d'excellence de la part de KMAA, à chaque mission.
+        </p>
+        <p>
+          L'intégrité, le service à l'intérêt public et une qualité élevée sur les sujets qui comptent
+          le plus guident tout ce que nous faisons. Nos équipes compétentes, nos processus innovants
+          et nos technologies nous permettent de renforcer la vérité et la confiance dans les
+          écosystèmes de reporting financier.
+        </p>
+
+        <ul class="values" aria-label="Nos valeurs">
+          @for (v of values; track v) {
+            <li>{{ v }}</li>
+          }
+        </ul>
+      </div>
+
+      <figure class="media media--tall">
+        <img
+          [src]="images.overview"
+          alt="Équipe d'auditeurs réunie autour d'une table de travail"
+          loading="lazy"
+          (error)="onImgError($event)"
+        />
+      </figure>
+    </div>
+  </section>
+
+  <!-- ============ APPROCHE ============ -->
+  <section id="approche" class="section section--dark">
+    <div class="wrap">
+      <div class="head">
+        <h2 class="h2 h2--invert">L'avenir de l'audit se joue aujourd'hui</h2>
+        <p class="head__text">
+          Une approche globale et modernisée, des processus optimisés et une plateforme technologique
+          unique, désormais enrichie par l'intelligence artificielle.
+        </p>
+      </div>
+
+      <div class="pillars">
+        <div class="pillars__tabs" role="tablist" aria-label="Piliers de notre approche">
+          @for (p of pillars; track p.id; let i = $index) {
+            <button
+              type="button"
+              role="tab"
+              class="pillars__tab"
+              [id]="'tab-' + p.id"
+              [class.is-active]="activePillar() === p.id"
+              [attr.aria-selected]="activePillar() === p.id"
+              [attr.aria-controls]="'panel-' + p.id"
+              [attr.tabindex]="activePillar() === p.id ? 0 : -1"
+              (click)="selectPillar(p.id)"
+              (keydown)="onTabKey($event, i)"
+            >
+              {{ p.title }}
+            </button>
+          }
+        </div>
+
+        <div
+          class="pillars__panel"
+          role="tabpanel"
+          [id]="'panel-' + currentPillar.id"
+          [attr.aria-labelledby]="'tab-' + currentPillar.id"
+          tabindex="0"
+        >
+          <p class="pillars__lead">{{ currentPillar.lead }}</p>
+          <ul class="ticks">
+            @for (pt of currentPillar.points; track pt) {
+              <li>{{ pt }}</li>
+            }
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ METHODE ============ -->
+  <section id="methode" class="section section--paper">
+    <div class="wrap">
+      <div class="head head--split">
+        <h2 class="h2">Les points clés de notre approche d'audit des états financiers</h2>
+        <p class="head__text head__text--dark">
+          Une spécialisation approfondie, centrée sur nos clients, nos collaborateurs et sur ce qui
+          définit notre profession : intégrité, objectivité et indépendance.
+        </p>
+      </div>
+
+      <div class="method">
+        <figure class="media media--tall method__media">
+          <img
+            [src]="images.method"
+            alt="Tableau de bord d'analyse de données financières"
+            loading="lazy"
+            (error)="onImgError($event)"
+          />
+        </figure>
+
+        <ul class="traits">
+          @for (t of traits; track t.title) {
+            <li class="trait">
+              <h3 class="trait__title">{{ t.title }}</h3>
+              <p class="trait__text">{{ t.text }}</p>
+            </li>
+          }
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ ENJEUX ============ -->
+  <section id="enjeux" class="section section--light">
+    <div class="wrap stakes">
+      <figure class="media stakes__media">
+        <img
+          [src]="images.stakes"
+          alt="Documents financiers et stylo sur un bureau"
+          loading="lazy"
+          (error)="onImgError($event)"
+        />
+      </figure>
+
+      <div class="stakes__col">
+        <h2 class="h2">Vos enjeux</h2>
+        <p>
+          Chez KMAA, l'écoute de nos clients est essentielle pour proposer une méthodologie sur mesure
+          en matière d'audit financier. Dès la phase préparatoire, nous identifions :
+        </p>
+        <ul class="rules">
+          @for (s of stakes; track s) {
+            <li>{{ s }}</li>
+          }
+        </ul>
+        <p>
+          La relation de confiance qui s'établit alors entre vos équipes et nos spécialistes garantit
+          la qualité des missions et leur bon déroulé dans la durée.
+        </p>
+      </div>
+
+      <div class="stakes__col">
+        <h2 class="h2">Notre ambition</h2>
+        <p>
+          La hauteur de vue de nos associés, combinée à la spécialisation de nos experts métiers et
+          sectoriels, nous permet de vous apporter un accompagnement de terrain, réactif et engagé :
+        </p>
+        <ul class="rules">
+          @for (a of ambitions; track a) {
+            <li>{{ a }}</li>
+          }
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ BANDEAU ============ -->
+  <section class="band" aria-labelledby="band-title">
+    <img
+      class="band__img"
+      [src]="images.band"
+      alt=""
+      loading="lazy"
+      (error)="onImgError($event)"
+    />
+    <div class="band__veil"></div>
+    <div class="wrap band__inner">
+      <h2 id="band-title" class="band__title">
+        Comment nos exigences d'audit transforment la complexité en confiance
+      </h2>
+      <p class="band__text">
+        Des audits aux standards de qualité les plus élevés, une cohérence de méthode, des innovations
+        technologiques et une rigueur qui éclairent vos décisions stratégiques et créent de la valeur
+        sur le long terme.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============ SERVICES ============ -->
+  <section id="services" class="section section--light">
+    <div class="wrap services">
+      <div class="services__intro">
+        <h2 class="h2">Explorer nos services d'audit</h2>
+        <p>
+          Combinant approches traditionnelles et innovantes dans une méthodologie cohérente, nos
+          équipes vous proposent des missions légales comme contractuelles.
+        </p>
+      </div>
+
+      <ul class="accordion">
+        @for (s of services; track s.id) {
+          <li class="accordion__item" [class.is-open]="openService() === s.id">
+            <h3 class="accordion__heading">
+              <button
+                type="button"
+                class="accordion__trigger"
+                [attr.aria-expanded]="openService() === s.id"
+                [attr.aria-controls]="'svc-' + s.id"
+                (click)="toggleService(s.id)"
+              >
+                <span class="accordion__title">{{ s.title }}</span>
+                <span class="accordion__summary">{{ s.summary }}</span>
+                <span class="accordion__mark" aria-hidden="true"></span>
+              </button>
+            </h3>
+            <div class="accordion__body" [id]="'svc-' + s.id" role="region">
+              <div class="accordion__inner">
+                <ul class="ticks ticks--dark">
+                  @for (d of s.details; track d) {
+                    <li>{{ d }}</li>
+                  }
+                </ul>
+              </div>
+            </div>
+          </li>
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============ ACTUALITES ============ -->
+  <section id="actualites" class="section section--paper">
+    <div class="wrap">
+      <div class="head head--split">
+        <h2 class="h2">Nos dernières actualités</h2>
+        <p class="head__text head__text--dark">
+          Webcasts, ateliers et publications pour suivre l'évolution de la réglementation et des
+          pratiques d'audit.
+        </p>
+      </div>
+
+      <ul class="news">
+        @for (n of news; track n.title) {
+          <li class="news__item">
+            <time class="news__date" [attr.datetime]="n.dateIso">{{ n.date }}</time>
+            <div class="news__body">
+              <p class="news__type">{{ n.type }}</p>
+              <h3 class="news__title">{{ n.title }}</h3>
+              <p class="news__text">{{ n.text }}</p>
+            </div>
+            <a class="news__link" href="#" (click)="$event.preventDefault()">
+              Voir le détail<span class="visually-hidden"> : {{ n.title }}</span>
+            </a>
+          </li>
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============ EQUIPE ============ -->
+  <section id="equipe" class="section section--light">
+    <div class="wrap">
+      <div class="head">
+        <h2 class="h2">L'équipe</h2>
+      </div>
+
+      <ul class="team">
+        @for (e of experts; track e.name) {
+          <li class="expert">
+            <div class="expert__avatar" aria-hidden="true">{{ e.initials }}</div>
+            <div class="expert__body">
+              <h3 class="expert__name">{{ e.name }}</h3>
+              <p class="expert__role">{{ e.role }}</p>
+              <p class="expert__bio">{{ e.bio }}</p>
+              <p class="expert__loc">{{ e.location }}</p>
+            </div>
+          </li>
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============ SERVICES CONNEXES + CONTACT ============ -->
+  <section id="contact" class="section section--dark section--closing">
+    <div class="wrap closing">
+      <div class="closing__cta">
+        <h2 class="h2 h2--invert">Contacter les experts Audit</h2>
+        <p class="closing__text">
+          Décrivez-nous votre contexte : nous revenons vers vous avec une proposition de mission
+          adaptée à votre structure et à vos échéances.
+        </p>
+        <div class="hero__actions">
+          <a class="btn btn--primary" routerLink="/contact">Nous contacter</a>
+          <a class="btn btn--outline-light" routerLink="/contact">
+            Soumettre un appel d'offres
+          </a>
+        </div>
+      </div>
+
+      <div class="closing__related">
+        <h3 class="closing__label">Services connexes</h3>
+        <ul class="related">
+          @for (r of relatedServices; track r.label) {
+            <li>
+              <a [href]="r.href" (click)="$event.preventDefault()">{{ r.label }}</a>
+            </li>
+          }
+        </ul>
+      </div>
+    </div>
+  </section>
+</main>

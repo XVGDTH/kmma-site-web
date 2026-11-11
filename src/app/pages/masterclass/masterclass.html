@@ -47,7 +47,7 @@
       (click)="register()"
     >
       @if (isRegistered()) {
-        ✓ Inscrit
+         Inscrit
       } @else {
         Participer
       }
@@ -81,47 +81,32 @@
       </p>
 
       <div class="mc-hero__meta">
+  <div>
+    <span>Date</span>
+    <strong>{{ masterclass().date }}</strong>
+  </div>
+  <div>
+    <span>Heure</span>
+    <strong>{{ masterclass().time }} {{ masterclass().timezone }}</strong>
+  </div>
+  <div>
+    <span>Langue</span>
+    <strong>{{ masterclass().language }}</strong>
+  </div>
+</div>
 
-        <div>
-          <span>◷</span>
-          <strong>{{ masterclass().date }}</strong>
-        </div>
-
-        <div>
-          <span>◉</span>
-          <strong>{{ masterclass().time }} {{ masterclass().timezone }}</strong>
-        </div>
-
-        <div>
-          <span>◈</span>
-          <strong>{{ masterclass().language }}</strong>
-        </div>
-
-      </div>
-
-      <div class="mc-hero__actions">
-
-        <button
-          type="button"
-          class="mc-button mc-button--gold"
-          (click)="register()"
-        >
-          @if (isRegistered()) {
-            ✓ Vous êtes inscrit
-          } @else {
-            Réserver ma place
-          }
-        </button>
-
-        <a
-          href="#programme"
-          class="mc-button mc-button--outline"
-        >
-          Explorer le programme
-          <span>↓</span>
-        </a>
-
-      </div>
+     <div class="mc-hero__actions">
+  <button type="button" class="mc-button mc-button--gold" (click)="register()">
+    @if (isRegistered()) {
+      Vous êtes inscrit
+    } @else {
+      Réserver ma place
+    }
+  </button>
+  <a href="#programme" class="mc-button mc-button--outline">
+    Explorer le programme
+  </a>
+</div>
 
     </div>
 
@@ -534,39 +519,13 @@
 
     <!-- REACTIONS -->
 
-    <div class="reactions">
-
-      <span>Réagissez à la session</span>
-
-      <button
-        type="button"
-        (click)="react('heart')"
-      >
-        ❤️ {{ reactions().heart }}
-      </button>
-
-      <button
-        type="button"
-        (click)="react('fire')"
-      >
-        🔥 {{ reactions().fire }}
-      </button>
-
-      <button
-        type="button"
-        (click)="react('clap')"
-      >
-        👏 {{ reactions().clap }}
-      </button>
-
-      <button
-        type="button"
-        (click)="react('idea')"
-      >
-        💡 {{ reactions().idea }}
-      </button>
-
-    </div>
+<div class="reactions">
+  <span>Réagissez à la session</span>
+  <button type="button" (click)="react('heart')">J'aime {{ reactions().heart }}</button>
+  <button type="button" (click)="react('fire')">Intéressant {{ reactions().fire }}</button>
+  <button type="button" (click)="react('clap')">Bravo {{ reactions().clap }}</button>
+  <button type="button" (click)="react('idea')">Idée {{ reactions().idea }}</button>
+</div>
 
   </section>
 
@@ -837,9 +796,9 @@
 
           <article class="resource-card">
 
-            <div class="resource-card__icon">
+            <!-- <div class="resource-card__icon">
               {{ resource.icon }}
-            </div>
+            </div> -->
 
             <div>
               <h4>{{ resource.title }}</h4>
@@ -955,21 +914,16 @@
 
         } @else {
 
-          <div class="quiz-result">
-
-            <strong>
-              {{ quizScore() }}/{{ quizQuestions().length }}
-            </strong>
-
-            <span>
-              @if (quizScore() >= 2) {
-                Excellent travail 🎉
-              } @else {
-                Continuez vos efforts 💪
-              }
-            </span>
-
-          </div>
+         <div class="quiz-result">
+  <strong>{{ quizScore() }}/{{ quizQuestions().length }}</strong>
+  <span>
+    @if (quizScore() >= 2) {
+      Excellent travail.
+    } @else {
+      Continuez vos efforts.
+    }
+  </span>
+</div>
 
         }
 
@@ -1116,20 +1070,14 @@
             Terminez le quiz avec au moins 2 bonnes réponses
             et envoyez votre feedback pour débloquer votre certificat.
           </p>
-
-          <div class="certificate__requirements">
-
-            <span [class.done]="quizSubmitted() && quizScore() >= 2">
-              {{ quizSubmitted() && quizScore() >= 2 ? '✓' : '○' }}
-              Quiz validé
-            </span>
-
-            <span [class.done]="feedbackSubmitted()">
-              {{ feedbackSubmitted() ? '✓' : '○' }}
-              Feedback envoyé
-            </span>
-
-          </div>
+<div class="certificate__requirements">
+  <span [class.done]="quizSubmitted() && quizScore() >= 2">
+    {{ quizSubmitted() && quizScore() >= 2 ? 'Validé' : 'À faire' }}
+  </span>
+  <span [class.done]="feedbackSubmitted()">
+    {{ feedbackSubmitted() ? 'Validé' : 'À faire' }}
+  </span>
+</div>
 
         }
 

@@ -1,0 +1,251 @@
+.catalogue-page {
+  background: #f8f9fa;
+  padding: 40px 20px;
+  min-height: 80vh;
+}
+
+.catalogue-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.catalogue-header {
+  text-align: center;
+  margin-bottom: 40px;
+  
+  h1 {
+    font-size: 2.5rem;
+    color: #0e3b32;
+    margin-bottom: 10px;
+  }
+  p {
+    color: #5c6b66;
+    font-size: 1.1rem;
+  }
+}
+
+// BARRE DE FILTRES
+.filters-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 30px;
+  background: #fff;
+  padding: 20px 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  margin-bottom: 40px;
+  justify-content: center;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.filter-label {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: #b87333;
+  letter-spacing: 1px;
+}
+
+.filter-buttons {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+
+  button {
+    padding: 8px 16px;
+    border: 1px solid #e2e8f0;
+    background: #fff;
+    color: #5c6b66;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+
+    &:hover { background: #f1f5f9; }
+    
+    &.active {
+      background: #0e3b32;
+      color: #fff;
+      border-color: #0e3b32;
+    }
+  }
+}
+
+// GRILLE
+.courses-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 30px;
+}
+
+.course-card {
+  background: #fff;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+  transition: transform 0.2s, box-shadow 0.2s;
+  display: flex;
+  flex-direction: column;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+  }
+}
+
+.course-image {
+  position: relative;
+  height: 180px;
+  
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.type-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: #e6a869;
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 12px;
+  text-transform: uppercase;
+
+  &.badge-ent {
+    background: #0e3b32; // Vert foncé pour les abonnements
+  }
+}
+
+.course-body {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.course-provider {
+  font-size: 0.75rem;
+  color: #b87333;
+  font-weight: 700;
+  text-transform: uppercase;
+  margin-bottom: 5px;
+}
+
+h3 {
+  font-size: 1.2rem;
+  color: #1f2a28;
+  margin-bottom: 10px;
+  line-height: 1.3;
+}
+
+.course-desc {
+  font-size: 0.9rem;
+  color: #64748b;
+  margin-bottom: 15px;
+  flex: 1;
+}
+
+.course-meta {
+  display: flex;
+  gap: 15px;
+  font-size: 0.85rem;
+  color: #475569;
+  margin-bottom: 15px;
+  padding-top: 15px;
+  border-top: 1px solid #f1f5f9;
+}
+
+.course-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto;
+}
+
+.course-price {
+  display: flex;
+  flex-direction: column;
+  
+  small { font-size: 0.7rem; color: #64748b; }
+  strong { color: #0e3b32; font-size: 1.1rem; }
+}
+
+.btn-action {
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-decoration: none;
+  text-align: center;
+  transition: background 0.2s;
+
+  &.btn-buy {
+    background: #b87333;
+    color: #fff;
+    &:hover { background: #9a5e28; }
+  }
+
+  &.btn-enterprise {
+    background: #0e3b32;
+    color: #fff;
+    &:hover { background: #082621; }
+  }
+}
+
+// ÉTATS (Loading / Empty)
+.loading-state, .empty-state, .error-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: #64748b;
+  font-size: 1.1rem;
+}
+
+
+//"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+//"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+//"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+
+.section-results {
+  margin-bottom: 60px;
+}
+
+.section-title {
+  font-size: 1.5rem;
+  color: #0e3b32;
+  margin-bottom: 20px;
+  font-weight: 700;
+}
+
+.section-suggestions {
+  padding-top: 40px;
+  border-top: 2px dashed #e2e8f0;
+
+  .suggestions-header {
+    margin-bottom: 30px;
+    
+    p {
+      color: #64748b;
+      font-size: 1rem;
+    }
+  }
+}
+
+.course-card--suggested {
+  opacity: 0.85;
+  transition: opacity 0.2s;
+  
+  &:hover {
+    opacity: 1;
+  }
+}

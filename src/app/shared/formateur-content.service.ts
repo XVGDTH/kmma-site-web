@@ -1,496 +1,4 @@
-﻿// import { HttpClient } from '@angular/common/http';
-// import { Injectable, inject, signal } from '@angular/core';
-// import { Observable } from 'rxjs';
-
-// export const API_URL = 'http://127.0.0.1:8000/api';
-// export const LARAVEL_URL = 'http://127.0.0.1:8000';
-
-// // ============================================================
-// // TYPES
-// // ============================================================
-
-// // export interface QuizQuestion {
-// //   question: string;
-// //   options: string[];
-// //   correctIndex: number;
-// // }
-
-// export interface QuizQuestion {
-//   question: string;
-//   type: 'qcm' | 'texte';
-//   options: string[];
-//   correctIndex: number;
-//   expectedAnswer?: string;
-// }
-
-// export type SequenceType = 'video' | 'quiz' | 'devoir' | 'tp' | 'td' | 'document';
-
-// export interface SequenceDto {
-//   id: number;
-//   chapterId: number;
-//   title: string;
-//   type: SequenceType;
-//   duration: string | null;
-//   videoUrl: string | null;
-//   documentUrl: string | null;
-//   quizQuestions: QuizQuestion[] | null;
-//   instructions: string | null;
-//   position: number;
-// }
-// // â¬‡ï¸â¬‡ï¸ AJOUTE ICI le nouveau type
-// export interface WeekDto {
-//   id: number;
-//   number: number;
-//   title: string;
-//   chapters: ChapterDto[];
-// }
-
-// export interface ChapterDto {
-//   id: number;
-//   courseId: number;
-//   title: string;
-//   position: number;
-//   sequences: SequenceDto[];
-// }
-
-// export interface CourseContentDto {
-//   course: { id: number; slug: string; title: string };
-//   chapters: ChapterDto[];
-//   weeks: WeekDto[];     
-// }
-
-// export interface CreatedCourseDto {
-//   id: number;
-//   slug: string;
-//   title: string;
-//   [key: string]: unknown;
-// }
-
-// export interface CoursePayload {
-//   title: string;
-//   subject?: string;
-//   category?: string;
-//   level?: string;
-//   diploma?: string;
-//   durationFull?: string;
-//   durationAlternance?: string;
-//   description?: string;
-//   image?: File | null;
-// }
-
-// export interface SequencePayload {
-//   title: string;
-//   type: SequenceType;
-//   duration?: string | null;
-//   videoUrl?: string | null;
-//   videoFile?: File | null;
-//   documentUrl?: string | null;
-//   documentFile?: File | null;
-//   quizQuestions?: QuizQuestion[] | null;
-//   instructions?: string | null;
-// }
-
-// // ============================================================
-// // HELPERS
-// // ============================================================
-
-// /** Laravel peut renvoyer "/storage/..." â†’ URL absolue pour Angular. */
-// export function toAbsoluteUrl(url: string | null | undefined): string | null {
-//   if (!url) return null;
-//   if (url.startsWith('http')) return url;
-//   return `${LARAVEL_URL}${url.startsWith('/') ? '' : '/'}${url}`;
-// }
-
-// /** Message lisible depuis une erreur Laravel (403/422...). */
-// export function extractApiError(err: any): string {
-//   const body = err?.error;
-
-//   if (body?.errors) {
-//     const messages = Object.values(body.errors).flat() as string[];
-//     if (messages.length > 0) return messages.join(' ');
-//   }
-
-//   return body?.message ?? err?.message ?? 'Une erreur est survenue.';
-// }
-
-
-// // ============================================================
-// // SERVICE
-// // ============================================================
-
-// @Injectable({ providedIn: 'root' })
-// export class FormateurContentService {
-
-//   private readonly http = inject(HttpClient);
-
-//   // Ã‰tat du cours actuellement gÃ©rÃ©
-//   readonly content = signal<CourseContentDto | null>(null);
-//   readonly loading = signal(false);
-//   readonly error = signal<string | null>(null);
-
-//     // â¬‡ï¸â¬‡ï¸ AJOUTE ICI le nouveau signal type pour les cours en lignes
-//   readonly weeks    = signal<WeekDto[]>([]);
-
-
-//   // ----------------------------------------------------------
-//   // COURS (crÃ©ation par le formateur)
-//   // ----------------------------------------------------------
-
-//   createCourse(payload: CoursePayload): Observable<{ data: CreatedCourseDto }> {
-//     const fd = new FormData();
-//     fd.append('title', payload.title);
-
-//     (
-//       [
-//         'subject', 'category', 'level', 'diploma',
-//         'durationFull', 'durationAlternance', 'description',
-//       ] as const
-//     ).forEach((key) => {
-//       const value = payload[key];
-//       if (value) fd.append(key, value);
-//     });
-
-//     if (payload.image) fd.append('image', payload.image);
-
-//     return this.http.post<{ data: CreatedCourseDto }>(
-//       `${API_URL}/formateur/courses`,
-//       fd
-//     );
-//   }
-
-//   // ----------------------------------------------------------
-//   // CHARGEMENT DU CONTENU
-//   // ----------------------------------------------------------
-
-//   loadCourse(courseId: number | string): void {
-//     this.loading.set(true);
-//     this.error.set(null);
-
-//     this.http
-//       .get<{ data: CourseContentDto }>(
-//         `${API_URL}/formateur/courses/${courseId}/content`
-//       )
-//       .subscribe({
-//         next: (res) => {
-//           this.content.set(res.data);
-//           this.weeks.set(res.data.weeks ?? []);   // â¬…ï¸ AJOUT
-//           this.loading.set(false);
-//         },
-//         error: (err) => {
-//           this.content.set(null);
-//           this.loading.set(false);
-//           this.error.set(extractApiError(err));
-//         },
-        
-//       });
-      
-//   }
-
-//   // ----------------------------------------------------------
-//   // CHAPITRES
-//   // ----------------------------------------------------------
-
-//   // createChapter(courseId: number, title: string): Observable<{ data: ChapterDto }> {
-//   //   return this.http.post<{ data: ChapterDto }>(
-//   //     `${API_URL}/formateur/courses/${courseId}/chapters`,
-//   //     { title }
-//   //   );
-//   // }
-
-//     createChapter(
-//     courseId: number,
-//     weekId: number,
-//     title: string,
-//   ): Observable<{ data: ChapterDto }> {
-//     return this.http.post<{ data: ChapterDto }>(
-//       `${API_URL}/formateur/courses/${courseId}/chapters`,
-//       { title, week_id: weekId }
-//     );
-//   }
-
-
-//     // ----------------------------------------------------------
-//   // SEMAINES des cours
-//   // ----------------------------------------------------------
-
-//   createWeek(courseId: number, title: string): Observable<{ data: WeekDto }> {
-//     return this.http.post<{ data: WeekDto }>(
-//       `${API_URL}/formateur/courses/${courseId}/weeks`,
-//       { title }
-//     );
-//   }
-
-//   renameWeek(weekId: number, title: string): Observable<{ data: WeekDto }> {
-//     return this.http.put<{ data: WeekDto }>(
-//       `${API_URL}/formateur/weeks/${weekId}`,
-//       { title }
-//     );
-//   }
-
-//   deleteWeek(weekId: number): Observable<{ message: string }> {
-//     return this.http.delete<{ message: string }>(
-//       `${API_URL}/formateur/weeks/${weekId}`
-//     );
-//   }
-
-//   appendWeek(w: WeekDto): void {
-//     this.weeks.update((list) => [...list, w]);
-//   }
-
-//   replaceWeek(w: WeekDto): void {
-//     this.weeks.update((list) => list.map((x) => (x.id === w.id ? w : x)));
-//   }
-
-//   removeWeek(weekId: number): void {
-//     this.weeks.update((list) => list.filter((x) => x.id !== weekId));
-//   }
-
-//   appendChapterToWeek(weekId: number, chapter: ChapterDto): void {
-//     this.weeks.update((list) =>
-//       list.map((w) =>
-//         w.id === weekId
-//           ? { ...w, chapters: [...w.chapters, { ...chapter, sequences: chapter.sequences ?? [] }] }
-//           : w
-//       )
-//     );
-//   }
-
-//   renameChapter(chapterId: number, title: string): Observable<{ data: ChapterDto }> {
-//     return this.http.patch<{ data: ChapterDto }>(
-//       `${API_URL}/formateur/chapters/${chapterId}`,
-//       { title }
-//     );
-//   }
-
-//   deleteChapter(chapterId: number): Observable<{ message: string }> {
-//     return this.http.delete<{ message: string }>(
-//       `${API_URL}/formateur/chapters/${chapterId}`
-//     );
-//   }
-
-//   // ----------------------------------------------------------
-//   // SÃ‰QUENCES
-//   // ----------------------------------------------------------
-
-//   createSequence(chapterId: number, payload: SequencePayload): Observable<{ data: SequenceDto }> {
-//     return this.http.post<{ data: SequenceDto }>(
-//       `${API_URL}/formateur/chapters/${chapterId}/sequences`,
-//       this.buildSequenceForm(payload)
-//     );
-//   }
-
-//   updateSequence(sequenceId: number, payload: SequencePayload): Observable<{ data: SequenceDto }> {
-//     /*
-//      * PHP ne parse PAS le corps multipart en PATCH :
-//      * on envoie POST + _method=PATCH (Laravel le convertit en PATCH).
-//      */
-//     return this.http.post<{ data: SequenceDto }>(
-//       `${API_URL}/formateur/sequences/${sequenceId}`,
-//       this.buildSequenceForm(payload, true)
-//     );
-//   }
-
-//   deleteSequence(sequenceId: number): Observable<{ message: string }> {
-//     return this.http.delete<{ message: string }>(
-//       `${API_URL}/formateur/sequences/${sequenceId}`
-//     );
-//   }
-
-//   // ----------------------------------------------------------
-//   // MISE Ã€ JOUR LOCALE DE L'Ã‰TAT (aprÃ¨s mutation rÃ©ussie)
-//   // ----------------------------------------------------------
-
-//   // appendChapter(chapter: ChapterDto): void {
-//   //   this.content.update((c) =>
-//   //     c
-//   //       ? { ...c, chapters: [...c.chapters, { ...chapter, sequences: chapter.sequences ?? [] }] }
-//   //       : c
-//   //   );
-//   // }
-
-//     appendChapter(chapter: ChapterDto, weekId?: number | null): void {
-//     // Cas 1 : le chapitre appartient Ã  une semaine â†’ on met Ã  jour weeks
-//     if (weekId != null) {
-//       this.appendChapterToWeek(weekId, chapter);
-//       return;
-//     }
-
-//     // Cas 2 : chapitre "orphelin" â†’ ancien comportement
-//     this.content.update((c) =>
-//       c
-//         ? { ...c, chapters: [...c.chapters, { ...chapter, sequences: chapter.sequences ?? [] }] }
-//         : c
-//     );
-//   }
-
-//   // replaceChapter(chapter: ChapterDto): void {
-//   //   this.content.update((c) =>
-//   //     c
-//   //       ? {
-//   //           ...c,
-//   //           chapters: c.chapters.map((ch) =>
-//   //             ch.id === chapter.id
-//   //               ? { ...ch, title: chapter.title, position: chapter.position }
-//   //               : ch
-//   //           ),
-//   //         }
-//   //       : c
-//   //   );
-//   // }
-
-//   replaceChapter(chapter: ChapterDto): void {
-//     // Met Ã  jour dans content.chapters
-//     this.content.update((c) =>
-//       c
-//         ? {
-//             ...c,
-//             chapters: c.chapters.map((ch) =>
-//               ch.id === chapter.id
-//                 ? { ...ch, title: chapter.title, position: chapter.position }
-//                 : ch
-//             ),
-//           }
-//         : c
-//     );
-
-//     // Met Ã  jour dans weeks[].chapters
-//     this.weeks.update((list) =>
-//       list.map((w) => ({
-//         ...w,
-//         chapters: w.chapters.map((ch) =>
-//           ch.id === chapter.id
-//             ? { ...ch, title: chapter.title, position: chapter.position }
-//             : ch
-//         ),
-//       }))
-//     );
-//   }
-
-//   // removeChapter(chapterId: number): void {
-//   //   this.content.update((c) =>
-//   //     c ? { ...c, chapters: c.chapters.filter((ch) => ch.id !== chapterId) } : c
-//   //   );
-//   // }
-//     removeChapter(chapterId: number): void {
-//     this.content.update((c) =>
-//       c ? { ...c, chapters: c.chapters.filter((ch) => ch.id !== chapterId) } : c
-//     );
-
-//     this.weeks.update((list) =>
-//       list.map((w) => ({
-//         ...w,
-//         chapters: w.chapters.filter((ch) => ch.id !== chapterId),
-//       }))
-//     );
-//   }
-
-//   // upsertSequence(sequence: SequenceDto): void {
-//   //   this.content.update((c) =>
-//   //     c
-//   //       ? {
-//   //           ...c,
-//   //           chapters: c.chapters.map((ch) => {
-//   //             if (ch.id !== sequence.chapterId) return ch;
-
-//   //             const exists = ch.sequences.some((s) => s.id === sequence.id);
-
-//   //             return {
-//   //               ...ch,
-//   //               sequences: exists
-//   //                 ? ch.sequences.map((s) => (s.id === sequence.id ? sequence : s))
-//   //                 : [...ch.sequences, sequence],
-//   //             };
-//   //           }),
-//   //         }
-//   //       : c
-//   //   );
-//   // }
-
-//     upsertSequence(sequence: SequenceDto): void {
-//     const patch = (ch: ChapterDto): ChapterDto => {
-//       if (ch.id !== sequence.chapterId) return ch;
-//       const exists = ch.sequences.some((s) => s.id === sequence.id);
-//       return {
-//         ...ch,
-//         sequences: exists
-//           ? ch.sequences.map((s) => (s.id === sequence.id ? sequence : s))
-//           : [...ch.sequences, sequence],
-//       };
-//     };
-
-//     // content.chapters
-//     this.content.update((c) =>
-//       c ? { ...c, chapters: c.chapters.map(patch) } : c
-//     );
-
-//     // weeks[].chapters
-//     this.weeks.update((list) =>
-//       list.map((w) => ({ ...w, chapters: w.chapters.map(patch) }))
-//     );
-//   }
-
-
-//   // removeSequence(sequence: SequenceDto): void {
-//   //   this.content.update((c) =>
-//   //     c
-//   //       ? {
-//   //           ...c,
-//   //           chapters: c.chapters.map((ch) => ({
-//   //             ...ch,
-//   //             sequences: ch.sequences.filter((s) => s.id !== sequence.id),
-//   //           })),
-//   //         }
-//   //       : c
-//   //   );
-//   // }
-
-//     removeSequence(sequence: SequenceDto): void {
-//     const patch = (ch: ChapterDto): ChapterDto => ({
-//       ...ch,
-//       sequences: ch.sequences.filter((s) => s.id !== sequence.id),
-//     });
-
-//     this.content.update((c) =>
-//       c ? { ...c, chapters: c.chapters.map(patch) } : c
-//     );
-
-//     this.weeks.update((list) =>
-//       list.map((w) => ({ ...w, chapters: w.chapters.map(patch) }))
-//     );
-//   }
-
-//   // ----------------------------------------------------------
-//   // CONSTRUCTION DU FormData (fichiers + champs)
-//   // ----------------------------------------------------------
-
-//   private buildSequenceForm(payload: SequencePayload, isUpdate = false): FormData {
-//     const fd = new FormData();
-
-//     if (isUpdate) fd.append('_method', 'PATCH');
-
-//     fd.append('title', payload.title);
-//     fd.append('type', payload.type);
-
-//     if (payload.duration) fd.append('duration', payload.duration);
-//     if (payload.videoUrl) fd.append('video_url', payload.videoUrl);
-//     if (payload.documentUrl) fd.append('document_url', payload.documentUrl);
-//     if (payload.instructions) fd.append('instructions', payload.instructions);
-
-//     if (payload.quizQuestions?.length) {
-//       // Un FormData ne transporte pas d'objets â†’ JSON
-//       // (dÃ©codÃ© par le patch Laravel 1.3)
-//       fd.append('quiz_questions', JSON.stringify(payload.quizQuestions));
-//     }
-
-//     if (payload.videoFile) fd.append('video', payload.videoFile);
-//     if (payload.documentFile) fd.append('document', payload.documentFile);
-
-//     return fd;
-//   }
-// }
-
-
-import { HttpClient } from '@angular/common/http';
+﻿import { HttpClient } from '@angular/common/http';
 import { Injectable, inject, signal } from '@angular/core';
 import { Observable } from 'rxjs';
 
@@ -522,15 +30,15 @@ export type SequenceType =
   | 'quiz';
 
 /**
- * âš ï¸ CONVENTION DE NOMMAGE
- * â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
- * Base de donnÃ©es (Laravel)   â†’   Interface (Angular)
- * â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
- * Module                      â†’   Module
- * Chapter                     â†’   Chapitre
- * Sequence                    â†’   SÃ©quence
- * â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
- * Structure : Cours â†’ Module â†’ Chapitre (Semaine N) â†’ SÃ©quence
+ * ⚠ï¸ CONVENTION DE NOMMAGE
+ * ─────────────────────────────────────────────
+ * Base de données (Laravel)   →   Interface (Angular)
+ * ─────────────────────────────────────────────
+ * Module                      →   Module
+ * Chapter                     →   Chapitre
+ * Sequence                    →   Séquence
+ * ─────────────────────────────────────────────
+ * Structure : Cours → Module → Chapitre (Semaine N) → Séquence
  */
 
 export interface SequenceDto {
@@ -575,8 +83,24 @@ export interface ModuleDto {
   moduleQuiz: SequenceDto | null;
 }
 
+// export interface CourseContentDto {
+//   course: { id: number; slug: string; title: string };
+//   modules: ModuleDto[];
+//   chapters: ChapterDto[];
+//   finalExam: SequenceDto | null;
+// }
 export interface CourseContentDto {
-  course: { id: number; slug: string; title: string };
+  course: {
+    id: number;
+    slug: string;
+    title: string;
+    // ✅ AJOUTER CES CHAMPS
+    type?: 'individual' | 'enterprise';
+    price?: number;
+    enterpriseBasePrice?: number;
+    deliveryMode?: 'en_ligne' | 'presentiel' | 'mixte';
+    hoursPerWeek?: string;
+  };
   modules: ModuleDto[];
   chapters: ChapterDto[];
   finalExam: SequenceDto | null;
@@ -599,6 +123,11 @@ export interface CoursePayload {
   durationAlternance?: string;
   description?: string;
   image?: File | null;
+  type?: 'individual' | 'enterprise';
+  price?: number;                  //  cours individuel
+  enterpriseBasePrice?: number;    //  cours entreprise
+  deliveryMode?: 'en_ligne' | 'presentiel' | 'mixte'; // 
+  hoursPerWeek?: string;           // 
 }
 
 export interface SequencePayload {
@@ -621,10 +150,24 @@ export interface SequencePayload {
 // HELPERS
 // ============================================================
 
+// export function toAbsoluteUrl(url: string | null | undefined): string | null {
+//   if (!url) return null;
+//   if (url.startsWith('http')) return url;
+//   return `${LARAVEL_URL}${url.startsWith('/') ? '' : '/'}${url}`;
+// }
 export function toAbsoluteUrl(url: string | null | undefined): string | null {
   if (!url) return null;
+  
+  // ✅ Si c'est déjà une URL absolue
   if (url.startsWith('http')) return url;
-  return `${LARAVEL_URL}${url.startsWith('/') ? '' : '/'}${url}`;
+  
+  // ✅ Si le chemin commence par /storage/, on ajoute juste le domaine
+  if (url.startsWith('/storage/')) {
+    return `${LARAVEL_URL}${url}`;
+  }
+  
+  // ✅ Sinon (ex: "avatars/xyz.jpg"), on ajoute /storage/
+  return `${LARAVEL_URL}/storage/${url.replace(/^\/+/, '')}`;
 }
 
 export function extractApiError(err: any): string {
@@ -655,27 +198,39 @@ export class FormateurContentService {
   // COURS
   // ----------------------------------------------------------
 
-  createCourse(payload: CoursePayload): Observable<{ data: CreatedCourseDto }> {
-    const fd = new FormData();
-    fd.append('title', payload.title);
+createCourse(payload: CoursePayload): Observable<{ data: CreatedCourseDto }> {
+  const fd = new FormData();
+  fd.append('title', payload.title);
 
-    (
-      [
-        'subject', 'category', 'level', 'diploma',
-        'durationFull', 'durationAlternance', 'description',
-      ] as const
-    ).forEach((key) => {
-      const value = payload[key];
-      if (value) fd.append(key, value);
-    });
+  (
+    ['subject', 'category', 'level', 'diploma',
+     'durationFull', 'durationAlternance', 'description',
+     'type'] as const
+  ).forEach((key) => {
+    const value = payload[key];
+    if (value !== undefined && value !== null && value !== '') {
+      fd.append(key, String(value));
+    }
+  });
 
-    if (payload.image) fd.append('image', payload.image);
-
-    return this.http.post<{ data: CreatedCourseDto }>(
-      `${API_URL}/formateur/courses`,
-      fd
-    );
+  // ✅ Champs spécifiques selon le type
+  if (payload.type === 'individual') {
+    if (payload.price !== undefined) fd.append('price', String(payload.price));
+  } else if (payload.type === 'enterprise') {
+    if (payload.enterpriseBasePrice !== undefined) {
+      fd.append('enterprise_base_price', String(payload.enterpriseBasePrice));
+    }
+    if (payload.deliveryMode) fd.append('delivery_mode', payload.deliveryMode);
+    if (payload.hoursPerWeek) fd.append('hours_per_week', payload.hoursPerWeek);
   }
+
+  if (payload.image) fd.append('image', payload.image);
+
+  return this.http.post<{ data: CreatedCourseDto }>(
+    `${API_URL}/formateur/courses`,
+    fd
+  );
+}
 
   // ----------------------------------------------------------
   // CHARGEMENT DU CONTENU
@@ -779,7 +334,7 @@ export class FormateurContentService {
   }
 
   // ----------------------------------------------------------
-  // SÃ‰QUENCES
+  // SÉQUENCES
   // ----------------------------------------------------------
 
   createSequence(chapterId: number, payload: SequencePayload): Observable<{ data: SequenceDto }> {
@@ -821,7 +376,7 @@ export class FormateurContentService {
   }
 
   // ----------------------------------------------------------
-  // MUTATIONS LOCALES â€” MODULES
+  // MUTATIONS LOCALES — MODULES
   // ----------------------------------------------------------
 
   appendModule(module: ModuleDto): void {
@@ -850,7 +405,7 @@ export class FormateurContentService {
   }
 
   // ----------------------------------------------------------
-  // MUTATIONS LOCALES â€” CHAPITRES
+  // MUTATIONS LOCALES — CHAPITRES
   // ----------------------------------------------------------
 
   appendChapterToModule(moduleId: number, chapter: ChapterDto): void {
@@ -901,7 +456,7 @@ export class FormateurContentService {
   }
 
   // ----------------------------------------------------------
-  // MUTATIONS LOCALES â€” SÃ‰QUENCES
+  // MUTATIONS LOCALES — SÉQUENCES
   // ----------------------------------------------------------
 
   upsertSequence(sequence: SequenceDto): void {
@@ -945,7 +500,7 @@ export class FormateurContentService {
   }
 
   // ----------------------------------------------------------
-  // MUTATIONS LOCALES â€” QUIZ DE MODULE / EXAMEN FINAL
+  // MUTATIONS LOCALES — QUIZ DE MODULE / EXAMEN FINAL
   // ----------------------------------------------------------
 
   setModuleQuiz(moduleId: number, quiz: SequenceDto): void {
@@ -1018,4 +573,70 @@ export class FormateurContentService {
 
     return fd;
   }
+
+
+
+    // ============================================================
+  // HELPER : pré-remplir la structure complète du cours
+  // ============================================================
+async createFullStructure(courseId: number | string): Promise<void> {
+  const modules = [
+    {
+      title: 'Module 1 : Introduction',
+      desc: 'Ce module pose les bases du cours.',
+      chapters: [
+        { title: 'Bienvenue dans le cours', week: 1 },
+        { title: 'Objectifs et méthode', week: 1 },
+      ],
+    },
+    {
+      title: 'Module 2 : Approfondissement',
+      desc: 'Approfondissez les concepts avec des cas pratiques.',
+      chapters: [
+        { title: 'Concepts fondamentaux', week: 2 },
+        { title: 'Exercices pratiques', week: 2 },
+        { title: 'Cas d\'étude', week: 3 },
+      ],
+    },
+    {
+      title: 'Module 3 : Application',
+      desc: 'Mettez en pratique tout ce que vous avez appris.',
+      chapters: [
+        { title: 'Mise en situation professionnelle', week: 3 },
+        { title: 'Projet final', week: 4 },
+      ],
+    },
+    // ✅ MODULE RESSOURCES
+    {
+      title: 'Ressources & Manuels',
+      desc: 'Manuels, fiches pratiques et documents de référence.',
+      chapters: [
+        { title: 'Manuel principal', week: 0 },
+        { title: 'Fiches pratiques', week: 0 },
+        { title: 'Annexes et modèles', week: 0 },
+      ],
+    },
+  ];
+
+  for (const m of modules) {
+    const res = await this.createModule(courseId, m.title, m.desc).toPromise();
+    if (!res) continue;
+    for (const c of m.chapters) {
+      await this.createChapter(courseId, res.data.id, c.title, c.week).toPromise();
+    }
+  }
+}
+
+// ============================================================
+// ✅ Import d'un quiz via fichier (JSON/CSV) - backend Laravel
+// ============================================================
+importQuizFile(sequenceId: number, file: File): Observable<{ message: string }> {
+  const fd = new FormData();
+  fd.append('file', file);
+  fd.append('_method', 'PATCH');
+  return this.http.post<{ message: string }>(
+    `${API_URL}/formateur/sequences/${sequenceId}/import-quiz`,
+    fd
+  );
+}
 }

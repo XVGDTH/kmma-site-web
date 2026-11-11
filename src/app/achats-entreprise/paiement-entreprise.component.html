@@ -1,4 +1,4 @@
-@if (course(); as c) {
+@if (courseId()) {
   <section class="achat-ent-page">
     <div class="achat-ent-page__container">
 
@@ -14,6 +14,12 @@
         <h1>Finalisez votre commande entreprise</h1>
         <p>Récapitulatif et informations de facturation.</p>
       </header>
+
+      @if (errorMessage()) {
+        <div class="achat-ent-alert achat-ent-alert--error">
+          ⚠ {{ errorMessage() }}
+        </div>
+      }
 
       <div class="achat-ent-layout">
 
@@ -33,6 +39,16 @@
                 placeholder="KMAA SARL"
                 [value]="companyName()"
                 (input)="onCompanyNameInput($event)"
+              />
+            </div>
+
+            <div class="field-group">
+              <label>Email de facturation *</label>
+              <input
+                type="email"
+                placeholder="facturation@entreprise.com"
+                [value]="companyEmail()"
+                (input)="onCompanyEmailInput($event)"
               />
             </div>
 
@@ -57,7 +73,7 @@
             </div>
           </section>
 
-          <!-- ÉTAPE 2 : Moyen de paiement -->
+          <!-- ÉTAPE 2 : Moyen de paiement (inchangé) -->
           <section class="achat-ent-step">
             <div class="achat-ent-step__header">
               <span class="achat-ent-step__number">2</span>
@@ -65,13 +81,9 @@
             </div>
 
             <div class="payment-methods">
-              <!-- Virement bancaire -->
-              <button
-                type="button"
-                class="payment-method"
+              <button type="button" class="payment-method"
                 [class.payment-method--active]="selectedMethod() === 'virement'"
-                (click)="selectMethod('virement')"
-              >
+                (click)="selectMethod('virement')">
                 <div class="payment-method__logo payment-method__logo--bank">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="28" height="28">
                     <path d="M3 21h18M3 10h18M5 6l7-3 7 3M4 10v11M20 10v11M8 14v3M12 14v3M16 14v3"/>
@@ -84,13 +96,9 @@
                 <span class="payment-method__check"></span>
               </button>
 
-              <!-- Orange Money -->
-              <button
-                type="button"
-                class="payment-method"
+              <button type="button" class="payment-method"
                 [class.payment-method--active]="selectedMethod() === 'orange'"
-                (click)="selectMethod('orange')"
-              >
+                (click)="selectMethod('orange')">
                 <div class="payment-method__logo payment-method__logo--orange">
                   <span>OM</span>
                 </div>
@@ -101,13 +109,9 @@
                 <span class="payment-method__check"></span>
               </button>
 
-              <!-- Moov Money -->
-              <button
-                type="button"
-                class="payment-method"
+              <button type="button" class="payment-method"
                 [class.payment-method--active]="selectedMethod() === 'moov'"
-                (click)="selectMethod('moov')"
-              >
+                (click)="selectMethod('moov')">
                 <div class="payment-method__logo payment-method__logo--moov">
                   <span>MOOV</span>
                 </div>
@@ -118,13 +122,9 @@
                 <span class="payment-method__check"></span>
               </button>
 
-              <!-- Telecel Money -->
-              <button
-                type="button"
-                class="payment-method"
+              <button type="button" class="payment-method"
                 [class.payment-method--active]="selectedMethod() === 'telecel'"
-                (click)="selectMethod('telecel')"
-              >
+                (click)="selectMethod('telecel')">
                 <div class="payment-method__logo payment-method__logo--telecel">
                   <span>TELECEL</span>
                 </div>
@@ -135,13 +135,9 @@
                 <span class="payment-method__check"></span>
               </button>
 
-              <!-- Carte -->
-              <button
-                type="button"
-                class="payment-method"
+              <button type="button" class="payment-method"
                 [class.payment-method--active]="selectedMethod() === 'card'"
-                (click)="selectMethod('card')"
-              >
+                (click)="selectMethod('card')">
                 <div class="payment-method__logo payment-method__logo--card">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="28" height="28">
                     <rect x="2" y="5" width="20" height="14" rx="2"/>
@@ -207,41 +203,45 @@
           <div class="achat-ent-summary__card">
             <h2>Récapitulatif</h2>
 
-            <div class="summary-course">
-              <img [src]="c.image" [alt]="c.title" loading="lazy" />
-              <div class="summary-course__info">
-                <span class="summary-course__provider">{{ c.provider }}</span>
-                <h3>{{ c.title }}</h3>
-                <span class="summary-course__meta">{{ plan()?.name }} — {{ teamSize() }} apprenant(s)</span>
-              </div>
-            </div>
+<div class="summary-course">
+  <img [src]="assetUrl(courseImage())!" alt="Image formation" class="summary-course__img" />
+  <div class="summary-course__info">
+    <span class="summary-course__provider">KMAA Entreprises</span>
+    <h3>{{ courseTitle() || 'Chargement...' }}</h3>
+    <span class="summary-course__meta">
+      {{ plan()?.name }} — {{ teamSize() }} apprenant(s)
+    </span>
+  </div>
+</div>
 
             <div class="summary-lines">
+              <div class="summary-line">
+                <span>Prix / apprenant</span>
+                <strong>{{ formatPrice(plan()?.pricePerSeat ?? 0) }}</strong>
+              </div>
               <div class="summary-line">
                 <span>Sous-total</span>
                 <strong>{{ formatPrice(subtotal()) }}</strong>
               </div>
-
-              @if (discount() > 0) {
+              @if (promoCode()) {
                 <div class="summary-line summary-line--discount">
-                  <span>Réduction {{ promoCode() ? '(' + promoCode() + ')' : '' }}</span>
-                  <strong>-{{ formatPrice(discount()) }}</strong>
+                  <span>Code promo</span>
+                  <strong>{{ promoCode() }}</strong>
                 </div>
               }
-
-              <div class="summary-line">
-                <span>Total HT</span>
-                <strong>{{ formatPrice(totalHT()) }}</strong>
-              </div>
               <div class="summary-line">
                 <span>TVA (18%)</span>
                 <strong>{{ formatPrice(tva()) }}</strong>
               </div>
               <div class="summary-line summary-line--total">
-                <span>Total TTC</span>
+                <span>Total TTC estimé</span>
                 <strong>{{ formatPrice(totalTTC()) }}</strong>
               </div>
             </div>
+
+            <p class="summary-note">
+              ℹ Le montant définitif (avec réduction éventuelle) sera calculé et confirmé par nos serveurs.
+            </p>
 
             <button
               type="button"

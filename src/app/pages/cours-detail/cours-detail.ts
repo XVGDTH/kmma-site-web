@@ -24,7 +24,7 @@ export class CoursDetail {
   private readonly http = inject(HttpClient);
   private readonly coursesApi = inject(CoursesApiService);
 
-  /** Slug du cours depuis lâ€™URL */
+  /** Slug du cours depuis l’URL */
   readonly courseSlug = toSignal(
     this.route.paramMap.pipe(map((params) => params.get('id') ?? '')),
     { initialValue: '' },
@@ -38,7 +38,7 @@ export class CoursDetail {
         if (!slug) return of(undefined);
         return this.coursesApi.getCourseDetail(slug).pipe(
           catchError((err) => {
-            console.error('Erreur chargement dÃ©tail cours :', err);
+            console.error('Erreur chargement détail cours :', err);
             return of(undefined);
           }),
         );
@@ -48,31 +48,37 @@ export class CoursDetail {
   );
 
   readonly levelLabels: Record<string, string> = {
-    debutant: 'DÃ©butant',
-    intermediaire: 'IntermÃ©diaire',
-    avance: 'AvancÃ©',
+    debutant: 'Débutant',
+    intermediaire: 'Intermédiaire',
+    avance: 'Avancé',
   };
 
   readonly fallbackSkills = [
-    'MaÃ®trise des concepts fondamentaux du domaine',
+    'Maîtrise des concepts fondamentaux du domaine',
     'Application pratique sur des cas concrets',
-    'CapacitÃ© Ã  structurer et prÃ©senter son travail',
-    'Autonomie dans la rÃ©solution de problÃ¨mes',
+    'Capacité à structurer et présenter son travail',
+    'Autonomie dans la résolution de problèmes',
   ];
 
   readonly fallbackModules = [
     'Introduction et mise en contexte',
-    'Concepts clÃ©s et fondamentaux thÃ©oriques',
-    'Ateliers pratiques et Ã©tudes de cas',
-    'Projet dâ€™application et Ã©valuation finale',
+    'Concepts clés et fondamentaux théoriques',
+    'Ateliers pratiques et études de cas',
+    'Projet d’application et évaluation finale',
   ];
 
   get skills(): string[] {
-    return this.course()?.skills ?? this.fallbackSkills;
+    // return this.course()?.skills ?? this.fallbackSkills;
+    return (this.course() as any)?.skills ?? this.fallbackSkills;
   }
 
   get modules(): string[] {
-    return this.course()?.modules ?? this.fallbackModules;
+    // return this.course()?.modules ?? this.fallbackModules;
+    const modules = this.course()?.modules ?? [];
+if (modules.length > 0 && typeof modules[0] === 'object' && 'title' in modules[0]) {
+  return (modules as any[]).map((m: any) => m.title);
+}
+return (this.course() as any)?.modules ?? this.fallbackModules;
   }
 
   get description(): string {
@@ -82,14 +88,14 @@ export class CoursDetail {
     return (
       c.description ??
       `Ce parcours en ${c.category?.toLowerCase() ?? 'formation'} ` +
-        `vous permet d'acquÃ©rir des compÃ©tences solides et ` +
-        `directement applicables, Ã  travers une pÃ©dagogie active ` +
-        `combinant thÃ©orie et mise en pratique.`
+        `vous permet d'acquérir des compétences solides et ` +
+        `directement applicables, à travers une pédagogie active ` +
+        `combinant théorie et mise en pratique.`
     );
   }
 
   get instructor(): string {
-    return this.course()?.instructor ?? 'Ã‰quipe pÃ©dagogique KMAA';
+    return this.course()?.instructor ?? 'Équipe pédagogique KMAA';
   }
 
   get instructorRole(): string {
@@ -100,10 +106,10 @@ export class CoursDetail {
     const c = this.course();
     if (!c) return;
 
-    const courseKey = c.id; // slug renvoyÃ© par lâ€™API
+    const courseKey = c.id; // slug renvoyé par l’API
 
     if (c.isFree) {
-      // Cours gratuit â†’ on tente l'inscription puis on redirige vers la connexion
+      // Cours gratuit → on tente l'inscription puis on redirige vers la connexion
       this.http
         .post('http://127.0.0.1:8000/api/enrollments', {
           course_slug: courseKey,
@@ -117,14 +123,14 @@ export class CoursDetail {
           error: (err) => {
             console.error('Erreur inscription cours gratuit :', err);
 
-            // MÃªme en cas d'erreur (ex: non connectÃ©), on envoie vers la connexion
+            // Même en cas d'erreur (ex: non connecté), on envoie vers la connexion
             this.router.navigate(['/compte/connexion'], {
               queryParams: { redirect: '/apprentissage/' + courseKey },
             });
           },
         });
     } else {
-      // Cours payant â†’ redirection vers la connexion puis paiement
+      // Cours payant → redirection vers la connexion puis paiement
       this.router.navigate(['/compte/connexion'], {
         queryParams: { redirect: '/paiement/' + courseKey },
       });

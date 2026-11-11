@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject, signal } from '@angular/core';
 import { API_URL, extractApiError } from './formateur-content.service';
+import { Observable } from 'rxjs';
 
 // ============================================================
 // TYPES — Côté apprenant (structure HEC)
@@ -32,6 +33,7 @@ export interface LearnerSequenceDto {
   deadline: string | null;
   allowFileUpload: boolean;
   position: number;
+  completed: boolean; 
 }
 
 export interface LearnerChapterDto {
@@ -101,4 +103,17 @@ export class CourseContentApiService {
         },
       });
   }
+
+
+  // Dans CourseContentApiService
+markSequenceComplete(sequenceId: number): Observable<any> {
+  return this.http.post(`http://127.0.0.1:8000/api/sequences/${sequenceId}/complete`, {});
+}
+// Dans CourseContentApiService
+sendFeedback(sequenceId: number, comment: string, rating: number | null): Observable<any> {
+  return this.http.post(`http://127.0.0.1:8000/api/sequences/${sequenceId}/feedback`, {
+    comment: comment,
+    rating: rating
+  });
+}
 }

@@ -131,7 +131,7 @@
             {{ activeTopic.ctaLabel }}
           </a>
 
-          <a class="academy-panel__cta academy-panel__cta--all" routerLink="/sujets">
+          <a class="academy-panel__cta academy-panel__cta--all" routerLink="/catalogue">
             Explorer tous les cours
           </a>
         </div>
@@ -155,25 +155,29 @@
       Explorez l'ensemble des domaines couverts par nos parcours, formations, bootcamps et e-learning.
     </p>
 
-    <div class="academy-subjects__grid">
+
+        <div class="academy-subjects__grid">
       @for (subject of subjects; track subject.label) {
-        <a class="subject-card" [routerLink]="subject.route">
+        <!-- ✅ REDIRECTION VERS LE CATALOGUE AVEC LE FILTRE -->
+        <a class="subject-card" 
+           [routerLink]="subject.route" 
+           [queryParams]="subject.queryParams">
           <span class="subject-card__glow" aria-hidden="true"></span>
           <span class="subject-card__icon">
             <svg
-              width="26"
-              height="26"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="1.6"
-              stroke-linecap="round"
-              stroke-linejoin="round"
+              width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+              stroke-linecap="round" stroke-linejoin="round"
             >
               <path [attr.d]="subjectIcons[subject.icon]" />
             </svg>
           </span>
-          <span class="subject-card__label">{{ subject.label }}</span>
+          
+          <div class="subject-card__content">
+            <span class="subject-card__label">{{ subject.label }}</span>
+            <!-- Optionnel : Ajouter un compteur dynamique si tu as les données -->
+            <!-- <span class="subject-card__count">Voir les cours</span> -->
+          </div>
+
           <span class="subject-card__arrow" aria-hidden="true">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
               <path d="M3.5 8H12.5M12.5 8L8.5 4M12.5 8L8.5 12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
@@ -271,12 +275,20 @@
             </ul>
 
             <div class="training-mode__actions">
-              <a class="training-mode__cta" [routerLink]="format.ctaCoursesRoute">
+              <!-- <a class="training-mode__cta" [routerLink]="format.ctaCoursesRoute">
                 {{ format.ctaCoursesLabel }}
                 <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
                   <path d="M3.5 8H12.5M12.5 8L8.5 4M12.5 8L8.5 12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
-              </a>
+              </a> -->
+              <a class="training-mode__cta" 
+   [routerLink]="['/catalogue']" 
+   [queryParams]="format.mode === 'presentiel' ? { format: 'presentiel' } : { format: 'en_ligne' }">
+  {{ format.ctaCoursesLabel }}
+  <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+    <path d="M3.5 8H12.5M12.5 8L8.5 4M12.5 8L8.5 12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+</a>
             </div>
           </div>
         </article>
@@ -374,12 +386,14 @@
         </p>
       </div>
       <div class="academy-training__cta-actions">
-        <a class="academy-training__cta-btn" routerLink="/entreprises/formations">
-          Voir tous les cours et modules
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-            <path d="M3.5 8H12.5M12.5 8L8.5 4M12.5 8L8.5 12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </a>
+        <a class="academy-training__cta-btn" 
+   [routerLink]="['/catalogue']" 
+   [queryParams]="{ type: 'abonnement' }">
+  Voir tout le catalogue
+  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+    <path d="M3.5 8H12.5M12.5 8L8.5 4M12.5 8L8.5 12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+</a>
         <a class="academy-training__cta-btn academy-training__cta-btn--ghost" routerLink="/contact">
           Contacter un conseiller KMAA
         </a>
@@ -447,39 +461,6 @@
   </div>
 </section>
 
-<!-- POUSSEZ VOS COMPÉTENCES PLUS LOIN -->
-<section class="academy-diplomas" aria-labelledby="academy-diplomas-title">
-  <div class="academy-diplomas__container">
-    <h2 id="academy-diplomas-title">Poussez vos compétences un peu plus loin</h2>
-    <span class="academy-banner__underline academy-banner__underline--light" aria-hidden="true"></span>
-    <p class="academy-diplomas__text">
-      Des programmes complets et diplômants pour aller au bout de votre projet professionnel.
-    </p>
-<a
-  class="academy-panel__cta academy-panel__cta--light"
-  href="#catalogue"
-  (click)="scrollToCatalogue(); $event.preventDefault()"
->
-  Explorez les diplômes
-</a>
-
-    <div class="academy-diplomas__grid">
-      @for (course of diplomaCourses; track course.title) {
-        <a class="academy-course-card" [routerLink]="course.route">
-          <div class="academy-course-card__image">
-            <img [src]="'/images/page-academie/diplomes/' + course.image" [alt]="course.imageAlt" loading="lazy" />
-          </div>
-          <div class="academy-course-card__content">
-            <h4>{{ course.title }}</h4>
-            <p>{{ course.excerpt }}</p>
-          </div>
-          <span class="academy-course-card__badge">{{ course.badge }}</span>
-        </a>
-      }
-    </div>
-  </div>
-</section>
-
 <!-- BANNIÈRE ENTREPRISE -->
 <section class="academy-banner" aria-labelledby="academy-banner-entreprise-title">
   <div class="academy-banner__card">
@@ -527,4 +508,3 @@
     </div>
   </div>
 </section>
-

@@ -136,7 +136,7 @@
       @if (resume(); as r) {
         <section class="resume-card" (click)="openResume()" role="button" tabindex="0">
           <div class="resume-card__image">
-            <img [src]="r.courseImage" [alt]="r.courseTitle" />
+           <img [src]="assetUrl(r.courseImage)!" [alt]="r.courseTitle" />
           </div>
           <div class="resume-card__body">
             <span class="resume-card__kicker">REPRENDRE LA FORMATION</span>
@@ -184,7 +184,7 @@
             @for (course of courses(); track course.slug) {
               <a class="course-card" [routerLink]="['/apprentissage', course.slug]">
                 <div class="course-card__image">
-                  <img [src]="course.image" [alt]="course.title" loading="lazy" />
+                 <img [src]="assetUrl(course.image)!" [alt]="course.title" loading="lazy" />
                 </div>
                 <div class="course-card__body">
                   <span class="course-card__category">{{ course.category }}</span>

@@ -527,3 +527,107 @@
   gap: 0.5rem;
   align-self: flex-start;
 }
+
+
+
+// ============================================================
+// KPIs
+// ============================================================
+.dashboard__kpis {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  margin-bottom: 3rem;
+}
+
+.kpi-card {
+  background: var(--white);
+  border-radius: 14px;
+  padding: 20px;
+  box-shadow: 0 4px 14px rgba(5, 12, 34, 0.06);
+  border-left: 4px solid var(--gold-300, #c9992e);
+
+  &--warning {
+    border-left-color: #ef4444;
+    background: #fef2f2;
+  }
+
+  &__label {
+    display: block;
+    font-size: 0.78rem;
+    color: var(--slate-600);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 8px;
+  }
+
+  &__value {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: var(--navy-900);
+  }
+}
+
+// ============================================================
+// Timeline d'activité
+// ============================================================
+.activity-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding-left: 20px;
+  border-left: 2px solid #e4e7ec;
+  margin-left: 12px;
+}
+
+.activity-item {
+  position: relative;
+  padding: 12px 0 12px 20px;
+
+  &__dot {
+    position: absolute;
+    left: -27px;
+    top: 18px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--gold-300, #c9992e);
+    border: 2px solid var(--white);
+  }
+
+  &__body {
+    font-size: 0.9rem;
+    color: var(--navy-900);
+    line-height: 1.5;
+  }
+
+  &__date {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--slate-600);
+    margin-top: 2px;
+  }
+}
+
+
+
+.toast {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  color: white;
+  padding: 15px 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 500;
+  z-index: 9999;
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}

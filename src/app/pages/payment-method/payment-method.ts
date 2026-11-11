@@ -47,7 +47,7 @@ export class PaymentMethod {
 
   readonly providers = PAYMENT_PROVIDERS;
 
-  /** Code bon saisi par lâ€™utilisateur */
+  /** Code bon saisi par l’utilisateur */
   voucherCode = '';
 
   formatPrice(amount: number): string {
@@ -83,7 +83,7 @@ export class PaymentMethod {
       })
       .subscribe({
         next: () => {
-          // Bon validÃ© â†’ on inscrit l'utilisateur au cours
+          // Bon validé → on inscrit l'utilisateur au cours
           this.http
             .post('http://127.0.0.1:8000/api/enrollments', {
               course_slug: id,
@@ -97,7 +97,7 @@ export class PaymentMethod {
                 console.error('Erreur inscription :', err);
                 this.voucherMessage.set(
                   err.error?.message ??
-                    'Bon validÃ© mais inscription Ã©chouÃ©e. Contactez le support.',
+                    'Bon validé mais inscription échouée. Contactez le support.',
                 );
               },
             });

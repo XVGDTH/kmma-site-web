@@ -41,7 +41,7 @@ export class Programs {
       title: 'Contrôle de gestion',
       description:
         'Nous concevons des outils de pilotage adaptés à votre structure : tableaux de bord, indicateurs clés et analyses pour transformer vos données en leviers de décision.',
-      route: '/formations/controle-de-gestion',
+      route: '/catalogue?subject=Affaires et gestion',
       image: 'images/nos_savoir_faires/controlle_de_gestion.png',
       tone: 'gold',
     },
@@ -50,7 +50,7 @@ export class Programs {
       title: 'Gestion des risques',
       description:
         'Nous vous aidons à identifier, mesurer et maîtriser les risques financiers et opérationnels qui peuvent affecter la stabilité et la croissance de votre organisation.',
-      route: '/formations/gestion-des-risques',
+      route: '/catalogue?subject=Audit et contrôle de gestion',
       image: 'images/nos_savoir_faires/gestion_des_risques.png',
       tone: 'purple',
     },
@@ -59,7 +59,7 @@ export class Programs {
       title: 'Fiscalité & juridique',
       description:
         'Nous sécurisons vos obligations fiscales et juridiques grâce à une approche préventive, des conseils pratiques et des solutions adaptées à votre activité.',
-      route: '/formations/fiscalite-juridique',
+      route: '/catalogue?subject=Fiscalité et juridique',
       image: 'images/nos_savoir_faires/fiscalite_et_juridique.png',
       tone: 'blue',
     },
@@ -68,7 +68,7 @@ export class Programs {
       title: 'Stratégie & organisation',
       description:
         'Nous co-construisons des feuilles de route réalistes pour aligner votre vision, vos ressources et vos priorités avec les évolutions de votre marché.',
-      route: '/formations/strategie-organisation',
+      route: '/catalogue?subject=direction et leadership',
       image: 'images/nos_savoir_faires/strategie_et_organisation.png',
       tone: 'cyan',
       highlighted: true,
@@ -78,7 +78,7 @@ export class Programs {
       title: 'Ressources humaines',
       description:
         'Nous plaçons le capital humain au centre de la performance grâce à des solutions de gestion, de développement des compétences et d’organisation du travail.',
-      route: '/formations/ressources-humaines',
+      route: '/catalogue?subject=Ressources humaines',
       image: 'images/nos_savoir_faires/ressources_humaines.png',
       tone: 'orange',
     },
@@ -87,7 +87,7 @@ export class Programs {
       title: 'Audit interne externalisé',
       description:
         'Nous apportons une évaluation indépendante de vos processus afin de révéler vos forces, corriger vos faiblesses et améliorer durablement votre organisation.',
-      route: '/formations/audit-interne',
+      route: '/catalogue?subject=Audit et contrôle de gestion',
       image: 'images/nos_savoir_faires/audit_externe.png',
       tone: 'green',
     },
@@ -106,7 +106,7 @@ export class Programs {
       title: 'Formation',
       description:
         'Nous proposons des formations pratiques pour développer les compétences des professionnels et des particuliers selon leurs objectifs et leur niveau.',
-      route: '/formations/catalogue',
+      route: '/catalogue',
       image: 'images/nos_savoir_faires/formations.png',
       tone: 'navy',
     },

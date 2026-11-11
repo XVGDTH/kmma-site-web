@@ -1,0 +1,1277 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Public+Sans:wght@400;500;600&display=swap');
+
+// ============================================================
+//  KMAA — Page Conseil (Refonte premium)
+//  Charte : Fond clair dominant, Vert profond pour les blocs d'impact,
+//           Cuivre pour les titres, boutons et accents.
+// ============================================================
+
+:host {
+  display: block;
+
+  // Verts (utilisés avec parcimonie)
+  --navy-950: #081f1f;
+  --navy-900: #0f3d3e;
+  --navy-800: #155352;
+  --navy-700: #1c6b69;
+  --navy-600: #23837f;
+
+  // Cuivres (utilisés pour les accents)
+  --gold-600: #8f5a28;
+  --gold-500: #b87333;
+  --gold-400: #c98a4f;
+  --gold-300: #d9a476;
+  --gold-100: #f2e3d5;
+
+  // Neutres
+  --paper: #fcfcfb;
+  --white: #ffffff;
+  --ink: #1a2e24;       // Vert très foncé pour le texte (plus doux que le noir pur)
+  --ink-soft: #4a5c54;
+  --line-light: #e5e8e4;
+  --line-dark: rgba(255, 255, 255, 0.15);
+
+  --font-display: 'Fraunces', 'Georgia', serif;
+  --font-body: 'Public Sans', system-ui, -apple-system, sans-serif;
+
+  --wrap: 1200px;
+  --gutter: clamp(1.25rem, 4vw, 3rem);
+  --section-y: clamp(4rem, 9vw, 7.5rem);
+  --radius: 8px;
+
+  font-family: var(--font-body);
+  color: var(--ink);
+  line-height: 1.65;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+.conseil {
+  display: block;
+  background: var(--white);
+  font-size: 1.0625rem;
+
+  p {
+    margin: 0 0 1.1rem;
+    max-width: 62ch;
+  }
+
+  ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 500;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+  }
+
+  a {
+    color: inherit;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--gold-500);
+    outline-offset: 3px;
+  }
+}
+
+.wrap {
+  width: 100%;
+  max-width: calc(var(--wrap) + var(--gutter) * 2);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+// ------------------------------------------------------------
+//  Sections et titres
+// ------------------------------------------------------------
+.section {
+  padding-block: var(--section-y);
+  scroll-margin-top: 4.5rem;
+
+  &--light { background: var(--white); }
+  &--paper { background: var(--paper); }
+
+  &--dark {
+    background: var(--navy-950);
+    color: #e6efee;
+  }
+}
+
+// Le cuivre est appliqué sur les H2
+.h2 {
+  font-size: clamp(2rem, 3.8vw, 3.2rem);
+  color: var(--gold-600);
+  margin-bottom: 1.5rem;
+  max-width: 20ch;
+
+  &--wide { max-width: 24ch; }
+
+  &--invert {
+    color: var(--gold-400);
+  }
+}
+
+.lead {
+  font-size: 1.25rem;
+  line-height: 1.6;
+  color: var(--navy-800);
+}
+
+.head {
+  margin-bottom: clamp(2rem, 5vw, 3.5rem);
+
+  .h2 { margin-bottom: 1rem; }
+
+  &__text {
+    color: var(--line-dark);
+    max-width: 58ch;
+
+    &--dark {
+      color: var(--ink-soft);
+    }
+  }
+
+  &--split {
+    display: grid;
+    gap: 1rem 4rem;
+
+    @media (min-width: 900px) {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      align-items: end;
+      .h2 { max-width: 22ch; }
+    }
+  }
+}
+
+.subhead {
+  font-size: clamp(1.5rem, 2.6vw, 2rem);
+  color: var(--gold-400);
+  margin: clamp(3rem, 6vw, 5rem) 0 1.75rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--gold-500);
+  max-width: none;
+
+  &--dark {
+    color: var(--gold-600);
+  }
+}
+
+.link {
+  display: inline-block;
+  font-weight: 600;
+  color: var(--navy-900);
+  text-decoration: none;
+  padding-bottom: 0.15rem;
+  border-bottom: 1px solid var(--gold-500);
+  transition: color 0.2s ease, border-color 0.2s ease;
+
+  &:hover {
+    color: var(--gold-600);
+    border-color: var(--gold-600);
+  }
+}
+
+.ticks {
+  display: grid;
+  gap: 0.9rem;
+
+  li {
+    position: relative;
+    padding-left: 1.75rem;
+    color: #d3e2e0;
+
+    &::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0.72em;
+      width: 0.9rem;
+      height: 1px;
+      background: var(--gold-300);
+    }
+  }
+
+  &--dark li {
+    color: var(--ink-soft);
+
+    &::before {
+      background: var(--gold-500);
+    }
+  }
+}
+
+// ------------------------------------------------------------
+//  Boutons
+// ------------------------------------------------------------
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 3.2rem;
+  padding: 0.75rem 2rem;
+  border-radius: 4px;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border: 1px solid transparent;
+  transition: all 0.25s ease;
+
+  // Bouton principal : Cuivre
+  &--primary {
+    background: var(--gold-500);
+    color: var(--white);
+    box-shadow: 0 4px 15px rgba(184, 115, 51, 0.2);
+
+    &:hover {
+      background: var(--gold-400);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(184, 115, 51, 0.3);
+    }
+  }
+
+  // Bouton secondaire clair (sur fond clair)
+  &--outline {
+    background: transparent;
+    color: var(--gold-600);
+    border-color: var(--gold-500);
+
+    &:hover {
+      background: var(--gold-500);
+      color: var(--white);
+    }
+  }
+
+  // Bouton secondaire clair (sur fond sombre)
+  &--outline-light {
+    background: transparent;
+    color: var(--white);
+    border-color: rgba(255, 255, 255, 0.3);
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: var(--white);
+    }
+  }
+}
+
+// ------------------------------------------------------------
+//  Médias (Images)
+// ------------------------------------------------------------
+.media {
+  position: relative;
+  margin: 0;
+  background: var(--navy-800);
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: var(--radius);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08); // Ombre douce pour décoller l'image
+
+  &--tall {
+    aspect-ratio: 4 / 5;
+  }
+
+  img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    // Filtre supprimé pour révéler la beauté de l'image
+    transition: transform 0.5s ease;
+
+    &.is-broken {
+      opacity: 0;
+    }
+
+    &:hover {
+      transform: scale(1.03);
+    }
+  }
+
+  // Voile très léger pour la lisibilité si besoin
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(8, 31, 31, 0.4) 0%, transparent 40%);
+    pointer-events: none;
+  }
+}
+
+// ------------------------------------------------------------
+//  Hero (Impact visuel fort)
+// ------------------------------------------------------------
+.hero {
+  --cut: clamp(2.5rem, 6vw, 5rem);
+
+  position: relative;
+  isolation: isolate;
+  background: var(--navy-950);
+  color: #e6efee;
+  padding-block: clamp(3rem, 7vw, 5.5rem) calc(var(--cut) + clamp(4rem, 9vw, 7rem));
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - var(--cut)), 0 100%);
+
+  &__img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -2;
+    // Plus de gris, l'image garde sa couleur naturelle
+
+    &.is-broken { opacity: 0; }
+  }
+
+  &__veil {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    // Dégradé plus subtil pour laisser voir l'image
+    background: linear-gradient(100deg, rgba(8, 31, 31, 0.9) 20%, rgba(15, 61, 62, 0.4) 80%);
+  }
+
+  &__edge {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: var(--cut);
+    background: linear-gradient(
+      to top left,
+      transparent calc(50% - 4px),
+      var(--gold-500) calc(50% - 4px),
+      var(--gold-500) calc(50% - 1px),
+      transparent calc(50% - 1px)
+    );
+    pointer-events: none;
+  }
+
+  &__inner {
+    position: relative;
+  }
+
+  &__title {
+    max-width: 14ch;
+    font-size: clamp(2.8rem, 7vw, 5.4rem);
+    color: var(--white);
+    margin-bottom: 1.25rem;
+  }
+
+  &__tagline {
+    max-width: 30ch;
+    font-family: var(--font-display);
+    font-size: clamp(1.35rem, 2.6vw, 2rem);
+    line-height: 1.3;
+    color: var(--gold-300);
+    margin-bottom: 1.5rem;
+  }
+
+  &__text {
+    font-size: 1.125rem;
+    color: #c3d6d4;
+    max-width: 52ch;
+    margin-bottom: 2.25rem;
+  }
+
+  &__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+}
+
+.crumbs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: clamp(2.5rem, 6vw, 4.5rem);
+  font-size: 0.9rem;
+  color: #a9c4c2;
+
+  span + span::before {
+    content: '/';
+    margin-right: 0.5rem;
+    color: var(--gold-400);
+  }
+
+  [aria-current='page'] {
+    color: var(--white);
+    font-weight: 600;
+  }
+}
+
+// ------------------------------------------------------------
+//  Sous-navigation collante
+// ------------------------------------------------------------
+.subnav {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: var(--white);
+  border-bottom: 1px solid var(--line-light);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+
+  &__inner {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    min-height: 3.5rem;
+  }
+
+  &__brand {
+    flex: none;
+    font-family: var(--font-display);
+    font-weight: 600;
+    color: var(--navy-900);
+    padding-right: 2rem;
+    border-right: 1px solid var(--gold-300);
+
+    @media (max-width: 720px) { display: none; }
+  }
+
+  &__list {
+    display: flex;
+    gap: 0.25rem;
+    overflow-x: auto;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar { display: none; }
+
+    a {
+      position: relative;
+      display: block;
+      padding: 1.05rem 0.9rem;
+      font-size: 0.95rem;
+      font-weight: 500;
+      white-space: nowrap;
+      color: var(--ink-soft);
+      text-decoration: none;
+      transition: color 0.2s ease;
+
+      &::after {
+        content: '';
+        position: absolute;
+        left: 0.9rem;
+        right: 0.9rem;
+        bottom: 0;
+        height: 2px;
+        background: var(--gold-500);
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform 0.25s ease;
+      }
+
+      &:hover { color: var(--navy-900); }
+
+      &.is-active {
+        color: var(--navy-900);
+        font-weight: 600;
+        &::after { transform: scaleX(1); }
+      }
+    }
+  }
+}
+
+// ------------------------------------------------------------
+//  Aperçu
+// ------------------------------------------------------------
+.intro {
+  display: grid;
+  gap: 2rem 5rem;
+  margin-bottom: clamp(4rem, 8vw, 6.5rem);
+
+  @media (min-width: 960px) {
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+    align-items: start;
+  }
+
+  .h2 { margin-bottom: 0; }
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.5rem;
+  margin-top: 2.25rem !important;
+  padding-top: 1.5rem !important;
+  border-top: 1px solid var(--gold-500);
+
+  &__value {
+    display: block;
+    font-family: var(--font-display);
+    font-size: clamp(2.2rem, 4vw, 3.2rem);
+    line-height: 1;
+    color: var(--gold-600);
+    margin-bottom: 0.5rem;
+  }
+
+  &__label {
+    display: block;
+    font-size: 0.95rem;
+    line-height: 1.4;
+    color: var(--ink-soft);
+  }
+}
+
+.split {
+  display: grid;
+  gap: 3rem;
+  align-items: center;
+  color: var(--ink-soft);
+
+  @media (min-width: 960px) {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 0.8fr);
+    gap: 6rem;
+  }
+}
+
+// ------------------------------------------------------------
+//  Offres
+// ------------------------------------------------------------
+.offers {
+  display: grid;
+  gap: 0 3rem;
+  margin-top: 2rem !important;
+  border-top: 1px solid var(--navy-900);
+
+  @media (min-width: 900px) {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  li {
+    border-bottom: 1px solid var(--line-light);
+  }
+}
+
+.offer {
+  position: relative;
+  display: block;
+  padding: 1.75rem 3rem 1.75rem 0;
+  text-decoration: none;
+
+  &__title {
+    display: block;
+    font-family: var(--font-display);
+    font-size: clamp(1.3rem, 2.2vw, 1.6rem);
+    color: var(--navy-900);
+    margin-bottom: 0.4rem;
+    transition: color 0.2s ease;
+  }
+
+  &__text {
+    display: block;
+    color: var(--ink-soft);
+    font-size: 1rem;
+  }
+
+  &__arrow {
+    position: absolute;
+    right: 0.5rem;
+    top: 50%;
+    width: 0.7rem;
+    height: 0.7rem;
+    margin-top: -0.35rem;
+    border-top: 2px solid var(--gold-600);
+    border-right: 2px solid var(--gold-600);
+    transform: rotate(45deg);
+    transition: transform 0.25s ease;
+  }
+
+  &:hover &__title { color: var(--gold-600); }
+  &:hover &__arrow { transform: translateX(4px) rotate(45deg); }
+}
+
+// ------------------------------------------------------------
+//  Pourquoi KMAA (onglets à icônes)
+// ------------------------------------------------------------
+.why {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-top: 2rem;
+  border-bottom: 1px solid var(--line-light);
+
+  @media (min-width: 800px) {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  &__tab {
+    position: relative;
+    display: grid;
+    justify-items: center;
+    gap: 1.1rem;
+    padding: 1.75rem 0.75rem 1.5rem;
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+    font-family: var(--font-body);
+    color: var(--ink-soft);
+    transition: color 0.2s ease;
+
+    &::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: -1px;
+      height: 3px;
+      background: var(--gold-500);
+      transform: scaleX(0);
+      transition: transform 0.25s ease;
+    }
+
+    &:hover { color: var(--navy-900); }
+
+    &.is-active {
+      color: var(--gold-600);
+      &::after { transform: scaleX(1); }
+    }
+  }
+
+  &__icon {
+    color: currentColor;
+  }
+
+  &__label {
+    font-size: 1.05rem;
+    font-weight: 600;
+  }
+
+  &__panel {
+    display: grid;
+    gap: 2rem 4rem;
+    padding-top: 2.5rem;
+    color: var(--ink-soft);
+
+    @media (min-width: 900px) {
+      grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
+    }
+  }
+
+  &__title {
+    font-size: clamp(1.5rem, 2.6vw, 2rem);
+    color: var(--navy-900);
+    margin-bottom: 1rem;
+  }
+}
+
+// ------------------------------------------------------------
+//  Bandeau stratégie
+// ------------------------------------------------------------
+.band {
+  position: relative;
+  isolation: isolate;
+  background: var(--navy-950);
+  color: var(--white);
+  padding-block: clamp(5rem, 12vw, 9rem);
+  overflow: hidden;
+
+  &__img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -2;
+
+    &.is-broken { opacity: 0; }
+  }
+
+  &__veil {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(95deg, rgba(8, 31, 31, 0.85) 20%, rgba(15, 61, 62, 0.4));
+  }
+
+  &__inner {
+    position: relative;
+    padding-left: clamp(2.5rem, 5vw, 4.5rem);
+
+    &::before {
+      content: '';
+      position: absolute;
+      left: var(--gutter);
+      top: 0.35rem;
+      bottom: 0.35rem;
+      width: 3px;
+      background: var(--gold-500);
+    }
+  }
+
+  &__title {
+    max-width: 22ch;
+    font-size: clamp(2rem, 4.4vw, 3.4rem);
+    margin-bottom: 1.5rem;
+    color: var(--gold-300);
+  }
+
+  &__text {
+    max-width: 56ch;
+    color: #c3d6d4;
+    margin-bottom: 2rem;
+  }
+}
+
+// ------------------------------------------------------------
+//  Expertises (grille de 8)
+// ------------------------------------------------------------
+.expertises {
+  display: grid;
+  border-top: 1px solid var(--navy-900);
+
+  @media (min-width: 700px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 3rem;
+  }
+
+  @media (min-width: 1100px) {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.expertise {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 1.75rem 0 2rem;
+  border-bottom: 1px solid var(--line-light);
+
+  &::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: -1px;
+    width: 2.5rem;
+    height: 2px;
+    background: var(--gold-500);
+  }
+
+  &__title {
+    font-size: 1.3rem;
+    color: var(--navy-900);
+    margin-bottom: 0.75rem;
+  }
+
+  &__text {
+    flex: 1;
+    color: var(--ink-soft);
+    font-size: 1rem;
+  }
+}
+
+// ------------------------------------------------------------
+//  Finance et comptabilité
+// ------------------------------------------------------------
+.finance {
+  display: grid;
+  gap: 3rem;
+  align-items: start;
+
+  @media (min-width: 1000px) {
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+    gap: 5rem;
+  }
+
+  &__text { color: var(--ink-soft); }
+
+  &__media {
+    margin-top: 2rem;
+    aspect-ratio: 16 / 9;
+  }
+}
+
+.missions {
+  background: var(--white);
+  border-left: 4px solid var(--gold-500);
+  padding: clamp(1.75rem, 4vw, 2.75rem);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+
+  &__title {
+    font-size: clamp(1.5rem, 2.4vw, 1.9rem);
+    color: var(--navy-900);
+    margin-bottom: 1.5rem;
+  }
+
+  ul { border-top: 1px solid var(--line-light); }
+}
+
+.mission {
+  border-bottom: 1px solid var(--line-light);
+
+  a {
+    position: relative;
+    display: block;
+    padding: 1.1rem 2.25rem 1.1rem 0;
+    text-decoration: none;
+
+    &::after {
+      content: '';
+      position: absolute;
+      right: 0.35rem;
+      top: 50%;
+      width: 0.6rem;
+      height: 0.6rem;
+      margin-top: -0.3rem;
+      border-top: 2px solid var(--gold-600);
+      border-right: 2px solid var(--gold-600);
+      transform: rotate(45deg);
+      transition: transform 0.25s ease;
+    }
+
+    &:hover::after { transform: translateX(4px) rotate(45deg); }
+  }
+
+  &__title {
+    display: block;
+    font-weight: 600;
+    color: var(--navy-900);
+  }
+
+  &__text {
+    display: block;
+    margin-top: 0.15rem;
+    font-size: 0.95rem;
+    color: var(--ink-soft);
+  }
+}
+
+// ------------------------------------------------------------
+//  Externalisation
+// ------------------------------------------------------------
+.groups {
+  display: grid;
+  gap: 2.5rem;
+
+  @media (min-width: 900px) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 3rem;
+  }
+}
+
+.group {
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--gold-500);
+
+  &__title {
+    font-size: 1.45rem;
+    color: var(--white);
+    margin-bottom: 1.25rem;
+  }
+}
+
+.benefits {
+  display: grid;
+  gap: 1px;
+  background: var(--line-dark);
+  border: 1px solid var(--line-dark);
+
+  @media (min-width: 800px) {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.benefit {
+  background: var(--navy-800);
+  padding: clamp(1.5rem, 3vw, 2.25rem);
+
+  &__title {
+    font-size: 1.3rem;
+    color: var(--gold-300);
+    margin-bottom: 0.6rem;
+  }
+
+  &__text {
+    margin: 0;
+    color: #c3d6d4;
+    font-size: 1rem;
+  }
+}
+
+// ------------------------------------------------------------
+//  Accompagnement (bascule Finance / RH)
+// ------------------------------------------------------------
+.switch {
+  display: inline-flex;
+  padding: 0.25rem;
+  border: 1px solid var(--line-light);
+  border-radius: 999px;
+  background: var(--white);
+
+  &__btn {
+    min-height: 2.75rem;
+    padding: 0.5rem 1.5rem;
+    border: 0;
+    border-radius: 999px;
+    background: transparent;
+    font-family: var(--font-body);
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--ink-soft);
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease;
+
+    &:hover { color: var(--navy-900); }
+
+    &.is-active {
+      background: var(--gold-500);
+      color: var(--white);
+    }
+  }
+
+  &__intro {
+    margin: 1.75rem 0 2.25rem !important;
+    font-family: var(--font-display);
+    font-size: clamp(1.25rem, 2vw, 1.5rem);
+    color: var(--gold-600);
+  }
+}
+
+.support {
+  display: grid;
+  border-top: 1px solid var(--navy-900);
+
+  @media (min-width: 800px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 3rem;
+  }
+
+  &__item {
+    position: relative;
+    padding: 1.75rem 0 1.9rem;
+    border-bottom: 1px solid var(--line-light);
+
+    &::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: -1px;
+      width: 2.5rem;
+      height: 2px;
+      background: var(--gold-500);
+    }
+  }
+
+  &__title {
+    font-size: 1.35rem;
+    color: var(--navy-900);
+    margin-bottom: 0.5rem;
+  }
+
+  &__text {
+    margin: 0;
+    color: var(--ink-soft);
+    font-size: 1rem;
+  }
+}
+
+// ------------------------------------------------------------
+//  Secteurs : carrousel et réalisations
+// ------------------------------------------------------------
+.carousel {
+  position: relative;
+
+  &__track {
+    display: flex;
+    gap: 1.5rem;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    padding-bottom: 0.25rem;
+
+    &::-webkit-scrollbar { display: none; }
+  }
+
+  &__controls {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+  }
+}
+
+.sector {
+  flex: 0 0 min(82%, 22rem);
+  scroll-snap-align: start;
+
+  &__media {
+    aspect-ratio: 4 / 3;
+    margin-bottom: 1.1rem;
+  }
+
+  &__name {
+    font-size: 1.35rem;
+    color: var(--navy-900);
+    margin-bottom: 0.4rem;
+  }
+
+  &__text {
+    margin: 0;
+    color: var(--ink-soft);
+    font-size: 1rem;
+  }
+}
+
+.round {
+  display: grid;
+  place-items: center;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  background: var(--gold-500);
+  border: 1px solid var(--gold-500);
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+
+  &:hover { background: var(--gold-600); }
+
+  &__chevron {
+    width: 0.6rem;
+    height: 0.6rem;
+    border-top: 2px solid var(--white);
+    border-right: 2px solid var(--white);
+    transform: translateX(-2px) rotate(45deg);
+
+    &--left { transform: translateX(2px) rotate(-135deg); }
+  }
+}
+
+.cases { border-top: 1px solid var(--navy-900); }
+
+.case {
+  display: grid;
+  gap: 0.5rem 3rem;
+  padding: 1.75rem 0;
+  border-bottom: 1px solid var(--line-light);
+
+  @media (min-width: 800px) {
+    grid-template-columns: 12rem minmax(0, 1fr);
+  }
+
+  &__sector {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    color: var(--gold-600);
+  }
+
+  &__title {
+    font-size: 1.4rem;
+    color: var(--navy-900);
+    margin-bottom: 0.5rem;
+  }
+
+  &__text {
+    margin: 0;
+    color: var(--ink-soft);
+  }
+}
+
+// ------------------------------------------------------------
+//  Perspectives
+// ------------------------------------------------------------
+.insights {
+  display: grid;
+  gap: 3rem 2rem;
+  margin-top: 2.5rem !important;
+
+  @media (min-width: 800px) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.insight {
+  display: flex;
+  flex-direction: column;
+
+  &__media {
+    aspect-ratio: 3 / 2;
+    margin-bottom: 1.25rem;
+  }
+
+  &__type {
+    margin: 0 0 0.4rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--gold-600);
+  }
+
+  &__title {
+    font-size: 1.4rem;
+    color: var(--navy-900);
+    margin-bottom: 0.75rem;
+
+    a {
+      text-decoration: none;
+      background: linear-gradient(var(--gold-500), var(--gold-500)) 0 100% / 0 1px no-repeat;
+      transition: background-size 0.3s ease;
+
+      &:hover { background-size: 100% 1px; }
+    }
+  }
+
+  &__text {
+    flex: 1;
+    color: var(--ink-soft);
+    font-size: 1rem;
+  }
+
+  &__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 1rem;
+    margin: 0;
+    font-size: 0.92rem;
+    color: var(--ink-soft);
+  }
+
+  &__author {
+    font-weight: 600;
+    color: var(--navy-900);
+  }
+}
+
+// ------------------------------------------------------------
+//  Équipe
+// ------------------------------------------------------------
+.team {
+  display: grid;
+  gap: 2.5rem;
+  margin-top: 2.5rem !important;
+
+  @media (min-width: 860px) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 3rem;
+  }
+}
+
+.expert {
+  display: grid;
+  gap: 1.25rem;
+  align-content: start;
+
+  &__avatar {
+    display: grid;
+    place-items: center;
+    width: 100%;
+    aspect-ratio: 5 / 4;
+    background: linear-gradient(150deg, var(--navy-700), var(--navy-950));
+    border-radius: var(--radius);
+    border-bottom: 3px solid var(--gold-500);
+    font-family: var(--font-display);
+    font-size: clamp(2.5rem, 5vw, 3.75rem);
+    color: var(--gold-100);
+    letter-spacing: 0.04em;
+  }
+
+  &__name {
+    font-size: 1.5rem;
+    color: var(--navy-900);
+    margin-bottom: 0.25rem;
+  }
+
+  &__role {
+    margin: 0 0 0.75rem;
+    font-weight: 600;
+    color: var(--gold-600);
+    font-size: 0.98rem;
+  }
+
+  &__bio {
+    margin: 0;
+    color: var(--ink-soft);
+    font-size: 1rem;
+  }
+}
+
+// ------------------------------------------------------------
+//  Clôture : contact et services connexes
+// ------------------------------------------------------------
+.section--closing {
+  background: var(--navy-950);
+}
+
+.closing {
+  display: grid;
+  gap: 3.5rem;
+
+  @media (min-width: 960px) {
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+    gap: 6rem;
+    align-items: start;
+  }
+
+  &__text {
+    color: #b9cfcd;
+    margin-bottom: 2rem !important;
+  }
+
+  &__label {
+    font-family: var(--font-body) !important;
+    font-size: 1rem !important;
+    font-weight: 600;
+    letter-spacing: 0 !important;
+    color: var(--gold-400);
+    margin-bottom: 1rem !important;
+  }
+}
+
+.related {
+  border-top: 1px solid var(--line-dark);
+
+  li { border-bottom: 1px solid var(--line-dark); }
+
+  a {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 0;
+    color: var(--white);
+    text-decoration: none;
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    transition: color 0.2s ease, padding-left 0.25s ease;
+
+    &::after {
+      content: '';
+      width: 0.7rem;
+      height: 0.7rem;
+      border-top: 2px solid var(--gold-300);
+      border-right: 2px solid var(--gold-300);
+      transform: rotate(45deg);
+    }
+
+    &:hover {
+      color: var(--gold-300);
+      padding-left: 0.5rem;
+    }
+  }
+}
+
+// ------------------------------------------------------------
+//  Mouvement réduit
+// ------------------------------------------------------------
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}

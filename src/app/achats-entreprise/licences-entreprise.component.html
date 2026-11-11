@@ -13,6 +13,14 @@
       </a>
     </header>
 
+    @if (error()) {
+      <div class="lic-alert lic-alert--error">⚠ {{ error() }}</div>
+    }
+
+    @if (loading()) {
+      <div class="lic-loading">Chargement des licences...</div>
+    }
+
     <!-- STATS -->
     <div class="lic-stats">
       <div class="lic-stat">
@@ -34,7 +42,7 @@
     </div>
 
     <!-- LISTE -->
-    @if (licenses().length === 0) {
+    @if (!loading() && licenses().length === 0) {
       <div class="lic-empty">
         <div class="lic-empty__icon">🎫</div>
         <h2>Aucune licence active</h2>
@@ -43,12 +51,12 @@
           Découvrir les formations entreprises
         </a>
       </div>
-    } @else {
+    } @else if (!loading()) {
       <div class="lic-list">
         @for (lic of licenses(); track lic.id) {
           <article class="lic-card" (click)="selectLicense(lic)">
             <div class="lic-card__image">
-              <img [src]="lic.courseImage" [alt]="lic.courseTitle" loading="lazy" />
+              <img [src]="assetUrl(lic.courseImage)!" [alt]="lic.courseTitle" loading="lazy" />
               <span class="lic-card__badge">{{ lic.planName }}</span>
             </div>
 
@@ -106,6 +114,19 @@
               <span>Expire le</span>
               <strong>{{ formatDate(lic.expiresAt) }}</strong>
             </div>
+            <!-- Ajoute ce bouton quelque part dans le modal de détail -->
+<button type="button" class="btn-download" (click)="downloadInvoice(lic.id)" [disabled]="isDownloading()">
+  @if (isDownloading()) {
+    ⏳ Téléchargement...
+  } @else {
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+      <polyline points="7 10 12 15 17 10" />
+      <line x1="12" y1="15" x2="12" y2="3" />
+    </svg>
+    Télécharger la facture
+  }
+</button>
           </div>
 
           <!-- Formulaire invitation -->
@@ -118,14 +139,14 @@
                 [value]="newEmail()"
                 (input)="onEmailInput($event)"
                 (keyup.enter)="inviteMember()"
-                [disabled]="lic.seatsRemaining <= 0"
+                [disabled]="lic.seatsRemaining <= 0 || isSubmitting()"
               />
               <button
                 type="button"
                 (click)="inviteMember()"
-                [disabled]="lic.seatsRemaining <= 0"
+                [disabled]="lic.seatsRemaining <= 0 || isSubmitting()"
               >
-                Inviter
+                @if (isSubmitting()) { ... } @else { Inviter }
               </button>
             </div>
             @if (feedbackMsg()) {
@@ -138,15 +159,15 @@
 
           <!-- Liste membres -->
           <div class="lic-modal__members">
-            <h3>Membres ({{ lic.members.length + 1 }})</h3>
+            <h3>Membres ({{ lic.seatsUsed }} / {{ lic.seatsTotal }})</h3>
 
             <ul class="lic-members">
-              <!-- Owner -->
+              <!-- Owner = entreprise -->
               <li class="lic-member lic-member--owner">
-                <span class="lic-member__avatar">{{ lic.ownerName.charAt(0).toUpperCase() }}</span>
+                <span class="lic-member__avatar">{{ lic.companyName.charAt(0).toUpperCase() }}</span>
                 <div class="lic-member__info">
-                  <strong>{{ lic.ownerName }}</strong>
-                  <span>{{ lic.ownerEmail }}</span>
+                  <strong>{{ lic.companyName }}</strong>
+                  <span>{{ lic.companyEmail }}</span>
                 </div>
                 <span class="lic-member__badge">Propriétaire</span>
               </li>
@@ -157,15 +178,28 @@
                   <div class="lic-member__info">
                     <strong>{{ m.name || m.email.split('@')[0] }}</strong>
                     <span>{{ m.email }}</span>
+                    @if (m.status === 'invite') {
+                      <small class="lic-member__status">⏳ En attente</small>
+                    } @else if (m.status === 'active') {
+                      <small class="lic-member__status lic-member__status--ok">✓ Actif</small>
+                    }
                   </div>
-                  <button
-                    type="button"
-                    class="lic-member__remove"
-                    (click)="removeMember(m.id)"
-                    title="Retirer ce membre"
-                  >
-                    ✕
-                  </button>
+                  <div class="lic-member__actions">
+                    @if (m.status === 'invite') {
+                      <button
+                        type="button"
+                        class="lic-member__resend"
+                        (click)="resendInvitation(m)"
+                        title="Renvoyer l'invitation"
+                      >↻</button>
+                    }
+                    <button
+                      type="button"
+                      class="lic-member__remove"
+                      (click)="removeMember(m)"
+                      title="Retirer ce membre"
+                    >✕</button>
+                  </div>
                 </li>
               }
             </ul>

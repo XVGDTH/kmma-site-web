@@ -3,6 +3,7 @@ import {
   Component,
   Input,
   OnChanges,
+  OnDestroy,
   SimpleChanges,
   computed,
   signal,
@@ -27,7 +28,8 @@ import { CoursesApiService } from '../courses-api.service';
   styleUrl: './course-forum.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CourseForum implements OnChanges {
+export class CourseForum implements OnChanges, OnDestroy {
+  private pollingInterval: any;
 
   /**
    * Valeur reçue depuis le course-player.
@@ -46,7 +48,7 @@ export class CourseForum implements OnChanges {
   currentUserName = 'Apprenant';
 
   @Input()
-  currentUserRole: 'apprenant' | 'formateur' = 'apprenant';
+    currentUserRole: 'apprenant' | 'formateur' | 'admin' = 'apprenant';
 
   // ============================================================
   // ÉTAT
@@ -92,20 +94,23 @@ export class CourseForum implements OnChanges {
     private coursesApi: CoursesApiService
   ) {}
 
+  
+
   // ============================================================
   // CHANGEMENT DU CONTEXTE DU COURS
   // ============================================================
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (
-      changes['courseId'] &&
-      this.courseId !== undefined &&
-      this.courseId !== null &&
-      this.courseId !== ''
-    ) {
+    if (changes['courseId'] && this.courseId) {
       this.resolveCourse();
     }
   }
+    ngOnDestroy(): void {
+    if (this.pollingInterval) {
+      clearInterval(this.pollingInterval);
+    }
+  }
+
 
   // ============================================================
   // RÉCUPÉRER LE VRAI ID DU COURS
@@ -120,6 +125,7 @@ export class CourseForum implements OnChanges {
     }
 
     console.log('🔎 Slug reçu par le forum :', value);
+    
 
     this.resolvingCourse.set(true);
     this.error.set(null);
@@ -142,6 +148,7 @@ export class CourseForum implements OnChanges {
 
         this.resolvedCourseId.set(numericId);
         console.log('✅ VRAI ID DU COURS :', numericId);
+         this.startPolling(numericId); 
 
         this.resolvingCourse.set(false);
         this.loadThreads();
@@ -156,6 +163,30 @@ export class CourseForum implements OnChanges {
       },
     });
   }
+
+    // ✅ NOUVELLE MÉTHODE : Polling toutes les 5 secondes
+  private startPolling(courseId: number): void {
+    if (this.pollingInterval) clearInterval(this.pollingInterval);
+
+    // On charge une première fois
+    this.loadThreads();
+
+    // Puis on recharge toutes les 5 secondes
+    this.pollingInterval = setInterval(() => {
+      this.loadThreadsSilently(courseId);
+    }, 5000);
+  }
+
+    // ✅ Méthode silencieuse (pour ne pas afficher le loader à chaque fois)
+  private loadThreadsSilently(courseId: number): void {
+    this.forumApi.getThreads(courseId).subscribe({
+      next: (threads) => {
+        this.allThreads.set(threads);
+      },
+      error: () => { /* On ignore les erreurs de polling */ }
+    });
+  }
+
 
   // ============================================================
   // CHARGER LES DISCUSSIONS
@@ -445,7 +476,8 @@ export class CourseForum implements OnChanges {
   canToggleResolved(thread: ForumThread): boolean {
     return (
       thread.user_id === this.currentUserId ||
-      this.currentUserRole === 'formateur'
+      this.currentUserRole === 'formateur' ||
+      this.currentUserRole === 'admin' // ✅ Ajout de l'admin
     );
   }
 

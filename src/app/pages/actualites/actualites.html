@@ -122,6 +122,43 @@
     </div>
   </div>
 
+
+    <!-- ============= ILS NOUS FONT CONFIANCE ============= -->
+  <section class="news-partners">
+    <div class="news-partners__inner">
+      <div class="news-partners__header">
+        <span class="news-partners__eyebrow">Nos partenaires</span>
+        <h2 class="news-partners__title">Ils nous font confiance</h2>
+        <p class="news-partners__subtitle">
+          Des entreprises et institutions qui accompagnent nos apprenants et nos programmes de formation.
+        </p>
+      </div>
+
+      <!-- Carrousel infini -->
+      <div class="news-partners__track-wrapper">
+        <div class="news-partners__track">
+          @for (partner of partners; track partner.name) {
+            <div class="partner-card">
+              <div class="partner-card__logo">
+                <img [src]="partner.logo" [alt]="partner.name" loading="lazy" />
+              </div>
+              <span class="partner-card__name">{{ partner.name }}</span>
+            </div>
+          }
+          <!-- ✅ Duplication pour le défilement infini -->
+          @for (partner of partners; track partner.name + '-dup') {
+            <div class="partner-card">
+              <div class="partner-card__logo">
+                <img [src]="partner.logo" [alt]="partner.name" loading="lazy" />
+              </div>
+              <span class="partner-card__name">{{ partner.name }}</span>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- ============= NEWSLETTER ============= -->
   <div class="news-newsletter">
     <div class="news-newsletter__inner">

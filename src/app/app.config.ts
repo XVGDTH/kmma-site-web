@@ -3,14 +3,16 @@ import {
   provideBrowserGlobalErrorListeners,
 } from '@angular/core';
 import { provideRouter, withInMemoryScrolling } from '@angular/router';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
 
 import { routes } from './app.routes';
+import { httpAuthInterceptor } from './shared/http-auth.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
 
-    // ✅ Router avec restauration du scroll (nécessaire pour ton parcours)
+    // ✅ Router
     provideRouter(
       routes,
       withInMemoryScrolling({
@@ -19,13 +21,9 @@ export const appConfig: ApplicationConfig = {
       }),
     ),
 
-    // ❌ SUPPRIMÉ : provideHttpClient(withInterceptors([authInterceptor]))
-    //    → à réactiver quand tu brancheras tes vraies APIs
-    //
-    // ❌ SUPPRIMÉ : { provide: APP_INITIALIZER, useFactory: initAuth, ... }
-    //    → auth.refreshSession() appelait le backend au démarrage
-    //
-    // ❌ SUPPRIMÉ : import AuthService, authInterceptor
-    //    → plus utilisés tant que tu es en simulation
+    // ✅ HttpClient + intercepteur Sanctum
+    provideHttpClient(
+      withInterceptors([httpAuthInterceptor]),
+    ),
   ],
 };

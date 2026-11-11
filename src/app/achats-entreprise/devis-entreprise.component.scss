@@ -616,3 +616,44 @@ $bg-light: #f9f7f4;
     &:hover { background: $copper-dark; transform: translateY(-3px); }
   }
 }
+
+
+
+//"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""//
+
+.plan-selector { margin-top: 20px; }
+.plan-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+  margin-top: 12px;
+}
+.plan-option {
+  padding: 14px;
+  border: 2px solid #e2e8f0;
+  border-radius: 10px;
+  background: #fff;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  position: relative;
+  &:hover { border-color: #b87333; }
+  &--active {
+    border-color: #b87333;
+    background: #fef3e7;
+  }
+  &__badge {
+    position: absolute;
+    top: -8px; right: 8px;
+    background: #b87333; color: #fff;
+    font-size: 10px; padding: 2px 8px;
+    border-radius: 8px;
+    font-weight: 700;
+  }
+}
+.selected-plan__limits {
+  margin-top: 8px; font-size: 12px; color: #64748b;
+}

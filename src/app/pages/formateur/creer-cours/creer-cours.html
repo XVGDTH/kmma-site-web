@@ -1,238 +1,247 @@
-<section class="cc">
+<section class="create-course">
+  <div class="create-course__container">
 
-  <!-- ═══════════ DÉCOR AMBIANT (orbes lumineux + grille) ═══════════ -->
-  <div class="cc__aurora" aria-hidden="true">
-    <span class="cc__orb cc__orb--1"></span>
-    <span class="cc__orb cc__orb--2"></span>
-    <span class="cc__orb cc__orb--3"></span>
-    <span class="cc__grid"></span>
-  </div>
-
-  <div class="cc__container">
-
-    <!-- Fil d'ariane -->
-    <nav class="cc__breadcrumb">
-      <a routerLink="/formateur">Espace formateur</a>
-      <span class="cc__breadcrumb-sep">→</span>
-      <span>Créer un cours</span>
-    </nav>
-
-    <!-- ═══════════ HERO ═══════════ -->
-    <header class="cc__hero">
-      <span class="cc__eyebrow">✦ Espace formateur · Studio de création</span>
-      <h1 class="cc__title">
-        Donnez vie à votre <em>prochain cours</em>
-      </h1>
-      <p class="cc__subtitle">
-        Rédigez, observez l'aperçu se construire en direct,
-        puis publiez. Chapitres, vidéos, TD/TP et quiz s'ajoutent juste après.
+    <header class="create-course__header">
+      <span class="create-course__eyebrow">Espace formateur — Studio de création</span>
+      <h1>Créer un nouveau cours</h1>
+      <p>
+        Remplissez les informations ci-dessous. Tous les champs sont pré-remplis avec un modèle type HEC Paris.
+        Modifiez ce qui est nécessaire, ou cliquez directement sur "Créer le cours" pour commencer avec la structure par défaut.
       </p>
     </header>
 
-    @if (error(); as err) {
-      <p class="cc__alert">⚠️ {{ err }}</p>
-    }
-
-    <!-- ═══════════ LAYOUT : FORMULAIRE + APERÇU ═══════════ -->
-    <div class="cc__layout">
-
-      <!-- ─────────── COLONNE GAUCHE : LE FORMULAIRE ─────────── -->
-      <form class="cc__panel" (submit)="$event.preventDefault(); save()">
-
-        <!-- Barre de progression -->
-        <div class="cc__progress">
-          <div class="cc__progress-head">
-            <span>Complétion de la fiche</span>
-            <strong>{{ formProgress() }}%</strong>
-          </div>
-          <div class="cc__progress-track">
-            <div class="cc__progress-fill" [style.width.%]="formProgress()"></div>
-          </div>
-        </div>
-
-        <!-- Section 1 : Identité -->
-        <div class="cc__group">
-          <span class="cc__group-label"><b>01</b> Identité du cours</span>
-
-          <div class="cc__field">
-            <label for="cc-title">Titre du cours <i>*</i></label>
-            <div class="cc__input">
-              <span class="cc__input-icon">✎</span>
-              <input id="cc-title" type="text"
-                     placeholder="Ex : Maîtriser la comptabilité générale"
-                     [value]="title()"
-                     (input)="title.set($any($event.target).value)" />
-            </div>
-          </div>
-
-          <div class="cc__row">
-            <div class="cc__field">
-              <label for="cc-subject">Matière</label>
-              <div class="cc__input">
-                <span class="cc__input-icon">📐</span>
-                <input id="cc-subject" type="text"
-                       placeholder="Ex : Comptabilité"
-                       [value]="subject()"
-                       (input)="subject.set($any($event.target).value)" />
-              </div>
-            </div>
-            <div class="cc__field">
-              <label for="cc-category">Catégorie</label>
-              <div class="cc__input">
-                <span class="cc__input-icon">🏷</span>
-                <input id="cc-category" type="text"
-                       placeholder="Ex : Gestion"
-                       [value]="category()"
-                       (input)="category.set($any($event.target).value)" />
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Section 2 : Pédagogie -->
-        <div class="cc__group">
-          <span class="cc__group-label"><b>02</b> Public & pédagogie</span>
-
-          <div class="cc__field">
-            <label>Niveau</label>
-            <div class="cc__pills">
-              @for (lvl of levels; track lvl) {
-                <button type="button" class="cc__pill"
-                        [class.cc__pill--active]="level() === lvl"
-                        (click)="level.set(lvl)">
-                  {{ lvl }}
-                </button>
-              }
-            </div>
-          </div>
-
-          <div class="cc__field">
-            <label for="cc-diploma">Diplôme préparé</label>
-            <div class="cc__input">
-              <span class="cc__input-icon">🎓</span>
-              <input id="cc-diploma" type="text"
-                     placeholder="Ex : BTS CG"
-                     [value]="diploma()"
-                     (input)="diploma.set($any($event.target).value)" />
-            </div>
-          </div>
-
-          <div class="cc__row">
-            <div class="cc__field">
-              <label for="cc-dfull">Durée · formation initiale</label>
-              <div class="cc__input">
-                <span class="cc__input-icon">⏱</span>
-                <input id="cc-dfull" type="text"
-                       placeholder="Ex : 3 mois"
-                       [value]="durationFull()"
-                       (input)="durationFull.set($any($event.target).value)" />
-              </div>
-            </div>
-            <div class="cc__field">
-              <label for="cc-dalt">Durée · alternance</label>
-              <div class="cc__input">
-                <span class="cc__input-icon">⏳</span>
-                <input id="cc-dalt" type="text"
-                       placeholder="Ex : 6 mois"
-                       [value]="durationAlternance()"
-                       (input)="durationAlternance.set($any($event.target).value)" />
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Section 3 : Description -->
-        <div class="cc__group">
-          <span class="cc__group-label"><b>03</b> Description</span>
-
-          <div class="cc__field">
-            <div class="cc__field-head">
-              <label for="cc-desc">Ce que vos apprenants vont apprendre</label>
-              <span class="cc__counter">{{ description().length }} / 600</span>
-            </div>
-            <textarea id="cc-desc" rows="5" maxlength="600"
-                      placeholder="Décrivez la promesse du cours, les compétences visées, la méthode…"
-                      [value]="description()"
-                      (input)="description.set($any($event.target).value)"></textarea>
-          </div>
-        </div>
-
-        <!-- Section 4 : Couverture -->
-        <div class="cc__group">
-          <span class="cc__group-label"><b>04</b> Image de couverture</span>
-
-          <label class="cc__dropzone" [class.cc__dropzone--filled]="imagePreview()">
-            <input type="file" accept="image/*" (change)="onImageSelected($event)" hidden />
-
-            @if (imagePreview(); as preview) {
-              <img [src]="preview" alt="Aperçu de la couverture" />
-              <span class="cc__dropzone-change">↻ Changer l'image</span>
-            } @else {
-              <span class="cc__dropzone-icon">🖼</span>
-              <span class="cc__dropzone-text">
-                <strong>Glissez ou sélectionnez une image</strong>
-                JPG, PNG ou WebP — ratio 16:9 recommandé
-              </span>
-            }
-          </label>
-        </div>
-
-        <!-- Soumission -->
-        <button type="submit" class="cc__submit"
-                [disabled]="saving() || !canSave()">
-          @if (saving()) {
-            <span class="cc__submit-spinner"></span> Création en cours…
-          } @else {
-            ✦ Créer le cours
-          }
-        </button>
-
-        <p class="cc__hint">
-          <i>*</i> Le titre suffit pour créer le cours.
-          Tout le reste se complète ensuite dans « Gérer le contenu ».
-        </p>
-      </form>
-
-      <!-- ─────────── COLONNE DROITE : APERÇU EN DIRECT ─────────── -->
-      <aside class="cc__aside">
-        <span class="cc__aside-label">◉ Aperçu en direct</span>
-
-        <article class="cc__card">
-          <div class="cc__card-image">
-            @if (imagePreview(); as preview) {
-              <img [src]="preview" alt="" />
-            } @else {
-              <span class="cc__card-image-empty">✦</span>
-            }
-            @if (level()) {
-              <span class="cc__card-level">{{ level() }}</span>
-            }
-          </div>
-
-          <div class="cc__card-body">
-            <span class="cc__card-category">
-              {{ category() || 'Catégorie' }}
-            </span>
-
-            <h3 class="cc__card-title">
-              {{ title() || 'Titre de votre futur cours…' }}
-            </h3>
-
-            <p class="cc__card-desc">
-              {{ description() || 'La description apparaîtra ici pendant que vous la rédigez.' }}
-            </p>
-
-            <div class="cc__card-meta">
-              <span>⏱ {{ durationFull() || '—' }}</span>
-              <span>⏳ {{ durationAlternance() || '—' }}</span>
-              @if (diploma()) { <span>🎓 {{ diploma() }}</span> }
-            </div>
-          </div>
-        </article>
-
-        <p class="cc__aside-hint">✨ Cet aperçu se met à jour pendant que vous tapez.</p>
-      </aside>
-
+    <div class="create-course__progress">
+      <span class="create-course__progress-value">{{ formProgress() }}% complété</span>
+      <div class="create-course__progress-bar">
+        <div class="create-course__progress-fill" [style.width.%]="formProgress()"></div>
+      </div>
     </div>
+
+    <!-- Section 1 : Identité du cours -->
+<!-- Section 1 : Identité du cours -->
+<fieldset class="create-course__section">
+  <legend>01 — Identité du cours</legend>
+
+  <!-- ✅ NOUVEAU : Sélecteur de type -->
+  <div class="field field--type">
+    <label>Type de cours *</label>
+    <div class="type-selector">
+      <button type="button"
+        class="type-option"
+        [class.type-option--active]="courseType() === 'individual'"
+        (click)="courseType.set('individual')">
+        <strong>Cours individuel</strong>
+        <span>L'apprenant achète à l'unité</span>
+      </button>
+
+      <button type="button"
+        class="type-option"
+        [class.type-option--active]="courseType() === 'enterprise'"
+        (click)="courseType.set('enterprise')">
+        <strong>Formation entreprise</strong>
+        <span>L'entreprise souscrit un abonnement</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="field">
+    <label>Titre du cours <strong>*</strong></label>
+    <input type="text"
+      placeholder="Ex: Transformation digitale des PME"
+      [value]="title()"
+      (input)="title.set($any($event.target).value)" />
+    <small>Ce titre apparaîtra dans le catalogue et en haut de la fiche du cours.</small>
+  </div>
+
+  <div class="field-row">
+    <div class="field">
+      <label>Matière</label>
+      <input type="text" placeholder="Ex: Marketing, Audit, Finance..."
+        [value]="subject()"
+        (input)="subject.set($any($event.target).value)" />
+    </div>
+    <div class="field">
+      <label>Catégorie</label>
+      <input type="text" placeholder="Ex: Stratégie, Gestion, Tech..."
+        [value]="category()"
+        (input)="category.set($any($event.target).value)" />
+    </div>
+  </div>
+
+  <div class="field-row">
+    <div class="field">
+      <label>Niveau</label>
+      <select [value]="level()" (change)="level.set($any($event.target).value)">
+        <option value="">— Choisir —</option>
+        @for (l of levels; track l) {
+          <option [value]="l">{{ l }}</option>
+        }
+      </select>
+    </div>
+    <div class="field">
+      <label>Diplôme délivré</label>
+      <input type="text" placeholder="Certificat, Attestation..."
+        [value]="diploma()"
+        (input)="diploma.set($any($event.target).value)" />
+    </div>
+  </div>
+
+  <div class="field-row">
+    <div class="field">
+      <label>Durée totale</label>
+      <input type="text" placeholder="Ex: 2 mois"
+        [value]="durationFull()"
+        (input)="durationFull.set($any($event.target).value)" />
+    </div>
+    <div class="field">
+      <label>Rythme hebdomadaire</label>
+      <input type="text" placeholder="Ex: 4h/semaine"
+        [value]="durationAlternance()"
+        (input)="durationAlternance.set($any($event.target).value)" />
+    </div>
+  </div>
+
+  <div class="field">
+    <label>Description</label>
+    <textarea rows="4"
+      placeholder="Décrivez l'objectif du cours et ce que l'apprenant va maîtriser..."
+      [value]="description()"
+      (input)="description.set($any($event.target).value)"></textarea>
+  </div>
+
+  <!-- ✅ CHAMPS SPÉCIFIQUES "COURS INDIVIDUEL" -->
+  @if (courseType() === 'individual') {
+    <div class="field-row">
+      <div class="field">
+        <label>Prix du cours (FCFA)</label>
+        <input type="number" min="0" step="1000" placeholder="0"
+          [value]="price()"
+          (input)="price.set(+$any($event.target).value)" />
+        <small>Laissez 0 pour un cours gratuit.</small>
+      </div>
+      <div class="field">
+        <label>Image de couverture</label>
+        <input type="file" accept="image/*" (change)="onImageSelected($event)" />
+        @if (imagePreview()) {
+          <img [src]="imagePreview()" alt="Aperçu" class="create-course__preview" />
+        }
+      </div>
+    </div>
+  }
+
+  <!-- ✅ CHAMPS SPÉCIFIQUES "COURS ENTREPRISE" -->
+  <!-- @if (courseType() === 'enterprise') {
+    <div class="field-row">
+      <div class="field">
+        <label>Mode de livraison *</label>
+        <select [value]="deliveryMode()" (change)="deliveryMode.set($any($event.target).value)">
+          @for (m of deliveryModes; track m.value) {
+            <option [value]="m.value">{{ m.label }}</option>
+          }
+        </select>
+        <small>Les apprenants verront ce mode dans le catalogue entreprise.</small>
+      </div>
+      <div class="field">
+        <label>Prix de base (FCFA)</label>
+        <input type="number" min="0" step="1000" placeholder="0"
+          [value]="enterpriseBasePrice()"
+          (input)="enterpriseBasePrice.set(+$any($event.target).value)" />
+        <small>Les formules (Basique, Standard, Premium) ajusteront ce prix par siège.</small>
+      </div>
+    </div>
+
+    <div class="field-row">
+      <div class="field">
+        <label>Rythme hebdomadaire</label>
+        <input type="text" placeholder="Ex: 6h/semaine"
+          [value]="hoursPerWeek()"
+          (input)="hoursPerWeek.set($any($event.target).value)" />
+      </div>
+      <div class="field">
+        <label>Image de couverture</label>
+        <input type="file" accept="image/*" (change)="onImageSelected($event)" />
+        @if (imagePreview()) {
+          <img [src]="imagePreview()" alt="Aperçu" class="create-course__preview" />
+        }
+      </div>
+    </div>
+  } -->
+      <!-- ✅ CHAMPS SPÉCIFIQUES "COURS ENTREPRISE" -->
+  @if (courseType() === 'enterprise') {
+    <div class="field-row">
+      <div class="field">
+        <label>Mode de livraison *</label>
+        <select [value]="deliveryMode()" (change)="deliveryMode.set($any($event.target).value)">
+          @for (m of deliveryModes; track m.value) {
+            <option [value]="m.value">{{ m.label }}</option>
+          }
+        </select>
+        <small>Les apprenants verront ce mode dans le catalogue entreprise.</small>
+      </div>
+      <div class="field">
+        <label>Prix de base (FCFA) *</label>
+        <input type="number" min="0" step="1000" placeholder="0"
+          [value]="enterpriseBasePrice()"
+          (input)="enterpriseBasePrice.set(+$any($event.target).value)" />
+        <small>Les formules (Basique, Standard, Premium) ajusteront ce prix par siège.</small>
+      </div>
+    </div>
+
+    <div class="field-row">
+      <div class="field">
+        <label>Rythme hebdomadaire</label>
+        <input type="text" placeholder="Ex: 6h/semaine"
+          [value]="hoursPerWeek()"
+          (input)="hoursPerWeek.set($any($event.target).value)" />
+      </div>
+      <div class="field">
+        <label>Image de couverture</label>
+        <input type="file" accept="image/*" (change)="onImageSelected($event)" />
+        @if (imagePreview()) {
+          <img [src]="imagePreview()" alt="Aperçu" class="create-course__preview" />
+        }
+      </div>
+    </div>
+  }
+</fieldset>
+
+    <!-- Section 2 : Structure HEC Paris (auto-générée) -->
+    <fieldset class="create-course__section create-course__section--info">
+      <legend>02 — Structure pré-générée</legend>
+      <p>
+        Pour vous faire gagner du temps, nous allons créer automatiquement pour vous :
+      </p>
+      <ul class="create-course__structure">
+        <li><strong>Module 1 : Introduction</strong> — avec un chapitre "Semaine 1"</li>
+        <li><strong>Module 2 : Approfondissement</strong> — avec un chapitre "Semaine 2"</li>
+        <li><strong>Module 3 : Application</strong> — avec un chapitre "Semaine 3"</li>
+        <li><strong>Module Ressources</strong> — pour vos manuels, PDF, etc.</li>
+        <li><strong>Examen final</strong> — avec quiz noté</li>
+      </ul>
+      <p class="create-course__hint">
+        Vous pourrez ajouter, modifier ou supprimer ces éléments après la création du cours, depuis l'éditeur de contenu.
+      </p>
+    </fieldset>
+
+    <!-- Actions -->
+    <div class="create-course__actions">
+      <button
+        type="button"
+        class="btn btn--primary"
+        (click)="save()"
+        [disabled]="saving() || !canSave()"
+      >
+        @if (saving()) {
+          Création en cours...
+        } @else {
+          Créer le cours.
+        }
+      </button>
+      <a routerLink="/formateur" class="btn btn--ghost">Annuler</a>
+    </div>
+
+    @if (error()) {
+      <p class="create-course__error">{{ error() }}</p>
+    }
   </div>
 </section>

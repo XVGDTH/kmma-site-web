@@ -1,37 +1,3 @@
-// import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
-// import { ActivatedRoute, RouterLink } from '@angular/router';
-// import { toSignal } from '@angular/core/rxjs-interop';
-// import { map } from 'rxjs/operators';
-// import { COURSES } from '../../data/courses';
-// import { LiveSessionService } from '../../shared/live-session.service';
-// import { JitsiMeeting } from '../../shared/jitsi-meeting/jitsi-meeting';
-
-// @Component({
-//   selector: 'app-live-session',
-//   standalone: true,
-//   imports: [RouterLink, JitsiMeeting],
-//   templateUrl: './live-session.html',
-//   styleUrl: './live-session.scss',
-//   changeDetection: ChangeDetectionStrategy.OnPush,
-// })
-// export class LiveSession {
-//   private readonly route = inject(ActivatedRoute);
-//   private readonly liveService = inject(LiveSessionService);
-
-//   readonly courseId = toSignal(
-//     this.route.paramMap.pipe(map(p => p.get('id') ?? '')),
-//     { initialValue: '' }
-//   );
-
-//   readonly course = computed(() => COURSES.find(c => c.id === this.courseId()));
-//   readonly session = computed(() => this.liveService.getSession(this.courseId()));
-
-//   // TODO : remplacer par le vrai nom de l'apprenant connecté (service d'authentification)
-//   readonly displayName = 'Apprenant KMAA';
-// }
-
-
-
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';

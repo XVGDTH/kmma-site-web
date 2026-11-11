@@ -9,6 +9,7 @@ export interface NavLink {
 export interface ExpertisePanelLink {
   label: string;
   route: string;
+  queryParams?: Record<string, string>; // ✅ Ajout
 }
 
 export interface ExpertisePanelAction {
@@ -98,25 +99,109 @@ export class Header {
     partenaires: 'M17 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2 M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z M23 21v-2a4 4 0 0 0-3-3.87 M16 3.13a4 4 0 0 1 0 7.75',
   };
 
-  readonly expertises: ExpertiseItem[] = [
+
+
+readonly expertises: ExpertiseItem[] = [
+    {
+    label: 'Commissariat aux comptes',
+    route: '/commissariat',
+    icon: 'audit',
+    panel: {
+      title: 'COMMISSARIAT AUX COMPTES',
+      ctaLabel: 'Découvrir cette expertise',
+      ctaRoute: '/commissariat',
+      links: [
+        { label: 'Audit légal et certification des comptes', route: '/commissariat', queryParams: { subject: 'Audit et contrôle de gestion' } },
+        { label: 'Normes d\'audit (ISA) et méthodologie', route: '/commissariat', queryParams: { subject: 'Audit et contrôle de gestion' } },
+        { label: 'Comptabilité et états financiers', route: '/commissariat', queryParams: { subject: 'Comptabilité et finance' } },
+        { label: 'Contrôle interne et évaluation des risques', route: '/commissariat', queryParams: { subject: 'Affaires et gestion' } },
+        { label: 'Nous contacter', route: '/contact' },
+      ],
+      resources: [
+        { label: 'Actualités audit et comptabilité', route: '/actualites' },
+        { label: 'Catalogue complet', route: '/catalogue' },
+      ],
+      image: 'commissariat.png',
+      imageAlt: 'Commissariat aux comptes KMAA',
+      bannerQuestion: 'Besoin d\'un accompagnement en commissariat aux comptes ?',
+      bannerActions: [
+        { label: 'Prendre RDV', route: '/contact', style: 'primary' },
+        { label: 'Nous contacter', route: '/contact', style: 'secondary' },
+      ],
+    },
+  },
+
   {
-    label: 'Formations',
-    route: '/academy',
+    label: 'Expertise comptable',
+    route: '/expertise-comptable',
+    icon: 'gestion',
+    panel: {
+      title: 'EXPERTISE COMPTABLE',
+      ctaLabel: 'Découvrir',
+      ctaRoute: '/expertise-comptable',
+      links: [
+        { label: 'Comptabilité et finance', route: '/catalogue', queryParams: { subject: 'Comptabilité et finance' } },
+        { label: 'Comptabilité OHADA', route: '/catalogue', queryParams: { subject: 'Comptabilité et finance' } },
+        { label: 'Contrôle de gestion', route: '/catalogue', queryParams: { subject: 'Audit et contrôle de gestion' } },
+        { label: 'Nous contacter', route: '/contact' },
+      ],
+      resources: [
+        { label: 'Catalogue Academy', route: '/catalogue' },
+      ],
+      image: '/ressources/expertise_comptable.png',
+      imageAlt: 'Expertise comptable KMAA',
+      bannerQuestion: 'Besoin d\'un appui en comptabilité ?',
+      bannerActions: [
+        { label: 'Prendre RDV', route: '/contact', style: 'primary' },
+        { label: 'Nous contacter', route: '/contact', style: 'secondary' },
+      ],
+    },
+  },
+  {
+    label: 'Audit fraude et investigations',
+    route: '/audit',
+    icon: 'audit',
+    panel: {
+      title: 'AUDIT, FRAUDE ET INVESTIGATIONS',
+      ctaLabel: 'Découvrir',
+      ctaRoute: '/audit',
+      links: [
+        { label: 'Audit et contrôle de gestion', route: '/catalogue', queryParams: { subject: 'Audit et contrôle de gestion' } },
+        { label: 'Audit financier', route: '/catalogue', queryParams: { subject: 'Comptabilité et finance' } },
+        { label: 'Assurance et gestion des sinistres', route: '/catalogue', queryParams: { subject: 'Affaires et gestion' } },
+        { label: 'Nous contacter', route: '/contact' },
+      ],
+      resources: [
+        { label: 'Articles & actualités', route: '/actualites' },
+      ],
+      image: 'audit_externe.png',
+      imageAlt: 'Audit et fraude KMAA',
+      bannerQuestion: 'Besoin d\'un accompagnement en audit ?',
+      bannerActions: [
+        { label: 'Prendre RDV', route: '/contact', style: 'primary' },
+        { label: 'Nous contacter', route: '/contact', style: 'secondary' },
+      ],
+    },
+  },
+
+  {
+    label: 'Formation',
+    route: '/catalogue',
     icon: 'formations',
     panel: {
-      title: 'FORMATIONS',
+      title: 'FORMATION',
       ctaLabel: 'Découvrir nos formations',
-      ctaRoute: '/academy',
+      ctaRoute: '/catalogue',
       links: [
-        { label: 'Toutes les matières', route: '/academy' },
-        { label: 'Affaires et gestion', route: '/mes-cours/affaires' },
-        { label: 'Comptabilité et finance', route: '/mes-cours/comptabilite' },
-        { label: 'Informatique et tech', route: '/mes-cours/informatique' },
-        { label: 'Audit et contrôle', route: '/mes-cours/audit' },
+        { label: 'Toutes nos formations', route: '/catalogue' },
+        { label: 'Affaires et gestion', route: '/catalogue', queryParams: { subject: 'Affaires et gestion' } },
+        { label: 'Comptabilité et finance', route: '/catalogue', queryParams: { subject: 'Comptabilité et finance' } },
+        { label: 'Informatique et tech', route: '/catalogue', queryParams: { subject: 'Informatique et technologie' } },
+        { label: 'Audit et contrôle', route: '/catalogue', queryParams: { subject: 'Audit et contrôle de gestion' } },
       ],
       resources: [
         { label: 'Guide pour choisir sa formation', route: '/actualites' },
-        { label: 'Catalogue complet', route: '/academy' },
+        { label: 'Catalogue complet', route: '/catalogue' },
       ],
       image: 'formations.png',
       imageAlt: 'Formation KMAA',
@@ -128,86 +213,40 @@ export class Header {
     },
   },
   {
-    label: 'Accompagnement pédagogique',
-    route: '/mes-cours/enseignement',
+    label: 'Conseil',
+    route: '/conseil',
     icon: 'accompagnement',
     panel: {
-      title: 'ACCOMPAGNEMENT PÉDAGOGIQUE',
-      ctaLabel: 'Voir les parcours pédagogiques',
-      ctaRoute: '/mes-cours/enseignement',
+      title: 'CONSEIL',
+      ctaLabel: 'Découvrir nos missions de conseil',
+      ctaRoute: '/contact',
       links: [
-        { label: 'Enseignement et pédagogie', route: '/mes-cours/enseignement' },
-        { label: 'Leadership et management', route: '/mes-cours/direction' },
-        { label: 'Psychologie du travail', route: '/mes-cours/psychologie' },
+        { label: 'Conseil en stratégie et organisation', route: '/catalogue', queryParams: { subject: 'Affaires et gestion' } },
+        { label: 'Conseil en gestion et performance', route: '/catalogue', queryParams: { subject: 'Audit et contrôle de gestion' } },
+        { label: 'Conseil financier et comptable', route: '/catalogue', queryParams: { subject: 'Comptabilité et finance' } },
+        { label: 'Conseil en management et leadership', route: '/catalogue', queryParams: { subject: 'Direction et leadership' } },
+        { label: 'Conseil en ressources humaines', route: '/catalogue', queryParams: { subject: 'Ressources humaines' } },
         { label: 'Nous contacter', route: '/contact' },
       ],
       resources: [
-        { label: 'Actualités formation', route: '/actualites' },
+        { label: 'Nos conseils et analyses', route: '/actualites' },
         { label: 'My Academy', route: '/academy' },
       ],
       image: 'accompagnement_sur_mesure.png',
-      imageAlt: 'Accompagnement pédagogique KMAA',
-      bannerQuestion: 'Besoin d\'un accompagnement sur mesure ?',
+      imageAlt: 'Conseil KMAA',
+      bannerQuestion: 'Besoin de conseils pour votre organisation ?',
       bannerActions: [
         { label: 'Prendre RDV', route: '/contact', style: 'primary' },
         { label: 'Nous contacter', route: '/contact', style: 'secondary' },
       ],
     },
   },
-  {
-    label: 'Gestion administrative',
-    route: '/mes-cours/affaires',
-    icon: 'gestion',
-    panel: {
-      title: 'GESTION ADMINISTRATIVE',
-      ctaLabel: 'Explorer les formations gestion',
-      ctaRoute: '/mes-cours/affaires',
-      links: [
-        { label: 'Affaires et gestion', route: '/mes-cours/affaires' },
-        { label: 'Comptabilité et finance', route: '/mes-cours/comptabilite' },
-        { label: 'Ressources humaines', route: '/mes-cours/rh' },
-        { label: 'Droit des affaires', route: '/mes-cours/droit' },
-        { label: 'Nous contacter', route: '/contact' },
-      ],
-      resources: [
-        { label: 'Catalogue Academy', route: '/academy' },
-      ],
-      image: 'gestion_des_risques.png',
-      imageAlt: 'Gestion administrative KMAA',
-      bannerQuestion: 'Besoin d\'aide en gestion administrative ?',
-      bannerActions: [
-        { label: 'Prendre RDV', route: '/contact', style: 'primary' },
-        { label: 'Nous contacter', route: '/contact', style: 'secondary' },
-      ],
-    },
-  },
-  {
-    label: 'Systèmes de contrôle & audit',
-    route: '/mes-cours/audit',
-    icon: 'audit',
-    panel: {
-      title: 'SYSTÈMES DE CONTRÔLE & AUDIT',
-      ctaLabel: 'Voir les formations audit',
-      ctaRoute: '/mes-cours/audit',
-      links: [
-        { label: 'Audit et contrôle de gestion', route: '/mes-cours/audit' },
-        { label: 'Comptabilité avancée', route: '/mes-cours/comptabilite' },
-        { label: 'Gestion des risques', route: '/mes-cours/affaires' },
-        { label: 'Nous contacter', route: '/contact' },
-      ],
-      resources: [
-        { label: 'Articles & actualités', route: '/actualites' },
-      ],
-      image: 'audit_externe.png',
-      imageAlt: 'Audit et contrôle KMAA',
-      bannerQuestion: 'Besoin d\'un accompagnement en audit ?',
-      bannerActions: [
-        { label: 'Prendre RDV', route: '/contact', style: 'primary' },
-        { label: 'Nous contacter', route: '/contact', style: 'secondary' },
-      ],
-    },
-  },
+
+
 ];
+
+
+
 
   readonly emplois: EmploiItem[] = [
   {

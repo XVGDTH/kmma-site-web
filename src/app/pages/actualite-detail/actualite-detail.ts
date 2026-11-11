@@ -37,8 +37,8 @@ export class ActualiteDetail {
   private readonly apiArticle = signal<Article | null>(null);
 
   private readonly categoryKeys: Record<string, string> = {
-    formation: 'Formation', entreprise: 'Entreprise', evenement: 'Ã‰vÃ©nement',
-    ressources: 'Ressources', 'vie-kmaa': 'Vie KMAA', carriere: 'CarriÃ¨re',
+    formation: 'Formation', entreprise: 'Entreprise', evenement: 'Événement',
+    ressources: 'Ressources', 'vie-kmaa': 'Vie KMAA', carriere: 'Carrière',
   };
 
   readonly slug = toSignal(
@@ -60,7 +60,7 @@ export class ActualiteDetail {
 
             this.apiArticle.set({
               slug: String(d.slug ?? slug),
-              category: this.categoryKeys[d.category] ?? d.category ?? 'ActualitÃ©',
+              category: this.categoryKeys[d.category] ?? d.category ?? 'Actualité',
               title: d.title,
               excerpt: d.excerpt ?? '',
               content: Array.isArray(d.content) && d.content.length
@@ -68,31 +68,31 @@ export class ActualiteDetail {
                 : [String(d.excerpt ?? '')],
               image: d.image ?? 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1200&q=80',
               imageAlt: d.imageAlt ?? d.title,
-              author: d.author ?? 'Ã‰quipe KMAA',
+              author: d.author ?? 'Équipe KMAA',
               authorRole: d.authorRole ?? 'Communication',
               authorImage: d.authorImage ?? d.authorAvatar ?? '',
               date: d.date ?? '',
               readTime: d.readTime ?? '4 min',
             });
           },
-          error: () => {},   // â†’ fallback sur le tableau statique
+          error: () => {},   // → fallback sur le tableau statique
         });
     });
   }
 
   // ============================================================
-  // FILET DE SÃ‰CURITÃ‰ STATIQUE (inchangÃ©)
+  // FILET DE SÉCURITÉ STATIQUE (inchangé)
   // ============================================================
 
   readonly articles: Article[] = [
-    // ... TON TABLEAU DE 12 ARTICLES â€” NE LE TOUCHE PAS ...
+    // ... TON TABLEAU DE 12 ARTICLES — NE LE TOUCHE PAS ...
     // ... de { slug: 'formation-continue-carrieres', ... }
-    // ... jusqu'Ã  { slug: 'ceremonie-diplomes-2026', ... },
+    // ... jusqu'à { slug: 'ceremonie-diplomes-2026', ... },
   ];
 
   // ============================================================
-  // âœ… UN SEUL `article` : API prioritaire, statique en secours
-  //    (L'ANCIEN computed EN BAS DU FICHIER EST SUPPRIMÃ‰ !)
+  // ✅ UN SEUL `article` : API prioritaire, statique en secours
+  //    (L'ANCIEN computed EN BAS DU FICHIER EST SUPPRIMÉ !)
   // ============================================================
 
   readonly article = computed(() =>

@@ -1,0 +1,464 @@
+<main class="cac">
+  <!-- ============ HERO ============ -->
+  <header class="hero">
+    <div class="wrap hero__grid">
+      <div class="hero__copy">
+        <nav class="crumbs" aria-label="Fil d'Ariane">
+          <span>KMAA</span>
+          <span>Audit</span>
+          <span aria-current="page">Commissariat aux comptes</span>
+        </nav>
+
+        <h1 class="hero__title">Commissariat aux comptes</h1>
+        <p class="hero__text">
+          KMAA exerce des missions de commissariat aux comptes pour des sociétés de toutes tailles :
+          certification des comptes, vérifications prévues par la loi et procédure d'alerte, dans le
+          respect strict de l'indépendance et des normes professionnelles.
+        </p>
+
+        <div class="hero__actions">
+          <a class="btn btn--primary" [href]="'mailto:' + contactEmail">Nous contacter</a>
+          <a class="btn btn--outline-light" href="#deroule" (click)="scrollTo('deroule', $event)">Voir le déroulé d'une mission</a>
+        </div>
+      </div>
+
+      <div class="hero__art" aria-hidden="true">
+        <svg viewBox="0 0 400 400" class="rings" focusable="false">
+          <defs>
+            <radialGradient id="cac-ring-a" cx="50%" cy="50%" r="50%">
+              <stop offset="55%" stop-color="#155352" stop-opacity="0.05" />
+              <stop offset="100%" stop-color="#23837f" stop-opacity="0.55" />
+            </radialGradient>
+            <radialGradient id="cac-ring-b" cx="50%" cy="50%" r="50%">
+              <stop offset="55%" stop-color="#0f3d3e" stop-opacity="0.1" />
+              <stop offset="100%" stop-color="#1c6b69" stop-opacity="0.7" />
+            </radialGradient>
+          </defs>
+          <circle class="rings__disc rings__disc--1" cx="200" cy="200" r="190" fill="url(#cac-ring-a)" />
+          <circle class="rings__disc rings__disc--2" cx="200" cy="200" r="138" fill="url(#cac-ring-b)" />
+          <circle class="rings__disc rings__disc--3" cx="200" cy="200" r="86" fill="#081f1f" />
+          <circle class="rings__line" cx="200" cy="200" r="190" />
+          <circle class="rings__line rings__line--inner" cx="200" cy="200" r="138" />
+          <circle class="rings__orbit" cx="200" cy="200" r="164" />
+          <circle class="rings__dot" cx="200" cy="36" r="4" />
+        </svg>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============ SOUS-NAVIGATION ============ -->
+  <nav class="subnav" aria-label="Sections de la page Commissariat aux comptes">
+    <div class="subnav__progress" aria-hidden="true">
+      <span [style.transform]="'scaleX(' + readProgress() + ')'"></span>
+    </div>
+    <div class="wrap subnav__inner">
+      <span class="subnav__brand">KMAA Commissariat aux comptes</span>
+      <ul class="subnav__list">
+        @for (link of navLinks; track link.id) {
+          <li>
+            <a
+              [href]="'#' + link.id"
+              [class.is-active]="activeSection() === link.id"
+              [attr.aria-current]="activeSection() === link.id ? 'true' : null"
+              (click)="scrollTo(link.id, $event)"
+            >
+              {{ link.label }}
+            </a>
+          </li>
+        }
+      </ul>
+    </div>
+  </nav>
+
+  <!-- ============ APERCU ============ -->
+  <section id="apercu" class="section section--light">
+    <div class="wrap intro">
+      <div class="intro__main reveal">
+        <h2 class="intro__lead">
+          Le commissariat aux comptes est la mission légale au cœur de notre métier. Nous la menons avec
+          exigence et nous innovons pour qu'elle apporte plus de valeur : une transparence accrue et, par
+          conséquent, plus de confiance pour vos associés, vos financeurs et vos partenaires.
+        </h2>
+
+        <p class="intro__label">Thèmes associés</p>
+        <ul class="tags">
+          @for (t of themes; track t) {
+            <li>{{ t }}</li>
+          }
+        </ul>
+      </div>
+
+      <aside class="team reveal" aria-labelledby="team-title">
+        <h3 id="team-title" class="team__title">L'équipe</h3>
+        <ul>
+          @for (e of experts; track e.name; let i = $index) {
+            @if (i < 3) {
+              <li class="team__item">
+                <span class="team__avatar" aria-hidden="true">{{ e.initials }}</span>
+                <span>
+                  <span class="team__name">{{ e.name }}</span>
+                  <span class="team__role">{{ e.role }}</span>
+                </span>
+              </li>
+            }
+          }
+        </ul>
+        <a class="link" href="#experts" (click)="scrollTo('experts', $event)">Voir tous les experts</a>
+      </aside>
+    </div>
+  </section>
+
+  <!-- ============ LA MISSION (piliers automatiques) ============ -->
+  <section id="mission" class="section section--paper">
+    <div class="wrap">
+      <div class="head reveal">
+        <h2 class="h2">Quatre responsabilités, une même exigence</h2>
+        <p class="head__text">
+          Le commissaire aux comptes ne se limite pas à signer un rapport. Voici ce que recouvre
+          concrètement la mission.
+        </p>
+      </div>
+
+      <div class="pillars reveal">
+        <div class="pillars__panel" role="tabpanel" [id]="'pillar-panel-' + currentPillar.id" [attr.aria-labelledby]="'pillar-tab-' + currentPillar.id">
+          <div class="pillars__text">
+            <h3 class="pillars__title">{{ currentPillar.title }}</h3>
+            <p>{{ currentPillar.text }}</p>
+            <ul class="ticks ticks--dark">
+              @for (p of currentPillar.points; track p) {
+                <li>{{ p }}</li>
+              }
+            </ul>
+          </div>
+
+          @for (p of [currentPillar]; track p.id) {
+            <figure class="media pillars__media">
+              <img [src]="p.image" [alt]="p.alt" loading="lazy" (error)="onImgError($event)" />
+            </figure>
+          }
+        </div>
+
+        <div
+          class="pillars__tabs"
+          role="tablist"
+          aria-label="Responsabilités du commissaire aux comptes"
+          [class.is-paused]="paused()"
+          (mouseenter)="paused.set(true)"
+          (mouseleave)="paused.set(false)"
+          (focusin)="paused.set(true)"
+          (focusout)="paused.set(false)"
+        >
+          @for (p of pillars; track p.id; let i = $index) {
+            <button
+              type="button"
+              role="tab"
+              class="pillars__tab"
+              [id]="'pillar-tab-' + p.id"
+              [class.is-active]="activePillar() === p.id"
+              [attr.aria-selected]="activePillar() === p.id"
+              [attr.aria-controls]="'pillar-panel-' + p.id"
+              [attr.tabindex]="activePillar() === p.id ? 0 : -1"
+              (click)="selectPillar(p.id)"
+              (keydown)="onTabKey($event, i)"
+            >
+              <span class="pillars__label">{{ p.label }}</span>
+              @if (activePillar() === p.id) {
+                <span class="pillars__bar" (animationend)="nextPillar()"></span>
+              }
+            </button>
+          }
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ TRANSPARENCE ============ -->
+  <section id="transparence" class="section section--dark">
+    <div class="wrap">
+      <div class="head head--split reveal">
+        <h2 class="h2 h2--invert">Transparence : comment nous réalisons des missions de qualité</h2>
+        <p class="head__text">
+          Les commissaires aux comptes jouent un rôle important pour l'entreprise et ses parties
+          prenantes. Nous respectons les politiques propres à la profession : contrôle qualité, exigences
+          éthiques et d'indépendance, procédures d'acceptation des clients et responsabilités de
+          direction. Voici ce qui fait la différence.
+        </p>
+      </div>
+
+      <ul class="plates">
+        @for (c of transparency; track c.title; let i = $index) {
+          <li class="plate reveal" [style.--i]="i">
+            <h3 class="plate__title">{{ c.title }}</h3>
+            <p class="plate__text">{{ c.text }}</p>
+          </li>
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============ DEROULE (frise animée) ============ -->
+  <section id="deroule" class="section section--light">
+    <div class="wrap deroule">
+      <div class="deroule__intro reveal">
+        <h2 class="h2">Le déroulé d'une mission, étape par étape</h2>
+        <p>
+          Une démarche structurée, partagée avec vous dès le départ : vous savez ce que nous contrôlons,
+          quand, et ce que nous attendons de vos équipes.
+        </p>
+      </div>
+
+      <ol #timeline class="timeline" [style.--progress]="timelineProgress()">
+        @for (s of steps; track s.title; let i = $index) {
+          <li class="timeline__item" [class.is-reached]="timelineProgress() >= (i + 0.35) / steps.length">
+            <span class="timeline__marker" aria-hidden="true">{{ i + 1 }}</span>
+            <div class="timeline__body">
+              <h3 class="timeline__title">{{ s.title }}</h3>
+              <p class="timeline__text">{{ s.text }}</p>
+            </div>
+          </li>
+        }
+      </ol>
+    </div>
+  </section>
+
+  <!-- ============ LE RAPPORT ============ -->
+  <section id="rapport" class="section section--paper">
+    <div class="wrap">
+      <div class="head head--split reveal">
+        <h2 class="h2">Le rapport du commissaire aux comptes</h2>
+        <p class="head__text head__text--dark">
+          Le rapport sur les comptes exprime l'opinion du commissaire aux comptes. Il existe trois
+          issues, et chacune dit quelque chose de précis à vos partenaires.
+        </p>
+      </div>
+
+      <ul class="opinions">
+        @for (o of opinions; track o.title; let i = $index) {
+          <li class="opinion reveal" [style.--i]="i">
+            <p class="opinion__label">{{ o.label }}</p>
+            <h3 class="opinion__title">{{ o.title }}</h3>
+            <p class="opinion__text">{{ o.text }}</p>
+            <p class="opinion__meaning">{{ o.meaning }}</p>
+          </li>
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============ AUDIT DIGITAL ============ -->
+  <section class="section section--dark section--data" aria-labelledby="data-title">
+    <div class="wrap">
+      <div class="head reveal">
+        <h2 id="data-title" class="h2 h2--invert">Un commissariat aux comptes guidé par les données</h2>
+        <p class="head__text">
+          Nous avons investi dans des outils d'audit digital qui renforcent notre capacité à examiner les
+          risques, sans jamais se substituer au jugement professionnel.
+        </p>
+      </div>
+
+      <ul class="benefits">
+        @for (b of benefits; track b.title; let i = $index) {
+          <li class="benefit reveal" [style.--i]="i">
+            <span class="benefit__icon" aria-hidden="true">
+              <svg viewBox="0 0 48 48" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" focusable="false">
+                @switch (b.icon) {
+                  @case ('shield') {
+                    <path d="M24 5l15 5v12c0 9-6 17-15 21C15 39 9 31 9 22V10z" />
+                    <path d="M17 24l5 5 9-10" />
+                  }
+                  @case ('target') {
+                    <circle cx="22" cy="26" r="15" />
+                    <circle cx="22" cy="26" r="8" />
+                    <circle cx="22" cy="26" r="2" />
+                    <path d="M30 18l12-12M36 6h6v6" />
+                  }
+                  @case ('chip') {
+                    <rect x="12" y="12" width="24" height="24" rx="2" />
+                    <rect x="19" y="19" width="10" height="10" />
+                    <path d="M18 5v7M24 5v7M30 5v7M18 36v7M24 36v7M30 36v7M5 18h7M5 24h7M5 30h7M36 18h7M36 24h7M36 30h7" />
+                  }
+                }
+              </svg>
+            </span>
+            <h3 class="benefit__title">{{ b.title }}</h3>
+            <p class="benefit__text">{{ b.text }}</p>
+          </li>
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============ SECTEURS ============ -->
+  <section id="secteurs" class="section section--light">
+    <div class="wrap">
+      <div class="head reveal">
+        <h2 class="h2">Notre expérience par secteur</h2>
+        <p class="head__text head__text--dark">
+          Chaque secteur a ses risques, ses régulateurs et ses attentes. Nos équipes de commissariat aux
+          comptes sont organisées pour en tenir compte.
+        </p>
+      </div>
+
+      <div class="sectors reveal">
+        <div class="sectors__list" role="tablist" aria-label="Secteurs" aria-orientation="vertical">
+          @for (s of sectors; track s.id) {
+            <button
+              type="button"
+              role="tab"
+              class="sectors__tab"
+              [id]="'sector-tab-' + s.id"
+              [class.is-active]="activeSector() === s.id"
+              [attr.aria-selected]="activeSector() === s.id"
+              [attr.aria-controls]="'sector-panel-' + s.id"
+              (click)="selectSector(s.id)"
+            >
+              {{ s.label }}
+            </button>
+          }
+        </div>
+
+        @for (s of [currentSector]; track s.id) {
+          <div class="sectors__panel" role="tabpanel" [id]="'sector-panel-' + s.id" [attr.aria-labelledby]="'sector-tab-' + s.id">
+            <h3 class="sectors__title">{{ s.title }}</h3>
+            <p>{{ s.text }}</p>
+            <ul class="ticks ticks--dark">
+              @for (p of s.points; track p) {
+                <li>{{ p }}</li>
+              }
+            </ul>
+          </div>
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ EXPERTS ============ -->
+  <section id="experts" class="section section--paper">
+    <div class="wrap">
+      <h2 class="h2 reveal">Nos experts</h2>
+
+      <ul class="experts">
+        @for (e of experts; track e.name; let i = $index) {
+          <li class="expert reveal" [style.--i]="i">
+            <div class="expert__top" aria-hidden="true">{{ e.initials }}</div>
+            <div class="expert__band">
+              <h3 class="expert__name">{{ e.name }}</h3>
+            </div>
+            <div class="expert__body">
+              <p class="expert__role">{{ e.role }}</p>
+              <p class="expert__loc">{{ e.location }}</p>
+              <a class="expert__btn" [href]="'mailto:' + e.email">Contacter {{ e.name }}</a>
+            </div>
+          </li>
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============ PERSPECTIVES ============ -->
+  <section id="perspectives" class="section section--dark">
+    <div class="wrap">
+      <div class="head head--split reveal">
+        <h2 class="h2 h2--invert">Perspectives</h2>
+        <p class="head__text">
+          Articles et ressources pour comprendre le commissariat aux comptes et préparer vos missions.
+        </p>
+      </div>
+
+      <div class="carousel reveal">
+        <ul #track class="carousel__track" tabindex="0" aria-label="Articles sur le commissariat aux comptes">
+          @for (a of articles; track a.title) {
+            <li class="article">
+              <p class="article__kind">Article</p>
+              <figure class="media article__media">
+                <img [src]="a.image" alt="" loading="lazy" (error)="onImgError($event)" />
+              </figure>
+              <h3 class="article__title">
+                <a href="#" (click)="$event.preventDefault()">{{ a.title }}</a>
+              </h3>
+              <time class="article__date" [attr.datetime]="a.dateIso">{{ a.date }}</time>
+            </li>
+          }
+        </ul>
+        <div class="carousel__controls">
+          <button type="button" class="round" aria-label="Articles précédents" (click)="slide(-1)">
+            <span class="round__chevron round__chevron--left" aria-hidden="true"></span>
+          </button>
+          <button type="button" class="round" aria-label="Articles suivants" (click)="slide(1)">
+            <span class="round__chevron" aria-hidden="true"></span>
+          </button>
+        </div>
+      </div>
+
+      <h3 class="subhead">Guides et ressources</h3>
+      <ul class="resources">
+        @for (r of resources; track r.title) {
+          <li>
+            <a class="resource" href="#" (click)="$event.preventDefault()">
+              <span class="resource__format">{{ r.format }}</span>
+              <span class="resource__body">
+                <span class="resource__title">{{ r.title }}</span>
+                <span class="resource__text">{{ r.text }}</span>
+              </span>
+              <span class="resource__arrow" aria-hidden="true"></span>
+            </a>
+          </li>
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============ QUESTIONS ============ -->
+  <section id="questions" class="section section--light">
+    <div class="wrap faq">
+      <div class="faq__intro reveal">
+        <h2 class="h2">Vos questions sur le commissariat aux comptes</h2>
+        <p>
+          Quelques réponses de principe. Les règles précises dépendent de la forme et de la taille de
+          votre société : nos experts vous les confirment.
+        </p>
+      </div>
+
+      <ul class="accordion reveal">
+        @for (f of faqs; track f.id) {
+          <li class="accordion__item" [class.is-open]="openFaq() === f.id">
+            <h3 class="accordion__heading">
+              <button
+                type="button"
+                class="accordion__trigger"
+                [attr.aria-expanded]="openFaq() === f.id"
+                [attr.aria-controls]="'faq-' + f.id"
+                (click)="toggleFaq(f.id)"
+              >
+                <span class="accordion__title">{{ f.question }}</span>
+                <span class="accordion__mark" aria-hidden="true"></span>
+              </button>
+            </h3>
+            <div class="accordion__body" [id]="'faq-' + f.id" role="region">
+              <div class="accordion__inner">
+                <p class="accordion__answer">{{ f.answer }}</p>
+              </div>
+            </div>
+          </li>
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============ CONTACT ============ -->
+  <section id="contact" class="section section--dark section--closing">
+    <div class="wrap closing reveal">
+      <h2 class="h2 h2--invert">Parlons de votre commissariat aux comptes</h2>
+      <p class="closing__text">
+        Désignation, renouvellement ou changement de commissaire aux comptes : décrivez-nous votre
+        situation, un associé vous répond avec une proposition claire.
+      </p>
+      <div class="hero__actions">
+        <a class="btn btn--primary" [href]="'mailto:' + contactEmail">Demander une proposition</a>
+        <a class="btn btn--outline-light" [href]="'mailto:' + contactEmail + '?subject=Question%20sur%20le%20commissariat%20aux%20comptes'">
+          Poser une question
+        </a>
+      </div>
+    </div>
+  </section>
+</main>

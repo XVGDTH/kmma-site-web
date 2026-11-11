@@ -1,0 +1,427 @@
+<main class="expco">
+  <!-- ============ BARRE UTILITAIRE ============ -->
+  <div class="util">
+    <div class="wrap util__inner">
+      <nav class="crumbs crumbs--dark" aria-label="Fil d'Ariane">
+        <a href="#" (click)="$event.preventDefault()">Accueil</a>
+        <a href="#" (click)="$event.preventDefault()">Nos services</a>
+        <span aria-current="page">Expertise comptable</span>
+      </nav>
+      <div class="util__actions">
+        <button type="button" class="util__btn" (click)="print()">Imprimer</button>
+        <button type="button" class="util__btn" (click)="share()">
+          {{ linkCopied() ? 'Lien copié' : 'Partager' }}
+        </button>
+        <span class="visually-hidden" aria-live="polite">{{ linkCopied() ? 'Lien copié dans le presse-papiers' : '' }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ HERO ============ -->
+  <header class="hero">
+    <div class="wrap hero__inner">
+      <div class="hero__copy">
+        <h1 class="hero__title">Expertise comptable</h1>
+        <p class="hero__tagline">
+          Permettre aux dirigeants et aux entrepreneurs de piloter efficacement leur activité, en se
+          concentrant sur leur cœur de métier.
+        </p>
+        <div class="hero__actions">
+          <a class="btn btn--primary" href="#contact" (click)="scrollTo('contact', $event)">Parler à un expert-comptable</a>
+          <a class="btn btn--outline-light" href="#formules" (click)="scrollTo('formules', $event)">Voir nos réponses</a>
+        </div>
+      </div>
+    </div>
+
+    <figure class="hero__media media">
+      <img
+        [src]="images.hero"
+        alt="Expert-comptable souriant, prêt à accompagner un dirigeant"
+        loading="eager"
+        (error)="onImgError($event)"
+      />
+    </figure>
+  </header>
+
+  <!-- ============ SOUS-NAVIGATION ============ -->
+  <nav class="subnav" aria-label="Sections de la page Expertise comptable">
+    <div class="wrap subnav__inner">
+      <span class="subnav__brand">KMAA Expertise comptable</span>
+      <ul class="subnav__list">
+        @for (link of navLinks; track link.id) {
+          <li>
+            <a
+              [href]="'#' + link.id"
+              [class.is-active]="activeSection() === link.id"
+              [attr.aria-current]="activeSection() === link.id ? 'true' : null"
+              (click)="scrollTo(link.id, $event)"
+            >
+              {{ link.label }}
+            </a>
+          </li>
+        }
+      </ul>
+    </div>
+  </nav>
+
+  <!-- ============ APERCU ============ -->
+  <section id="apercu" class="section section--light">
+    <div class="wrap">
+      <div class="intro">
+        <h2 class="h2 h2--wide">Les experts-comptables KMAA sont vos premiers alliés</h2>
+        <div class="intro__side">
+          <p class="lead">
+            Pour piloter, sécuriser et fiabiliser vos comptes, à un coût opérationnel que vous maîtrisez.
+          </p>
+          <p>
+            Que vous dirigiez une très petite entreprise ou un groupe, nous ajustons notre niveau
+            d'accompagnement à vos besoins : conseil stratégique, assistance sur vos comptes annuels, ou
+            prise en charge complète de votre comptabilité par une équipe dédiée.
+          </p>
+        </div>
+      </div>
+
+      <ul class="gains">
+        @for (g of gains; track g.title) {
+          <li class="gain">
+            <h3 class="gain__title">{{ g.title }}</h3>
+            <p class="gain__text">{{ g.text }}</p>
+          </li>
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============ ENJEUX ============ -->
+  <section id="enjeux" class="section section--paper">
+    <div class="wrap stakes">
+      <div class="stakes__text">
+        <h2 class="h2">Vos enjeux en matière de comptabilité</h2>
+        <p>
+          Les technologies et les moyens de communication évoluent sans cesse, et les marchés comme les
+          régulateurs exigent toujours plus d'information financière. Toutes les entreprises, petites,
+          moyennes ou grandes, doivent investir en permanence dans leur organisation et adapter leurs
+          procédures comptables.
+        </p>
+        <p>
+          La complexité de l'environnement réglementaire demande l'appui de professionnels de
+          l'expertise comptable : pour suivre l'activité, répondre aux exigences fiscales ou fournir des
+          informations complètes et détaillées aux créanciers et aux associés. Fiabiliser vos données
+          financières, à coût maîtrisé, est un enjeu majeur.
+        </p>
+
+        <figure class="media stakes__media">
+          <img
+            [src]="images.stakes"
+            alt="Calculatrice et documents comptables sur un bureau"
+            loading="lazy"
+            (error)="onImgError($event)"
+          />
+        </figure>
+      </div>
+
+      <ul class="stakes__list">
+        @for (s of stakes; track s.title) {
+          <li class="stake">
+            <h3 class="stake__title">{{ s.title }}</h3>
+            <p class="stake__text">{{ s.text }}</p>
+          </li>
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============ NOS REPONSES (formules) ============ -->
+  <section id="formules" class="section section--light">
+    <div class="wrap">
+      <div class="head head--split">
+        <h2 class="h2">Nos réponses pour soutenir votre activité comptable</h2>
+        <p class="head__text head__text--dark">
+          Nous ajustons notre niveau de collaboration et d'accompagnement en fonction de l'évolution de
+          vos attentes et de vos besoins. Nous pouvons :
+        </p>
+      </div>
+
+      <ul class="formulas">
+        @for (f of formulas; track f.id) {
+          <li class="formula">
+            <p class="formula__audience">{{ f.audience }}</p>
+            <h3 class="formula__title">{{ f.title }}</h3>
+            <p class="formula__text">{{ f.text }}</p>
+            <ul class="ticks ticks--dark">
+              @for (i of f.items; track i) {
+                <li>{{ i }}</li>
+              }
+            </ul>
+          </li>
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============ MISSIONS ============ -->
+  <section id="missions" class="section section--paper">
+    <div class="wrap missions">
+      <div class="missions__intro">
+        <h2 class="h2">Nos missions d'expertise comptable</h2>
+        <p>
+          Toutes les entreprises doivent produire des documents comptables obligatoires, comme le grand
+          livre, le compte de résultat et le bilan, qui donnent une image régulière, sincère et fidèle de
+          leur situation. Nous vous accompagnons à chaque étape, du quotidien à la direction financière.
+        </p>
+      </div>
+
+      <ul class="accordion">
+        @for (m of missions; track m.id) {
+          <li class="accordion__item" [class.is-open]="openMission() === m.id">
+            <h3 class="accordion__heading">
+              <button
+                type="button"
+                class="accordion__trigger"
+                [attr.aria-expanded]="openMission() === m.id"
+                [attr.aria-controls]="'mission-' + m.id"
+                (click)="toggleMission(m.id)"
+              >
+                <span class="accordion__title">{{ m.title }}</span>
+                <span class="accordion__summary">{{ m.summary }}</span>
+                <span class="accordion__mark" aria-hidden="true"></span>
+              </button>
+            </h3>
+            <div class="accordion__body" [id]="'mission-' + m.id" role="region">
+              <div class="accordion__inner">
+                <ul class="ticks ticks--dark">
+                  @for (d of m.details; track d) {
+                    <li>{{ d }}</li>
+                  }
+                </ul>
+              </div>
+            </div>
+          </li>
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============ NIVEAUX D'INTERVENTION ============ -->
+  <section class="section section--dark" aria-labelledby="levels-title">
+    <div class="wrap">
+      <div class="head head--split">
+        <h2 id="levels-title" class="h2 h2--invert">Du quotidien à la direction financière</h2>
+        <p class="head__text">
+          Vous pouvez externaliser l'ensemble de votre département comptable ou seulement vos besoins de
+          base. Nous construisons avec vous une solution qui évolue au rythme de votre entreprise.
+        </p>
+      </div>
+
+      <div class="levels">
+        @for (l of levels; track l.title) {
+          <section class="level">
+            <h3 class="level__title">{{ l.title }}</h3>
+            <ul class="ticks">
+              @for (i of l.items; track i) {
+                <li>{{ i }}</li>
+              }
+            </ul>
+          </section>
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ METHODE ============ -->
+  <section id="methode" class="section section--light">
+    <div class="wrap">
+      <div class="head">
+        <h2 class="h2">Comment nous travaillons ensemble</h2>
+        <p class="head__text head__text--dark">
+          Une démarche en cinq étapes, puis un rythme annuel qui rend vos obligations prévisibles.
+        </p>
+      </div>
+
+      <ol class="steps">
+        @for (s of steps; track s.title; let i = $index) {
+          <li class="step">
+            <span class="step__index" aria-hidden="true">{{ i + 1 }}</span>
+            <h3 class="step__title">{{ s.title }}</h3>
+            <p class="step__text">{{ s.text }}</p>
+          </li>
+        }
+      </ol>
+
+      <h3 class="subhead subhead--dark">Votre année comptable avec KMAA</h3>
+      <ul class="rhythm">
+        @for (r of rhythms; track r.period) {
+          <li class="rhythm__item">
+            <h4 class="rhythm__period">{{ r.period }}</h4>
+            <ul class="ticks ticks--dark">
+              @for (i of r.items; track i) {
+                <li>{{ i }}</li>
+              }
+            </ul>
+          </li>
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============ BANDEAU PLATEFORME ============ -->
+  <section class="band" aria-labelledby="band-title">
+    <img class="band__img" [src]="images.platform" alt="" loading="lazy" (error)="onImgError($event)" />
+    <div class="band__veil"></div>
+    <div class="wrap band__inner">
+      <h2 id="band-title" class="band__title">Une comptabilité accessible, où que vous soyez</h2>
+      <p class="band__text">
+        L'expertise d'une équipe de proximité, associée à une plateforme en ligne qui vous donne la main
+        sur vos documents et vos chiffres.
+      </p>
+      <ul class="strengths">
+        @for (s of strengths; track s.title) {
+          <li class="strength">
+            <h3 class="strength__title">{{ s.title }}</h3>
+            <p class="strength__text">{{ s.text }}</p>
+          </li>
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============ PROFILS ============ -->
+  <section id="profils" class="section section--paper">
+    <div class="wrap">
+      <div class="head head--split">
+        <h2 class="h2">Qui nous accompagnons</h2>
+        <p class="head__text head__text--dark">
+          Toutes les entreprises, quelles que soient leur taille et leur activité, ont besoin d'une
+          comptabilité fiable. Notre accompagnement s'adapte à chaque profil.
+        </p>
+      </div>
+
+      <ul class="profiles">
+        @for (p of profiles; track p.title) {
+          <li class="profile">
+            <h3 class="profile__title">{{ p.title }}</h3>
+            <p class="profile__text">{{ p.text }}</p>
+          </li>
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============ QUESTIONS ============ -->
+  <section id="questions" class="section section--light">
+    <div class="wrap missions">
+      <div class="missions__intro">
+        <h2 class="h2">Vos questions fréquentes</h2>
+        <p>
+          Quelques réponses pour vous aider à choisir. Pour une situation particulière, nos experts
+          vous répondent directement.
+        </p>
+        <a class="link" href="#contact" (click)="scrollTo('contact', $event)">Poser une question</a>
+      </div>
+
+      <ul class="accordion">
+        @for (f of faqs; track f.id) {
+          <li class="accordion__item" [class.is-open]="openFaq() === f.id">
+            <h3 class="accordion__heading">
+              <button
+                type="button"
+                class="accordion__trigger accordion__trigger--single"
+                [attr.aria-expanded]="openFaq() === f.id"
+                [attr.aria-controls]="'faq-' + f.id"
+                (click)="toggleFaq(f.id)"
+              >
+                <span class="accordion__title">{{ f.question }}</span>
+                <span class="accordion__mark" aria-hidden="true"></span>
+              </button>
+            </h3>
+            <div class="accordion__body" [id]="'faq-' + f.id" role="region">
+              <div class="accordion__inner">
+                <p class="accordion__answer">{{ f.answer }}</p>
+              </div>
+            </div>
+          </li>
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============ ACTUALITES ============ -->
+  <section id="actualites" class="section section--paper">
+    <div class="wrap">
+      <h2 class="h2">Actualités et insights</h2>
+
+      <ul class="news">
+        @for (n of insights; track n.title) {
+          <li class="news__item">
+            <img class="news__img" [src]="n.image" alt="" loading="lazy" (error)="onImgError($event)" />
+            <div class="news__veil"></div>
+            <div class="news__body">
+              <h3 class="news__title">
+                <a href="#" (click)="$event.preventDefault()">{{ n.title }}</a>
+              </h3>
+              <ul class="news__tags">
+                @for (t of n.tags; track t) {
+                  <li>{{ t }}</li>
+                }
+              </ul>
+            </div>
+          </li>
+        }
+      </ul>
+
+      <p class="news__more">
+        <a class="link" href="#" (click)="$event.preventDefault()">Voir toutes les actualités</a>
+      </p>
+    </div>
+  </section>
+
+  <!-- ============ EQUIPE ============ -->
+  <section id="equipe" class="section section--light">
+    <div class="wrap">
+      <h2 class="h2">Vos experts-comptables</h2>
+
+      <ul class="team">
+        @for (e of experts; track e.name) {
+          <li class="expert">
+            <div class="expert__avatar" aria-hidden="true">{{ e.initials }}</div>
+            <div>
+              <h3 class="expert__name">{{ e.name }}</h3>
+              <p class="expert__role">{{ e.role }}</p>
+              <p class="expert__bio">{{ e.bio }}</p>
+            </div>
+          </li>
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============ CONTACT ============ -->
+  <section id="contact" class="section section--dark section--closing">
+    <div class="wrap closing">
+      <div>
+        <h2 class="h2 h2--invert">Parlons de votre comptabilité</h2>
+        <p class="closing__text">
+          Décrivez-nous votre activité et vos attentes. Un expert-comptable KMAA revient vers vous avec
+          un premier diagnostic et une proposition adaptée.
+        </p>
+        <div class="hero__actions">
+          <a class="btn btn--primary" routerLink="/contact">Écrire à un expert-comptable</a>
+          <a class="btn btn--outline-light" routerLink="/contact">
+            Demander un diagnostic
+          </a>
+        </div>
+      </div>
+
+      <div>
+        <h3 class="closing__label">Services connexes</h3>
+        <ul class="related">
+          @for (r of relatedServices; track r.title) {
+            <li>
+              <a [href]="r.href" (click)="$event.preventDefault()">{{ r.title }}</a>
+            </li>
+          }
+        </ul>
+      </div>
+    </div>
+  </section>
+</main>

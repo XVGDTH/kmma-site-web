@@ -127,7 +127,7 @@
         @if (openDropdown() === 'Expertises') {
           <div class="header__mega-panel">
             <div class="header__mega-sidebar">
-              <span class="header__mega-sidebar-title">Nos services et expertises</span>
+              <span class="header__mega-sidebar-title">Nos champs d'actions</span>
               @for (item of expertises; track item.label) {
                 <a
                   class="header__mega-sidebar-item"
@@ -161,7 +161,7 @@
                     <ul class="header__mega-links">
                       @for (link of item.panel.links; track link.label) {
                         <li>
-                          <a [routerLink]="link.route" (click)="closeDropdowns()">
+                          <a [routerLink]="link.route" [queryParams]="link.queryParams" (click)="closeDropdowns()">
                             <svg width="8" height="12" viewBox="0 0 8 12" fill="none">
                               <path d="M1 1L6 6L1 11" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
                             </svg>

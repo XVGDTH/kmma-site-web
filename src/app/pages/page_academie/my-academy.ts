@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { NotificationService } from '../../shared/notification.service';
+import { AuthService } from '../../shared/auth.service';
 
 
 type TopicIcon = 'affaires' | 'comptabilite' | 'sante' | 'tech' | 'audit' | 'langues';
@@ -60,6 +61,7 @@ interface Subject {
   label: string;
   icon: SubjectIcon;
   route: string;
+  queryParams?: Record<string, string>;
 }
 
 interface AcademyCourse {
@@ -148,9 +150,27 @@ export class MyAcademy {
   //
   private readonly router = inject(Router);
 
+  private readonly authService = inject(AuthService); // ✅ Ajoute ceci
+// goToMySpace(): void {
+//   // Connecté → dashboard ; sinon l'espace demandera le login via guard
+//   this.router.navigate(['/apprendre']);
+// }
+
 goToMySpace(): void {
-  // Connecté → dashboard ; sinon l'espace demandera le login via guard
-  this.router.navigate(['/apprendre']);
+  const user = this.authService.currentUser();
+  
+  if (!user) {
+    // Non connecté → page de connexion
+    this.router.navigate(['/compte/connexion']);
+    return;
+  }
+
+  // ✅ Redirection selon le rôle
+  if (user.role === 'formateur' || user.role === 'admin') {
+    this.router.navigate(['/formateur/tableau-de-bord']);
+  } else {
+    this.router.navigate(['/apprendre']); // Espace apprenant
+  }
 }
  
   // 
@@ -397,26 +417,27 @@ goToMySpace(): void {
 
 
 
+
   readonly subjects: Subject[] = [
-  { label: 'Affaires et gestion', icon: 'affaires', route: '/mes-cours/affaires' },
-  { label: 'Comptabilité et finance', icon: 'comptabilite', route: '/mes-cours/comptabilite' },
-  { label: 'Psychologie', icon: 'psychologie', route: '/mes-cours/psychologie' },
-  { label: 'Soins de santé', icon: 'sante', route: '/mes-cours/sante' },
-  { label: 'Analyse de données', icon: 'donnees', route: '/mes-cours/donnees' },
-  { label: 'Informatique et technologie', icon: 'informatique', route: '/mes-cours/informatique' },
-  { label: 'Droit', icon: 'droit', route: '/mes-cours/droit' },
-  { label: 'Direction et leadership', icon: 'direction', route: '/mes-cours/direction' },
-  { label: 'Marketing', icon: 'marketing', route: '/mes-cours/marketing' },
-  { label: 'Enseignement et pédagogie', icon: 'enseignement', route: '/mes-cours/enseignement' },
-  { label: 'Langues', icon: 'langues', route: '/mes-cours/langues' },
-  { label: 'Ressources humaines', icon: 'rh', route: '/mes-cours/rh' },
-  { label: 'Audit et contrôle de gestion', icon: 'audit', route: '/mes-cours/audit' },
-  { label: 'Communication', icon: 'communication', route: '/mes-cours/communication' },
-  { label: 'Entrepreneuriat', icon: 'entrepreneuriat', route: '/mes-cours/entrepreneuriat' },
-  { label: 'Développement durable', icon: 'developpement-durable', route: '/mes-cours/developpement-durable' },
-  { label: 'Ingénierie', icon: 'ingenierie', route: '/mes-cours/ingenierie' },
-  { label: 'Design et créativité', icon: 'design', route: '/mes-cours/design' },
-];
+    { label: 'Affaires et gestion', icon: 'affaires', route: '/catalogue', queryParams: { subject: 'Affaires et gestion' } },
+    { label: 'Comptabilité et finance', icon: 'comptabilite', route: '/catalogue', queryParams: { subject: 'Comptabilité et finance' } },
+    { label: 'Psychologie', icon: 'psychologie', route: '/catalogue', queryParams: { subject: 'Psychologie' } },
+    { label: 'Soins de santé', icon: 'sante', route: '/catalogue', queryParams: { subject: 'Soins de santé' } },
+    { label: 'Analyse de données', icon: 'donnees', route: '/catalogue', queryParams: { subject: 'Analyse de données' } },
+    { label: 'Informatique et technologie', icon: 'informatique', route: '/catalogue', queryParams: { subject: 'Informatique et technologie' } },
+    { label: 'Droit', icon: 'droit', route: '/catalogue', queryParams: { subject: 'Droit' } },
+    { label: 'Direction et leadership', icon: 'direction', route: '/catalogue', queryParams: { subject: 'Direction et leadership' } },
+    { label: 'Marketing', icon: 'marketing', route: '/catalogue', queryParams: { subject: 'Marketing' } },
+    { label: 'Enseignement et pédagogie', icon: 'enseignement', route: '/catalogue', queryParams: { subject: 'Enseignement et pédagogie' } },
+    { label: 'Langues', icon: 'langues', route: '/catalogue', queryParams: { subject: 'Langues' } },
+    { label: 'Ressources humaines', icon: 'rh', route: '/catalogue', queryParams: { subject: 'Ressources humaines' } },
+    { label: 'Audit et contrôle de gestion', icon: 'audit', route: '/catalogue', queryParams: { subject: 'Audit et contrôle de gestion' } },
+    { label: 'Communication', icon: 'communication', route: '/catalogue', queryParams: { subject: 'Communication' } },
+    { label: 'Entrepreneuriat', icon: 'entrepreneuriat', route: '/catalogue', queryParams: { subject: 'Entrepreneuriat' } },
+    { label: 'Développement durable', icon: 'developpement-durable', route: '/catalogue', queryParams: { subject: 'Développement durable' } },
+    { label: 'Ingénierie', icon: 'ingenierie', route: '/catalogue', queryParams: { subject: 'Ingénierie' } },
+    { label: 'Design et créativité', icon: 'design', route: '/catalogue', queryParams: { subject: 'Design et créativité' } },
+  ];
 
   // ============================================================
   // 🆕 DONNÉES — La formation KMAA (présentiel & distanciel)
@@ -678,42 +699,6 @@ readonly trainingVouchers: TrainingVoucher[] = [
     },
   ];
 
-  // --- Poussez vos compétences plus loin (diplômes) --------------------------
-  readonly diplomaCourses: MiniCourse[] = [
-    {
-      title: 'Attestation en gestion comptable et financière',
-      excerpt: 'Un programme complet pour maîtriser la comptabilité générale, analytique et la finance d\'entreprise.',
-      badge: 'Formation complète',
-      image: 'comptable.png',
-      imageAlt: 'Attestation en gestion comptable et financière',
-      route: '/formations/diplome-comptabilite',
-    },
-    {
-      title: 'Attestation en audit et contrôle de gestion',
-      excerpt: 'Devenez expert des méthodes d\'audit interne et de pilotage de la performance.',
-      badge: 'Formation complète',
-      image: 'gestion.png',
-      imageAlt: 'Attestation en audit et contrôle de gestion',
-      route: '/formations/diplome-audit',
-    },
-    {
-      title: 'Attestation en gestion administrative et RH',
-      excerpt: 'Structurez la gestion administrative et les ressources humaines de toute organisation.',
-      badge: 'Formation complète',
-      image: 'rh.png',
-      imageAlt: 'Attestation en gestion administrative et RH',
-      route: '/formations/diplome-gestion',
-    },
-    {
-      title: 'Attestation en accompagnement pédagogique',
-      excerpt: 'Formez-vous aux méthodes de coaching et de mentorat professionnel.',
-      badge: 'Formation complète',
-      image: 'pedagogie.png',
-      imageAlt: 'Attestation en accompagnement pédagogique',
-      route: '/formations/diplome-accompagnement',
-    },
-  ];
-
   // --- Bandeau entreprise ------------------------------------------------------
   readonly enterpriseBanner: HighlightBanner = {
     eyebrow: 'KMAA Entreprise',
@@ -804,3 +789,9 @@ readonly trainingVouchers: TrainingVoucher[] = [
     this.activeIndex.set(index);
   }
 }
+
+
+
+
+
+

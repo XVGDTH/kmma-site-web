@@ -36,7 +36,7 @@ export class PaymentPlans {
     { initialValue: '' },
   );
 
-  /** Cours chargÃ© depuis Laravel (slug = paramÃ¨tre d'URL) */
+  /** Cours chargé depuis Laravel (slug = paramètre d'URL) */
   readonly course = toSignal(
     toObservable(this.courseId).pipe(
       switchMap((slug) =>
@@ -47,8 +47,8 @@ export class PaymentPlans {
   );
 
   /**
-   * âœ… Formules : contenu statique par dÃ©faut â†’ remplacÃ©
-   * automatiquement par les formules crÃ©Ã©es dans Filament.
+   * ✅ Formules : contenu statique par défaut → remplacé
+   * automatiquement par les formules créées dans Filament.
    */
   readonly plans = signal<PricingPlan[]>(PRICING_PLANS);
 
@@ -71,7 +71,7 @@ export class PaymentPlans {
           }
         },
         error: () =>
-          console.warn('Formules API indisponible â€” contenu statique affichÃ©.'),
+          console.warn('Formules API indisponible — contenu statique affiché.'),
       });
   }
 

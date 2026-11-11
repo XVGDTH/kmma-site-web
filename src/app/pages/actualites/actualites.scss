@@ -542,3 +542,156 @@
     grid-template-columns: 1fr;
   }
 }
+
+
+/* ============================================ */
+/* SECTION PARTENAIRES                          */
+/* ============================================ */
+
+.news-partners {
+  background: #f8fafc;
+  padding: 80px 0;
+  overflow: hidden;
+}
+
+.news-partners__inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.news-partners__header {
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+.news-partners__eyebrow {
+  display: inline-block;
+  color: #b87333;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 15px;
+}
+
+.news-partners__title {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: #1a202c;
+  margin-bottom: 15px;
+}
+
+.news-partners__subtitle {
+  color: #718096;
+  max-width: 600px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+/* Carrousel infini */
+.news-partners__track-wrapper {
+  position: relative;
+  overflow: hidden;
+  mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+}
+
+.news-partners__track {
+  display: flex;
+  gap: 40px;
+  animation: scrollPartners 40s linear infinite;
+  width: fit-content;
+}
+
+.news-partners__track:hover {
+  animation-play-state: paused;
+}
+
+@keyframes scrollPartners {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* Carte partenaire */
+.partner-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 180px;
+  padding: 20px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.partner-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.partner-card__logo {
+  width: 100px;
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 12px;
+}
+
+// .partner-card__logo img {
+//   max-width: 100%;
+//   max-height: 100%;
+//   object-fit: contain;
+//   filter: grayscale(100%);
+//   opacity: 0.7;
+//   transition: all 0.3s ease;
+// }
+
+// .partner-card:hover .partner-card__logo img {
+//   filter: grayscale(0%);
+//   opacity: 1;
+// }
+
+.partner-card__logo img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  
+  /* ✅ On retire le filtre grayscale et l'opacité */
+  /* filter: grayscale(100%); */
+  /* opacity: 0.7; */
+  
+  transition: all 0.3s ease;
+}
+
+/* ✅ On garde un léger effet au survol (optionnel) */
+.partner-card:hover .partner-card__logo img {
+  transform: scale(1.05);
+}
+
+.partner-card__name {
+  font-size: 0.9rem;
+  font-weight: 600;
+ color: #b87333;
+  text-align: center;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .news-partners__title {
+    font-size: 1.8rem;
+  }
+  
+  .partner-card {
+    min-width: 140px;
+    padding: 15px;
+  }
+  
+  .partner-card__logo {
+    width: 70px;
+    height: 70px;
+  }
+}

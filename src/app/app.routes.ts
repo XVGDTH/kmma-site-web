@@ -231,7 +231,7 @@ export const routes: Routes = [
   },
 
   // ============================================================
-  // ✅ PARCOURS D'ACHAT (nouveau — simulation paiement)
+  // ✅ PARCOURS D'ACHAT et paiement
   // ============================================================
   {
     path: 'achats-cours/paiement/:id',
@@ -239,14 +239,27 @@ export const routes: Routes = [
       import('./achats-cours/paiement.component').then(m => m.PaiementComponent),
     title: 'Paiement — KMAA Academy',
   },
-  {
-    path: 'achats-cours/confirmation/:id',
-    loadComponent: () =>
-      import('./achats-cours/confirmation-paiement.component').then(
-        m => m.ConfirmationPaiementComponent
-      ),
-    title: 'Confirmation de paiement — KMAA Academy',
-  },
+
+//   {
+//   path: 'achats-cours/confirmation/:uuid',
+//   loadComponent: () =>
+//     import('./achats-cours/confirmation-paiement.component').then(
+//       m => m.ConfirmationPaiementComponent
+//     ),
+//   title: 'Confirmation de paiement — KMAA Academy',
+// },
+
+{
+  path: 'achats-cours/confirmation/:id', // ✅ On met :id pour correspondre au composant
+  loadComponent: () =>
+    import('./achats-cours/confirmation-paiement.component').then(
+      m => m.ConfirmationPaiementComponent
+    ),
+  title: 'Confirmation de paiement — KMAA Academy',
+},
+
+
+
 
 
 
@@ -305,6 +318,88 @@ export const routes: Routes = [
   canActivate: [authGuard],
   title: 'Mes commandes — KMAA',
 },
+
+
+// routes pour les catalogues complets
+{
+  path: 'catalogue',
+  loadComponent: () =>
+    import('./pages/catalogue-cours/catalogue.component')
+      .then(m => m.CatalogueCoursComponent),
+  title: 'Catalogue des cours — KMAA Academy',
+},
+
+// nouvelles routes 
+{
+  path: 'formateur/cours/:id/apercu',
+  loadComponent: () => import('./pages/course-player/course-player').then(
+    m => m.CoursePlayer
+  ),
+  title: 'Aperçu formateur — KMAA Academy',
+},
+
+// """"""""""""""""""""""""""""""""""""""""""""""""""""""
+// nouvelle route pour la programmation des devoirs 
+//""""""""""""""""""""""""""""""""""""""""""""""""""""
+  {
+    path: 'formateur/planifier-seances/:courseId',
+    loadComponent: () =>
+      import('./formateur/planifier-seances/planifier-seances')
+        .then(m => m.PlanifierSeancesComponent),
+    canActivate: [authGuard, staffGuard],
+    title: 'Planifier des séances — KMAA',
+  },
+
+
+  // """"""""""""""""""""""""""""""""""""""""""""""""""
+  // commissariat au compte
+  //""""""""""""""""""""""""""""""""""""""""""""""""
+
+  {
+    path: 'commissariat',
+    redirectTo: 'commissariat-aux-comptes',
+    pathMatch: 'full',
+  },
+
+    {
+  path: 'commissariat-aux-comptes',
+  title: 'Commissariat aux comptes | KMAA',
+  loadComponent: () =>
+    import('./pages/commissariat/commissariat').then(
+      (m) => m.CommissariatAuxComptesComponent,
+    ),
+},
+
+// route pour audit 
+{
+    path: 'audit',
+    title: 'Audit et assurance | KMAA',
+    loadComponent: () =>
+      import('./pages/audit/audit').then((m) => m.AuditComponent),
+  },
+
+// route pour les conseils
+{
+  path: 'conseil',
+  title: 'Conseil aux organisations | KMAA',
+  loadComponent: () =>
+    import('./pages/conseil/conseil').then((m) => m.ConseilComponent),
+},
+
+// direction vers expertise comptable
+{
+  path: 'expertise-comptable',
+  title: 'Expertise comptable | KMAA',
+  loadComponent: () =>
+    import('./pages/expertise_comptable/expertise_comptable').then(
+      (m) => m.ExpertiseComptableComponent,
+    ),
+},
+
+
+
+
+
 
 
   // ============================================================

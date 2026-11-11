@@ -64,7 +64,7 @@
         @for (course of visibleCourses(); track course.id) {
           <article class="sujet-course-card">
             <div class="sujet-course-card__image">
-              <img [src]="course.image" [alt]="course.imageAlt" loading="lazy" />
+              <img [src]="assetUrl(course.image)!" [alt]="course.imageAlt" loading="lazy" />
             </div>
 
             <div class="sujet-course-card__body">
@@ -79,7 +79,6 @@
                 </span>
               }
 
-              <!-- ✅ LIEN CORRIGÉ : /sujets/cours/ au lieu de /cours/ -->
               <h3 class="sujet-course-card__title">
                 <a [routerLink]="['/sujets/cours', course.id]">{{ course.title }}</a>
               </h3>
@@ -89,18 +88,17 @@
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M6 2h12M6 22h12M8 2v4l4 5 4-5V2M8 22v-4l4-5 4 5v4" />
                   </svg>
-                  {{ course.duration }}
+                  {{ course.durationFull }}
                 </li>
                 <li>
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                     <circle cx="12" cy="12" r="9" />
                     <path d="M12 7v5l3 3" />
                   </svg>
-                  {{ course.weeklyHours }}
+                  {{ course.durationAlternance }}
                 </li>
               </ul>
 
-              <!-- ✅ LIEN CORRIGÉ : /sujets/cours/ au lieu de /cours/ -->
               <a class="sujet-course-card__more" [routerLink]="['/sujets/cours', course.id]">
                 Voir plus
               </a>
@@ -124,71 +122,79 @@
 </section>
 
 <!-- PARCOURS EXPERTS -->
-<section class="sujet-tracks">
-  <div class="sujet-tracks__container">
-    <div class="sujet-tracks__header">
-      <h2>Parcours Experts</h2>
-      <span>{{ expertTracks.length }} parcours certifiants</span>
-    </div>
-    <p class="sujet-tracks__intro">
-      Une série de formations spécialisées pour maîtriser un domaine de A à Z et obtenir une certification reconnue.
-    </p>
+@if (expertTracks().length > 0) {
+  <section class="sujet-tracks">
+    <div class="sujet-tracks__container">
+      <div class="sujet-tracks__header">
+        <h2>Parcours Experts</h2>
+        <span>{{ expertTracks().length }} parcours certifiants</span>
+      </div>
+      <p class="sujet-tracks__intro">
+        Une série de formations spécialisées pour maîtriser un domaine de A à Z et obtenir une certification reconnue.
+      </p>
 
-    <div class="sujet-tracks__grid">
-      @for (track of expertTracks; track track.title) {
-        <article class="sujet-track-card">
-          <div class="sujet-track-card__image">
-            <img [src]="track.image" [alt]="track.imageAlt" loading="lazy" />
-          </div>
-          <div class="sujet-track-card__body">
-            <h3>{{ track.title }}</h3>
-            <p>{{ track.description }}</p>
-            <ul class="sujet-track-card__meta">
-              <li>{{ track.coursesCount }} cours</li>
-              <li>{{ track.duration }}</li>
-            </ul>
-            <a class="sujet-track-card__link" routerLink="/parcours">Voir le programme</a>
-          </div>
-        </article>
-      }
+      <div class="sujet-tracks__grid">
+        @for (track of expertTracks(); track track.id) {
+          <article class="sujet-track-card">
+            <div class="sujet-track-card__image">
+              <img [src]="track.image" [alt]="track.imageAlt" loading="lazy" />
+            </div>
+            <div class="sujet-track-card__body">
+              <h3>{{ track.title }}</h3>
+              <p>{{ track.description }}</p>
+              <ul class="sujet-track-card__meta">
+                <li>{{ track.modulesCount }} modules</li>
+                <li>{{ track.durationFull }}</li>
+              </ul>
+              <a class="sujet-track-card__link" [routerLink]="['/sujets/cours', track.id]">
+                Voir le programme
+              </a>
+            </div>
+          </article>
+        }
+      </div>
     </div>
-  </div>
-</section>
+  </section>
+}
 
 <!-- MICRO-ACCREDITATIONS -->
-<section class="sujet-micro">
-  <div class="sujet-micro__container">
-    <div class="sujet-micro__header">
-      <h2>Micro-accréditations</h2>
-      <span>{{ microCredentials.length }} certificats courts</span>
-    </div>
-    <p class="sujet-micro__intro">
-      Nos micro-certifications sont conçues pour vous qualifier rapidement dans des secteurs en forte croissance, 
-      sans l'engagement d'un cursus long.
-    </p>
+@if (microCredentials().length > 0) {
+  <section class="sujet-micro">
+    <div class="sujet-micro__container">
+      <div class="sujet-micro__header">
+        <h2>Micro-accréditations</h2>
+        <span>{{ microCredentials().length }} certificats courts</span>
+      </div>
+      <p class="sujet-micro__intro">
+        Nos micro-certifications sont conçues pour vous qualifier rapidement dans des secteurs en forte croissance, 
+        sans l'engagement d'un cursus long.
+      </p>
 
-    <div class="sujet-micro__grid">
-      @for (micro of microCredentials; track micro.title) {
-        <article class="sujet-micro-card">
-          <div class="sujet-micro-card__image">
-            <img [src]="micro.image" [alt]="micro.imageAlt" loading="lazy" />
-          </div>
-          <div class="sujet-micro-card__body">
-            <h3>{{ micro.title }}</h3>
-            <p>{{ micro.description }}</p>
-            <ul class="sujet-micro-card__meta">
-              <li>{{ micro.duration }}</li>
-              <li>{{ micro.level }}</li>
-            </ul>
-            <div class="sujet-micro-card__footer">
-                <a class="sujet-micro-card__more" routerLink="/micro-certifications">Voir plus</a>
+      <div class="sujet-micro__grid">
+        @for (micro of microCredentials(); track micro.id) {
+          <article class="sujet-micro-card">
+            <div class="sujet-micro-card__image">
+              <img [src]="micro.image" [alt]="micro.imageAlt" loading="lazy" />
             </div>
-          </div>
-        </article>
-      }
+            <div class="sujet-micro-card__body">
+              <h3>{{ micro.title }}</h3>
+              <p>{{ micro.description }}</p>
+              <ul class="sujet-micro-card__meta">
+                <li>{{ micro.durationFull }}</li>
+                <li>{{ micro.level | uppercase }}</li>
+              </ul>
+              <div class="sujet-micro-card__footer">
+                  <a class="sujet-micro-card__more" [routerLink]="['/sujets/cours', micro.id]">
+                    Voir plus
+                  </a>
+              </div>
+            </div>
+          </article>
+        }
+      </div>
     </div>
-  </div>
-</section>
+  </section>
+}
 
 <!-- ACTUALITÉS & CONSEILS -->
 <section class="sujet-news">

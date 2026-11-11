@@ -17,7 +17,7 @@ export class ForumApiService {
   constructor(private http: HttpClient) {}
 
   /**
-   * RÃ©cupÃ©rer toutes les discussions d'un cours
+   * Récupérer toutes les discussions d'un cours
    */
   getThreads(courseId: number): Observable<ForumThread[]> {
     return this.http
@@ -30,7 +30,7 @@ export class ForumApiService {
   }
 
   /**
-   * CrÃ©er une discussion
+   * Créer une discussion
    */
   createThread(data: {
     course_id: number;
@@ -50,7 +50,7 @@ export class ForumApiService {
   }
 
   /**
-   * Ajouter une rÃ©ponse
+   * Ajouter une réponse
    */
   createReply(
     threadId: number,
@@ -87,7 +87,7 @@ export class ForumApiService {
   }
 
   /**
-   * Upvote d'une rÃ©ponse
+   * Upvote d'une réponse
    */
   upvoteReply(
     replyId: number
@@ -104,7 +104,7 @@ export class ForumApiService {
   }
 
   /**
-   * Marquer / dÃ©marquer comme rÃ©solu
+   * Marquer / démarquer comme résolu
    */
   toggleResolved(
     threadId: number

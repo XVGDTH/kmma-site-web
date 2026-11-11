@@ -1,1129 +1,334 @@
 <div class="dashboard">
 
-  <!-- ====================================================== -->
-  <!-- EN-TÊTE DU DASHBOARD -->
-  <!-- ====================================================== -->
+  <!-- ✅ TOAST NOTIFICATION -->
+@if (toastMessage(); as msg) {
+  <div class="toast" 
+       [style.background-color]="toastType() === 'success' ? '#10b981' : '#ef4444'">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+      @if (toastType() === 'success') {
+        <path d="M20 6L9 17l-5-5"></path>
+      } @else {
+        <circle cx="12" cy="12" r="10"></circle>
+        <line x1="12" y1="8" x2="12" y2="12"></line>
+        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+      }
+    </svg>
+    {{ msg }}
+  </div>
+}
 
+
+  <!-- ====================================================== -->
+  <!-- EN-TÊTE -->
+  <!-- ====================================================== -->
   <header class="dashboard__header">
-
-    <!-- Carte formateur connecté -->
     <div class="dashboard__welcome">
-
-      <div class="dashboard__avatar">
-        @if (instructorAvatar(); as avatar) {
-          <img [src]="avatar" [alt]="instructorName()" />
-        } @else {
-          <span>{{ instructorInitials() }}</span>
-        }
-      </div>
-
+     <div class="dashboard__avatar">
+  @if (instructorAvatar(); as avatar) {
+    <!-- Si l'avatar commence par http, on l'utilise tel quel, sinon on ajoute le domaine -->
+    <img [src]="avatar.startsWith('http') ? avatar : 'http://127.0.0.1:8000/storage/' + avatar" [alt]="instructorName()" />
+  } @else {
+    <span>{{ instructorInitials() }}</span>
+  }
+</div>
       <div>
         <span class="dashboard__eyebrow">Espace formateur</span>
         <h1>Bonjour, {{ instructorName() }}</h1>
         @if (instructorEmail()) {
-          <span class="dashboard__email">✉️ {{ instructorEmail() }}</span>
+          <span class="dashboard__email">{{ instructorEmail() }}</span>
         }
       </div>
-
     </div>
 
-    <div class="dashboard__summary">
-
-      <div class="dashboard__summary-item">
-        <strong>{{ totalStudents() }}</strong>
-        <span>Apprenants inscrits</span>
-      </div>
-
-      <div class="dashboard__summary-item">
-        <strong>{{ totalOnline() }}</strong>
-        <span>Connectés maintenant</span>
-      </div>
-
-      <div
-        class="dashboard__summary-item"
-        [class.dashboard__summary-item--live]="activeLiveCount() > 0"
-      >
-        <strong>{{ activeLiveCount() }}</strong>
-        <span>Séance(s) en direct</span>
-      </div>
-
-    </div>
-
-    <!-- <a routerLink="/formateur/nouveau-cours"
-       class="course-card__btn course-card__btn--primary"
-       style="align-self: flex-start;">
-      + Créer un nouveau cours
-    </a>
-
-  </header> -->
-
-      <!-- Actions rapides -->
     <div class="dashboard__quick-actions">
-
-      <a routerLink="/formateur/nouveau-cours"
-         class="course-card__btn course-card__btn--primary">
-        + Créer un cours en ligne
+      <a routerLink="/formateur/nouveau-cours" class="course-card__btn course-card__btn--primary">
+        + Créer un cours
       </a>
-
-      <a routerLink="/formateur/formations-presentielles"
-         class="course-card__btn course-card__btn--ghost">
-        🎓 Diplomes des formations en presentielles
+      <a routerLink="/formateur/formations-presentielles" class="course-card__btn course-card__btn--ghost">
+        Formations présentielles
       </a>
-
     </div>
-
   </header>
 
-
   <!-- ====================================================== -->
-  <!-- MES COURS -->
+  <!-- KPI (les grands chiffres) -->
   <!-- ====================================================== -->
-
-  <section class="dashboard__section">
-
-    <h2>Mes cours</h2>
-
-    <div class="dashboard__courses">
-
-      @for (item of myCourses(); track item.course!.id) {
-
-        <article class="course-card">
-
-          <div class="course-card__image">
-
-            <!-- <img
-              [src]="item.course!.image"
-              [alt]="item.course!.imageAlt"
-            /> -->
-            <img [src]="assetUrl(item.course!.image) ?? undefined"
-     [alt]="item.course!.imageAlt" />
-
-
-
-            @if (item.live.isLive) {
-
-              <span class="course-card__live-badge">
-                <span class="course-card__live-dot"></span>
-                En direct
-              </span>
-
-            }
-
-          </div>
-
-
-          <div class="course-card__body">
-
-            <span class="course-card__category">
-              {{ item.course!.category }}
-            </span>
-
-            <h3>
-              {{ item.course!.title }}
-            </h3>
-
-
-            <div class="course-card__stats">
-
-              <div>
-                <strong>{{ item.stat.enrolledCount }}</strong>
-                <span>Inscrits</span>
-              </div>
-
-              <div>
-                <strong>{{ item.stat.onlineNow }}</strong>
-                <span>En ligne</span>
-              </div>
-
-              <div>
-                <strong>{{ item.stat.completionRate }}%</strong>
-                <span>Progression moy.</span>
-              </div>
-
-            </div>
-
-
-            <div class="course-card__progress-bar">
-
-              <div
-                class="course-card__progress-fill"
-                [style.width.%]="item.stat.completionRate"
-              ></div>
-
-            </div>
-
-
-            <div class="course-card__actions">
-
-              <a
-                [routerLink]="['/cours', item.course!.id]"
-                class="course-card__btn course-card__btn--ghost"
-              >
-                Voir la fiche
-              </a>
-
-
-              <!-- <a
-                [routerLink]="[
-                  '/formateur/importer-cours',
-                  item.course!.id
-                ]"
-                class="course-card__btn course-card__btn--ghost"
-              >
-                Importer le contenu
-              </a> -->
-              <!-- Remplace l'ancien lien "Importer le contenu" par : -->
-<a [routerLink]="['/formateur/importer-cours', item.course!.courseId ?? item.course!.id]"
-   class="course-card__btn course-card__btn--ghost">
-  Gérer le contenu
-</a>
-
-
-              <a
-                [routerLink]="[
-                  '/formateur/cours',
-                  item.course!.id,
-                  'direct'
-                ]"
-                class="course-card__btn course-card__btn--primary"
-              >
-
-                @if (item.live.isLive) {
-                  Rejoindre ma séance
-                } @else {
-                  Démarrer une séance
-                }
-
-              </a>
-
-            </div>
-
-          </div>
-
-        </article>
-
-      } @empty {
-
-        <p class="dashboard__empty">
-          Aucun cours ne vous est assigné pour le moment.
-        </p>
-
-      }
-
+  <section class="dashboard__kpis">
+    <div class="kpi-card">
+      <span class="kpi-card__label">Cours publiés</span>
+      <strong class="kpi-card__value">{{ stats().totalCourses }}</strong>
     </div>
-
+    <div class="kpi-card">
+      <span class="kpi-card__label">Apprenants inscrits</span>
+      <strong class="kpi-card__value">{{ stats().totalStudents }}</strong>
+    </div>
+    <div class="kpi-card">
+      <span class="kpi-card__label">Taux de complétion</span>
+      <strong class="kpi-card__value">{{ stats().completionRate }}%</strong>
+    </div>
+    <div class="kpi-card" [class.kpi-card--warning]="stats().pendingSubmissions > 0">
+      <span class="kpi-card__label">Travaux à corriger</span>
+      <strong class="kpi-card__value">{{ stats().pendingSubmissions }}</strong>
+    </div>
+    <div class="kpi-card">
+      <span class="kpi-card__label">Moyenne des notes</span>
+      <strong class="kpi-card__value">
+        @if (stats().averageGrade !== null) {
+          {{ stats().averageGrade }}/20
+        } @else {
+          —
+        }
+      </strong>
+    </div>
   </section>
 
+  @if (isLoading()) {
+    <p class="dashboard__empty">Chargement du tableau de bord…</p>
+  } @else if (error()) {
+    <p class="dashboard__empty">{{ error() }}</p>
+  } @else {
 
-
-  <!-- ====================================================== -->
-  <!-- CONTENUS PUBLIÉS -->
-  <!-- ====================================================== -->
-
-  <section class="dashboard__section">
-
-  <div class="dashboard__section-header">
-    <h2>Contenus publiés</h2>
-    <span class="dashboard__badge">{{ totalPublishedSequences() }}</span>
+    <!-- ====================================================== -->
+    <!-- MES COURS -->
+    <!-- ====================================================== -->
+    <section class="dashboard__section">
+      <h2>Mes cours</h2>
+      <div class="dashboard__courses">
+        @for (course of courses(); track course.id) {
+<article class="course-card">
+  <div class="course-card__image">
+    <img [src]="assetUrl(course.image) ?? ''" [alt]="course.title" />
+    
+    <!-- ✅ BADGE : Distinction cours individuel / entreprise -->
+    @if (course.type === 'enterprise') {
+      <span class="course-card__badge" style="position: absolute; top: 10px; right: 10px; background: #b87333; color: white; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold;">
+        Abonnement Entreprise
+      </span>
+    }
   </div>
 
-  @if (publishedContents().length === 0) {
-    <p class="dashboard__empty">
-      Aucun contenu publié pour le moment.
-      Utilise « Gérer le contenu » sur un cours pour ajouter
-      chapitres, vidéos, TD/TP et quiz.
-    </p>
-  } @else {
-    <div class="published-list">
-      @for (item of publishedContents(); track item.course.id) {
-        <article class="published-card">
-          <div class="published-card__top">
-            <span class="published-card__course">{{ item.course.title }}</span>
-            <span class="published-card__label">
-              {{ item.content.chapters.length }} chapitre(s)
-            </span>
-          </div>
+  <div class="course-card__body">
+    <h3>{{ course.title }}</h3>
+    
+    <div class="course-card__stats">
+      <div>
+        <strong>{{ course.enrolledCount }}</strong>
+        <span>Inscrits</span>
+      </div>
+      <div>
+        <strong>{{ course.chaptersCount }}</strong>
+        <span>Chapitres</span>
+      </div>
+    </div>
 
-          @for (chapter of item.content.chapters; track chapter.id) {
-            <div class="published-card__meta">
-              <strong>📘 {{ chapter.title }}</strong>
-              <span>{{ chapter.sequences.length }} séquence(s)</span>
-            </div>
+    <div class="course-card__actions" style="display: flex; flex-direction: column; gap: 8px;">
+      <div style="display: flex; gap: 8px;">
+        <a [routerLink]="['/formateur/importer-cours', course.id]" class="course-card__btn course-card__btn--ghost" style="flex: 1;">
+          Gérer le contenu
+        </a>
+        <a [routerLink]="['/formateur/cours', course.id, 'apercu']" class="course-card__btn course-card__btn--primary" style="flex: 1;">
+          Voir la fiche
+        </a>
+      </div>
 
-            @if (chapter.sequences.length > 0) {
-              <ul class="published-card__assignments">
-                @for (seq of chapter.sequences; track seq.id) {
-                  <li>
-                    <span class="published-card__kind">{{ seq.type.toUpperCase() }}</span>
-                    {{ seq.title }}
-                  </li>
+      <!-- ✅ BOUTON ZOOM : Uniquement pour les cours entreprises -->
+      <!-- ✅ BOUTON ZOOM : Version optimisée -->
+@if (course.type === 'enterprise') {
+ <div style="display: flex; gap: 8px; width: 100%;">
+  <a 
+    [routerLink]="['/formateur/planifier-seances', course.id]"
+    class="course-card__btn" 
+    style="flex: 1; background: #f3f4f6; color: #374151; border: 1px solid #d1d5db; text-align: center; padding: 10px; border-radius: 8px; text-decoration: none; font-weight: 600;"
+  >
+     Programmer
+  </a>
+  <button 
+    type="button" 
+    class="course-card__btn course-card__btn--live" 
+    (click)="startZoomSession(course.id)"
+    [disabled]="loadingCourseId() === course.id"
+    style="flex: 1; background: #ef4444; color: white; border: none;"
+  >
+    @if (loadingCourseId() === course.id) {
+       Chargement...
+    } @else {
+       Lancer
+    }
+  </button>
+</div>
+}
+    </div>
+  </div>
+</article>
+        } @empty {
+          <p class="dashboard__empty">Aucun cours assigné pour le moment.</p>
+        }
+      </div>
+    </section>
+
+
+    <!-- ✅ AGENDA COMPACT DES PROCHAINES SÉANCES -->
+@if (upcomingSchedules().length > 0) {
+  <section class="dashboard__section">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+      <h2 style="margin: 0;">Prochaines séances programmées</h2>
+      <span style="background: #b87333; color: white; padding: 4px 10px; border-radius: 12px; font-size: 0.8rem; font-weight: 600;">
+        {{ upcomingSchedules().length }} à venir
+      </span>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 15px;">
+@for (schedule of upcomingSchedules(); track schedule.id) {
+  <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #b87333; box-shadow: 0 2px 8px rgba(0,0,0,0.05); display: flex; gap: 15px; align-items: center;">
+    
+    <!-- ✅ Image du cours -->
+    <div style="width: 60px; height: 60px; border-radius: 8px; overflow: hidden; flex-shrink: 0;">
+      @if (schedule.courseImage) {
+        <img [src]="assetUrl(schedule.courseImage)!" [alt]="schedule.courseTitle" style="width: 100%; height: 100%; object-fit: cover;" />
+      } @else {
+        <div style="width: 100%; height: 100%; background: #f3f4f6; display: flex; align-items: center; justify-content: center; color: #9ca3af;">📚</div>
+      }
+    </div>
+
+    <!-- ✅ Infos texte -->
+    <div style="flex: 1;">
+      <strong style="display: block; color: #1a202c; font-size: 0.95rem;">{{ schedule.courseTitle }}</strong>
+      <span style="font-size: 0.85rem; color: #718096;">
+        {{ schedule.scheduledAt | date:'EEEE d MMMM' }} à {{ schedule.scheduledAt | date:'HH:mm' }}
+      </span>
+    </div>
+
+  </div>
+}
+    </div>
+  </section>
+}
+
+    <!-- ====================================================== -->
+    <!-- TRAVAUX À CORRIGER -->
+    <!-- ====================================================== -->
+    <section class="dashboard__section">
+      <div class="dashboard__section-header">
+        <h2>Travaux à corriger</h2>
+        <span class="dashboard__badge">{{ pendingSubmissions().length }}</span>
+      </div>
+
+      @if (pendingSubmissions().length === 0) {
+        <p class="dashboard__empty">Aucun travail en attente 🎉</p>
+      } @else {
+        <div class="submissions-list">
+          @for (sub of pendingSubmissions(); track sub.id) {
+            <div class="submission-row">
+              <div class="submission-row__avatar">{{ sub.studentName.charAt(0) }}</div>
+              <div class="submission-row__info">
+                <span class="submission-row__name">{{ sub.studentName }}</span>
+                <span class="submission-row__task">{{ sub.sequenceTitle }} · {{ sub.courseTitle }}</span>
+                @if (sub.comment) {
+                  <span class="submission-row__date">💬 {{ sub.comment }}</span>
                 }
-              </ul>
-            }
-          }
+                <span class="submission-row__date">Déposé le {{ sub.submittedAt }}</span>
+              </div>
 
-          <div class="published-card__actions">
-            <a [routerLink]="['/formateur/importer-cours', item.course.courseId ?? item.course.id]"
-               class="course-card__btn course-card__btn--ghost">
-              Gérer / ajouter du contenu
-            </a>
-            <a [routerLink]="['/apprentissage', item.course.id]"
-               class="course-card__btn course-card__btn--primary">
-              Voir côté apprenant
-            </a>
+              @if (submissionFileUrl(sub); as fileUrl) {
+                <a [href]="fileUrl" target="_blank" rel="noopener noreferrer" class="submission-row__view">
+                  Voir le fichier
+                </a>
+              }
+
+              <div class="submission-row__grade">
+                <input type="number" min="0" max="20" placeholder="/20" #gradeInput />
+                <input type="text" placeholder="Feedback…" #feedbackInput class="submission-row__feedback" />
+                <button
+                  type="button"
+                  [disabled]="gradingId() === sub.id"
+                  (click)="gradeSubmission(sub, gradeInput.valueAsNumber, feedbackInput.value)"
+                >
+                  Corriger
+                </button>
+              </div>
+            </div>
+          }
+        </div>
+      }
+    </section>
+
+    <!-- ====================================================== -->
+<!-- DERNIERS AVIS -->
+<!-- ====================================================== -->
+<section class="dashboard__section">
+  <h2>Derniers avis des apprenants</h2>
+  @if (recentFeedbacks().length === 0) {
+    <p class="dashboard__empty">Aucun avis pour le moment.</p>
+  } @else {
+    <div class="feedback-list" style="display: flex; flex-direction: column; gap: 12px;">
+      @for (fb of recentFeedbacks(); track fb.id) {
+        <div class="feedback-item" style="background: white; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0;">
+          <div style="display: flex; justify-content: space-between;">
+            <strong>{{ fb.studentName }}</strong>
+            <span style="color: #eab308;">⭐ {{ fb.rating }}/5</span>
           </div>
-        </article>
+          <p style="margin: 8px 0; color: #475569;">"{{ fb.comment }}"</p>
+          <small style="color: #94a3b8;">Cours : {{ fb.courseTitle }}</small>
+        </div>
       }
     </div>
   }
 </section>
 
-
-
-
-  <!-- ====================================================== -->
-  <!-- FORUM DES COURS -->
-  <!-- ====================================================== -->
-
-  <section class="dashboard__section">
-
-    <div class="dashboard__section-header">
-
-      <div>
-
-        <span class="dashboard__eyebrow">
-          Échanges avec les apprenants
-        </span>
-
-        <h2>Discussions du forum</h2>
-
-      </div>
-
-
-      <span class="dashboard__badge">
-        {{ totalForumThreads() }}
-      </span>
-
-    </div>
-
-
-    <!-- ==================================================== -->
-    <!-- STATISTIQUES DU FORUM -->
-    <!-- ==================================================== -->
-
-    <div class="course-card__stats">
-
-      <div>
-
-        <strong>
-          {{ totalForumThreads() }}
-        </strong>
-
-        <span>
-          Discussion(s)
-        </span>
-
-      </div>
-
-
-      <div>
-
-        <strong>
-          {{ forumQuestionsToHandle().length }}
-        </strong>
-
-        <span>
-          Question(s) sans réponse
-        </span>
-
-      </div>
-
-
-      <div>
-
-        <strong>
-          {{ totalForumReplies() }}
-        </strong>
-
-        <span>
-          Réponse(s)
-        </span>
-
-      </div>
-
-
-      <div>
-
-        <strong>
-          {{ resolvedForumThreads().length }}
-        </strong>
-
-        <span>
-          Résolue(s)
-        </span>
-
-      </div>
-
-    </div>
-
-
-
-    <!-- ==================================================== -->
-    <!-- CHARGEMENT -->
-    <!-- ==================================================== -->
-
-    @if (forumLoading()) {
-
-      <div class="dashboard__empty">
-
-        <p>
-          Chargement des discussions du forum...
-        </p>
-
-      </div>
-
-    }
-
-
-
-    <!-- ==================================================== -->
-    <!-- ERREUR -->
-    <!-- ==================================================== -->
-
-    @if (forumError(); as error) {
-
-      <div class="dashboard__empty">
-
-        <p>
-          ⚠️ {{ error }}
-        </p>
-
-      </div>
-
-    }
-
-
-
-    <!-- ==================================================== -->
-    <!-- MESSAGE AUCUNE DISCUSSION -->
-    <!-- ==================================================== -->
-
-    @if (
-      !forumLoading() &&
-      !forumError() &&
-      forumThreads().length === 0
-    ) {
-
-      <div class="dashboard__empty">
-
-        <p>
-          💬 Aucune discussion n'a encore été publiée
-          dans vos cours.
-        </p>
-
-      </div>
-
-    }
-
-
-
-    <!-- ==================================================== -->
-    <!-- LISTE DES DISCUSSIONS -->
-    <!-- ==================================================== -->
-
-    @if (forumThreads().length > 0) {
-
-      <div class="published-list">
-
-        @for (
-          thread of forumThreads();
-          track thread.id
-        ) {
-
-          <article class="published-card">
-
-            <!-- ============================================ -->
-            <!-- EN-TÊTE -->
-            <!-- ============================================ -->
-
-            <div class="published-card__top">
-
-              <div>
-
-                <span class="published-card__course">
-                  📚 {{ thread.course.title }}
-                </span>
-
-              </div>
-
-
-              @if (thread.resolved) {
-
-                <span class="published-card__label">
-                  ✅ Résolue
-                </span>
-
-              } @else {
-
-                <span class="published-card__label">
-                  🔴 À traiter
-                </span>
-
-              }
-
-            </div>
-
-
-
-            <!-- ============================================ -->
-            <!-- INFORMATIONS -->
-            <!-- ============================================ -->
-
-            <div class="published-card__meta">
-
-              <span>
-                👤 {{ thread.user.name }}
-              </span>
-
-
-              @if (thread.chapter) {
-
-                <span>
-                  📖 {{ thread.chapter.title }}
-                </span>
-
-              }
-
-
-              <span>
-                🕐 {{ formatDate(thread.created_at) }}
-              </span>
-
-            </div>
-
-
-
-            <!-- ============================================ -->
-            <!-- QUESTION -->
-            <!-- ============================================ -->
-
-            <div>
-
-              <h3>
-                {{ thread.title }}
-              </h3>
-
-
-              <p>
-                {{ thread.content }}
-              </p>
-
-            </div>
-
-
-
-            <!-- ============================================ -->
-            <!-- STATISTIQUES -->
-            <!-- ============================================ -->
-
-            <div class="published-card__stats">
-
-              <div>
-
-                <strong>
-                  {{ thread.replies?.length ?? 0 }}
-                </strong>
-
-                <span>
-                  Réponse(s)
-                </span>
-
-              </div>
-
-
-              <div>
-
-                <strong>
-                  {{ thread.upvotes ?? 0 }}
-                </strong>
-
-                <span>
-                  👍 Vote(s)
-                </span>
-
-              </div>
-
-            </div>
-
-
-
-            <!-- ================================================= -->
-            <!-- DÉTAIL DE LA DISCUSSION -->
-            <!-- ================================================= -->
-
-            @if (expandedThreadId() === thread.id) {
-
-              <div class="forum-thread-detail">
-
-                <div class="forum-thread-detail__question">
-
-                  <strong>
-                    Question de {{ thread.user.name }}
-                  </strong>
-
-                  <p>
-                    {{ thread.content }}
-                  </p>
-
-                </div>
-
-
-                <!-- =========================================== -->
-                <!-- RÉPONSES EXISTANTES -->
-                <!-- =========================================== -->
-
-                @if (thread.replies?.length) {
-
-                  <div class="published-card__assignments">
-
-                    <strong>
-                      💬 Réponses
-                    </strong>
-
-
-                    @for (
-                      reply of thread.replies;
-                      track reply.id
-                    ) {
-
-                      <div class="submission-row">
-
-                        <div class="submission-row__avatar">
-                          {{ reply.user.name.charAt(0).toUpperCase() }}
-                        </div>
-
-
-                        <div class="submission-row__info">
-
-                          <span class="submission-row__name">
-                            {{ reply.user.name }}
-                          </span>
-
-
-                          <span class="submission-row__task">
-                            {{ reply.content }}
-                          </span>
-
-
-                          <span class="submission-row__date">
-
-                            {{ formatDate(reply.created_at) }}
-
-                            · 👍
-                            {{ reply.upvotes ?? 0 }}
-
-                          </span>
-
-                        </div>
-
-                      </div>
-
-                    }
-
-                  </div>
-
-                } @else {
-
-                  <div class="dashboard__empty">
-
-                    <p>
-                      💬 Aucune réponse pour le moment.
-                    </p>
-
-                  </div>
-
-                }
-
-
-
-                <!-- =========================================== -->
-                <!-- FORMULAIRE DE RÉPONSE -->
-                <!-- =========================================== -->
-
-                @if (
-                  replyingThreadId() === thread.id &&
-                  !thread.resolved
-                ) {
-
-                  <form
-                    class="forum-reply-form"
-                    (submit)="submitReply(thread.id, replyInput.value); $event.preventDefault()"
-                  >
-
-                    <label>
-                      Votre réponse
-                    </label>
-
-
-                    <textarea
-                      #replyInput
-                      rows="5"
-                      placeholder="Écrivez votre réponse à l'apprenant..."
-                      required
-                      minlength="2"
-                      [disabled]="replyLoadingId() === thread.id"
-                    ></textarea>
-
-
-                    <div class="published-card__actions">
-
-                      <button
-                        type="submit"
-                        class="course-card__btn course-card__btn--primary"
-                        [disabled]="replyLoadingId() === thread.id"
-                      >
-
-                        @if (replyLoadingId() === thread.id) {
-                          Publication...
-                        } @else {
-                          📤 Publier la réponse
-                        }
-
-                      </button>
-
-
-                      <button
-                        type="button"
-                        class="course-card__btn course-card__btn--ghost"
-                        (click)="cancelReply()"
-                        [disabled]="replyLoadingId() === thread.id"
-                      >
-                        Annuler
-                      </button>
-
-                    </div>
-
-                  </form>
-
-                }
-
-              </div>
-
-            }
-
-
-
-            <!-- ================================================= -->
-            <!-- MESSAGE ERREUR RÉPONSE -->
-            <!-- ================================================= -->
-
-            @if (replyErrorForThread() === thread.id) {
-
-              <div class="dashboard__empty">
-
-                <p>
-                  ⚠️ {{ replyError() }}
-                </p>
-
-              </div>
-
-            }
-
-
-
-            <!-- ================================================= -->
-            <!-- ACTIONS -->
-            <!-- ================================================= -->
-
-            <div class="published-card__actions">
-
-              <!-- VOIR / MASQUER -->
-
-              <button
-                type="button"
-                class="course-card__btn course-card__btn--ghost"
-                (click)="toggleDiscussion(thread.id)"
-              >
-
-                @if (expandedThreadId() === thread.id) {
-                  Masquer la discussion
-                } @else {
-                  Voir la discussion
-                }
-
-              </button>
-
-
-
-              <!-- RÉPONDRE -->
-
-              @if (!thread.resolved) {
-
-                <button
-                  type="button"
-                  class="course-card__btn course-card__btn--primary"
-                  (click)="openReply(thread.id)"
-                >
-
-                  @if (replyingThreadId() === thread.id) {
-                    Réponse ouverte
-                  } @else {
-                    Répondre
-                  }
-
-                </button>
-
-              }
-
-
-
-              <!-- RÉSOUDRE -->
-
-              @if (!thread.resolved) {
-
-                <button
-                  type="button"
-                  class="course-card__btn course-card__btn--ghost"
-                  (click)="resolveDiscussion(thread.id)"
-                  [disabled]="resolvingThreadId() === thread.id"
-                >
-
-                  @if (resolvingThreadId() === thread.id) {
-                    Traitement...
-                  } @else {
-                    ✅ Marquer comme résolue
-                  }
-
-                </button>
-
-              }
-
-            </div>
-
-          </article>
-
-        }
-
-      </div>
-
-    }
-
-  </section>
-
-
-
-  <!-- ====================================================== -->
-  <!-- DEVOIRS À CORRIGER -->
-  <!-- ====================================================== -->
-
-  <!-- <section class="dashboard__section">
-
-    <div class="dashboard__section-header">
-
-      <h2>Travaux à corriger</h2>
-
-      <span class="dashboard__badge">
-        {{ pendingSubmissions().length }}
-      </span>
-
-    </div>
-
-
-    <div class="submissions-list">
-
-      @for (
-        sub of pendingSubmissions();
-        track sub.id
-      ) {
-
-        <div class="submission-row">
-
-          <div class="submission-row__avatar">
-            {{ sub.studentName.charAt(0) }}
-          </div>
-
-
-          <div class="submission-row__info">
-
-            <span class="submission-row__name">
-              {{ sub.studentName }}
-            </span>
-
-            <span class="submission-row__task">
-              {{ sub.sequenceTitle }}
-            </span>
-
-            <span class="submission-row__date">
-              Déposé le {{ sub.submittedAt }}
-            </span>
-
-          </div>
-
-
-          <a
-            href="#"
-            class="submission-row__view"
-            (click)="$event.preventDefault()"
-          >
-            Consulter
-          </a>
-
-
-          <div class="submission-row__grade">
-
-            <input
-              type="number"
-              min="0"
-              max="20"
-              placeholder="/20"
-              #gradeInput
-            />
-
-
-            <button
-              type="button"
-              (click)="
-                gradeSubmission(
-                  sub.id,
-                  gradeInput.valueAsNumber
-                )
-              "
-            >
-              Noter
-            </button>
-
-          </div>
-
+<!-- ====================================================== -->
+<!-- DERNIÈRES DISCUSSIONS -->
+<!-- ====================================================== -->
+<section class="dashboard__section">
+  <h2>Dernières discussions</h2>
+  @if (recentDiscussions().length === 0) {
+    <p class="dashboard__empty">Aucune discussion récente.</p>
+  } @else {
+    <div class="discussion-list" style="display: flex; flex-direction: column; gap: 12px;">
+      @for (disc of recentDiscussions(); track disc.id) {
+        <div class="discussion-item" style="background: white; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0;">
+          <strong style="display: block; margin-bottom: 5px;">{{ disc.title }}</strong>
+          <span style="color: #64748b; font-size: 0.9rem;">
+            Par <strong>{{ disc.authorName }}</strong> dans <em>{{ disc.courseTitle }}</em>
+          </span>
         </div>
-
-      } @empty {
-
-        <p class="dashboard__empty">
-          Aucun travail en attente de correction 🎉
-        </p>
-
       }
-
     </div>
+  }
+</section>
 
-  </section> -->
+    <!-- ====================================================== -->
+    <!-- ACTIVITÉ RÉCENTE -->
+    <!-- ====================================================== -->
     <section class="dashboard__section">
-
-    <div class="dashboard__section-header">
-
-      <h2>Travaux à corriger</h2>
-
-      <span class="dashboard__badge">
-        {{ pendingSubmissions().length }}
-      </span>
-
-    </div>
-
-
-    @if (submissionsLoading()) {
-
-      <p class="dashboard__empty">Chargement…</p>
-
-    } @for (sub of pendingSubmissions(); track sub.id) {
-
-      <div class="submission-row">
-
-        <div class="submission-row__avatar">
-          {{ sub.studentName.charAt(0) }}
-        </div>
-
-
-        <div class="submission-row__info">
-
-          <span class="submission-row__name">
-            {{ sub.studentName }}
-          </span>
-
-          <span class="submission-row__task">
-            {{ sub.sequenceTitle }} · {{ sub.courseTitle }}
-          </span>
-
-          @if (sub.comment) {
-            <span class="submission-row__date">
-              💬 {{ sub.comment }}
-            </span>
+      <h2>Activité récente</h2>
+      @if (recentEnrollments().length === 0) {
+        <p class="dashboard__empty">Aucune activité récente.</p>
+      } @else {
+        <div class="activity-timeline">
+          @for (activity of recentEnrollments(); track $index) {
+            <div class="activity-item">
+              <div class="activity-item__dot"></div>
+              <div class="activity-item__body">
+                <strong>{{ activity.studentName }}</strong> s'est inscrit à
+                <em>{{ activity.courseTitle }}</em>
+                <span class="activity-item__date">{{ formatDate(activity.enrolledAt) }}</span>
+              </div>
+            </div>
           }
-
-          <span class="submission-row__date">
-            Déposé le {{ sub.submittedAt }}
-          </span>
-
         </div>
-
-
-        @if (submissionFileUrl(sub); as fileUrl) {
-
-          <a
-            [href]="fileUrl"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="submission-row__view"
-          >
-            📄 Voir le devoir
-          </a>
-
-        }
-
-
-        <div class="submission-row__grade">
-
-          <input
-            type="number"
-            min="0"
-            max="20"
-            placeholder="/20"
-            #gradeInput
-          />
-
-
-          <input
-            type="text"
-            placeholder="Feedback…"
-            #feedbackInput
-            class="submission-row__feedback"
-          />
-
-
-          <button
-            type="button"
-            [disabled]="gradingId() === sub.id"
-            (click)="
-              gradeRealSubmission(
-                sub,
-                gradeInput.valueAsNumber,
-                feedbackInput.value
-              )
-            "
-          >
-            Corriger
-          </button>
-
-        </div>
-
-      </div>
-
-    } @empty {
-
-      <p class="dashboard__empty">
-        Aucun travail en attente de correction 🎉
-      </p>
-
-    }
-
-  </section>
-
-
-
-  <!-- ====================================================== -->
-  <!-- TRAVAUX DÉJÀ NOTÉS -->
-  <!-- ====================================================== -->
-
-  <!-- @if (gradedSubmissions().length) {
-
-    <section class="dashboard__section">
-
-      <h2>
-        Travaux déjà notés
-      </h2>
-
-
-      <div class="submissions-list">
-
-        @for (
-          sub of gradedSubmissions();
-          track sub.id
-        ) {
-
-          <div
-            class="submission-row submission-row--graded"
-          >
-
-            <div class="submission-row__avatar">
-              {{ sub.studentName.charAt(0) }}
-            </div>
-
-
-            <div class="submission-row__info">
-
-              <span class="submission-row__name">
-                {{ sub.studentName }}
-              </span>
-
-              <span class="submission-row__task">
-                {{ sub.sequenceTitle }}
-              </span>
-
-            </div>
-
-
-            <span class="submission-row__final-grade">
-              {{ sub.grade }}/20
-            </span>
-
-          </div>
-
-        }
-
-      </div>
-
+      }
     </section>
 
-  } -->
-
-    @if (gradedSubmissions().length) {
-
-    <section class="dashboard__section">
-
-      <h2>Travaux déjà notés</h2>
 
 
-      <div class="submissions-list">
-
-        @for (sub of gradedSubmissions(); track sub.id) {
-
-          <div class="submission-row submission-row--graded">
-
-            <div class="submission-row__avatar">
-              {{ sub.studentName.charAt(0) }}
-            </div>
+    <!-- ====================================================== -->
+<!-- DERNIERS AVIS -->
+<!-- ====================================================== -->
 
 
-            <div class="submission-row__info">
+<!-- ====================================================== -->
+<!-- DERNIÈRES DISCUSSIONS -->
+<!-- ====================================================== -->
 
-              <span class="submission-row__name">
-                {{ sub.studentName }}
-              </span>
-
-              <span class="submission-row__task">
-                {{ sub.sequenceTitle }}
-              </span>
-
-              @if (sub.feedback) {
-                <span class="submission-row__date">
-                  💬 {{ sub.feedback }}
-                </span>
-              }
-
-            </div>
-
-
-            <span class="submission-row__final-grade">
-              {{ sub.grade }}/20
-            </span>
-
-          </div>
-
-        }
-
-      </div>
-
-    </section>
 
   }
-
 </div>

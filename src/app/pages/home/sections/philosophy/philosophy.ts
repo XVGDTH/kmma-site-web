@@ -39,10 +39,10 @@ export class Philosophy implements AfterViewInit {
     'KMAA accompagne apprenants et organisations avec une approche humaine, pragmatique et orientée résultats.';
 
   readonly cards: readonly ServiceCard[] = [
-    { title: 'Audit', route: '/audit', tone: 'gold' },
-    { title: 'Fiscalité', route: '/fiscalite', tone: 'purple' },
-    { title: 'Conseil & accompagnement', route: '/advisory', tone: 'blue' },
-    { title: 'Services aux entreprises', route: '/services-aux-entreprises', tone: 'cyan' },
+    { title: 'Audit', route: '/', tone: 'gold' },
+    { title: 'Fiscalité', route: '/', tone: 'purple' },
+    { title: 'Conseil & accompagnement', route: '/', tone: 'blue' },
+    { title: 'Services aux entreprises', route: '/', tone: 'cyan' },
   ];
 
   /**

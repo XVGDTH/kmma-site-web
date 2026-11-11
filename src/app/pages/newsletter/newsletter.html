@@ -12,20 +12,19 @@
 
         <!-- ===== MODE DÉSINSCRIPTION ===== -->
         <div class="nl-unsubscribe">
-          <div class="nl-unsubscribe__icon">✉️</div>
-
-          @if (unsubscribeMessage()) {
-            <h1>Désinscription confirmée</h1>
-            <p>{{ unsubscribeMessage() }}</p>
-            <a routerLink="/" class="nl-btn nl-btn--gold">Retour à l'accueil</a>
-          } @else if (unsubscribeError()) {
-            <h1>Oups…</h1>
-            <p>{{ unsubscribeError() }}</p>
-            <a routerLink="/" class="nl-btn nl-btn--gold">Retour à l'accueil</a>
-          } @else {
-            <p class="nl-loading">Traitement de votre demande…</p>
-          }
-        </div>
+  <!-- Retiré : ✉️ -->
+  @if (unsubscribeMessage()) {
+    <h1>Désinscription confirmée</h1>
+    <p>{{ unsubscribeMessage() }}</p>
+    <a routerLink="/" class="nl-btn nl-btn--gold">Retour à l'accueil</a>
+  } @else if (unsubscribeError()) {
+    <h1>Oups…</h1>
+    <p>{{ unsubscribeError() }}</p>
+    <a routerLink="/" class="nl-btn nl-btn--gold">Retour à l'accueil</a>
+  } @else {
+    <p class="nl-loading">Traitement de votre demande…</p>
+  }
+</div>
 
       } @else {
 
@@ -51,11 +50,11 @@
           @if (success(); as msg) {
 
             <div class="nl-success">
-              <div class="nl-success__icon">✓</div>
-              <h2>Inscription enregistrée !</h2>
-              <p>{{ msg }}</p>
-              <a routerLink="/blog" class="nl-btn nl-btn--gold">Explorer le blog</a>
-            </div>
+  <div class="nl-success__icon">✓</div> <!-- Garde le ✓, c'est sobre -->
+  <h2>Inscription enregistrée !</h2>
+  <p>{{ msg }}</p>
+  <a routerLink="/blog" class="nl-btn nl-btn--gold">Explorer le blog</a>
+</div>
 
           } @else {
 
@@ -81,9 +80,9 @@
                 />
               </label>
 
-              @if (error(); as err) {
-                <p class="nl-error">⚠️ {{ err }}</p>
-              }
+             @if (error(); as err) {
+  <p class="nl-error">{{ err }}</p> <!-- Retiré : ⚠️ -->
+}
 
               <button
                 type="submit"
@@ -92,10 +91,9 @@
               >
                 @if (sending()) { Inscription… } @else { M'abonner gratuitement → }
               </button>
-
-              <small class="nl-form-note">
-                ✓ Gratuit · ✓ Désinscription en 1 clic · ✓ Aucun spam
-              </small>
+<small class="nl-form-note">
+  Gratuit · Désinscription en 1 clic · Aucun spam
+</small>
             </form>
 
           }
@@ -113,22 +111,19 @@
       <h2>Pourquoi rejoindre le <span>KMAA Brief</span> ?</h2>
 
       <div class="nl-benefits__grid">
-        <div class="nl-benefit">
-          <span class="nl-benefit__icon">🎯</span>
-          <h3>Sélection éditoriale</h3>
-          <p>Seulement l'essentiel : analyses, guides et opportunités vérifiés par nos experts.</p>
-        </div>
-        <div class="nl-benefit">
-          <span class="nl-benefit__icon">🗓️</span>
-          <h3>Rythme maîtrisé</h3>
-          <p>Un envoi périodique, jamais de flood. Votre boîte mail reste respirable.</p>
-        </div>
-        <div class="nl-benefit">
-          <span class="nl-benefit__icon">🚀</span>
-          <h3>Passage à l'action</h3>
-          <p>Chaque édition contient au moins un conseil directement applicable.</p>
-        </div>
-      </div>
+  <div class="nl-benefit">
+    <h3>Sélection éditoriale</h3>
+    <p>Seulement l'essentiel : analyses, guides et opportunités vérifiés par nos experts.</p>
+  </div>
+  <div class="nl-benefit">
+    <h3>Rythme maîtrisé</h3>
+    <p>Un envoi périodique, jamais de flood. Votre boîte mail reste respirable.</p>
+  </div>
+  <div class="nl-benefit">
+    <h3>Passage à l'action</h3>
+    <p>Chaque édition contient au moins un conseil directement applicable.</p>
+  </div>
+</div>
     </div>
   </section>
 

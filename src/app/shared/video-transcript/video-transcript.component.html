@@ -1,0 +1,106 @@
+<div class="vt">
+
+  <!-- ====================================================== -->
+  <!-- VIDÉO À GAUCHE                                          -->
+  <!-- ====================================================== -->
+  <div class="vt__player">
+
+    <div class="vt__video-wrapper">
+      <video
+        #videoEl
+        class="vt__video"
+        [src]="data.videoUrl"
+        controls
+        preload="metadata"
+        playsinline
+        crossorigin="anonymous"
+        (timeupdate)="onTimeUpdate($event)"
+        (loadedmetadata)="onLoadedMetadata($event)"
+        (play)="onPlay()"
+        (pause)="onPause()"
+        (ended)="onEnded()"
+      >
+        @if (vttUrl()) {
+          <track
+            kind="subtitles"
+            srclang="fr"
+            label="Français"
+            [src]="vttUrl()"
+            default
+          />
+        }
+      </video>
+    </div>
+
+    <!-- Barre de progression personnalisée -->
+    <div class="vt__progress">
+      <div class="vt__progress-bar">
+        <div
+          class="vt__progress-fill"
+          [style.width.%]="progressPercent()"
+        ></div>
+      </div>
+      <div class="vt__progress-time">
+        <span>{{ formatTime(currentTime()) }}</span>
+        <span>{{ formatTime(duration()) }}</span>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="vt__actions">
+      <button type="button" class="vt__action" (click)="copyTranscript()">
+        📋 Copier la transcription
+      </button>
+      <button type="button" class="vt__action" (click)="downloadTranscript()">
+        ⬇ Télécharger
+      </button>
+    </div>
+
+  </div>
+
+  <!-- ====================================================== -->
+  <!-- TRANSCRIPT À DROITE                                     -->
+  <!-- ====================================================== -->
+  <aside class="vt__panel">
+
+    <!-- Chapitres -->
+    <div class="vt__chapters">
+      <h3 class="vt__panel-title">📑 Chapitres</h3>
+      <ul class="vt__chapters-list">
+        @for (chap of data.chapters; track chap.id) {
+          <li>
+            <button
+              type="button"
+              class="vt__chapter"
+              [class.vt__chapter--active]="isActiveChapter(chap)"
+              (click)="seekToChapter(chap)"
+            >
+              <span class="vt__chapter-time">{{ formatTime(chap.startTime) }}</span>
+              <span class="vt__chapter-title">{{ chap.title }}</span>
+            </button>
+          </li>
+        }
+      </ul>
+    </div>
+
+    <!-- Transcript synchronisé -->
+    <div class="vt__transcript">
+      <h3 class="vt__panel-title">💬 Transcription</h3>
+      <div class="vt__cues">
+        @for (cue of data.cues; track cue.id) {
+          <div
+            class="vt__cue"
+            [id]="'cue-' + cue.id"
+            [class.vt__cue--active]="isActiveCue(cue)"
+            (click)="seekToCue(cue)"
+          >
+            <span class="vt__cue-time">{{ formatTime(cue.startTime) }}</span>
+            <span class="vt__cue-text">{{ cue.text }}</span>
+          </div>
+        }
+      </div>
+    </div>
+
+  </aside>
+
+</div>
